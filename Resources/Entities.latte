@@ -1,0 +1,36 @@
+{varType App\Model\Project $project}
+{varType App\Model\Entity $selectedEntity}
+{varType App\Model\FetchIndex $selectedIndex}
+{varType Sabatier\Foundation\ArrayClass $entities}
+{define entities, $entities, $flag}
+    <ul class="{!$flag ? 'flex-column w-100 ps-0' : 'flex-column w-100'}">
+        {foreach $entities as $entity}
+            <li>
+                {if $entity->subentities->isEmpty()}
+                    <button class="btn border-0 bg-transparent" type="button" style="width: 16px; padding: 0"></button>
+                {else}
+                    <button class="btn btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
+                    </button>
+                {/if}
+                <span class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                    {$entity->name}
+                </span>
+                {if !$entity->indexes->isEmpty()}
+                    <ul class="flex-column w-100">
+                        {foreach $entity->indexes as $index}
+                            <li>
+                                <button class="btn border-0 bg-transparent" type="button" style="width: 16px; padding: 0"></button>
+                                <span class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">{$index->name}</span>
+                            </li>
+                        {/foreach}
+                    </ul>
+                {/if}
+                {if !$entity->subentities->isEmpty()}
+                    <div class="collapse show" id="{$entity->name}">
+                        {include entities, $entity->subentities, true}
+                    </div>
+                {/if}
+            </li>
+        {/foreach}
+    </ul>
+{/define}

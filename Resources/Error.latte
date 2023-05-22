@@ -1,0 +1,9 @@
+{layout 'Layout.latte'}
+{varType string $title}
+{varType string $error}
+{block title}{$title}{/block}
+{block content}
+    <div class="d-flex align-items-center justify-content-center vh-100">
+        <h6 class="display-1 fw-bold">{$error}</h6>
+    </div>
+{/block}

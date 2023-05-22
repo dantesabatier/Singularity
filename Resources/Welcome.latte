@@ -1,0 +1,107 @@
+{layout 'Layout.latte'}
+{varType string $title}
+{varType string $version}
+{varType string $shortVersion}
+{varType string $copyright}
+{varType Sabatier\Foundation\ArrayClass $projects}
+{block title}{$title}{/block}
+{block content}
+    <div class="container-fluid min-vh-100 d-flex flex-column user-select-none">
+        <div class="row flex-grow-1">
+            <div class="col-2 align-self-center">
+            </div>
+            <div class="col-8 align-self-center">
+                <div class="card" style="min-height: 400px">
+                    <div class="card-header">
+                        <button class="btn btn-outline-dark border-0 bg-transparent text-dark" type="button" data-bs-toggle="modal" data-bs-target="#showAboutPanel">
+                            {$title}
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-7 border-end">
+                                    <h2 class="text-truncate">Welcome to {$title}</h2>
+                                    <button class="list-group-item list-group-item-action text-primary border-0 text-truncate" data-bs-toggle="modal" data-bs-target="#addProject">
+                                        Create a new project
+                                    </button>
+                                </div>
+                                <div class="col-5 overflow-auto" style="max-height: 300px">
+                                    {if !$projects->isEmpty()}
+                                        <ol class="list-group">
+                                            <li n:foreach="$projects as $project" class="list-group-item display-block">
+                                                <div class="row">
+                                                    <div class="col-10">
+                                                        <span class="fw-bold">
+                                                            <a href="/Editor?project={$project->objectID->referenceObject}" class="nav-link text-truncate">
+                                                                <i class="bi bi-box"></i>
+                                                                {$project->name}
+                                                            </a>
+                                                        </span>
+                                                        <div class="text-truncate">{$project->url->path}</div>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button class="btn btn-outline-primary border-0 bg-transparent text-primary" data-bs-action-name="Project" onclick="remove(this, {$project})">
+                                                            <i class="bi bi-x-circle"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                    {else}
+                                        No Recent Projects
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-outline-primary border-0 bg-transparent text-primary">
+                            <a href="/Preferences" target="_blank" rel="noopener noreferrer"><i class="bi bi-gear"></i></a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 align-self-center">
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="showAboutPanel" tabindex="-1" aria-labelledby="showAboutPanelLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <h5>{$title}</h5>
+                    <p>Version {$shortVersion} ({$version})</p>
+                    <p>{$copyright}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addProject" data-bs-backdrop="static" tabindex="-1" aria-labelledby="newProjectLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/Create" method="POST">
+                    <div class="modal-header">
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="modal-title mb-3" id="newProjectLabel">New Project</h5>
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" name="location" id="location" class="form-control" required>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">
+                            Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{/block}

@@ -1,0 +1,108 @@
+{varType App\Model\Project $project}
+{varType App\Model\Entity $selectedEntity}
+{varType App\Model\UniquenessConstraint $selectedUniquenessConstraint}
+{varType Sabatier\Foundation\ArrayClass $allEntities}
+{define entity}
+    <div>
+        <form action="/Entity?objectID={$selectedEntity->objectID->referenceObject}" method="POST">
+            <div class="mb-3 fs-5">
+                Entity
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" id="name" placeholder="Entity Name" class="form-control" value="{$selectedEntity->name}" autocomplete="off" required>
+            </div>
+            <div class="form-check form-check-inline">
+                <label class="form-check-label" for="isAbstract">Abstract Entity</label>
+                <input class="form-check-input" type="checkbox" name="isAbstract" id="isAbstract" value="{$selectedEntity->isAbstract}" {$selectedEntity->isAbstract ? checked}>
+            </div>
+            <div class="mt-3 mb-3">
+                <label for="superentityID" class="form-label">Parent Entity</label>
+                <select name="superentityID" id="superentityID" class="form-select">
+                    <option value="">No Parent Entity</option>
+                    <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}" {$entity->name === $selectedEntity->superentity?->name ? selected} {$entity->objectID->referenceObject == $selectedEntity->objectID->referenceObject ? disabled}>
+                        {$entity->name}
+                    </option>
+                </select>
+            </div>
+            <hr>
+            <div class="mb-3 fs-5">
+                Versioning
+            </div>
+            <div class="mb-3">
+                <label for="versionHashModifier" class="form-label">Hash Modifier</label>
+                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control" value="{$selectedEntity->versionHashModifier}" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="mb-3">
+                <label for="renamingIdentifier" class="form-label">Renaming ID</label>
+                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
+            </div>
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+            <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">Save</button>
+        </form>
+        <hr>
+        <label for="uniquenessConstraints" class="form-label">Constraints</label>
+        <table class="table table-hover table-bordered table-sm" id="uniquenessConstraints">
+            <thead>
+            <tr>
+            </tr>
+            </thead>
+            <tbody>
+            <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" n:class="$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? table-active">
+                <td>{$uniquenessConstraint->stringValue}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-2">
+                                <button type="submit" name="add" class="btn btn-outline-dark border-0 bg-transparent text-dark" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="col-10">
+                                <button class="btn btn-outline-dark border-0 bg-transparent text-dark" onclick="remove('UniquenessConstraint', {$selectedUniquenessConstraint})" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <div class="modal fade" id="addUniquenessConstraint" tabindex="-1" aria-labelledby="addUniquenessConstraintLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="addUniquenessConstraint" action="/UniquenessConstraint" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addUniquenessConstraintLabel">Add Constraint</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="stringValue" class="form-label">Name</label>
+                                <input type="text" name="stringValue" id="stringValue" class="form-control" required>
+                            </div>
+                        </div>
+                        <input type="hidden" name="entityPropertyID" value="{$selectedEntity->objectID->referenceObject}">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">
+                                Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{/define}

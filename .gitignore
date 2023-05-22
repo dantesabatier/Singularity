@@ -1,0 +1,8 @@
+.DS_Store
+.idea
+.vscode
+*.cache
+vendor
+Library
+composer.lock
+psalm.xml

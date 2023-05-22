@@ -1,0 +1,60 @@
+{varType App\Model\Entity $selectedEntity}
+{varType App\Model\Property $selectedProperty}
+{varType App\Model\FetchIndex $selectedIndex}
+{define content}
+    {if $selectedIndex}
+        <div class="accordion accordion-flush" id="accordionContent">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Fetch Index Elements
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionContent">
+                    <div class="accordion-body">
+                        {include elements from 'Elements.latte'}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {elseif $selectedEntity}
+        <div class="accordion accordion-flush" id="accordionContent">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button{$selectedProperty !== null && !$selectedProperty instanceof App\Model\Attribute ? ' collapsed'} bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="{$selectedProperty === null || $selectedProperty instanceof App\Model\Attribute ? 'true' : 'false'}" aria-controls="collapseOne">
+                        Attributes
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse{$selectedProperty === null || $selectedProperty instanceof App\Model\Attribute ? ' show'}" aria-labelledby="headingOne" data-bs-parent="#accordionContent">
+                    <div class="accordion-body">
+                        {include properties from 'Properties.latte', $selectedEntity->attributes, 'Attribute', 'Attribute'}
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button{!$selectedProperty instanceof App\Model\Relationship ? ' collapsed'} bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="{$selectedProperty instanceof App\Model\Relationship ? 'true' : 'false'}" aria-controls="collapseTwo">
+                        Relationships
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse{$selectedProperty instanceof App\Model\Relationship ? ' show'}" aria-labelledby="headingTwo" data-bs-parent="#accordionContent">
+                    <div class="accordion-body">
+                        {include properties from 'Properties.latte', $selectedEntity->relationships, 'Relationship', 'Relationship'}
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button{!$selectedProperty instanceof App\Model\FetchedProperty ? ' collapsed'} bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="{$selectedProperty instanceof App\Model\FetchedProperty ? 'true' : 'false'}" aria-controls="collapseThree">
+                        Fetched Properties
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse{$selectedProperty instanceof App\Model\FetchedProperty ? ' show'}" aria-labelledby="headingThree" data-bs-parent="#accordionContent">
+                    <div class="accordion-body">
+                        {include properties from 'Properties.latte', $selectedEntity->fetchedProperties, 'Fetched Property', 'FetchedProperty'}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
+{/define}

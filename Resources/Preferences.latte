@@ -1,0 +1,28 @@
+{layout 'Layout.latte'}
+{varType string $title}
+{varType string $companyName}
+{block title}Preferences - {$title}{/block}
+{block content}
+    <div class="container-fluid min-vh-100 d-flex flex-column user-select-none">
+        <div class="row flex-grow-1">
+            <div class="ratio ratio-16x9">
+                <div class="container-fluid">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">Preferences</h5>
+                            <form action="/Synchronize" method="POST">
+                                <div class="mb-3">
+                                    <label for="CompanyName" class="form-label">Company Name</label>
+                                    <input type="text" name="CompanyName" id="CompanyName" placeholder="Company Name" class="form-control" value="{$companyName}" autocomplete="off" required>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">
+                                    Save
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}

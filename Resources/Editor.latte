@@ -1,0 +1,186 @@
+{layout 'Layout.latte'}
+{varType string $title}
+{varType App\Model\Project $project}
+{varType App\Model\Entity $selectedEntity}
+{varType Sabatier\Foundation\ArrayClass $allEntities}
+{block title}{$project?->name} - {$title}{/block}
+{block content}
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">File</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <form class="d-flex" action="/Save" method="POST">
+                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
+                                    <button class="dropdown-item" type="submit">
+                                        Save
+                                    </button>
+                                </form>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/">Close</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Editor</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addEntity">
+                                    Add Entity
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" disabled>
+                                    Add Fetch Request
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" disabled>
+                                    Add Configuration
+                                </button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addModal" data-bs-action-name="Attribute" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    Add Attribute
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addModal" data-bs-action-name="Fetched Property" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    Add Fetched Property
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addModal" data-bs-action-name="Relationship" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    Add Relationship
+                                </button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#addModal" data-bs-action-name="Fetch Index" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty() ? disabled}>
+                                    Add Fetch Index
+                                </button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="/Subclass" method="POST">
+                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
+                                    <button class="dropdown-item" type="submit">
+                                        Create ManagedObject Subclass...
+                                    </button>
+                                </form>
+                            </li>
+                            <li>
+                                <form action="/Import" method="POST">
+                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
+                                    <button class="dropdown-item" type="submit">
+                                        Import...
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid d-flex flex-column user-select-none">
+        <div class="row flex-grow-1" style="padding-top:56px;">
+            <div class="col-3 border-end bg-light overflow-auto" style="height: 85vh;">
+                {include sidebar from 'Sidebar.latte'}
+            </div>
+            <div class="col-6 overflow-auto" style="height: 85vh;">
+                {include content from 'Content.latte'}
+            </div>
+            <div class="col-3 border-start overflow-auto" style="height: 85vh;">
+                {include inspector from 'Inspector.latte'}
+            </div>
+        </div>
+        <div class="row border-top" style="height: 40px;">
+            <div class="col-3 bg-light">
+                {include controls from 'Controls.latte'}
+            </div>
+            <div class="col-6 bg-light">
+            </div>
+            <div class="col-3 bg-light">
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="addModal" method="POST">
+                    <div class="modal-header">
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="modal-title mb-3" id="addModalLabel">Add</h5>
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" name="name" id="name" class="form-control" required>
+                    </div>
+                    <input type="hidden" name="entityPropertyID" value="{$selectedEntity?->objectID?->referenceObject}">
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addEntity" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addEntityLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="addEntity" action="/Entity" method="POST">
+                    <div class="modal-header">
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <h5 class="modal-title" id="addEntityLabel">Add Entity</h5>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" name="name" id="name" class="form-control" required>
+                        </div>
+                        <label for="superentityID" class="form-label">Parent Entity</label>
+                        <select name="superentityID" id="superentityID" class="form-select" {$allEntities->isEmpty() ? disabled}>
+                            <option value="">No Parent Entity</option>
+                            <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}">
+                                {$entity->name}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <input type="hidden" name="modelID" value="{$project?->model?->objectID?->referenceObject}">
+                        <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">
+                            Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{/block}
