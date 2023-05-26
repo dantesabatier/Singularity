@@ -38,7 +38,7 @@ use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
-#[Endpoint("/Editor")]
+#[Endpoint()]
 class Editor extends ViewController
 {
     #[Outlet]
@@ -305,7 +305,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
-    #[Action("/Save")]
+    #[Action()]
     public function save(): void
     {
         /** @psalm-suppress TypeDoesNotContainType */
@@ -331,7 +331,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
-    #[Action("/Import")]
+    #[Action()]
     public function import(): void
     {
         if (!($url = $this->project?->url) || !($model = $this->project?->model)) {
@@ -347,7 +347,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
-    #[Action("/Subclass")]
+    #[Action()]
     public function subclass(): void
     {
         if (!($url = $this->project?->url) || !($model = $this->project?->model)) {
