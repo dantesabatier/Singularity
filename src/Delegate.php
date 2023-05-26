@@ -12,6 +12,7 @@ use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 use Sabatier\Service\ViewController;
+use function Sabatier\Foundation\full_user_name;
 use const Sabatier\CoreData\PersistentHistoryTrackingKey;
 use const Sabatier\CoreData\PersistentStoreRemoteChangeNotificationPostOptionKey;
 
@@ -24,7 +25,8 @@ class Delegate extends ObjectClass implements ApplicationDelegate
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
             PersistentHistoryTrackingKey => false,
-            PersistentStoreRemoteChangeNotificationPostOptionKey => false
+            PersistentStoreRemoteChangeNotificationPostOptionKey => false,
+            CompanyNameKey => full_user_name()
         ]));
     }
 
