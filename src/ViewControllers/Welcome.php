@@ -10,6 +10,7 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
+use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Networking\HTTPURLResponse;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\PropertyListSerialization;
@@ -122,7 +123,7 @@ class Welcome extends ViewController
     /**
      * @throws Exception
      */
-    #[Action("/Create")]
+    #[Action()]
     public function create(): void
     {
         $body = $this->request->getParsedBody();
@@ -247,5 +248,13 @@ class Welcome extends ViewController
         $project->url = $bundleURL;
         $project->model = $model;
         $context->save();
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Action(HTTPRequestMethod::delete)]
+    public function remove(): void
+    {
     }
 }
