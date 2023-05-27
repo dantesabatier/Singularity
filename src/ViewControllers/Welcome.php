@@ -52,7 +52,7 @@ class Welcome extends ViewController
     public ?string $shortVersion = null;
     #[Outlet]
     public ?string $copyright = null;
-    
+
     private function generateDelegateClass(string $class, string $namespace): string
     {
         $uses = new ArrayClass([
