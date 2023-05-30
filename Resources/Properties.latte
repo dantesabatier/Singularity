@@ -2,9 +2,11 @@
 {varType App\Model\Entity $selectedEntity}
 {varType App\Model\Property $selectedProperty}
 {varType Sabatier\Foundation\Set $properties}
+{varType string $title}
 {varType string $label}
-{define properties, $properties, $label, $propertyType}
-    <table class="table table-hover table-sm">
+{define properties, $properties, $title, $label, $propertyType}
+    <table class="table table-hover table-sm caption-top">
+        <caption>{$title}</caption>
         <thead>
         <tr>
             <th scope="col">Name</th>
