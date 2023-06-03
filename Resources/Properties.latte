@@ -13,7 +13,7 @@
         </tr>
         </thead>
         <tbody n:if="$properties">
-        <tr n:foreach="$properties as $property" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$property->objectID->referenceObject}" n:class="$property->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
+        <tr n:foreach="$properties as $property" id="property-{$property->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$property->objectID->referenceObject}" n:class="$property->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
             <td>{$property->name}</td>
         </tr>
         </tbody>
