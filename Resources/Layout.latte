@@ -160,6 +160,8 @@
       e.addEventListener("click", async () => {
         try {
           await push(e.dataset.href)
+          const span = document.getElementById(e.id)
+          span.scrollIntoView({ behavior: "instant", block: "end", inline: "nearest" })
         } catch (e) {
           console.error(e)
         }
@@ -169,6 +171,8 @@
       e.addEventListener("click", async () => {
         try {
           await push(e.dataset.href)
+          const tr = document.getElementById(e.id)
+          tr.scrollIntoView({ behavior: "instant", block: "start", inline: "nearest" })
         } catch (e) {
           console.error(e)
         }
