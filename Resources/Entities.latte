@@ -12,7 +12,7 @@
                     <button class="btn btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
                     </button>
                 {/if}
-                <span class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
                     {$entity->name}
                 </span>
                 {if !$entity->indexes->isEmpty()}
@@ -20,7 +20,7 @@
                         {foreach $entity->indexes as $index}
                             <li>
                                 <button class="btn border-0 bg-transparent" type="button" style="width: 16px; padding: 0"></button>
-                                <span class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">{$index->name}</span>
+                                <span id="index-{$index->objectID->referenceObject}" class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">{$index->name}</span>
                             </li>
                         {/foreach}
                     </ul>
