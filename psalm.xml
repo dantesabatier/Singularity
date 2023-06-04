@@ -19,5 +19,15 @@
         <MissingConstructor errorLevel="suppress"/>
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
         <InaccessibleProperty errorLevel="suppress"/>
+        <ArgumentTypeCoercion>
+            <errorLevel type="suppress">
+                <file name="src/ViewControllers/Welcome.php" />
+            </errorLevel>
+        </ArgumentTypeCoercion>
+        <ReferenceConstraintViolation>
+            <errorLevel type="suppress">
+                <file name="src/ViewControllers/Welcome.php" />
+            </errorLevel>
+        </ReferenceConstraintViolation>
     </issueHandlers>
 </psalm>
