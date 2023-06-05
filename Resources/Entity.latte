@@ -48,7 +48,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" n:class="$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? table-active">
+            <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" n:class="$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? table-active">
                 <td>{$uniquenessConstraint->stringValue}</td>
             </tr>
             </tbody>
