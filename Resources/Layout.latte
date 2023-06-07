@@ -161,7 +161,9 @@
         try {
           await push(e.dataset.href)
           const span = document.getElementById(e.id)
-          span.scrollIntoView()
+          if (span instanceof Element) {
+            span.scrollIntoView({ behavior: "instant", block: "end", inline: "nearest" })
+          }
         } catch (e) {
           console.error(e)
         }
@@ -172,7 +174,9 @@
         try {
           await push(e.dataset.href)
           const tr = document.getElementById(e.id)
-          tr.scrollIntoView()
+          if (tr instanceof Element) {
+            tr.scrollIntoView({ behavior: "instant", block: "end", inline: "nearest" })
+          }
         } catch (e) {
           console.error(e)
         }
