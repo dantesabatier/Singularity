@@ -10,7 +10,7 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\CompanyNameKey;
 
-#[Endpoint()]
+#[Endpoint]
 class Preferences extends ViewController
 {
     #[Outlet]
@@ -24,7 +24,7 @@ class Preferences extends ViewController
     /**
      * @throws Exception
      */
-    #[Action()]
+    #[Action]
     public function synchronize(): void
     {
         $body = $this->request->getParsedBody();

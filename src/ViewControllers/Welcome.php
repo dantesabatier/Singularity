@@ -123,7 +123,7 @@ class Welcome extends ViewController
     /**
      * @throws Exception
      */
-    #[Action()]
+    #[Action]
     public function create(): void
     {
         $body = $this->request->getParsedBody();

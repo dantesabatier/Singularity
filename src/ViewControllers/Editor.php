@@ -212,11 +212,7 @@ class Editor extends ViewController
         $properties->appendContentsOf($relationships->compactMap(function (Relationship $relationship) use ($setClassName): string {
             $lazyDestinationEntityName = $relationship->lazyDestinationEntityName;
             $string = " * @property ";
-            if ($relationship->isToMany) {
-                $string .= "$setClassName<$lazyDestinationEntityName>";
-            } else {
-                $string .= $lazyDestinationEntityName;
-            }
+            $string .= $relationship->isToMany ? "$setClassName<$lazyDestinationEntityName>" : $lazyDestinationEntityName;
             if ($relationship->isOptional) {
                 $string .= "|null";
             }
@@ -255,11 +251,7 @@ class Editor extends ViewController
             $content .= "abstract ";
         }
         $content .= "class $class extends ";
-        if ($superentity) {
-            $content .= $superentity->name;
-        } else {
-            $content .= ManagedObject::className();
-        }
+        $content .= $superentity ? $superentity->name : ManagedObject::className();
         $content .= "\n";
         $content .= "{\n";
         return $content . "}\n";
@@ -305,7 +297,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
-    #[Action()]
+    #[Action]
     public function save(): void
     {
         /** @psalm-suppress TypeDoesNotContainType */
@@ -331,7 +323,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
-    #[Action()]
+    #[Action]
     public function import(): void
     {
         if (!($url = $this->project?->url) || !($model = $this->project?->model)) {
@@ -347,7 +339,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
-    #[Action()]
+    #[Action]
     public function subclass(): void
     {
         if (!($url = $this->project?->url) || !($model = $this->project?->model)) {
