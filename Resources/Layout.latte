@@ -42,7 +42,7 @@
     if (url.startsWith("/")) {
       url = "/" + url
     }
-    if (parameters !== undefined && JSON.stringify(parameters) !== JSON.stringify({})) {
+    if (!!parameters && JSON.stringify(parameters) !== JSON.stringify({})) {
       url += "?" + (() => {
         let array = []
         for (const k in parameters) {
