@@ -43,15 +43,15 @@
       url = "/" + url
     }
     if (parameters !== undefined && JSON.stringify(parameters) !== JSON.stringify({})) {
-      url += "?" + ((obj) => {
+      url += "?" + (() => {
         let array = []
-        for (const p in obj) {
-          if (obj.hasOwnProperty(p)) {
-            array.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+        for (const k in parameters) {
+          if (parameters.hasOwnProperty(k)) {
+            array.push(encodeURIComponent(k) + "=" + encodeURIComponent(parameters[k]))
           }
         }
         return array.join("&")
-      })(parameters)
+      })()
     }
     return url
   }
