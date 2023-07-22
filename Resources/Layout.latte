@@ -37,9 +37,9 @@
 </script>
 <!--suppress JSCheckFunctionSignatures -->
 <script>
-  function url(endpoint, parameters) {
-    const serialize = function (obj) {
-      let array = [];
+  const url = (endpoint, parameters) => {
+    const serialize = (obj) => {
+      let array = []
       for (const p in obj) {
         if (obj.hasOwnProperty(p)) {
           array.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
@@ -56,29 +56,21 @@
     }
     return url
   }
-
-  async function load(url) {
-    const response = await fetch(url)
-    return response.text()
-  }
-
-  async function replace(url) {
-    const data = await load(url)
+  const replace = async (url) => {
+    const data = (await fetch(url)).text()
     document.open()
     document.write(data)
     document.close()
     return data
   }
-
-  async function push(url) {
+  const push = async (url) => {
     const data = await replace(url)
     if (window.location !== url) {
       window.history.pushState({}, "", url)
     }
     return data
   }
-
-  async function submit(form) {
+  const submit = async (form) => {
     let headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     headers["Content-Type"] = "application/json; charset=utf-8"
@@ -86,17 +78,19 @@
     const method = elements.find(e => e.name === "X-Http-Method-Override")?.value ?? "POST"
     const filtered = elements.filter(e => e.type !== "submit" && e.name !== "X-Http-Method-Override")
     const body = JSON.stringify(filtered.reduce((result, e) => {
-      let value = e.type === "checkbox" ? e.checked : e.value
-      if (value === "true") {
-        value = true
-      } else if (value === "false") {
-        value = false
-      } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
-        value = parseFloat(value)
-      } else if (value === "") {
-        value = null
-      }
-      result[e.name] = value
+      result[e.name] = (() => {
+        let value = e.type === "checkbox" ? e.checked : e.value
+        if (value === "true") {
+          return true
+        } else if (value === "false") {
+          return false
+        } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
+          return parseFloat(value)
+        } else if (value === "") {
+          return null
+        }
+        return value
+      })()
       return result
     }, {}))
     const response = await fetch(form.action, {
@@ -117,8 +111,7 @@
     await push(url.href)
     return response
   }
-
-  async function remove(sender, item) {
+  const remove = async (sender, item) => {
     const action = sender.getAttribute("data-bs-action-name")
     const endpoint = action.split(" ").join("")
     const element = document.getElementById("removeModal")
@@ -128,21 +121,13 @@
     form.action = url(endpoint, {
       objectID: item.objectID
     })
-    const modal = new bootstrap.Modal(element, {})
-    modal.show()
+    (new bootstrap.Modal(element, {})).show()
   }
 </script>
 <!--suppress JSCheckFunctionSignatures -->
 <script>
-  function layout() {
-    document.querySelectorAll(`[class*="overflow-auto"]`).forEach(e => {
-      e.style.height = document.documentElement.clientHeight - 98 + "px"
-    })
-  }
-
-  window.addEventListener("resize", () => {
-    layout()
-  })
+  const layout = () => document.querySelectorAll(`[class*="overflow-auto"]`).forEach(e => e.style.height = document.documentElement.clientHeight - 98 + "px")
+  window.addEventListener("resize", layout)
   document.addEventListener("DOMContentLoaded", () => {
     layout()
     const addModal = document.getElementById("addModal")
@@ -163,10 +148,14 @@
           await push(e.dataset.href)
           const span = document.getElementById(e.id)
           if (span instanceof Element) {
-            span.scrollIntoView({ behavior: "instant", block: "end", inline: "nearest" })
+            span.scrollIntoView({
+              behavior: "instant",
+              block: "end",
+              inline: "nearest"
+            })
           }
-        } catch (e) {
-          console.error(e)
+        } catch (error) {
+          console.error(error)
         }
       })
     })
@@ -176,10 +165,14 @@
           await push(e.dataset.href)
           const tr = document.getElementById(e.id)
           if (tr instanceof Element) {
-            tr.scrollIntoView({ behavior: "instant", block: "end", inline: "nearest" })
+            tr.scrollIntoView({
+              behavior: "instant",
+              block: "end",
+              inline: "nearest"
+            })
           }
-        } catch (e) {
-          console.error(e)
+        } catch (error) {
+          console.error(error)
         }
       })
     })
@@ -189,8 +182,8 @@
         if (event.submitter) {
           try {
             await submit(e)
-          } catch (e) {
-            console.error(e)
+          } catch (error) {
+            console.error(error)
           }
         }
       })
