@@ -37,40 +37,46 @@
 </script>
 <!--suppress JSCheckFunctionSignatures -->
 <script>
-  const url = (endpoint, parameters) => {
-    const serialize = (obj) => {
-      let array = []
-      for (const p in obj) {
-        if (obj.hasOwnProperty(p)) {
-          array.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
-        }
-      }
-      return array.join("&")
-    }
+  function url(endpoint, parameters) {
     let url = endpoint
     if (url.startsWith("/")) {
       url = "/" + url
     }
     if (parameters !== undefined && JSON.stringify(parameters) !== JSON.stringify({})) {
-      url += "?" + serialize(parameters)
+      url += "?" + ((obj) => {
+        let array = []
+        for (const p in obj) {
+          if (obj.hasOwnProperty(p)) {
+            array.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]))
+          }
+        }
+        return array.join("&")
+      })(parameters)
     }
     return url
   }
-  const replace = async (url) => {
-    const data = (await fetch(url)).text()
+
+  async function load(url) {
+    return (await fetch(url)).text()
+  }
+
+  async function replace(url) {
+    const data = await load(url)
     document.open()
     document.write(data)
     document.close()
     return data
   }
-  const push = async (url) => {
+
+  async function push(url) {
     const data = await replace(url)
     if (window.location !== url) {
       window.history.pushState({}, "", url)
     }
     return data
   }
-  const submit = async (form) => {
+
+  async function submit(form) {
     let headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     headers["Content-Type"] = "application/json; charset=utf-8"
@@ -111,7 +117,8 @@
     await push(url.href)
     return response
   }
-  const remove = async (sender, item) => {
+
+  async function remove(sender, item) {
     const action = sender.getAttribute("data-bs-action-name")
     const endpoint = action.split(" ").join("")
     const element = document.getElementById("removeModal")
@@ -121,12 +128,16 @@
     form.action = url(endpoint, {
       objectID: item.objectID
     })
-    (new bootstrap.Modal(element, {})).show()
+    const modal = new bootstrap.Modal(element, {})
+    modal.show()
   }
 </script>
 <!--suppress JSCheckFunctionSignatures -->
 <script>
-  const layout = () => document.querySelectorAll(`[class*="overflow-auto"]`).forEach(e => e.style.height = document.documentElement.clientHeight - 98 + "px")
+  function layout() {
+    document.querySelectorAll(`[class*="overflow-auto"]`).forEach(e => e.style.height = document.documentElement.clientHeight - 98 + "px")
+  }
+
   window.addEventListener("resize", layout)
   document.addEventListener("DOMContentLoaded", () => {
     layout()
