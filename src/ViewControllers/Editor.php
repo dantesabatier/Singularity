@@ -267,15 +267,15 @@ class Editor extends ViewController
             if (!($objectID = $this->referenceObject($key))) {
                 continue;
             }
-            /** @var class-string<ManagedObject> $type */
-            $type = match ($key) {
+            /** @var class-string<ManagedObject> $managedObjectClass */
+            $managedObjectClass = match ($key) {
                 "entity" => Entity::class,
                 "constraint" => UniquenessConstraint::class,
                 "property" => Property::class,
                 "index" => FetchIndex::class,
                 "element" => FetchIndexElement::class,
             };
-            $fetchRequest = $type::fetchRequest();
+            $fetchRequest = $managedObjectClass::fetchRequest();
             $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $objectID]));
             if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first())) {
                 break;
