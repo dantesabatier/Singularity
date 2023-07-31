@@ -204,9 +204,7 @@ class Welcome extends ViewController
                     "ext-curl" => "*",
                     "ext-dom" => "*",
                     "ext-fileinfo" => "*",
-                    "ext-gd" => "*",
                     "ext-gettext" => "*",
-                    "ext-intl" => "*",
                     "ext-json" => "*",
                     "ext-mbstring" => "*",
                     "sabatier/foundation" => "^1.0-dev",
@@ -216,7 +214,9 @@ class Welcome extends ViewController
                 "config" => [
                     "platform" => [
                         "ext-pcntl" => PHP_VERSION,
-                        "ext-posix" => PHP_VERSION
+                        "ext-posix" => PHP_VERSION,
+                        "ext-gd" => PHP_VERSION,
+                        "ext-intl" => PHP_VERSION,
                     ]
                 ],
                 "autoload" => [
