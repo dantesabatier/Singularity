@@ -195,7 +195,7 @@ class Welcome extends ViewController
             $fileManager->createFile($path, json_encode([
                 "name" => "vendor/$lowerCaseName",
                 "description" => "description",
-                "license" => "proprietary",
+                "license" => "license",
                 "keywords" => [
                     $lowerCaseName,
                 ],
