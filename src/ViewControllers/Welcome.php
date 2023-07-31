@@ -223,7 +223,8 @@ class Welcome extends ViewController
                     "psr-4" => [
                         "App\\" => "src"
                     ]
-                ]
+                ],
+                "repositories" => array_map(fn(string $name): array => ["type" => "path", "url" => "../Sabatier/$name"], ["Foundation", "CoreData", "Service"])
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
         $path = $bundleURL->appendingPathComponent(".env")->path;
