@@ -188,6 +188,24 @@
         }
       })
     })
+    document.querySelectorAll("input[type=checkbox]").forEach(e => {
+      e.addEventListener("click", async () => {
+        try {
+          await submit(e.form)
+        } catch (error) {
+          console.error(error)
+        }
+      })
+    })
+    document.querySelectorAll("select[autosave]").forEach(e => {
+      e.addEventListener("change", async () => {
+        try {
+          await submit(e.form)
+        } catch (error) {
+          console.error(error)
+        }
+      })
+    })
     document.querySelectorAll("form").forEach(e => {
       e.addEventListener("submit", async (event) => {
         event.preventDefault()
