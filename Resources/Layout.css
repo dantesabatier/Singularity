@@ -3,32 +3,6 @@ body {
     height: 100%;
 }
 
-tbody {
-    tr:hover {
-        background-color: rgba(25, 118, 210, 0.06) !important;
-    }
-}
-
-tr.v-data-table__selected {
-    background: rgba(25, 118, 210, 0.16) !important;
-}
-
-a:link {
-    text-decoration: none !important;
-}
-
-a:visited {
-    text-decoration: none !important;
-}
-
-a:hover {
-    text-decoration: none !important;
-}
-
-a:active {
-    text-decoration: none !important;
-}
-
 ul {
     list-style-type: none;
 }
