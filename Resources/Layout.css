@@ -1,5 +1,32 @@
-html, body {
+html,
+body {
     height: 100%;
+}
+
+tbody {
+    tr:hover {
+        background-color: rgba(25, 118, 210, 0.06) !important;
+    }
+}
+
+tr.v-data-table__selected {
+    background: rgba(25, 118, 210, 0.16) !important;
+}
+
+a:link {
+    text-decoration: none !important;
+}
+
+a:visited {
+    text-decoration: none !important;
+}
+
+a:hover {
+    text-decoration: none !important;
+}
+
+a:active {
+    text-decoration: none !important;
 }
 
 ul {
@@ -11,7 +38,6 @@ ul {
     align-items: center;
     padding: 0;
     font-weight: 600;
-    color: rgba(0, 0, 0, .65);
     background-color: transparent;
     border: 0;
 }
@@ -28,8 +54,7 @@ ul {
     transform-origin: .5em 50%;
 }
 
-.btn-toggle[aria-expanded="true"] {
-}
+.btn-toggle[aria-expanded="true"] {}
 
 .btn-toggle[aria-expanded="true"]::before {
     transform: rotate(90deg);
@@ -44,6 +69,10 @@ ul {
 .nav-toggle.active {
     font-weight: 600;
     color: #0d6efd;
+}
+
+.selected {
+    background-color: rgba(25, 118, 210, 0.16);
 }
 
 .text-non-selectable {
