@@ -5,7 +5,7 @@
 {varType Sabatier\Foundation\ArrayClass $allEntities}
 {block title}{$project?->name} - {$title}{/block}
 {block content}
-    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light border-bottom">
+    <nav class="navbar navbar-expand-lg fixed-top border-bottom">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -104,7 +104,7 @@
     </nav>
     <div class="container-fluid d-flex flex-column user-select-none">
         <div class="row flex-grow-1" style="padding-top:56px;">
-            <div class="col-3 border-end bg-light overflow-auto" style="height: 85vh;">
+            <div class="col-3 border-end overflow-auto px-0" style="height: 85vh;">
                 {include sidebar from 'Sidebar.latte'}
             </div>
             <div class="col-6 overflow-auto" style="height: 85vh;">
@@ -115,12 +115,12 @@
             </div>
         </div>
         <div class="row border-top" style="height: 40px;">
-            <div class="col-3 bg-light">
+            <div class="col-3">
                 {include controls from 'Controls.latte'}
             </div>
-            <div class="col-6 bg-light">
+            <div class="col-6">
             </div>
-            <div class="col-3 bg-light">
+            <div class="col-3">
             </div>
         </div>
     </div>
