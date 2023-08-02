@@ -123,7 +123,7 @@
     const endpoint = action.split(" ").join("")
     const element = document.getElementById("removeModal")
     const title = element.querySelector(".modal-title")
-    title.textContent = "Remove " + action.toLowerCase() + " \"" + (item.name ?? item.propertyName) + "\"?"
+    title.textContent = "Remove " + action.toLowerCase() + " \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?"
     const form = element.querySelector(".modal-content form")
     form.action = url(endpoint, {
       objectID: item.objectID

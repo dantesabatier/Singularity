@@ -7,9 +7,9 @@
         {foreach $entities as $entity}
             <li class="{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? 'selected'}">
                 {if $entity->subentities->isEmpty()}
-                    <button class="btn border-0 bg-transparent" type="button" style="width: 16px; padding: 0"></button>
+                    <span style="display: inline-block; width: 24px; padding: 0 8px;"></span>
                 {else}
-                    <button class="btn btn-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
+                    <button class="btn btn-toggle bg-transparent ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
                     </button>
                 {/if}
                 <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
@@ -19,7 +19,7 @@
                     <ul class="flex-column w-100">
                         {foreach $entity->indexes as $index}
                             <li>
-                                <button class="btn border-0 bg-transparent" type="button" style="width: 16px; padding: 0"></button>
+                                <span style="display: inline-block; width: 24px; padding: 0 8px;"></span>
                                 <span id="index-{$index->objectID->referenceObject}" class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">{$index->name}</span>
                             </li>
                         {/foreach}
