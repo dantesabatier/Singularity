@@ -7,6 +7,7 @@ use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
+use Sabatier\Foundation\UserDefaults;
 
 /**
  * @property Date $creationDate
@@ -19,7 +20,7 @@ class Project extends ManagedObject
 {
     public function prepareForDeletion(): void
     {
-        if (($url = $this->url) && FileManager::default()->fileExists($url->path, $isDirectory) && $isDirectory) {
+        if (UserDefaults::standard()->bool(AutomaticallyDeleteProjectFolders) && ($url = $this->url) && FileManager::default()->fileExists($url->path, $isDirectory) && $isDirectory) {
             try {
                 FileManager::default()->removeItem($url);
             } catch (Exception) {
