@@ -28,7 +28,8 @@ ul {
     transform-origin: .5em 50%;
 }
 
-.btn-toggle[aria-expanded="true"] {}
+.btn-toggle[aria-expanded="true"] {
+}
 
 .btn-toggle[aria-expanded="true"]::before {
     transform: rotate(90deg);
