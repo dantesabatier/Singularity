@@ -108,11 +108,21 @@
       throw new Error(await response.text())
     }
     let url = new URL(window.location)
-    if (method === "DELETE") {
-      const project = url.searchParams.get("project")
-      if (project) {
-        url.search = "project=" + project
+    if (method === "DELETE") {  
+      let keys = ["project"]
+      const destinationURL = new URL(form.action)
+      switch(destinationURL.pathname.replace("/", "")) {
+        case "Attribute":
+        case "Relationship":
+        case "FetchedProperty":
+        case "FetchIndex":
+        case "UniquenessConstraint":
+          keys.push("entity")
+          break
+        case "FetchIndexElement":
+          keys.push(...["entity", "index"])
       }
+      url.search = keys.map(k => k + "=" + url.searchParams.get(k)).join("&")
     }
     await push(url.href)
     return response
