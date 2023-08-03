@@ -6,7 +6,6 @@ use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\InternalInconsistencyException;
 
 /**
  * @property string $lazyDestinationEntityName
@@ -36,7 +35,7 @@ class Relationship extends Property
         if ($name == "destinationEntity") {
             $destinationEntity = null;
             if ($lazyDestinationEntityName = $this->lazyDestinationEntityName) {
-                $destinationEntity = $this->entityProperty->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $lazyDestinationEntityName) ?? throw new InternalInconsistencyException(sprintf("%s, destination entity \"%s\" does not exists", $this->name, $lazyDestinationEntityName));
+                $destinationEntity = $this->entityProperty->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $lazyDestinationEntityName);
             }
             $this->$name = $destinationEntity;
             return $this->$name;
