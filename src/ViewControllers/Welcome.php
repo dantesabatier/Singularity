@@ -132,14 +132,14 @@ class Welcome extends ViewController
         if (!$path) {
             return;
         }
-        $bundleURL = URL::fileURL($path);
+        $url = URL::fileURL($path);
         $fileManager = FileManager::default();
-        if (!$fileManager->fileExists($bundleURL->path)) {
-            $fileManager->createDirectory($bundleURL);
+        if (!$fileManager->fileExists($url->path)) {
+            $fileManager->createDirectory($url);
         }
-        $name = $bundleURL->lastPathComponent;
+        $name = $url->lastPathComponent;
         $lowerCaseName = strtolower($name);
-        $path = $bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist")->path;
+        $path = $url->appendingPathComponent("Info")->appendingPathExtension("plist")->path;
         if (!$fileManager->fileExists($path)) {
             $fileManager->createFile($path, PropertyListSerialization::data(Dictionary::dictionaryWithArray([
                 kCFBundleDevelopmentRegionKey => "English",
@@ -160,15 +160,15 @@ class Welcome extends ViewController
                 ]
             ])));
         }
-        $resourceURL = $bundleURL->appendingPathComponent("Resources");
+        $resourceURL = $url->appendingPathComponent("Resources");
         if (!$fileManager->fileExists($resourceURL->path)) {
             $fileManager->createDirectory($resourceURL);
         }
-        $bundle = Bundle::bundleWithURL($bundleURL);
+        $bundle = Bundle::bundleWithURL($url);
         foreach ($bundle->localizations as $localization) {
-            $url = $resourceURL->appendingPathComponent($localization);
-            if (!$fileManager->fileExists($url->path)) {
-                $fileManager->createDirectory($url);
+            $directoryURL = $resourceURL->appendingPathComponent($localization);
+            if (!$fileManager->fileExists($directoryURL->path)) {
+                $fileManager->createDirectory($directoryURL);
             }
         }
         /** @var class-string|null $principalClass */
@@ -177,7 +177,7 @@ class Welcome extends ViewController
             $components = new ArrayClass(explode("\\", $principalClass));
             $class = $components->popLast() ?? Delegate::className();
             $namespace = $components->join("\\");
-            $sourcesURL = $bundleURL->appendingPathComponent("src");
+            $sourcesURL = $url->appendingPathComponent("src");
             if (!$fileManager->fileExists($sourcesURL->path)) {
                 $fileManager->createDirectory($sourcesURL);
             }
@@ -190,7 +190,7 @@ class Welcome extends ViewController
         if (!$fileManager->fileExists($storeURL->path)) {
             PropertyListSerialization::writePropertyList(Dictionary::dictionaryWithArray(["entities" => []]), $storeURL);
         }
-        $path = $bundleURL->appendingPathComponent("composer")->appendingPathExtension("json")->path;
+        $path = $url->appendingPathComponent("composer")->appendingPathExtension("json")->path;
         if (!$fileManager->fileExists($path)) {
             $fileManager->createFile($path, json_encode([
                 "name" => "vendor/$lowerCaseName",
@@ -227,7 +227,7 @@ class Welcome extends ViewController
                 "repositories" => array_map(fn(string $name): array => ["type" => "path", "url" => "../Sabatier/$name"], ["Foundation", "CoreData", "Service"])
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
-        $path = $bundleURL->appendingPathComponent(".env")->path;
+        $path = $url->appendingPathComponent(".env")->path;
         if (!$fileManager->fileExists($path)) {
             $dictionary = new Dictionary([
                 "SQL_SCHEMA_NAME" => $name,
@@ -237,7 +237,7 @@ class Welcome extends ViewController
             ]);
             $fileManager->createFile($path, $dictionary->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n"));
         }
-        $path = $bundleURL->appendingPathComponent("index")->appendingPathExtension("php")->path;
+        $path = $url->appendingPathComponent("index")->appendingPathExtension("php")->path;
         if (!$fileManager->fileExists($path)) {
             $fileManager->createFile($path, $this->generateIndex());
         }
@@ -246,7 +246,7 @@ class Welcome extends ViewController
         $model->url = $bundle->url($name, "plist");
         $project = new Project($context);
         $project->name = $name;
-        $project->url = $bundleURL;
+        $project->url = $url;
         $project->model = $model;
         $context->save();
     }
