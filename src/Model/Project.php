@@ -8,6 +8,7 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
+use const App\AutomaticallyDeleteProjectFolders;
 
 /**
  * @property Date $creationDate
