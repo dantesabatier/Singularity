@@ -17,6 +17,8 @@ use Sabatier\Foundation\Set;
  * @property string|null $renamingIdentifier
  * @property bool $isAbstract
  * @property string|null $versionHashModifier
+ * @property-read int $subentitiesCount
+ * @property-read int $indexesCount
  * @property Set<Property> $properties
  * @property Set<Entity> $subentities
  * @property Entity|null $superentity

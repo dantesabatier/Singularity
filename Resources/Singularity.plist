@@ -44,6 +44,22 @@
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>subentitiesCount</string>
+                        <key>type</key>
+                        <integer>800</integer>
+                        <key>derivationExpressionFormat</key>
+                        <string>subentities.@count</string>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>indexesCount</string>
+                        <key>type</key>
+                        <integer>800</integer>
+                        <key>derivationExpressionFormat</key>
+                        <string>indexes.@count</string>
+                    </dict>
                 </array>
                 <key>relationships</key>
                 <array>
