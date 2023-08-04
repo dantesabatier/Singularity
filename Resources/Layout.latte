@@ -62,11 +62,13 @@
 
   async function replace(url) {
     const data = await load(url)
-    const temporary = document.implementation.createHTMLDocument()
-    temporary.open()
-    temporary.write(data)
-    temporary.close()
-    document.getElementById("content").innerHTML = temporary.getElementById("content").innerHTML
+    const doc = document.implementation.createHTMLDocument()
+    doc.open()
+    doc.write(data)
+    doc.close()
+    const e2 = doc.getElementById("content")
+    const e1 = document.getElementById("content")
+    e1.innerHTML = e2.innerHTML
     didLoad()
     return data
   }
