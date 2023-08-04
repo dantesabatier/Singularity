@@ -62,9 +62,12 @@
 
   async function replace(url) {
     const data = await load(url)
-    document.open()
-    document.write(data)
-    document.close()
+    const temporary = document.implementation.createHTMLDocument()
+    temporary.open()
+    temporary.write(data)
+    temporary.close()
+    document.getElementById("content").innerHTML = temporary.getElementById("content").innerHTML
+    didLoad()
     return data
   }
 
@@ -152,21 +155,10 @@
     document.querySelectorAll(`[class*="overflow-auto"]`).forEach(e => e.style.height = document.documentElement.clientHeight - 98 + "px")
   }
 
-  window.addEventListener("resize", layout)
-  document.addEventListener("DOMContentLoaded", () => {
+  function didLoad() {
     layout()
-    const addModal = document.getElementById("addModal")
-    if (addModal) {
-      addModal.addEventListener("show.bs.modal", event => {
-        const button = event.relatedTarget
-        const action = button.getAttribute("data-bs-action-name")
-        const endpoint = action.split(" ").join("")
-        const modalTitle = addModal.querySelector(".modal-title")
-        modalTitle.textContent = "Add " + action
-        const modalContentForm = addModal.querySelector(".modal-content form")
-        modalContentForm.action = url(endpoint)
-      })
-    }
+    window.addEventListener("resize", layout)
+    document.addEventListener("DOMContentLoaded", layout)
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         try {
@@ -231,7 +223,21 @@
         }
       })
     })
-  })
+    const addModal = document.getElementById("addModal")
+    if (addModal) {
+      addModal.addEventListener("show.bs.modal", event => {
+        const button = event.relatedTarget
+        const action = button.getAttribute("data-bs-action-name")
+        const endpoint = action.split(" ").join("")
+        const modalTitle = addModal.querySelector(".modal-title")
+        modalTitle.textContent = "Add " + action
+        const modalContentForm = addModal.querySelector(".modal-content form")
+        modalContentForm.action = url(endpoint)
+      })
+    }
+  }
+
+  didLoad()
 </script>
 </body>
 </html>
