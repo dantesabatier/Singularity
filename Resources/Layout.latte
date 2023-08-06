@@ -234,7 +234,7 @@
       })
     })
     const addItem = document.getElementById("addItem")
-    addItem.addEventListener("show.bs.modal", (event) => {
+    addItem?.addEventListener("show.bs.modal", (event) => {
       const button = event.relatedTarget
       const action = button.getAttribute("data-bs-action-name")
       const endpoint = action.split(" ").join("")
