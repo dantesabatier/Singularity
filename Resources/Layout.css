@@ -51,6 +51,12 @@ ul {
     background-color: rgba(25, 118, 210, 0.16);
 }
 
+.space {
+    display: inline-block;
+    width: 24px;
+    padding: 0 8px;
+}
+
 .text-non-selectable {
     -webkit-user-select: none;
     -moz-user-select: none;
