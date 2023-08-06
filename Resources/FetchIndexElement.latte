@@ -1,34 +1,32 @@
 {varType App\Model\Entity $selectedEntity}
 {varType App\Model\FetchIndexElement $selectedIndexElement}
 {define fetchIndexElement}
-    <div>
-        <form action="/FetchIndexElement?objectID={$selectedIndexElement->objectID->referenceObject}" method="POST">
-            <div class="mb-3 fs-5">
-                Fetch Index Element
-            </div>
-            <div class="mt-3 mb-3">
-                <label for="propertyName" class="form-label">Property</label>
-                <select name="propertyName" id="propertyName" class="form-select" autosave required>
-                    <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}" {$attribute->name === $selectedIndexElement->propertyName ? selected}>
-                        {$attribute->name}
-                    </option>
-                </select>
-            </div>
-            <div class="mt-3 mb-3">
-                {var $items = [2 => 'Default', 0 => 'Binary', 1 => 'R-Tree']}
-                <label for="collationType" class="form-label">Type</label>
-                <select name="collationType" id="collationType" class="form-select" autosave>
-                    <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedIndexElement->collationType ? selected}>
-                        {$value}
-                    </option>
-                </select>
-            </div>
-            <div class="form-check mb-3">
-                <label class="form-check-label" for="isAscending">Ascending</label>
-                <input class="form-check-input" type="checkbox" name="isAscending" value="{$selectedIndexElement->isAscending}" id="isAscending" {$selectedIndexElement->isAscending ? checked}>
-            </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
-        </form>
-    </div>
+    <form action="/FetchIndexElement?objectID={$selectedIndexElement->objectID->referenceObject}" method="POST">
+        <div class="mb-3 fs-5">
+            Fetch Index Element
+        </div>
+        <div class="mt-3 mb-3">
+            <label for="propertyName" class="form-label">Property</label>
+            <select name="propertyName" id="propertyName" class="form-select" autosave required>
+                <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}" {$attribute->name === $selectedIndexElement->propertyName ? selected}>
+                    {$attribute->name}
+                </option>
+            </select>
+        </div>
+        <div class="mt-3 mb-3">
+            {var $items = [2 => 'Default', 0 => 'Binary', 1 => 'R-Tree']}
+            <label for="collationType" class="form-label">Type</label>
+            <select name="collationType" id="collationType" class="form-select" autosave>
+                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedIndexElement->collationType ? selected}>
+                    {$value}
+                </option>
+            </select>
+        </div>
+        <div class="form-check mb-3">
+            <label class="form-check-label" for="isAscending">Ascending</label>
+            <input class="form-check-input" type="checkbox" name="isAscending" value="{$selectedIndexElement->isAscending}" id="isAscending" {$selectedIndexElement->isAscending ? checked}>
+        </div>
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+        <input class="d-none" type="submit">
+    </form>
 {/define}

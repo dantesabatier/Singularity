@@ -1,110 +1,108 @@
 {varType App\Model\Attribute $selectedProperty}
 {define attribute}
-    <div>
-        <form action="/Attribute?objectID={$selectedProperty->objectID->referenceObject}" method="POST">
-            <div class="mb-3 fs-5">
-                Attribute
-            </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
-            </div>
-            <div class="form-check form-check-inline">
-                <label class="form-check-label" for="isTransient">Transient</label>
-                <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked} {$selectedProperty->isDerived ? disabled}>
-            </div>
-            <div class="form-check form-check-inline">
-                <label class="form-check-label" for="isOptional">Optional</label>
-                <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
-            </div>
-            <div class="form-check">
-                <label class="form-check-label" for="isDerived">Derived</label>
-                <input class="form-check-input" type="checkbox" name="isDerived" value="{$selectedProperty->isDerived}" id="isDerived" {$selectedProperty->isDerived ? checked}>
-            </div>
-            <div n:if="$selectedProperty->isDerived" class="mb-3">
-                <label for="derivationExpressionFormat" class="form-label">Derivation</label>
-                <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Derived Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false">
-            </div>
-            <hr>
-            <div class="mt-3 mb-3">
-                {var $items = [0 => 'Undefined', 100 => 'Integer 16', 200 => 'Integer 32', 300 => 'Integer 64', 400 => 'Decimal', 500 => 'Double', 600 => 'Float', 700 => 'String', 800 => 'Boolean', 900 => 'Date', 1000 => 'Binary Data', 1100 => 'UUID', 1200 => 'URI', 1800 => 'Transformable']}
-                <label for="type" class="form-label">Type</label>
-                <select name="type" id="type" class="form-select" autosave>
-                    <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->type ? selected}>
-                        {$value}
-                    </option>
-                </select>
-            </div>
-            {if !$selectedProperty->isDerived}
-                {if $selectedProperty->type === 800}
-                    <div class="mt-3 mb-3">
-                        {var $items = ["false" => 'False', "true" => 'True']}
-                        <label for="defaultValue" class="form-label">Default Value</label>
-                        <select name="defaultValue" id="defaultValue" class="form-select" autosave>
-                            <option n:foreach="$items as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>
-                                {$value}
-                            </option>
-                        </select>
+    <form action="/Attribute?objectID={$selectedProperty->objectID->referenceObject}" method="POST">
+        <div class="mb-3 fs-5">
+            Attribute
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label" for="isTransient">Transient</label>
+            <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked} {$selectedProperty->isDerived ? disabled}>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label" for="isOptional">Optional</label>
+            <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label" for="isDerived">Derived</label>
+            <input class="form-check-input" type="checkbox" name="isDerived" value="{$selectedProperty->isDerived}" id="isDerived" {$selectedProperty->isDerived ? checked}>
+        </div>
+        <div n:if="$selectedProperty->isDerived" class="mb-3">
+            <label for="derivationExpressionFormat" class="form-label">Derivation</label>
+            <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Derived Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false">
+        </div>
+        <hr>
+        <div class="mt-3 mb-3">
+            {var $items = [0 => 'Undefined', 100 => 'Integer 16', 200 => 'Integer 32', 300 => 'Integer 64', 400 => 'Decimal', 500 => 'Double', 600 => 'Float', 700 => 'String', 800 => 'Boolean', 900 => 'Date', 1000 => 'Binary Data', 1100 => 'UUID', 1200 => 'URI', 1800 => 'Transformable']}
+            <label for="type" class="form-label">Type</label>
+            <select name="type" id="type" class="form-select" autosave>
+                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->type ? selected}>
+                    {$value}
+                </option>
+            </select>
+        </div>
+        {if !$selectedProperty->isDerived}
+            {if $selectedProperty->type === 800}
+                <div class="mt-3 mb-3">
+                    {var $items = ["false" => 'False', "true" => 'True']}
+                    <label for="defaultValue" class="form-label">Default Value</label>
+                    <select name="defaultValue" id="defaultValue" class="form-select" autosave>
+                        <option n:foreach="$items as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>
+                            {$value}
+                        </option>
+                    </select>
+                </div>
+            {elseif $selectedProperty->type >= 100 && $selectedProperty->type < 800}
+                <div class="mb-3">
+                    <label for="defaultValue" class="form-label">Default Value</label>
+                    <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="mb-3 row">
+                    <div class="col">
+                        <input type="text" class="form-control text-truncate" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
                     </div>
-                {elseif $selectedProperty->type >= 100 && $selectedProperty->type < 800}
+                    <div class="col">
+                        <input type="text" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
+                    </div>
+                </div>
+                {if $selectedProperty->type == 700}
                     <div class="mb-3">
-                        <label for="defaultValue" class="form-label">Default Value</label>
-                        <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                    </div>
-                    <div class="mb-3 row">
-                        <div class="col">
-                            <input type="text" class="form-control text-truncate" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
-                        </div>
-                        <div class="col">
-                            <input type="text" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
-                        </div>
-                    </div>
-                    {if $selectedProperty->type == 700}
-                        <div class="mb-3">
-                            <label for="regex" class="form-label">Reg. Ex.</label>
-                            <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
-                        </div>
-                    {/if}
-                {elseif $selectedProperty->type == 1000}
-                    <div class="form-check">
-                        <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External Storage</label>
-                        <input class="form-check-input" type="checkbox" name="allowsExternalBinaryDataStorage" value="{$selectedProperty->allowsExternalBinaryDataStorage}" id="allowsExternalBinaryDataStorage" {$selectedProperty->allowsExternalBinaryDataStorage ? checked}>
-                    </div>
-                {elseif $selectedProperty->type == 1800}
-                    <div class="mb-3">
-                        <label for="valueTransformerName" class="form-label">Value Transformer</label>
-                        <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
-                    </div>
-                    <div class="mb-3">
-                        <label for="attributeValueClassName" class="form-label">Custom Class</label>
-                        <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
+                        <label for="regex" class="form-label">Reg. Ex.</label>
+                        <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
                     </div>
                 {/if}
-                <hr>
-                <div class="mt-3">
-                    <div class="form-label">
-                        Advanced
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After Deletion</label>
-                        <input class="form-check-input" type="checkbox" name="preservesValueInHistoryOnDeletion" value="{$selectedProperty->preservesValueInHistoryOnDeletion}" id="preservesValueInHistoryOnDeletion" {$selectedProperty->preservesValueInHistoryOnDeletion ? checked}>
-                    </div>
+            {elseif $selectedProperty->type == 1000}
+                <div class="form-check">
+                    <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External Storage</label>
+                    <input class="form-check-input" type="checkbox" name="allowsExternalBinaryDataStorage" value="{$selectedProperty->allowsExternalBinaryDataStorage}" id="allowsExternalBinaryDataStorage" {$selectedProperty->allowsExternalBinaryDataStorage ? checked}>
+                </div>
+            {elseif $selectedProperty->type == 1800}
+                <div class="mb-3">
+                    <label for="valueTransformerName" class="form-label">Value Transformer</label>
+                    <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="mb-3">
+                    <label for="attributeValueClassName" class="form-label">Custom Class</label>
+                    <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
                 </div>
             {/if}
             <hr>
-            <div class="mb-3 fs-5">
-                Versioning
+            <div class="mt-3">
+                <div class="form-label">
+                    Advanced
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After Deletion</label>
+                    <input class="form-check-input" type="checkbox" name="preservesValueInHistoryOnDeletion" value="{$selectedProperty->preservesValueInHistoryOnDeletion}" id="preservesValueInHistoryOnDeletion" {$selectedProperty->preservesValueInHistoryOnDeletion ? checked}>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="versionHashModifier" class="form-label">Hash Modifier</label>
-                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control text-truncate" value="{$selectedProperty->versionHashModifier}" autocomplete="off" spellcheck="false">
-            </div>
-            <div class="mb-3">
-                <label for="renamingIdentifier" class="form-label">Renaming ID</label>
-                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
-            </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
-        </form>
-    </div>
+        {/if}
+        <hr>
+        <div class="mb-3 fs-5">
+            Versioning
+        </div>
+        <div class="mb-3">
+            <label for="versionHashModifier" class="form-label">Hash Modifier</label>
+            <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control text-truncate" value="{$selectedProperty->versionHashModifier}" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="mb-3">
+            <label for="renamingIdentifier" class="form-label">Renaming ID</label>
+            <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
+        </div>
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+        <input class="d-none" type="submit">
+    </form>
 {/define}

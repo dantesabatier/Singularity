@@ -1,23 +1,21 @@
 {varType App\Model\FetchIndex $selectedIndex}
 {define fetchIndex}
-    <div>
-        <form action="/FetchIndex?objectID={$selectedIndex->objectID->referenceObject}" method="POST">
-            <div class="mb-3 fs-5">
-                Fetch Index
-            </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control text-truncate" value="{$selectedIndex->name}" autocomplete="off" required>
-            </div>
-            <div class="mb-3 fs-5">
-                Partial Index
-            </div>
-            <div class="mb-3">
-                <label for="partialIndexPredicateFormat" class="form-label">Predicate</label>
-                <input type="text" name="partialIndexPredicateFormat" id="partialIndexPredicateFormat" placeholder="Predicate" class="form-control text-truncate" value="{$selectedIndex->partialIndexPredicateFormat}" autocomplete="off">
-            </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
-        </form>
-    </div>
+    <form action="/FetchIndex?objectID={$selectedIndex->objectID->referenceObject}" method="POST">
+        <div class="mb-3 fs-5">
+            Fetch Index
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control text-truncate" value="{$selectedIndex->name}" autocomplete="off" required>
+        </div>
+        <div class="mb-3 fs-5">
+            Partial Index
+        </div>
+        <div class="mb-3">
+            <label for="partialIndexPredicateFormat" class="form-label">Predicate</label>
+            <input type="text" name="partialIndexPredicateFormat" id="partialIndexPredicateFormat" placeholder="Predicate" class="form-control text-truncate" value="{$selectedIndex->partialIndexPredicateFormat}" autocomplete="off">
+        </div>
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+        <input class="d-none" type="submit">
+    </form>
 {/define}
