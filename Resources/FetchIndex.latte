@@ -7,14 +7,14 @@
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control" value="{$selectedIndex->name}" autocomplete="off" required>
+                <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control text-truncate" value="{$selectedIndex->name}" autocomplete="off" required>
             </div>
             <div class="mb-3 fs-5">
                 Partial Index
             </div>
             <div class="mb-3">
                 <label for="partialIndexPredicateFormat" class="form-label">Predicate</label>
-                <input type="text" name="partialIndexPredicateFormat" id="partialIndexPredicateFormat" placeholder="Predicate" class="form-control" value="{$selectedIndex->partialIndexPredicateFormat}" autocomplete="off">
+                <input type="text" name="partialIndexPredicateFormat" id="partialIndexPredicateFormat" placeholder="Predicate" class="form-control text-truncate" value="{$selectedIndex->partialIndexPredicateFormat}" autocomplete="off">
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             <input class="d-none" type="submit">

@@ -10,7 +10,7 @@
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" id="name" placeholder="Entity Name" class="form-control" value="{$selectedEntity->name}" autocomplete="off" required>
+                <input type="text" name="name" id="name" placeholder="Entity Name" class="form-control text-truncate" value="{$selectedEntity->name}" autocomplete="off" spellcheck="false" required>
             </div>
             <div class="form-check form-check-inline">
                 <label class="form-check-label" for="isAbstract">Abstract Entity</label>
@@ -31,11 +31,11 @@
             </div>
             <div class="mb-3">
                 <label for="versionHashModifier" class="form-label">Hash Modifier</label>
-                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control" value="{$selectedEntity->versionHashModifier}" autocomplete="off" spellcheck="false">
+                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control text-truncate" value="{$selectedEntity->versionHashModifier}" autocomplete="off" spellcheck="false">
             </div>
             <div class="mb-3">
                 <label for="renamingIdentifier" class="form-label">Renaming ID</label>
-                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
+                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             <input class="d-none" type="submit">

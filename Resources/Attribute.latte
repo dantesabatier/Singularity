@@ -7,7 +7,7 @@
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control" value="{$selectedProperty->name}" autocomplete="off" required>
+                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
             </div>
             <div class="form-check form-check-inline">
                 <label class="form-check-label" for="isTransient">Transient</label>
@@ -23,7 +23,7 @@
             </div>
             <div n:if="$selectedProperty->isDerived" class="mb-3">
                 <label for="derivationExpressionFormat" class="form-label">Derivation</label>
-                <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Derived Expression" class="form-control" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false">
+                <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Derived Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false">
             </div>
             <hr>
             <div class="mt-3 mb-3">
@@ -49,20 +49,20 @@
                 {elseif $selectedProperty->type >= 100 && $selectedProperty->type < 800}
                     <div class="mb-3">
                         <label for="defaultValue" class="form-label">Default Value</label>
-                        <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control" value="{$selectedProperty->defaultValue}" autocomplete="off">
+                        <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     </div>
                     <div class="mb-3 row">
                         <div class="col">
-                            <input type="text" class="form-control" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
+                            <input type="text" class="form-control text-truncate" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
                         </div>
                         <div class="col">
-                            <input type="text" class="form-control" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
+                            <input type="text" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
                         </div>
                     </div>
                     {if $selectedProperty->type == 700}
                         <div class="mb-3">
                             <label for="regex" class="form-label">Reg. Ex.</label>
-                            <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control" value="{$selectedProperty->regex}" autocomplete="off">
+                            <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
                         </div>
                     {/if}
                 {elseif $selectedProperty->type == 1000}
@@ -73,11 +73,11 @@
                 {elseif $selectedProperty->type == 1800}
                     <div class="mb-3">
                         <label for="valueTransformerName" class="form-label">Value Transformer</label>
-                        <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer" class="form-control" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
+                        <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
                     </div>
                     <div class="mb-3">
                         <label for="attributeValueClassName" class="form-label">Custom Class</label>
-                        <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
+                        <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
                     </div>
                 {/if}
                 <hr>
@@ -97,11 +97,11 @@
             </div>
             <div class="mb-3">
                 <label for="versionHashModifier" class="form-label">Hash Modifier</label>
-                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control" value="{$selectedProperty->versionHashModifier}" autocomplete="off" spellcheck="false">
+                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control text-truncate" value="{$selectedProperty->versionHashModifier}" autocomplete="off" spellcheck="false">
             </div>
             <div class="mb-3">
                 <label for="renamingIdentifier" class="form-label">Renaming ID</label>
-                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
+                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             <input class="d-none" type="submit">
