@@ -16,7 +16,7 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">File</a>
                         <ul class="dropdown-menu">
                             <li>
-                                <form class="d-flex" action="/Save" method="POST">
+                                <form action="/Save" method="POST">
                                     <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
                                     <button class="dropdown-item" type="submit">
                                         Save

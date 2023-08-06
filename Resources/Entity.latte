@@ -20,7 +20,7 @@
                 <label for="superentityID" class="form-label">Parent Entity</label>
                 <select name="superentityID" id="superentityID" class="form-select" autosave>
                     <option value="">No Parent Entity</option>
-                    <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}" {$entity->name === $selectedEntity->superentity?->name ? selected} {$entity->objectID->referenceObject == $selectedEntity->objectID->referenceObject ? disabled}>
+                    <option n:foreach="$allEntities->filter(fn(App\Model\Entity $entity): bool => !$entity->isEqual($selectedEntity)) as $entity" value="{$entity->objectID->referenceObject}" {$entity->name === $selectedEntity->superentity?->name ? selected} {$entity->objectID->referenceObject == $selectedEntity->objectID->referenceObject ? disabled}>
                         {$entity->name}
                     </option>
                 </select>
@@ -38,7 +38,7 @@
                 <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input type="submit"  style="display: none;">
+            <input type="submit" style="display: none;">
         </form>
         <hr>
         <label for="uniquenessConstraints" class="form-label">Constraints</label>

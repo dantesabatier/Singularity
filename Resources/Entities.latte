@@ -13,7 +13,7 @@
                     </button>
                 {/if}
                 <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
-                    {$entity->name}
+                        {$entity->name}
                 </span>
                 {if $entity->indexesCount}
                     <ul class="flex-column w-100">
