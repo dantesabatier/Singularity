@@ -10,14 +10,14 @@
 </head>
 <body onload="init()">
 {block content}{/block}
-<div class="modal fade" id="removeModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeModal" aria-hidden="true">
+<div class="modal fade" id="removeItem" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItem" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST">
+            <form id="removeItem" method="POST">
                 <div class="modal-header">
                 </div>
                 <div class="modal-body">
-                    <h5 class="modal-title mb-3" id="removeModal"></h5>
+                    <h5 class="modal-title mb-3" id="removeItem">Remove</h5>
                     <div class="modal-message">This action cannot bet undone.</div>
                 </div>
                 <div class="modal-footer border-0">
@@ -62,19 +62,19 @@
     doc.open()
     doc.write(data)
     doc.close()
+    document.querySelectorAll("form").forEach(e => e.removeEventListener("submit", () => {
+    }))
     const e2 = doc.getElementById("content")
     const e1 = document.getElementById("content")
     e1.innerHTML = e2.innerHTML
     load()
-    return data
   }
 
   async function push(url) {
-    const data = await replace(url)
+    await replace(url)
     if (window.location !== url) {
       window.history.pushState({}, "", url)
     }
-    return data
   }
 
   async function submit(form) {
@@ -83,7 +83,7 @@
     headers["Content-Type"] = "application/json; charset=utf-8"
     let elements = Array.from(form.elements)
     const method = elements.find(e => e.name === "X-Http-Method-Override")?.value ?? "POST"
-    const filtered = elements.filter(e => e.type !== "submit" && e.name !== "X-Http-Method-Override")
+    const filtered = elements.filter(e => !!e.name && e.type !== "submit" && e.name !== "X-Http-Method-Override")
     const body = JSON.stringify(filtered.reduce((result, e) => {
       result[e.name] = (() => {
         let value = e.type === "checkbox" ? e.checked : e.value
@@ -99,13 +99,14 @@
         return value
       })()
       return result
-    }, {}))
+    }, {}), null, 4)
     const action = form.action
-    const response = await fetch(action, {
+    await fetch(action, {
       method: method,
       headers: headers,
       body: body
     })
+    form.reset()
     let url = new URL(window.location)
     if (method === "DELETE") {
       let keys = []
@@ -128,14 +129,12 @@
       url.search = keys.map(k => k + "=" + url.searchParams.get(k)).join("&")
     }
     await push(url.href)
-    form.reset()
-    return response
   }
 
   async function remove(sender, item) {
     const action = sender.getAttribute("data-bs-action-name")
     const endpoint = action.split(" ").join("")
-    const element = document.getElementById("removeModal")
+    const element = document.getElementById("removeItem")
     const title = element.querySelector(".modal-title")
     title.textContent = "Remove " + action.toLowerCase() + " \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?"
     const form = element.querySelector(".modal-content form")
@@ -143,7 +142,7 @@
       objectID: item.objectID
     })
     const modal = new bootstrap.Modal(element, {})
-    modal.show()
+    modal.show(undefined)
   }
 
   function showPreferences() {
@@ -158,7 +157,6 @@
 
   function load() {
     layout()
-    window.addEventListener("resize", layout)
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         try {
@@ -174,6 +172,8 @@
         } catch (error) {
           console.error(error)
         }
+      }, {
+        once: true
       })
     })
     document.querySelectorAll("tr[data-href]").forEach(e => {
@@ -191,6 +191,8 @@
         } catch (error) {
           console.error(error)
         }
+      }, {
+        once: true
       })
     })
     document.querySelectorAll("input[type=checkbox]").forEach(e => {
@@ -200,6 +202,8 @@
         } catch (error) {
           console.error(error)
         }
+      }, {
+        once: true
       })
     })
     document.querySelectorAll("select[autosave]").forEach(e => {
@@ -209,34 +213,52 @@
         } catch (error) {
           console.error(error)
         }
+      }, {
+        once: true
       })
     })
-    const addModal = document.getElementById("addModal")
-    addModal?.addEventListener("show.bs.modal", event => {
+    document.querySelectorAll("form").forEach(e => {
+      if (e.id === "removeItem") {
+        return
+      }
+      e.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        try {
+          await submit(e)
+        } catch (error) {
+          console.error(error)
+        }
+      }, {
+        once: true
+      })
+    })
+    const addItem = document.getElementById("addItem")
+    addItem.addEventListener("show.bs.modal", (event) => {
       const button = event.relatedTarget
       const action = button.getAttribute("data-bs-action-name")
       const endpoint = action.split(" ").join("")
-      const e = addModal.querySelector(".modal-title")
+      const e = addItem.querySelector(".modal-title")
       e.textContent = "Add " + action
-      const form = addModal.querySelector(".modal-content form")
+      const form = addItem.querySelector(".modal-content form")
       form.action = url(endpoint)
+    }, {
+      once: true
     })
   }
 
   function init() {
-    load()
-    document.querySelectorAll("form").forEach(form => {
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        if (!!event.submitter) {
-          try {
-            await submit(form)
-          } catch (error) {
-            console.error(error)
-          }
-        }
-      })
+    window.addEventListener("resize", layout)
+    const removeItem = document.getElementById("removeItem")
+    const form = removeItem.querySelector(".modal-content form")
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault()
+      try {
+        await submit(form)
+      } catch (error) {
+        console.error(error)
+      }
     })
+    load()
   }
 </script>
 </body>
