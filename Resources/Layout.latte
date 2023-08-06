@@ -62,9 +62,10 @@
     doc.open()
     doc.write(data)
     doc.close()
-    document.querySelectorAll("form").forEach(e => e.removeEventListener("submit", () => {
-    }))
     const e2 = doc.getElementById("content")
+    if (!!!e2) {
+      return
+    }
     const e1 = document.getElementById("content")
     e1.innerHTML = e2.innerHTML
     load()

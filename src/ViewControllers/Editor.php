@@ -38,7 +38,7 @@ use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
-#[Endpoint()]
+#[Endpoint]
 class Editor extends ViewController
 {
     #[Outlet]
