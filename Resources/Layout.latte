@@ -108,18 +108,22 @@
     })
     let url = new URL(window.location)
     if (method === "DELETE") {
-      let keys = ["project"]
+      let keys = []
       const destinationURL = new URL(action)
       switch (destinationURL.pathname.replace("/", "")) {
+        case "Entity":
+          keys.push("project")
+          break
         case "Attribute":
         case "Relationship":
         case "FetchedProperty":
         case "FetchIndex":
         case "UniquenessConstraint":
-          keys.push("entity")
+          keys.push(...["project", "entity"])
           break
         case "FetchIndexElement":
-          keys.push(...["entity", "index"])
+          keys.push(...["project", "entity", "index"])
+          break
       }
       url.search = keys.map(k => k + "=" + url.searchParams.get(k)).join("&")
     }
