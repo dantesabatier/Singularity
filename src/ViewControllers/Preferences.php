@@ -8,8 +8,8 @@ use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
-use const App\CompanyNameKey;
 use const App\AutomaticallyDeleteProjectFolders;
+use const App\CompanyNameKey;
 
 #[Endpoint]
 class Preferences extends ViewController

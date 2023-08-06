@@ -158,6 +158,7 @@
 
   function load() {
     layout()
+    const once = window.location.href.includes("Editor")
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         try {
@@ -174,7 +175,7 @@
           console.error(error)
         }
       }, {
-        once: true
+        once: once
       })
     })
     document.querySelectorAll("tr[data-href]").forEach(e => {
@@ -193,7 +194,7 @@
           console.error(error)
         }
       }, {
-        once: true
+        once: once
       })
     })
     document.querySelectorAll("input[type=checkbox]").forEach(e => {
@@ -204,7 +205,7 @@
           console.error(error)
         }
       }, {
-        once: true
+        once: once
       })
     })
     document.querySelectorAll("select[autosave]").forEach(e => {
@@ -215,7 +216,7 @@
           console.error(error)
         }
       }, {
-        once: true
+        once: once
       })
     })
     document.querySelectorAll("form").forEach(e => {
@@ -230,7 +231,7 @@
           console.error(error)
         }
       }, {
-        once: true
+        once: once
       })
     })
     const addItem = document.getElementById("addItem")
