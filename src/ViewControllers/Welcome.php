@@ -9,9 +9,9 @@ use Exception;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Error;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
-use Sabatier\Foundation\Networking\HTTPURLResponse;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\SortDescriptor;
@@ -22,9 +22,7 @@ use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
-use Sabatier\Service\View;
 use Sabatier\Service\ViewController;
-use Throwable;
 use const App\CompanyNameKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDevelopmentRegionKey;
@@ -56,12 +54,10 @@ class Welcome extends ViewController
     private function generateDelegateClass(string $class, string $namespace): string
     {
         $uses = new ArrayClass([
-            "use " . HTTPURLResponse::class . ";",
+            "use " . Error::class . ";",
             "use " . ObjectClass::class . ";",
             "use " . Application::class . ";",
             "use " . ApplicationDelegate::class . ";",
-            "use " . View::class . ";",
-            "use " . Throwable::class . ";",
         ]);
         $content = "<?php\n";
         $content .= "\n";
@@ -82,9 +78,13 @@ class Welcome extends ViewController
         $content .= "    {\n";
         $content .= "    }\n";
         $content .= "\n";
-        $content .= "    public function applicationWillFail(Application \$application, HTTPURLResponse \$response, Throwable \$throwable): View|string|null\n";
+        $content .= "    public function applicationDidFinishLaunching(Application \$application): void\n";
         $content .= "    {\n";
-        $content .= "        return null;\n";
+        $content .= "    }\n";
+        $content .= "\n";
+        $content .= "    public function applicationWillPresentError(Application \$application, Error \$error): Error\n";
+        $content .= "    {\n";
+        $content .= "        return \$error;\n";
         $content .= "    }\n";
         $content .= "\n";
         $content .= "    public function applicationWillTerminate(Application \$application): void\n";
