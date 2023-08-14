@@ -15,7 +15,7 @@
 <div class="modal fade" id="removeItem" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItem" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="removeItem" method="POST">
+            <form id="removeItem" class="alert" method="POST">
                 <div class="modal-header">
                 </div>
                 <div class="modal-body">
@@ -221,10 +221,7 @@
         once: once
       })
     })
-    document.querySelectorAll("form").forEach(e => {
-      if (e.id === "removeItem") {
-        return
-      }
+    document.querySelectorAll("form:not(.alert)").forEach(e => {
       e.addEventListener("submit", async (event) => {
         event.preventDefault()
         try {
@@ -250,8 +247,7 @@
 
   function init() {
     window.addEventListener("resize", layout)
-    const removeItem = document.getElementById("removeItem")
-    const form = removeItem.querySelector(".modal-content form")
+    const form = document.querySelector("form[class=alert]")
     form.addEventListener("submit", async (event) => {
       event.preventDefault()
       try {
