@@ -12,14 +12,14 @@
 </head>
 <body onload="init()">
 {block content}{/block}
-<div class="modal fade" id="removeItem" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItem" aria-hidden="true">
+<div class="modal fade" id="removeItem" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItemLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="removeItem" class="alert" method="POST">
                 <div class="modal-header">
                 </div>
                 <div class="modal-body">
-                    <h5 class="modal-title mb-3" id="removeItem">Remove</h5>
+                    <h5 class="modal-title mb-3" id="removeItemLabel">Remove</h5>
                     <div class="modal-message">This action cannot bet undone.</div>
                 </div>
                 <div class="modal-footer border-0">
@@ -234,7 +234,7 @@
       })
     })
     const addItem = document.getElementById("addItem")
-    addItem?.addEventListener("show.bs.modal", (event) => {
+    addItem.addEventListener("show.bs.modal", (event) => {
       const button = event.relatedTarget
       const action = button.getAttribute("data-bs-action-name")
       const endpoint = action.split(" ").join("")
@@ -247,7 +247,8 @@
 
   function init() {
     window.addEventListener("resize", layout)
-    const form = document.querySelector("form[class=alert]")
+    const removeItem = document.getElementById("removeItem")
+    const form = removeItem.querySelector(".modal-content form")
     form.addEventListener("submit", async (event) => {
       event.preventDefault()
       try {
