@@ -90,7 +90,7 @@ class Welcome extends ViewController
         $content .= "    public function applicationWillTerminate(Application \$application): void\n";
         $content .= "    {\n";
         $content .= "    }\n";
-        $content . "}\n";
+        $content .= "}\n";
         return $content;
     }
 
