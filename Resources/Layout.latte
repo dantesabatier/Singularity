@@ -12,10 +12,10 @@
 </head>
 <body onload="init()">
 {block content}{/block}
-<div class="modal fade" id="removeItem" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItemLabel" aria-hidden="true">
+<div class="modal fade" id="alert" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItemLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="removeItem" class="alert" method="POST">
+            <form id="alert" class="alert" method="POST">
                 <div class="modal-header">
                 </div>
                 <div class="modal-body">
@@ -137,7 +137,7 @@
   async function remove(sender, item) {
     const action = sender.getAttribute("data-bs-action-name")
     const endpoint = action.split(" ").join("")
-    const element = document.getElementById("removeItem")
+    const element = document.getElementById("alert")
     const title = element.querySelector(".modal-title")
     title.textContent = "Remove " + action.toLowerCase() + " \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?"
     const form = element.querySelector(".modal-content form")
@@ -247,8 +247,8 @@
 
   function init() {
     window.addEventListener("resize", layout)
-    const removeItem = document.getElementById("removeItem")
-    const form = removeItem.querySelector(".modal-content form")
+    const alert = document.getElementById("alert")
+    const form = alert.querySelector(".modal-content form")
     form.addEventListener("submit", async (event) => {
       event.preventDefault()
       try {
