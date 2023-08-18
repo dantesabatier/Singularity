@@ -51,7 +51,7 @@ th {
 
 .nav-toggle.active {
     font-weight: 600;
-    color: #0d6efd;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.16);
 }
 
 .selected {

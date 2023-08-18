@@ -47,6 +47,7 @@ class LatteRenderer extends Renderer
                 if ($property = $e->property) {
                     return $img($property);
                 }
+                return "T";
             }
             return substring_to_index($e::className(), 1);
         };
@@ -55,7 +56,7 @@ class LatteRenderer extends Renderer
             $this->engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
         } catch (Exception) {
         }
-        $this->engine->setLoader(new FileLoader($bundle->resourceURL?->path));
+        $this->engine->setLoader(new FileLoader($bundle->resourceURL?->appendingPathComponent("Views")?->path));
     }
 
     public function render(string $name, object|array $context): string

@@ -13,7 +13,7 @@
         <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
             {var string $img = img($element)}
             <td>
-                <img src="/Resources/{$img}@1x.png" srcset="/Resources/{$img}@2x.png 2x, /Resources/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
+                <img src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
                 {$element->propertyName}
             </td>
         </tr>

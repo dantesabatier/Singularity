@@ -16,7 +16,7 @@
         <tr n:foreach="$properties as $property" id="property-{$property->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$property->objectID->referenceObject}" n:class="$property->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
             {var string $img = img($property)}
             <td>
-                <img src="/Resources/{$img}@1x.png" srcset="/Resources/{$img}@2x.png 2x, /Resources/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
+                <img src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
                 {$property->name}
             </td>
         </tr>
