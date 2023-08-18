@@ -34,20 +34,23 @@ class LatteRenderer extends Renderer
         $this->engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
         $this->engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
         $this->engine->addFilter("json", fn(mixed $value): string => json_encode($value));
-        $img = function (Property|FetchIndexElement $e) use (&$img): string {
+        $t = function (AttributeType $type): string {
+            return match ($type) {
+                AttributeType::integer16, AttributeType::integer32, AttributeType::integer64, AttributeType::decimal, AttributeType::double, AttributeType::float => "N",
+                AttributeType::uuid, AttributeType::undefined => $type->name,
+                default => strtoupper(substring_to_index($type->name, 1))
+            };
+        };
+        $img = function (Property|FetchIndexElement $e) use (&$img, &$t): string {
             if ($e instanceof Attribute) {
-                $type = AttributeType::from($e->type);
-                return match ($type) {
-                    AttributeType::integer16, AttributeType::integer32, AttributeType::integer64, AttributeType::decimal, AttributeType::double, AttributeType::float => "N",
-                    default => strtoupper(substring_to_index($type->name, 1))
-                };
+                return $t(AttributeType::from($e->type));
             } elseif ($e instanceof Relationship) {
                 return $e->isToMany ? "M" : "O";
             } elseif ($e instanceof FetchIndexElement) {
                 if ($property = $e->property) {
                     return $img($property);
                 }
-                return "T";
+                return $t(AttributeType::undefined);
             }
             return substring_to_index($e::className(), 1);
         };
