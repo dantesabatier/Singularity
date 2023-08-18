@@ -12,8 +12,7 @@
                     <button class="btn btn-toggle bg-transparent ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
                     </button>
                 {/if}
-                <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
-                        {$entity->name}
+                <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">{$entity->name}
                 </span>
                 {if $entity->indexesCount}
                     <ul class="flex-column w-100">
