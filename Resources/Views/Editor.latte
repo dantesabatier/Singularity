@@ -12,10 +12,10 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <a href="/" class="btn btn-dark"><i class="bi bi-backspace-fill"></i></a>
+                    <a href="/" class="btn border-0 bg-transparent p-2">Back</a>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-gear-fill"></i>
+                        <button type="button" class="btn border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-plus-lg"></i>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
@@ -83,7 +83,7 @@
                 </div>
                 <form class="d-flex" action="/Save" method="POST">
                     <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                    <button class="btn btn-dark" type="submit">
+                    <button class="btn border-0 bg-transparent p-2" type="submit">
                         Save
                     </button>
                 </form>
