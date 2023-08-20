@@ -11,11 +11,11 @@
         </div>
         <div class="form-check form-check-inline">
             <label class="form-check-label" for="isTransient">Transient</label>
-            <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient|json}" id="isTransient" {$selectedProperty->isTransient ? checked}>
+            <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked}>
         </div>
         <div class="form-check form-check-inline">
             <label class="form-check-label" for="isOptional">Optional</label>
-            <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional|json}" id="isOptional" {$selectedProperty->isOptional ? checked}>
+            <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
         </div>
         <hr>
         <div class="mt-3 mb-3">
@@ -52,11 +52,11 @@
         <div class="mb-3">
             <div class="form-check{$selectedProperty->isToMany ? ' form-check-inline'}">
                 <label class="form-check-label" for="isToMany">To Many</label>
-                <input class="form-check-input" type="checkbox" name="isToMany" value="{$selectedProperty->isToMany|json}" id="isToMany" {$selectedProperty->isToMany ? checked}>
+                <input class="form-check-input" type="checkbox" name="isToMany" value="{$selectedProperty->isToMany}" id="isToMany" {$selectedProperty->isToMany ? checked}>
             </div>
             <div n:if="$selectedProperty->isToMany" class="form-check form-check-inline">
                 <label class="form-check-label" for="isOrdered">Ordered</label>
-                <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered|json}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
+                <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
             </div>
         </div>
         <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
