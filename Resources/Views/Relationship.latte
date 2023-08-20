@@ -1,7 +1,7 @@
 {varType App\Model\Relationship $selectedProperty}
 {varType Sabatier\Foundation\ArrayClass $allEntities}
 {define relationship}
-    <form action="/Relationship?objectID={$selectedProperty->objectID->referenceObject}" method="POST">
+    <form action="/Relationship" method="POST">
         <div class="my-2 fs-6 fw-bold text-shadow">
             Relationship
         </div>
@@ -31,7 +31,7 @@
             <label for="lazyInverseRelationshipName" class="form-label">Inverse</label>
             <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select" autosave>
                 <option value="">No Inverse Relationship</option>
-                {var $destinationEntity = $selectedProperty->destinationEntity}
+                {var App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
                         {if $destinationEntity}
                     <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>
                         {$relationship->name}
@@ -40,7 +40,7 @@
             </select>
         </div>
         <div class="mb-3">
-            {var $items = [0 => 'No Action', 1 => 'Nullify', 2 => 'Cascade', 3 => 'Deny']}
+            {var array $items = [0 => 'No Action', 1 => 'Nullify', 2 => 'Cascade', 3 => 'Deny']}
             <label for="deleteRule" class="form-label">Delete Rule</label>
             <select name="deleteRule" id="deleteRule" class="form-select" autosave>
                 <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->deleteRule ? selected}>

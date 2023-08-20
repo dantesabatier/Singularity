@@ -1,7 +1,7 @@
 {varType App\Model\Entity $selectedEntity}
 {varType App\Model\FetchIndexElement $selectedIndexElement}
 {define fetchIndexElement}
-    <form action="/FetchIndexElement?objectID={$selectedIndexElement->objectID->referenceObject}" method="POST">
+    <form action="/FetchIndexElement" method="POST">
         <div class="my-2 fs-6 fw-bold text-shadow">
             Fetch Index Element
         </div>
@@ -14,7 +14,7 @@
             </select>
         </div>
         <div class="mt-3 mb-3">
-            {var $items = [2 => 'Default', 0 => 'Binary', 1 => 'R-Tree']}
+            {var array $items = [2 => 'Default', 0 => 'Binary', 1 => 'R-Tree']}
             <label for="collationType" class="form-label">Type</label>
             <select name="collationType" id="collationType" class="form-select" autosave>
                 <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedIndexElement->collationType ? selected}>

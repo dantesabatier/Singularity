@@ -59,6 +59,9 @@
   }
 
   async function replace(url) {
+    if (window.location.href === url.href) {
+      return false
+    }
     const data = await (await fetch(url)).text()
     const doc = document.implementation.createHTMLDocument()
     doc.open()
@@ -66,18 +69,20 @@
     doc.close()
     const e2 = doc.getElementById("content")
     if (!!!e2) {
-      return
+      return false
     }
     const e1 = document.getElementById("content")
     e1.innerHTML = e2.innerHTML
     load()
+    return true
   }
 
   async function push(url) {
-    await replace(url)
-    if (window.location !== url) {
-      window.history.pushState({}, "", url)
+    if (!await replace(url)) {
+      return false
     }
+    window.history.pushState({}, "", url)
+    return true
   }
 
   async function submit(form) {
@@ -131,7 +136,7 @@
       }
       url.search = keys.map(k => k + "=" + url.searchParams.get(k)).join("&")
     }
-    await push(url.href)
+    await push(url)
   }
 
   async function remove(sender, item) {
@@ -164,14 +169,15 @@
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         try {
-          await push(e.dataset.href)
-          const span = document.getElementById(e.id)
-          if (span instanceof Element) {
-            span.scrollIntoView({
-              behavior: "instant",
-              block: "end",
-              inline: "nearest"
-            })
+          if (await push(new URL(window.location.origin + e.dataset.href))) {
+            const span = document.getElementById(e.id)
+            if (span instanceof Element) {
+              span.scrollIntoView({
+                behavior: "instant",
+                block: "end",
+                inline: "nearest"
+              })
+            }
           }
         } catch (error) {
           console.error(error)
@@ -183,14 +189,15 @@
     document.querySelectorAll("tr[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         try {
-          await push(e.dataset.href)
-          const tr = document.getElementById(e.id)
-          if (tr instanceof Element) {
-            tr.scrollIntoView({
-              behavior: "instant",
-              block: "end",
-              inline: "nearest"
-            })
+          if (await push(new URL(window.location.origin + e.dataset.href))) {
+            const tr = document.getElementById(e.id)
+            if (tr instanceof Element) {
+              tr.scrollIntoView({
+                behavior: "instant",
+                block: "end",
+                inline: "nearest"
+              })
+            }
           }
         } catch (error) {
           console.error(error)

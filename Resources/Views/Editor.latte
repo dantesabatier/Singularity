@@ -6,103 +6,88 @@
 {block title}{$project?->name} - {$title}{/block}
 {block content}
     <div id="content">
-        <nav class="navbar navbar-expand-lg fixed-top border-bottom">
+        <nav class="navbar navbar-expand-sm fixed-top border-bottom">
             <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">File</a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <form action="/Save" method="POST">
-                                        <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                                        <button class="dropdown-item" type="submit">
-                                            Save
-                                        </button>
-                                    </form>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/">Close</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Editor</a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addEntity">
-                                        Add Entity
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <a href="/" class="btn btn-dark"><i class="bi bi-backspace-fill"></i></a>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-gear-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addEntity">
+                                    Add Entity
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" disabled>
+                                    Add Fetch Request
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" disabled>
+                                    Add Configuration
+                                </button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Attribute" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    Add Attribute
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetched Property" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    Add Fetched Property
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Relationship" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    Add Relationship
+                                </button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetch Index" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty() ? disabled}>
+                                    Add Fetch Index
+                                </button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="/Subclass" method="POST">
+                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
+                                    <button class="dropdown-item" type="submit">
+                                        Create ManagedObject Subclass...
                                     </button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" disabled>
-                                        Add Fetch Request
+                                </form>
+                            </li>
+                            <li>
+                                <form action="/Import" method="POST">
+                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
+                                    <button class="dropdown-item" type="submit">
+                                        Import...
                                     </button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" disabled>
-                                        Add Configuration
-                                    </button>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Attribute" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                        Add Attribute
-                                    </button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetched Property" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                        Add Fetched Property
-                                    </button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Relationship" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                        Add Relationship
-                                    </button>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetch Index" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty() ? disabled}>
-                                        Add Fetch Index
-                                    </button>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <form action="/Subclass" method="POST">
-                                        <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                                        <button class="dropdown-item" type="submit">
-                                            Create ManagedObject Subclass...
-                                        </button>
-                                    </form>
-                                </li>
-                                <li>
-                                    <form action="/Import" method="POST">
-                                        <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                                        <button class="dropdown-item" type="submit">
-                                            Import...
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <span class="navbar-brand mb-0 h1">{$project?->name}</span>
-            </div>
+                <form class="d-flex" action="/Save" method="POST">
+                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
+                    <button class="btn btn-dark" type="submit">
+                        Save
+                    </button>
+                </form>
+            </div> 
         </nav>
         <div class="container-fluid d-flex flex-column user-select-none">
             <div class="row flex-grow-1" style="padding-top: 56px;">

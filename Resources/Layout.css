@@ -43,6 +43,15 @@ th {
     transform: rotate(90deg);
 }
 
+.btn-dark {
+    background-color: rgba(255, 255, 255, 0.33);
+}
+
+.btn-dark.active {
+    color: black;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
 .nav-toggle {
     display: inline-flex;
     cursor: pointer;
