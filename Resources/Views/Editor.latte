@@ -12,10 +12,16 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <a href="/" class="btn border-0 bg-transparent p-2">Back</a>
+                    <a href="/" class="btn border-0 bg-transparent p-2">
+                        <span class="material-icons-outlined">
+                            arrow_back_ios
+                        </span>
+                    </a>
                     <div class="btn-group">
                         <button type="button" class="btn border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-plus-lg"></i>
+                            <span class="material-icons-outlined">
+                                add
+                            </span>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
@@ -84,13 +90,15 @@
                 <form class="d-flex" action="/Save" method="POST">
                     <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
                     <button class="btn border-0 bg-transparent p-2" type="submit">
-                        Save
+                        <span class="material-icons-outlined">
+                            save
+                        </span>
                     </button>
                 </form>
-            </div> 
+            </div>
         </nav>
         <div class="container-fluid d-flex flex-column user-select-none">
-            <div class="row flex-grow-1" style="padding-top: 56px;">
+            <div class="row flex-grow-1" style="padding-top: 64px;">
                 <div class="col-3 border-end overflow-auto px-0" style="height: 85vh;">
                     {include sidebar from 'Sidebar.latte'}
                 </div>
