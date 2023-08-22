@@ -5,7 +5,7 @@
 {define entities, $entities, $flag}
     <ul class="{!$flag ? 'flex-column w-100 ps-0' : 'flex-column w-100'}">
         {foreach $entities as $entity}
-            <li class="{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? 'selected'}">
+            <li class="text-truncate{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
                 {if !$entity->subentitiesCount}
                     <span class="space"></span>
                 {else}
@@ -18,7 +18,7 @@
                 {if $entity->indexesCount}
                     <ul class="flex-column w-100">
                         {foreach $entity->indexes as $index}
-                            <li class="{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? 'selected'}">
+                            <li class="text-truncate{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' selected'}">
                                 <span class="space"></span>
                                 <img src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="">
                                 <span id="index-{$index->objectID->referenceObject}" class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">{$index->name}</span>
