@@ -211,7 +211,8 @@
         once: once
       })
     })
-    document.querySelectorAll("select[autosave]").forEach(e => {
+    document.querySelectorAll("select[data-autosave=true]").forEach(e => {
+      console.log(e)
       e.addEventListener("change", async () => {
         try {
           await submit(e.form)
