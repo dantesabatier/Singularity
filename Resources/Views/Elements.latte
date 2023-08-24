@@ -49,9 +49,7 @@
                         </div>
                         <label for="propertyName" class="form-label">Property</label>
                         <select name="propertyName" id="propertyName" class="form-select" required>
-                            <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}">
-                                {$attribute->name}
-                            </option>
+                            <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}">{$attribute->name}</option>
                         </select>
                     </div>
                     <div class="modal-footer border-0">

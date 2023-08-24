@@ -37,12 +37,10 @@
         {if !$selectedProperty->isDerived}
             {if $selectedProperty->type === 800}
                 <div class="mt-3 mb-3">
-                    {var $items = ["false" => 'False', "true" => 'True']}
+                    {var array $items = ["false" => 'False', "true" => 'True']}
                     <label for="defaultValue" class="form-label">Default Value</label>
                     <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
-                        <option n:foreach="$items as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>
-                            {$value}
-                        </option>
+                        <option n:foreach="$items as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
                     </select>
                 </div>
             {elseif $selectedProperty->type >= 100 && $selectedProperty->type < 800}

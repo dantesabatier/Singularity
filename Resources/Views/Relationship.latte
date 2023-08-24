@@ -22,9 +22,7 @@
             <label for="lazyDestinationEntityName" class="form-label">Destination</label>
             <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select" data-autosave="true">
                 <option value="">No Destination Entity</option>
-                <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->lazyDestinationEntityName ? selected}>
-                    {$entity->name}
-                </option>
+                <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->lazyDestinationEntityName ? selected}>{$entity->name}</option>
             </select>
         </div>
         <div class="mb-3">
@@ -32,10 +30,8 @@
             <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select" data-autosave="true">
                 <option value="">No Inverse Relationship</option>
                 {var App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
-                        {if $destinationEntity}
-                    <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>
-                        {$relationship->name}
-                    </option>
+                {if $destinationEntity}
+                    <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
                 {/if}
             </select>
         </div>
@@ -43,9 +39,7 @@
             {var array $items = [0 => 'No Action', 1 => 'Nullify', 2 => 'Cascade', 3 => 'Deny']}
             <label for="deleteRule" class="form-label">Delete Rule</label>
             <select name="deleteRule" id="deleteRule" class="form-select" data-autosave="true">
-                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->deleteRule ? selected}>
-                    {$value}
-                </option>
+                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->deleteRule ? selected}>{$value}</option>
             </select>
         </div>
         <hr>

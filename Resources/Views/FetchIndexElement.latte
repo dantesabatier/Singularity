@@ -8,18 +8,14 @@
         <div class="mt-3 mb-3">
             <label for="propertyName" class="form-label">Property</label>
             <select name="propertyName" id="propertyName" class="form-select" data-autosave="true" required>
-                <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}" {$attribute->name === $selectedIndexElement->propertyName ? selected}>
-                    {$attribute->name}
-                </option>
+                <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}" {$attribute->name === $selectedIndexElement->propertyName ? selected}>{$attribute->name}</option>
             </select>
         </div>
         <div class="mt-3 mb-3">
             {var array $items = [2 => 'Default', 0 => 'Binary', 1 => 'R-Tree']}
             <label for="collationType" class="form-label">Type</label>
             <select name="collationType" id="collationType" class="form-select" data-autosave="true">
-                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedIndexElement->collationType ? selected}>
-                    {$value}
-                </option>
+                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedIndexElement->collationType ? selected}>{$value}</option>
             </select>
         </div>
         <div class="form-check mb-3">
