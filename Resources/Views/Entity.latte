@@ -37,6 +37,7 @@
                 <label for="renamingIdentifier" class="form-label">Renaming ID</label>
                 <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
             </div>
+            <input type="hidden" name="objectID" value="{$selectedEntity->objectID->referenceObject}">
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             <input class="d-none" type="submit">
         </form>
