@@ -66,7 +66,8 @@
                 {/if}
             {elseif $selectedProperty->type == 1000}
                 <div class="form-check">
-                    <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External Storage</label>
+                    <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External
+                        Storage</label>
                     <input class="form-check-input" type="checkbox" name="allowsExternalBinaryDataStorage" value="{$selectedProperty->allowsExternalBinaryDataStorage}" id="allowsExternalBinaryDataStorage" {$selectedProperty->allowsExternalBinaryDataStorage ? checked}>
                 </div>
             {elseif $selectedProperty->type == 1800}
@@ -85,7 +86,8 @@
                     Advanced
                 </div>
                 <div class="form-check">
-                    <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After Deletion</label>
+                    <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After
+                        Deletion</label>
                     <input class="form-check-input" type="checkbox" name="preservesValueInHistoryOnDeletion" value="{$selectedProperty->preservesValueInHistoryOnDeletion}" id="preservesValueInHistoryOnDeletion" {$selectedProperty->preservesValueInHistoryOnDeletion ? checked}>
                 </div>
             </div>
