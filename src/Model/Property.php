@@ -29,9 +29,8 @@ abstract class Property extends ManagedObject
         if ($isTransient = $this->isTransient) {
             $dictionary["isTransient"] = $isTransient;
         }
-        if ($versionHashModifier = $this->versionHashModifier) {
-            $dictionary["versionHashModifier"] = $versionHashModifier;
-        }
+        $dictionary["versionHashModifier"] = $this->versionHashModifier;
+        $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
         $dictionary["minValue"] = $this->minValue;
         $dictionary["maxValue"] = $this->maxValue;
         if ($regex = $this->regex) {
