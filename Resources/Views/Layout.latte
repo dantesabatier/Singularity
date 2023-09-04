@@ -97,7 +97,7 @@
           return false
         } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
           return parseFloat(value)
-        } else if (value === "") {
+        } else if (value === "" || value === "null") {
           return null
         }
         return value
