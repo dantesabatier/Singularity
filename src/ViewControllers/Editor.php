@@ -300,8 +300,8 @@ class Editor extends ViewController
     #[Action]
     public function save(): void
     {
-        /** @psalm-suppress TypeDoesNotContainType */
-        if (!($project = $this->project) || !($url = $project?->url) || !($model = $project?->model)) {
+        /** @psalm-suppress NullPropertyFetch */
+        if (!($project = $this->project) || !($url = $project->url) || !($model = $project->model)) {
             return;
         }
         $fileManager = FileManager::default();

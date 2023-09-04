@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\Model;
 
 use Sabatier\CoreData\AttributeType;
