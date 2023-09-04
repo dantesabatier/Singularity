@@ -203,7 +203,6 @@ class Welcome extends ViewController
                     "php" => sprintf("^%s", PHP_VERSION),
                     "ext-curl" => "*",
                     "ext-dom" => "*",
-                    "ext-fileinfo" => "*",
                     "ext-gettext" => "*",
                     "ext-json" => "*",
                     "ext-mbstring" => "*",
@@ -217,6 +216,7 @@ class Welcome extends ViewController
                         "ext-posix" => PHP_VERSION,
                         "ext-gd" => PHP_VERSION,
                         "ext-intl" => PHP_VERSION,
+                        "ext-fileinfo" => PHP_VERSION,
                     ]
                 ],
                 "autoload" => [
