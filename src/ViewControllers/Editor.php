@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 namespace App\ViewControllers;
 
 use App\Model\Attribute;
@@ -16,12 +18,15 @@ use ReflectionClass;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectID;
+use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
+use Sabatier\Foundation\Predicates\ComparisonPredicate;
+use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
@@ -276,7 +281,7 @@ class Editor extends ViewController
                 "element" => FetchIndexElement::class,
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
-            $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $objectID]));
+            $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
             if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first())) {
                 break;
             }
