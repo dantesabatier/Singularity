@@ -128,12 +128,8 @@ class Entity extends ManagedObject
         if ($this->isAbstract) {
             $dictionary["isAbstract"] = $this->isAbstract;
         }
-        if ($versionHashModifier = $this->versionHashModifier) {
-            $dictionary["versionHashModifier"] = $versionHashModifier;
-        }
-        if ($renamingIdentifier = $this->renamingIdentifier) {
-            $dictionary["renamingIdentifier"] = $renamingIdentifier;
-        }
+        $dictionary["versionHashModifier"] = $this->versionHashModifier;
+        $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
         $attributes = $this->attributes->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation());
         if (!$attributes->isEmpty()) {
             $dictionary["attributes"] = $attributes;
