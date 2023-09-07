@@ -13,7 +13,7 @@
                         <span class="material-icons-outlined">
                             arrow_back_ios
                         </span>
-                        <span>Atrás</span>
+                        <span>Back</span>
                     </a>
                     <button type="button" class="btn border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         Editor
@@ -84,9 +84,7 @@
                 <form class="d-flex" action="/Save" method="POST">
                     <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
                     <button class="btn border-0 bg-transparent p-2" type="submit">
-                        <span class="material-icons-outlined">
-                            save
-                        </span>
+                        Save
                     </button>
                 </form>
             </div>
