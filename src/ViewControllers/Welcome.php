@@ -10,6 +10,7 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Error;
+use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\ObjectClass;
@@ -135,7 +136,7 @@ class Welcome extends ViewController
         $url = URL::fileURL($path);
         $fileManager = FileManager::default();
         if (!$fileManager->fileExists($url->path)) {
-            $fileManager->createDirectory($url);
+            $fileManager->createDirectory($url, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
         }
         $name = $url->lastPathComponent;
         $lowerCaseName = strtolower($name);
@@ -162,13 +163,13 @@ class Welcome extends ViewController
         }
         $resourceURL = $url->appendingPathComponent("Resources");
         if (!$fileManager->fileExists($resourceURL->path)) {
-            $fileManager->createDirectory($resourceURL);
+            $fileManager->createDirectory($resourceURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
         }
         $bundle = Bundle::bundleWithURL($url);
         foreach ($bundle->localizations as $localization) {
             $directoryURL = $resourceURL->appendingPathComponent($localization);
             if (!$fileManager->fileExists($directoryURL->path)) {
-                $fileManager->createDirectory($directoryURL);
+                $fileManager->createDirectory($directoryURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
             }
         }
         /** @var class-string|null $principalClass */
@@ -179,7 +180,7 @@ class Welcome extends ViewController
             $namespace = $components->join("\\");
             $sourcesURL = $url->appendingPathComponent("src");
             if (!$fileManager->fileExists($sourcesURL->path)) {
-                $fileManager->createDirectory($sourcesURL);
+                $fileManager->createDirectory($sourcesURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
             }
             $path = $sourcesURL->appendingPathComponent($class)->appendingPathExtension("php")->path;
             if (!$fileManager->fileExists($path)) {

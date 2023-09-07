@@ -23,6 +23,7 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
@@ -314,7 +315,7 @@ class Editor extends ViewController
         $bundle = Bundle::bundleWithURL($url);
         $resourceURL = $bundle->bundleURL->appendingPathComponent("Resources");
         if (!$fileManager->fileExists($resourceURL->path)) {
-            $fileManager->createDirectory($resourceURL);
+            $fileManager->createDirectory($resourceURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
         }
         $modelURL = $resourceURL->appendingPathComponent($bundle->object(kCFBundleNameKey))->appendingPathExtension("plist");
         if ($fileManager->fileExists($modelURL->path)) {
@@ -361,7 +362,7 @@ class Editor extends ViewController
         foreach ($model->entities as $entity) {
             $directoryURL = $sourcesURL->appendingPathComponent($directory);
             if (!$fileManager->fileExists($directoryURL->path)) {
-                $fileManager->createDirectory($directoryURL);
+                $fileManager->createDirectory($directoryURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
             }
             $class = $this->class($entity, $namespace);
             $fileURL = $directoryURL->appendingPathComponent($class)->appendPathExtension("php");
