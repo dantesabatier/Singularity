@@ -56,20 +56,20 @@ class Model extends ManagedObject
     {
         $context = $this->managedObjectContext;
         /** @var string $name */
-        $name = $dictionary['name'] ?? throw new InvalidArgumentException("Invalid argument, entity name cannot be null");
+        $name = $dictionary["name"] ?? throw new InvalidArgumentException("Invalid argument, entity name cannot be null");
         $entity = $this->entitiesByName[$name];
         if (!$entity instanceof Entity) {
             $entity = new Entity($context);
             $entity->name = $name;
-            $entity->managedObjectClassName = $dictionary['managedObjectClassName'];
-            if ($isAbstract = $dictionary['isAbstract']) {
+            $entity->managedObjectClassName = $dictionary["managedObjectClassName"];
+            if ($isAbstract = $dictionary["isAbstract"]) {
                 $entity->isAbstract = $isAbstract;
             }
-            $entity->renamingIdentifier = $dictionary['renamingIdentifier'];
+            $entity->renamingIdentifier = $dictionary["renamingIdentifier"];
             /** @var Set<Property> $properties */
             $properties = new Set();
             /** @var ArrayClass<Dictionary>|null $attributes */
-            $attributes = $dictionary['attributes'];
+            $attributes = $dictionary["attributes"];
             if ($attributes) {
                 $properties->appendContentsOf($attributes->map(function (Dictionary $description) use ($context, $entity): Attribute {
                     $instance = new Attribute($context);
@@ -80,7 +80,7 @@ class Model extends ManagedObject
                 }));
             }
             /** @var ArrayClass<Dictionary>|null $relationships */
-            $relationships = $dictionary['relationships'];
+            $relationships = $dictionary["relationships"];
             if ($relationships) {
                 $properties->appendContentsOf($relationships->map(function (Dictionary $description) use ($context, $entity): Relationship {
                     $instance = new Relationship($context);
@@ -90,7 +90,7 @@ class Model extends ManagedObject
                 }));
             }
             /** @var ArrayClass<Dictionary>|null $fetchedProperties */
-            $fetchedProperties = $dictionary['fetchedProperties'];
+            $fetchedProperties = $dictionary["fetchedProperties"];
             if ($fetchedProperties) {
                 $properties->appendContentsOf($fetchedProperties->map(function (Dictionary $description) use ($context, $entity): FetchedProperty {
                     $instance = new FetchedProperty($context);
@@ -101,12 +101,12 @@ class Model extends ManagedObject
             }
             $entity->properties = $properties;
             /** @var Dictionary|null $superentity */
-            $superentity = $dictionary['superentity'];
+            $superentity = $dictionary["superentity"];
             if ($superentity) {
                 $entity->superentity = $this->newEntity($superentity);
             }
             /** @var ArrayClass<Dictionary>|null $subentities */
-            $subentities = $dictionary['subentities'];
+            $subentities = $dictionary["subentities"];
             if ($subentities) {
                 $entity->subentities = new Set($subentities->map(function (Dictionary $description) use ($entity): Entity {
                     $subentity = $this->newEntity($description);
@@ -115,19 +115,19 @@ class Model extends ManagedObject
                 }));
             }
             /** @var ArrayClass<ArrayClass<string>> $uniquenessConstraints */
-            $uniquenessConstraints = $dictionary['uniquenessConstraints'] ?? new ArrayClass();
+            $uniquenessConstraints = $dictionary["uniquenessConstraints"] ?? new ArrayClass();
             $entity->uniquenessConstraints = new Set($uniquenessConstraints->map(function (ArrayClass $array) use ($context): UniquenessConstraint {
                 $uniquenessConstraint = new UniquenessConstraint($context);
                 $uniquenessConstraint->stringValue = $array->join(",");
                 return $uniquenessConstraint;
             }));
             /** @var ArrayClass<Dictionary> $indexes */
-            $indexes = $dictionary['indexes'] ?? new ArrayClass();
+            $indexes = $dictionary["indexes"] ?? new ArrayClass();
             $entity->indexes = new Set($indexes->map(function (Dictionary $description) use ($context, $entity): FetchIndex {
                 /** @var ArrayClass<Dictionary> $elements */
-                $elements = $description['elements'] ?? new ArrayClass();
+                $elements = $description["elements"] ?? new ArrayClass();
                 $index = new FetchIndex($context);
-                $index->name = $description['name'];
+                $index->name = $description["name"];
                 $index->entityProperty = $entity;
                 $index->elements = new Set($elements->map(function (Dictionary $description) use ($context): FetchIndexElement {
                     $element = new FetchIndexElement($context);

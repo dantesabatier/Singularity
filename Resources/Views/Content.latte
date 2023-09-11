@@ -2,10 +2,10 @@
 {varType App\Model\FetchIndex $selectedIndex}
 {define content}
     {if $selectedIndex}
-        {include elements from 'Elements.latte'}
+        {include elements from "Elements.latte"}
     {elseif $selectedEntity}
-        {include properties from 'Properties.latte', $selectedEntity->attributes, 'Attributes', 'Attribute', 'Attribute'}
-        {include properties from 'Properties.latte', $selectedEntity->relationships, 'Relationships', 'Relationship', 'Relationship'}
-        {include properties from 'Properties.latte', $selectedEntity->fetchedProperties, 'Fetched Properties', 'Fetched Property', 'FetchedProperty'}
+        {include properties from "Properties.latte", $selectedEntity->attributes, "Attributes", "Attribute", "Attribute"}
+        {include properties from "Properties.latte", $selectedEntity->relationships, "Relationships", "Relationship", "Relationship"}
+        {include properties from "Properties.latte", $selectedEntity->fetchedProperties, "Fetched Properties", "Fetched Property", "FetchedProperty"}
     {/if}
 {/define}

@@ -1,4 +1,4 @@
-{layout 'Layout.latte'}
+{layout "Layout.latte"}
 {varType string $title}
 {varType App\Model\Project $project}
 {varType App\Model\Entity $selectedEntity}
@@ -92,18 +92,18 @@
         <div class="container-fluid d-flex flex-column user-select-none">
             <div class="row flex-grow-1" style="padding-top: 64px;">
                 <div class="col-3 border-end overflow-auto px-0" style="height: 85vh;">
-                    {include sidebar from 'Sidebar.latte'}
+                    {include sidebar from "Sidebar.latte"}
                 </div>
                 <div class="col-6 overflow-auto" style="height: 85vh;">
-                    {include content from 'Content.latte'}
+                    {include content from "Content.latte"}
                 </div>
                 <div class="col-3 border-start overflow-auto" style="height: 85vh;">
-                    {include inspector from 'Inspector.latte'}
+                    {include inspector from "Inspector.latte"}
                 </div>
             </div>
             <div class="row border-top" style="height: 40px;">
                 <div class="col-3">
-                    {include controls from 'Controls.latte'}
+                    {include controls from "Controls.latte"}
                 </div>
                 <div class="col-6">
                 </div>

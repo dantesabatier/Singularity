@@ -41,7 +41,7 @@ class Attribute extends Property
                 $attribute->defaultValue = null;
             }
         });
-        $this->observe('isDerived', KeyValueObservingOptions::new, function (Attribute $attribute): void {
+        $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute): void {
             if ($attribute->isDerived) {
                 $attribute->defaultValue = null;
             } else {

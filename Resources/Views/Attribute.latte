@@ -26,7 +26,7 @@
         </div>
         <hr>
         <div class="mt-3 mb-3">
-            {var array $items = [0 => 'Undefined', 100 => 'Integer 16', 200 => 'Integer 32', 300 => 'Integer 64', 400 => 'Decimal', 500 => 'Double', 600 => 'Float', 700 => 'String', 800 => 'Boolean', 900 => 'Date', 1000 => 'Binary Data', 1100 => 'UUID', 1200 => 'URI', 1800 => 'Transformable']}
+            {var array $items = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
             <label for="type" class="form-label">Type</label>
             <select name="type" id="type" class="form-select" data-autosave="true">
                 <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->type ? selected}>
@@ -37,7 +37,7 @@
         {if !$selectedProperty->isDerived}
             {if $selectedProperty->type === 800}
                 <div class="mt-3 mb-3">
-                    {var array $items = ["false" => 'False', "true" => 'True']}
+                    {var array $items = ["false" => "False", "true" => "True"]}
                     <label for="defaultValue" class="form-label">Default Value</label>
                     <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
                         <option n:foreach="$items as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>

@@ -4,16 +4,16 @@
 {varType App\Model\FetchIndexElement $selectedIndexElement}
 {define inspector}
     {if $selectedProperty instanceof App\Model\Attribute}
-        {include attribute from 'Attribute.latte'}
+        {include attribute from "Attribute.latte"}
     {elseif $selectedProperty instanceof App\Model\Relationship}
-        {include relationship from 'Relationship.latte'}
+        {include relationship from "Relationship.latte"}
     {elseif $selectedProperty instanceof App\Model\FetchedProperty}
-        {include fetchedProperty from 'FetchedProperty.latte'}
+        {include fetchedProperty from "FetchedProperty.latte"}
     {elseif $selectedIndexElement instanceof App\Model\FetchIndexElement}
-        {include fetchIndexElement from 'FetchIndexElement.latte'}
+        {include fetchIndexElement from "FetchIndexElement.latte"}
     {elseif $selectedIndex instanceof App\Model\FetchIndex}
-        {include fetchIndex from 'FetchIndex.latte'}
+        {include fetchIndex from "FetchIndex.latte"}
     {elseif $selectedEntity instanceof App\Model\Entity}
-        {include entity from 'Entity.latte'}
+        {include entity from "Entity.latte"}
     {/if}
 {/define}
