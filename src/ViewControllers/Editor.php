@@ -212,7 +212,7 @@ class Editor extends ViewController
             if ($attribute->isOptional && $type !== "mixed") {
                 $string .= "|null";
             }
-            return $string . " \$$attribute->name";
+            return "$string \$$attribute->name";
         });
         $properties->appendContentsOf($fetchedProperties->map(fn(FetchedProperty $fetchedProperty): string => " * @property-read $arrayClassName<$fetchedProperty->fetchRequestEntityName> \$$fetchedProperty->name"));
         $properties->appendContentsOf($relationships->compactMap(function (Relationship $relationship) use ($setClassName): string {
@@ -222,7 +222,7 @@ class Editor extends ViewController
             if ($relationship->isOptional) {
                 $string .= "|null";
             }
-            return $string . " \$$relationship->name";
+            return "$string \$$relationship->name";
         }));
         /** @var ArrayClass<string> $methods */
         $methods = $relationships->compactMap(function (Relationship $relationship) use ($namespace, $setClassName): ?string {
@@ -260,7 +260,7 @@ class Editor extends ViewController
         $content .= $superentity ? $superentity->name : ManagedObject::className();
         $content .= "\n";
         $content .= "{\n";
-        return $content . "}\n";
+        return "$content}\n";
     }
 
     /**
