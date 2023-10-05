@@ -91,7 +91,7 @@ class Welcome extends ViewController
         $content .= "    public function applicationWillTerminate(Application \$application): void\n";
         $content .= "    {\n";
         $content .= "    }\n";
-        return"$content}\n";
+        return "$content}\n";
     }
 
     private function generateIndex(): string
