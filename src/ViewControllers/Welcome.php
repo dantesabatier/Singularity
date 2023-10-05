@@ -134,8 +134,9 @@ class Welcome extends ViewController
         }
         $url = URL::fileURL($path);
         $fileManager = FileManager::default();
+        $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
         if (!$fileManager->fileExists($url->path)) {
-            $fileManager->createDirectory($url, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
+            $fileManager->createDirectory($url, attributes: $attributes);
         }
         $name = $url->lastPathComponent;
         $lowerCaseName = strtolower($name);
@@ -162,13 +163,13 @@ class Welcome extends ViewController
         }
         $resourceURL = $url->appendingPathComponent("Resources");
         if (!$fileManager->fileExists($resourceURL->path)) {
-            $fileManager->createDirectory($resourceURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
+            $fileManager->createDirectory($resourceURL, attributes: $attributes);
         }
         $bundle = Bundle::bundleWithURL($url);
         foreach ($bundle->localizations as $localization) {
             $directoryURL = $resourceURL->appendingPathComponent($localization);
             if (!$fileManager->fileExists($directoryURL->path)) {
-                $fileManager->createDirectory($directoryURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
+                $fileManager->createDirectory($directoryURL, attributes: $attributes);
             }
         }
         /** @var class-string|null $principalClass */
@@ -179,7 +180,7 @@ class Welcome extends ViewController
             $namespace = $components->join("\\");
             $sourcesURL = $url->appendingPathComponent("src");
             if (!$fileManager->fileExists($sourcesURL->path)) {
-                $fileManager->createDirectory($sourcesURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
+                $fileManager->createDirectory($sourcesURL, attributes: $attributes);
             }
             $path = $sourcesURL->appendingPathComponent($class)->appendingPathExtension("php")->path;
             if (!$fileManager->fileExists($path)) {
