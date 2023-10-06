@@ -6,7 +6,6 @@ use App\Delegate;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
-use Locale;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
@@ -16,7 +15,6 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\PropertyListSerialization;
-use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
@@ -154,7 +152,7 @@ class Welcome extends ViewController
                 kCFBundlePackageTypeKey => "APPL",
                 kCFBundlePrincipalClassKey => Delegate::class,
                 kCFBundleLocalizationsKey => [
-                    Locale::getPrimaryLanguage(Locale::getDefault())
+                    "en"
                 ],
                 kCFBundleDocumentTypesKey => [
                     [
