@@ -12,7 +12,7 @@ ul {
 }
 
 .table {
-    --bs-table-active-bg: rgba(25, 118, 210, 0.16);
+    --bs-table-active-bg: rgba(25, 118, 210, 0.85);
     --bs-table-active-color: var(--bs-table-active-bg);
     --bs-table-hover-color: white;
     --bs-table-hover-bg: var(--bs-table-active-color);
