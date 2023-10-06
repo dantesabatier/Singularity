@@ -230,13 +230,12 @@ class Welcome extends ViewController
         }
         $path = $url->appendingPathComponent(".env")->path;
         if (!$fileManager->fileExists($path)) {
-            $dictionary = new Dictionary([
+            $fileManager->createFile($path, (new Dictionary([
                 "SQL_SCHEMA_NAME" => $name,
                 "SQL_SCHEMA_HOST" => "localhost",
                 "SQL_SCHEMA_CREDENTIAL_USER" => "root",
                 "SQL_SCHEMA_CREDENTIAL_PASSWORD" => ""
-            ]);
-            $fileManager->createFile($path, $dictionary->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n"));
+            ]))->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n"));
         }
         $path = $url->appendingPathComponent("index")->appendingPathExtension("php")->path;
         if (!$fileManager->fileExists($path)) {
