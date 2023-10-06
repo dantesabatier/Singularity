@@ -23,6 +23,10 @@ ul {
     --bs-table-bg-state: var(--bs-table-active-bg);
 }
 
+.table-sm>:not(caption)>*>* {
+    padding: 0;
+}
+
 .btn-toggle {
     display: inline-flex;
     align-items: center;
