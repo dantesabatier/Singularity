@@ -153,7 +153,7 @@ class Welcome extends ViewController
                 kCFBundleShortVersionStringKey => "0.1",
                 kCFBundlePackageTypeKey => "APPL",
                 kCFBundlePrincipalClassKey => Delegate::class,
-                kCFBundleLocalizationsKey => new Set(["en", Locale::getPrimaryLanguage(Locale::getDefault())]),
+                kCFBundleLocalizationsKey => (new Set(["en", Locale::getPrimaryLanguage(Locale::getDefault())]))->toArray(),
                 kCFBundleDocumentTypesKey => [
                     [
                         kCFBundleTypeNameKey => SQLStoreType
