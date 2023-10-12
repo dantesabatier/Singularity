@@ -9,6 +9,7 @@ use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Progress;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
@@ -36,16 +37,22 @@ class Model extends ManagedObject
     /** @var Dictionary<Entity> */
     public Dictionary $entitiesByName;
 
+    public Progress $progress;
+
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
         unset($this->entitiesByName);
+        unset($this->progress);
     }
 
     public function __get(string $name)
     {
         if ($name == "entitiesByName") {
             $this->$name = new Dictionary();
+            return $this->$name;
+        } elseif ($name == "progress") {
+            $this->$name = new Progress();
             return $this->$name;
         } else {
             return parent::__get($name);
