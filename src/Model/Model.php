@@ -180,24 +180,25 @@ class Model extends ManagedObject
         }
         $propertyList = PropertyListSerialization::propertyListWithURL($url);
         if ($propertyList instanceof Dictionary) {
-            /** @var ArrayClass<Dictionary>|null $old */
-            $old = $propertyList["entities"];
-            if ($old) {
-                $new = new Set();
-                $progress->totalUnitCount = $old->count();
-                foreach ($old as $index => $dictionary) {
+            /** @var ArrayClass<Dictionary>|null $representations */
+            $representations = $propertyList["entities"];
+            if ($representations) {
+                /** @var Set<Entity> $entities */
+                $entities = new Set();
+                $progress->totalUnitCount = $representations->count();
+                foreach ($representations as $index => $representation) {
                     if ($progress->isCancelled) {
                         break;
                     }
-                    $new->append($this->newEntity($dictionary));
+                    $entities->append($this->newEntity($representation));
                     $progress->completedUnitCount = $index + 1;
                 }
-                $this->entities = $new;
+                $this->entities = $entities;
             }
-            /** @var ArrayClass<Dictionary>|null $fetchRequestTemplates */
-            $fetchRequestTemplates = $propertyList["fetchRequests"];
-            if ($fetchRequestTemplates) {
-                $this->fetchRequestTemplates = new Set($fetchRequestTemplates->map(fn(Dictionary $description): FetchRequestTemplate => $this->newFetchRequest($description)));
+            /** @var ArrayClass<Dictionary>|null $representations */
+            $representations = $propertyList["fetchRequests"];
+            if ($representations) {
+                $this->fetchRequestTemplates = new Set($representations->map(fn(Dictionary $representation): FetchRequestTemplate => $this->newFetchRequest($representation)));
             }
             $context->save();
         }
