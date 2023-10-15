@@ -36,7 +36,6 @@ class Model extends ManagedObject
 {
     /** @var Dictionary<Entity> */
     public Dictionary $entitiesByName;
-
     public Progress $progress;
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
