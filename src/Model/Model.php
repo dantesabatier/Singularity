@@ -162,6 +162,7 @@ class Model extends ManagedObject
     {
         $context = $this->managedObjectContext;
         $entities = $this->entities;
+        $progress = $this->progress;
         if (!$entities->isEmpty()) {
             foreach ($entities as $entity) {
                 if ($entity->isRootEntity) {
@@ -179,10 +180,19 @@ class Model extends ManagedObject
         }
         $propertyList = PropertyListSerialization::propertyListWithURL($url);
         if ($propertyList instanceof Dictionary) {
-            /** @var ArrayClass<Dictionary>|null $entities */
-            $entities = $propertyList["entities"];
-            if ($entities) {
-                $this->entities = new Set($entities->map(fn(Dictionary $dictionary): Entity => $this->newEntity($dictionary)));
+            /** @var ArrayClass<Dictionary>|null $old */
+            $old = $propertyList["entities"];
+            if ($old) {
+                $new = new Set();
+                $progress->totalUnitCount = $old->count();
+                foreach ($old as $index => $dictionary) {
+                    if ($progress->isCancelled) {
+                        break;
+                    }
+                    $new->append($this->newEntity($dictionary));
+                    $progress->completedUnitCount = $index + 1;
+                }
+                $this->entities = $new;
             }
             /** @var ArrayClass<Dictionary>|null $fetchRequestTemplates */
             $fetchRequestTemplates = $propertyList["fetchRequests"];
