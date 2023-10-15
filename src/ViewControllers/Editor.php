@@ -29,6 +29,7 @@ use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Predicates\Predicate;
+use Sabatier\Foundation\Progress;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
@@ -340,8 +341,8 @@ class Editor extends ViewController
         if (!($modelURL = $bundle->url($bundle->object(kCFBundleNameKey), "plist"))) {
             return;
         }
-        $model->progress->observe("fractionCompleted", handler: function(float $fractionCompleted): void {
-            error_log("*$fractionCompleted*");
+        $model->progress->observe("fractionCompleted", handler: function(Progress $progress): void {
+            error_log("*$progress->fractionCompleted*");
         });
         $model->load($modelURL);
     }
