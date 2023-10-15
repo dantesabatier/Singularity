@@ -341,7 +341,7 @@ class Editor extends ViewController
         if (!($modelURL = $bundle->url($bundle->object(kCFBundleNameKey), "plist"))) {
             return;
         }
-        $model->progress->observe("fractionCompleted", handler: function(Progress $progress): void {
+        $model->progress->observe("fractionCompleted", handler: function (Progress $progress): void {
             error_log("*$progress->fractionCompleted*");
         });
         $model->load($modelURL);
