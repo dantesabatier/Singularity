@@ -31,6 +31,36 @@
                 <label for="managedObjectClassName" class="form-label">Name</label>
                 <input type="text" name="managedObjectClassName" id="managedObjectClassName" placeholder="Entity Name" class="form-control text-truncate" value="{$selectedEntity->managedObjectClassName}" autocomplete="off" spellcheck="false" required>
             </div>
+        <label for="uniquenessConstraints" class="form-label">Constraints</label>
+        <table class="table table-bordered table-sm" id="uniquenessConstraints">
+            <thead>
+            <tr>
+            </tr>
+            </thead>
+            <tbody>
+            <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" n:class="$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? table-active">
+                <td>{$uniquenessConstraint->stringValue}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>
+                    <div class="d-inline-block">
+                        <button type="button" class="btn border-0 bg-transparent p-2" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint" data-bs-action-name="Uniqueness Constraint">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn border-0 bg-transparent p-2" data-bs-action-name="Uniqueness Constraint" onclick="remove(this, {$selectedUniquenessConstraint})" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
             <hr>
             <div class="mb-3 fs-5">
                 Versioning
@@ -47,37 +77,6 @@
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             <input class="d-none" type="submit">
         </form>
-        <hr>
-        <label for="uniquenessConstraints" class="form-label">Constraints</label>
-        <table class="table table-bordered table-sm" id="uniquenessConstraints">
-            <thead>
-            <tr>
-            </tr>
-            </thead>
-            <tbody>
-            <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" n:class="$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? table-active">
-                <td>{$uniquenessConstraint->stringValue}</td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td>
-                    <div class="d-inline-block">
-                        <button type="submit" name="add" class="btn border-0 bg-transparent p-2" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-                            </svg>
-                        </button>
-                        <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Uniqueness Constraint" onclick="remove(this, {$selectedUniquenessConstraint})" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
         <div class="modal fade" id="addUniquenessConstraint" tabindex="-1" aria-labelledby="addUniquenessConstraintLabel"
              aria-hidden="true">
             <div class="modal-dialog">
