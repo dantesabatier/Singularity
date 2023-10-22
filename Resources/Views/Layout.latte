@@ -42,7 +42,7 @@
 <script>
   function url(endpoint, parameters) {
     let url = endpoint
-    if (url.startsWith("/")) {
+    if (!url.startsWith("/")) {
       url = "/" + url
     }
     if (!!parameters && JSON.stringify(parameters) !== JSON.stringify({})) {
@@ -95,10 +95,10 @@
           return true
         } else if (value === "false") {
           return false
-        } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
-          return parseFloat(value)
         } else if (value === "" || value === "null") {
           return null
+        } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
+          return parseFloat(value)
         }
         return value
       })()
