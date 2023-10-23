@@ -342,9 +342,14 @@ class Editor extends ViewController
             return;
         }
         $model->progress->observe("fractionCompleted", handler: function (Progress $progress): void {
-            error_log("*$progress->fractionCompleted*");
+            $percent = $progress->fractionCompleted * 100 . " + \"%\"";
+            echo "<script>document.getElementById(\"progress\").style.width = $percent;</script>";
+            flush();
         });
+        ob_start();
         $model->load($modelURL);
+        ob_end_flush();
+        die();
     }
 
     /**
