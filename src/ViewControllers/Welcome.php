@@ -133,8 +133,8 @@ class Welcome extends ViewController
             return;
         }
         $url = URL::fileURL($path);
-        $fileManager = FileManager::default();
         $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
+        $fileManager = FileManager::default();
         if (!$fileManager->fileExists($url->path)) {
             $fileManager->createDirectory($url, attributes: $attributes);
         }
