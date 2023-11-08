@@ -123,16 +123,12 @@
                             <label for="name" class="form-label">Name</label>
                             <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
                         </div>
-                        <input type="hidden" name="entityPropertyID"
-                               value="{$selectedEntity?->objectID?->referenceObject}">
+                        <input type="hidden" name="entityPropertyID" value="{$selectedEntity?->objectID?->referenceObject}">
                         <div class="modal-footer border-0">
-                            <button type="button"
-                                    class="btn btn-outline-secondary border-0 bg-transparent text-secondary"
-                                    data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
                                 Cancel
                             </button>
-                            <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary"
-                                    data-bs-dismiss="modal">
+                            <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary" data-bs-dismiss="modal">
                                 Add
                             </button>
                         </div>
@@ -153,26 +149,22 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" autocomplete="off"
-                                       required>
+                                <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
                             </div>
                             <label for="superentityID" class="form-label">Parent Entity</label>
-                            <select name="superentityID" id="superentityID"
-                                    class="form-select" {$allEntities->isEmpty() ? disabled}>
+                            <select name="superentityID" id="superentityID" class="form-select" {$allEntities->isEmpty() ? disabled}>
                                 <option value="">No Parent Entity</option>
-                                <option n:foreach="$allEntities as $entity"
-                                        value="{$entity->objectID->referenceObject}">{$entity->name}</option>
+                                <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}">
+                                    {$entity->name}
+                                </option>
                             </select>
                         </div>
                         <div class="modal-footer border-0">
                             <input type="hidden" name="modelID" value="{$project?->model?->objectID?->referenceObject}">
-                            <button type="button"
-                                    class="btn btn-outline-secondary border-0 bg-transparent text-secondary"
-                                    data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
                                 Cancel
                             </button>
-                            <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary"
-                                    data-bs-dismiss="modal">
+                            <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary" data-bs-dismiss="modal">
                                 Add
                             </button>
                         </div>
@@ -193,8 +185,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" autocomplete="off"
-                                       required>
+                                <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
