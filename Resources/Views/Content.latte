@@ -9,6 +9,6 @@
         {include properties from "Properties.latte", $selectedEntity->relationships, "Relationships", "Relationship", "Relationship"}
         {include properties from "Properties.latte", $selectedEntity->fetchedProperties, "Fetched Properties", "Fetched Property", "FetchedProperty"}
     {elseif $selectedFetchRequestTemplate}
-
+        {include fetchRequestTemplatePredicate from "FetchRequestTemplatePredicate.latte"}
     {/if}
 {/define}
