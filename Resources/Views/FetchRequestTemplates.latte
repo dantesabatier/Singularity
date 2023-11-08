@@ -1,8 +1,8 @@
 {varType App\Model\Project $project}
-{varType App\Model\Entity $selectedFetchRequestTemplate}
 {varType App\Model\FetchIndex $selectedIndex}
+{varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
 {varType Sabatier\Foundation\ArrayClass $fetchRequestTemplates}
-{define fetchRequests, $fetchRequestTemplates}
+{define fetchRequestTemplates, $fetchRequestTemplates}
     <ul class="flex-column w-100 ps-0">
         <li n:foreach="$fetchRequestTemplates as $fetchRequestTemplate" class="text-truncate{$fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
             <span class="space"></span>

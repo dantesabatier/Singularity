@@ -1,5 +1,6 @@
-{varType App\Model\Entity $selectedEntity}
 {varType App\Model\FetchIndex $selectedIndex}
+{varType App\Model\Entity $selectedEntity}
+{varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
 {define content}
     {if $selectedIndex}
         {include elements from "Elements.latte"}
@@ -7,5 +8,7 @@
         {include properties from "Properties.latte", $selectedEntity->attributes, "Attributes", "Attribute", "Attribute"}
         {include properties from "Properties.latte", $selectedEntity->relationships, "Relationships", "Relationship", "Relationship"}
         {include properties from "Properties.latte", $selectedEntity->fetchedProperties, "Fetched Properties", "Fetched Property", "FetchedProperty"}
+    {elseif $selectedFetchRequestTemplate}
+        {include fetchRequestTemplate from "FetchRequestTemplate.latte"}
     {/if}
 {/define}
