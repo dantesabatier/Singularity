@@ -3,7 +3,7 @@
 {varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
 {define content}
     {if $selectedIndex}
-        {include elements from "Elements.latte"}
+        {include fetchIndexElements from "FetchIndexElements.latte"}
     {elseif $selectedEntity}
         {include properties from "Properties.latte", $selectedEntity->attributes, "Attributes", "Attribute", "Attribute"}
         {include properties from "Properties.latte", $selectedEntity->relationships, "Relationships", "Relationship", "Relationship"}

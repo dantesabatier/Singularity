@@ -1,5 +1,6 @@
 {varType App\Model\Entity $selectedEntity}
 {varType App\Model\FetchIndex $selectedIndex}
+{varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
 {define controls}
     <div class="d-inline-block">
         <button type="button" class="btn border-0 bg-transparent p-2" data-bs-toggle="modal" data-bs-target="#addEntity">
@@ -8,13 +9,19 @@
             </svg>
         </button>
         {if $selectedIndex}
-            <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Fetch Index" onclick="remove(this, {$selectedIndex})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+            <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Fetch Index" onclick="remove(this, {$selectedIndex})">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
                 </svg>
             </button>
-        {else}
-            <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Entity" onclick="remove(this, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+        {elseif $selectedEntity}
+            <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Entity" onclick="remove(this, {$selectedEntity})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                </svg>
+            </button>
+        {elseif $selectedFetchRequestTemplate}
+            <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Fetch Request Template" onclick="remove(this, {$selectedFetchRequestTemplate})">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
                 </svg>
