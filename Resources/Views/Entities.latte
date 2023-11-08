@@ -13,7 +13,8 @@
                     </button>
                 {/if}
                 <img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="" style="padding: 0 2px">
-                <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">{$entity->name}
+                <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                        {$entity->name}
                 </span>
                 {if $entity->indexesCount}
                     <ul class="flex-column w-100">
@@ -21,7 +22,9 @@
                             <li class="text-truncate{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' selected'}">
                                 <span class="space"></span>
                                 <img src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="" style="padding: 0 2px">
-                                <span id="index-{$index->objectID->referenceObject}" class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">{$index->name}</span>
+                                <span id="index-{$index->objectID->referenceObject}" class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
+                                    {$index->name}
+                                </span>
                             </li>
                         {/foreach}
                     </ul>
