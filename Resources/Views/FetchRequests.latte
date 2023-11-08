@@ -1,0 +1,14 @@
+{varType App\Model\Project $project}
+{varType App\Model\Entity $selectedFetchRequestTemplate}
+{varType App\Model\FetchIndex $selectedIndex}
+{varType Sabatier\Foundation\ArrayClass $fetchRequestTemplates}
+{define fetchRequests, $fetchRequestTemplates}
+    <ul class="flex-column w-100 ps-0">
+        <li n:foreach="$fetchRequestTemplates as $fetchRequestTemplate" class="text-truncate{$fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
+            <span class="space"></span>
+            <span id="fetchRequest-{$fetchRequestTemplate->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$fetchRequestTemplate->objectID->referenceObject}">
+                {$fetchRequestTemplate->name}
+            </span>
+        </li>
+    </ul>
+{/define}
