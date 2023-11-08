@@ -2,6 +2,7 @@
 {varType App\Model\Property $selectedProperty}
 {varType App\Model\FetchIndex $selectedIndex}
 {varType App\Model\FetchIndexElement $selectedIndexElement}
+{varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
 {define inspector}
     {if $selectedProperty instanceof App\Model\Attribute}
         {include attribute from "Attribute.latte"}
@@ -15,5 +16,7 @@
         {include fetchIndex from "FetchIndex.latte"}
     {elseif $selectedEntity instanceof App\Model\Entity}
         {include entity from "Entity.latte"}
+    {elseif $selectedFetchRequestTemplate instanceof App\Model\FetchRequestTemplate}
+        {include fetchRequestTemplate from "FetchRequestTemplate.latte"}
     {/if}
 {/define}
