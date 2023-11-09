@@ -199,6 +199,10 @@
                         <string>collationType</string>
                         <key>isOptional</key>
                         <false/>
+                        <key>minValue</key>
+                        <integer>0</integer>
+                        <key>maxValue</key>
+                        <integer>2</integer>
                         <key>type</key>
                         <integer>100</integer>
                         <key>defaultValue</key>
@@ -542,6 +546,10 @@
                                 <string>type</string>
                                 <key>isOptional</key>
                                 <false/>
+                                <key>minValue</key>
+                                <integer>0</integer>
+                                <key>maxValue</key>
+                                <integer>2000</integer>
                                 <key>type</key>
                                 <integer>100</integer>
                                 <key>defaultValue</key>
@@ -658,6 +666,10 @@
                                 <string>deleteRule</string>
                                 <key>isOptional</key>
                                 <false/>
+                                <key>minValue</key>
+                                <integer>0</integer>
+                                <key>maxValue</key>
+                                <integer>3</integer>
                                 <key>type</key>
                                 <integer>100</integer>
                                 <key>defaultValue</key>
