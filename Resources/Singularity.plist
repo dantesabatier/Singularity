@@ -35,8 +35,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -213,8 +211,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                 </array>
                 <key>relationships</key>
@@ -261,6 +257,10 @@
                         <string>fetchRequestResultType</string>
                         <key>isOptional</key>
                         <false/>
+                        <key>minValue</key>
+                        <integer>0</integer>
+                        <key>maxValue</key>
+                        <integer>3</integer>
                         <key>type</key>
                         <integer>100</integer>
                         <key>defaultValue</key>
@@ -293,8 +293,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -303,8 +301,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -313,8 +309,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -323,8 +317,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -333,8 +325,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                 </array>
                 <key>relationships</key>
@@ -493,8 +483,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <false/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -584,8 +572,6 @@
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
-                                <key>defaultValue</key>
-                                <false/>
                             </dict>
                             <dict>
                                 <key>name</key>
@@ -594,8 +580,6 @@
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
-                                <key>defaultValue</key>
-                                <false/>
                             </dict>
                             <dict>
                                 <key>name</key>
@@ -610,8 +594,6 @@
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
-                                <key>defaultValue</key>
-                                <false/>
                             </dict>
                         </array>
                     </dict>
@@ -662,8 +644,6 @@
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
-                                <key>defaultValue</key>
-                                <false/>
                             </dict>
                             <dict>
                                 <key>name</key>
@@ -672,8 +652,6 @@
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
-                                <key>defaultValue</key>
-                                <false/>
                             </dict>
                             <dict>
                                 <key>name</key>
@@ -704,8 +682,6 @@
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
-                                <key>defaultValue</key>
-                                <false/>
                             </dict>
                             <dict>
                                 <key>name</key>
@@ -714,8 +690,6 @@
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
-                                <key>defaultValue</key>
-                                <false/>
                             </dict>
                         </array>
                     </dict>
