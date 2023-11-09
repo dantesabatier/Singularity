@@ -1,6 +1,9 @@
 {varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
 {define fetchRequestTemplatePredicate}
     <form action="/FetchRequestTemplate" method="POST">
+        <div class="my-2 fs-6 fw-bold text-shadow">
+            {$selectedFetchRequestTemplate->name}
+        </div>
         <div class="mb-3">
             <label for="fetchRequestPredicateFormat" class="form-label">Predicate</label>
             <input type="text" name="fetchRequestPredicateFormat" id="fetchRequestPredicateFormat" placeholder="Predicate" class="form-control text-truncate" value="{$selectedFetchRequestTemplate->fetchRequestPredicateFormat}" autocomplete="off" spellcheck="false">

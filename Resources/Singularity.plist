@@ -266,6 +266,76 @@
                         <key>defaultValue</key>
                         <integer>0</integer>
                     </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>fetchLimit</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>100</integer>
+                        <key>defaultValue</key>
+                        <integer>0</integer>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>fetchBatchSize</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>100</integer>
+                        <key>defaultValue</key>
+                        <integer>0</integer>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>includesSubentities</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>800</integer>
+                        <key>defaultValue</key>
+                        <false/>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>includesPropertyValues</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>800</integer>
+                        <key>defaultValue</key>
+                        <false/>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>returnsObjectsAsFaults</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>800</integer>
+                        <key>defaultValue</key>
+                        <false/>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>includesPendingChanges</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>800</integer>
+                        <key>defaultValue</key>
+                        <false/>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>returnsDistinctResults</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>800</integer>
+                        <key>defaultValue</key>
+                        <false/>
+                    </dict>
                 </array>
                 <key>relationships</key>
                 <array>

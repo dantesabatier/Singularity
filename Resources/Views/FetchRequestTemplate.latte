@@ -9,7 +9,6 @@
             <label for="name" class="form-label">Name</label>
             <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control text-truncate" value="{$selectedFetchRequestTemplate->name}" autocomplete="off" spellcheck="false" required>
         </div>
-        <hr>
         <div class="mt-3 mb-3">
             <label for="fetchRequestEntityName" class="form-label">Entity</label>
             <select name="fetchRequestEntityName" id="fetchRequestEntityName" class="form-select" data-autosave="true">
@@ -18,6 +17,47 @@
                     {$entity->name}
                 </option>
             </select>
+        </div>
+        <div class="mt-3 mb-3">
+            {var array $items = [0 => "Objects", 1 => "Identifiers", 2 => "Dictionaries", 3 => "Count"]}
+            <label for="fetchRequestResultType" class="form-label">Type</label>
+            <select name="fetchRequestResultType" id="fetchRequestResultType" class="form-select" data-autosave="true">
+                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedFetchRequestTemplate->fetchRequestResultType ? selected}>
+                    {$value}
+                </option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="fetchLimit" class="form-label">Fetch Limit</label>
+            <input type="number" name="fetchLimit" id="fetchLimit" placeholder="Fetch Limit" class="form-control" value="{$selectedFetchRequestTemplate->fetchLimit}" autocomplete="off" spellcheck="false" required>
+        </div>
+        <div class="mb-3">
+            <label for="fetchBatchSize" class="form-label">Batch Size</label>
+            <input type="number" name="fetchBatchSize" id="fetchBatchSize" placeholder="Batch Size" class="form-control" value="{$selectedFetchRequestTemplate->fetchBatchSize}" autocomplete="off" spellcheck="false" required>
+        </div>
+        <hr>
+        <div class="my-2 fs-6 fw-bold text-shadow">
+            Advanced
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label" for="includesSubentities">Include Subentities</label>
+            <input class="form-check-input" type="checkbox" name="includesSubentities" value="{$selectedFetchRequestTemplate->includesSubentities}" id="includesSubentities" {$selectedFetchRequestTemplate->includesSubentities ? checked}>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label" for="includesPropertyValues">Include Property Values</label>
+            <input class="form-check-input" type="checkbox" name="includesPropertyValues" value="{$selectedFetchRequestTemplate->includesPropertyValues}" id="includesPropertyValues" {$selectedFetchRequestTemplate->includesPropertyValues ? checked}>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label" for="returnsObjectsAsFaults">Return Objects as Faults</label>
+            <input class="form-check-input" type="checkbox" name="returnsObjectsAsFaults" value="{$selectedFetchRequestTemplate->returnsObjectsAsFaults}" id="returnsObjectsAsFaults" {$selectedFetchRequestTemplate->returnsObjectsAsFaults ? checked}>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label" for="includesPendingChanges">Include Pending Changes</label>
+            <input class="form-check-input" type="checkbox" name="includesPendingChanges" value="{$selectedFetchRequestTemplate->includesPendingChanges}" id="includesPendingChanges" {$selectedFetchRequestTemplate->includesPendingChanges ? checked}>
+        </div>
+        <div class="form-check form-check-inline">
+            <label class="form-check-label" for="returnsDistinctResults">Return Distinct Results</label>
+            <input class="form-check-input" type="checkbox" name="returnsDistinctResults" value="{$selectedFetchRequestTemplate->returnsDistinctResults}" id="returnsDistinctResults" {$selectedFetchRequestTemplate->returnsDistinctResults ? checked}>
         </div>
         <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID->referenceObject}">
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
