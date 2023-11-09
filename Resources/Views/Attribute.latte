@@ -50,10 +50,10 @@
                 </div>
                 <div class="mb-3 row">
                     <div class="col">
-                        <input type="text" class="form-control text-truncate" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
+                        <input type="number" class="form-control text-truncate" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
+                        <input type="number" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
                     </div>
                 </div>
                 {if $selectedProperty->type == 700}
