@@ -52,14 +52,16 @@
                         <input type="datetime-local" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     {/if}
                 </div>
-                <div class="mb-3 row">
-                    <div class="col">
-                        <input type="number" class="form-control text-truncate" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
+                {if $type >= 100 && $type < 800}
+                    <div class="mb-3 row">
+                        <div class="col">
+                            <input type="number" class="form-control text-truncate" placeholder="Minimum" aria-label="Minimum" name="minValue" value="{$selectedProperty->minValue}" autocomplete="off">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
+                        </div>
                     </div>
-                    <div class="col">
-                        <input type="number" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
-                    </div>
-                </div>
+                {/if}
                 {if $type == 700}
                     <div class="mb-3">
                         <label for="regex" class="form-label">Reg. Ex.</label>
