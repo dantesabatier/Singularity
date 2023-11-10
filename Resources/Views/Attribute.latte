@@ -26,27 +26,31 @@
         </div>
         <hr>
         <div class="mt-3 mb-3">
-            {var array $items = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
+            {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
             <label for="type" class="form-label">Type</label>
             <select name="type" id="type" class="form-select" data-autosave="true">
-                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->type ? selected}>
+                <option n:foreach="$types as $key => $value" value="{$key}" {$key === $selectedProperty->type ? selected}>
                     {$value}
                 </option>
             </select>
         </div>
         {if !$selectedProperty->isDerived}
-            {if $selectedProperty->type === 800}
-                <div class="mt-3 mb-3">
-                    {var array $items = ["false" => "False", "true" => "True"]}
-                    <label for="defaultValue" class="form-label">Default Value</label>
-                    <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
-                        <option n:foreach="$items as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
-                    </select>
-                </div>
-            {elseif $selectedProperty->type >= 100 && $selectedProperty->type < 800}
+            {var int $type = $selectedProperty->type}
+            {if $type >= 100 && $type < 1000}
                 <div class="mb-3">
                     <label for="defaultValue" class="form-label">Default Value</label>
-                    <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                    {if $type >= 100 && $type < 700}
+                        <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                    {elseif $type == 700}
+                        <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                    {elseif $type == 800}
+                    {var array $values = ["false" => "False", "true" => "True"]}
+                        <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
+                            <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
+                        </select>
+                    {elseif $type == 900}
+                        <input type="datetime-local" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                    {/if}
                 </div>
                 <div class="mb-3 row">
                     <div class="col">
@@ -56,18 +60,19 @@
                         <input type="number" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
                     </div>
                 </div>
-                {if $selectedProperty->type == 700}
+                {if $type == 700}
                     <div class="mb-3">
                         <label for="regex" class="form-label">Reg. Ex.</label>
                         <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
                     </div>
                 {/if}
-            {elseif $selectedProperty->type == 1000}
+            {elseif $type == 1000}
                 <div class="form-check">
-                    <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External Storage</label>
+                    <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External
+                        Storage</label>
                     <input class="form-check-input" type="checkbox" name="allowsExternalBinaryDataStorage" value="{$selectedProperty->allowsExternalBinaryDataStorage}" id="allowsExternalBinaryDataStorage" {$selectedProperty->allowsExternalBinaryDataStorage ? checked}>
                 </div>
-            {elseif $selectedProperty->type == 1800}
+            {elseif $type == 1800}
                 <div class="mb-3">
                     <label for="valueTransformerName" class="form-label">Value Transformer</label>
                     <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
@@ -83,7 +88,8 @@
                     Advanced
                 </div>
                 <div class="form-check">
-                    <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After Deletion</label>
+                    <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After
+                        Deletion</label>
                     <input class="form-check-input" type="checkbox" name="preservesValueInHistoryOnDeletion" value="{$selectedProperty->preservesValueInHistoryOnDeletion}" id="preservesValueInHistoryOnDeletion" {$selectedProperty->preservesValueInHistoryOnDeletion ? checked}>
                 </div>
             </div>

@@ -21,6 +21,7 @@ use Sabatier\Foundation\UUID;
  * @property bool $preservesValueInHistoryOnDeletion
  * @property string|null $derivationExpressionFormat
  * @property bool $isDerived
+ * @property bool $isNumber
  */
 class Attribute extends Property
 {
@@ -48,6 +49,17 @@ class Attribute extends Property
                 $attribute->derivationExpressionFormat = null;
             }
         });
+    }
+
+    public function __get(string $name)
+    {
+        return match ($name) {
+            "isNumber" => match ($this->type) {
+                AttributeType::integer16->value, AttributeType::integer32->value, AttributeType::integer64->value, AttributeType::decimal->value, AttributeType::double->value, AttributeType::float->value => true,
+                default => false
+            },
+            default => parent::__get($name)
+        };
     }
 
     public function dictionaryRepresentation(): Dictionary
