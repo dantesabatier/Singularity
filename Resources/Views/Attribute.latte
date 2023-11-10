@@ -36,21 +36,23 @@
         </div>
         {if !$selectedProperty->isDerived}
             {var int $type = $selectedProperty->type}
-            {if $type >= 100 && $type < 1000}
+            {switch $type}
+                {case 100, 200, 300, 400, 500, 600, 700, 800, 900}
                 <div class="mb-3">
                     <label for="defaultValue" class="form-label">Default Value</label>
-                    {if $type >= 100 && $type < 700}
+                    {switch $type}
+                        {case 100, 200, 300, 400, 500, 600}
                         <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                    {elseif $type == 700}
+                    {case 700}
                         <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                    {elseif $type == 800}
+                    {case 800}
                     {var array $values = ["false" => "False", "true" => "True"]}
                         <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
                             <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
                         </select>
-                    {elseif $type == 900}
+                    {case 900}
                         <input type="date" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                    {/if}
+                    {/switch}
                 </div>
                 {if $type >= 100 && $type < 800}
                     <div class="mb-3 row">
@@ -61,20 +63,20 @@
                             <input type="number" class="form-control text-truncate" placeholder="Maximum" aria-label="Maximum" name="maxValue" value="{$selectedProperty->maxValue}" autocomplete="off">
                         </div>
                     </div>
+                    {if $type == 700}
+                        <div class="mb-3">
+                            <label for="regex" class="form-label">Reg. Ex.</label>
+                            <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
+                        </div>
+                    {/if}
                 {/if}
-                {if $type == 700}
-                    <div class="mb-3">
-                        <label for="regex" class="form-label">Reg. Ex.</label>
-                        <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
-                    </div>
-                {/if}
-            {elseif $type == 1000}
+            {case 1000}
                 <div class="form-check">
                     <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External
                         Storage</label>
                     <input class="form-check-input" type="checkbox" name="allowsExternalBinaryDataStorage" value="{$selectedProperty->allowsExternalBinaryDataStorage}" id="allowsExternalBinaryDataStorage" {$selectedProperty->allowsExternalBinaryDataStorage ? checked}>
                 </div>
-            {elseif $type == 1800}
+            {case 1800}
                 <div class="mb-3">
                     <label for="valueTransformerName" class="form-label">Value Transformer</label>
                     <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
@@ -83,7 +85,8 @@
                     <label for="attributeValueClassName" class="form-label">Custom Class</label>
                     <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
                 </div>
-            {/if}
+                {default}
+            {/switch}
             <hr>
             <div class="mt-3">
                 <div class="form-label">
