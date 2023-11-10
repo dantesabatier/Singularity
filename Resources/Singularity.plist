@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+        "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist>
     <dict>
         <key>entities</key>
@@ -297,6 +298,8 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
+                        <key>defaultValue</key>
+                        <true/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -305,6 +308,8 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
+                        <key>defaultValue</key>
+                        <true/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -546,7 +551,7 @@
                         <string>Entity</string>
                         <key>lazyInverseRelationshipName</key>
                         <string>properties</string>
-                </dict> 
+                    </dict>
                 </array>
                 <key>subentities</key>
                 <array>
