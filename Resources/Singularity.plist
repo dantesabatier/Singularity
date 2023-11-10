@@ -518,6 +518,22 @@
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>usesMinValue</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>800</integer>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>usesMaxValue</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>800</integer>
+                    </dict>
                 </array>
                 <key>relationships</key>
                 <array>
@@ -598,6 +614,14 @@
                             <dict>
                                 <key>name</key>
                                 <string>isDerived</string>
+                                <key>isOptional</key>
+                                <false/>
+                                <key>type</key>
+                                <integer>800</integer>
+                            </dict>
+                            <dict>
+                                <key>name</key>
+                                <string>usesDefaultValue</string>
                                 <key>isOptional</key>
                                 <false/>
                                 <key>type</key>

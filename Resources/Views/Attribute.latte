@@ -51,7 +51,7 @@
                             <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
                         </select>
                     {case 900}
-                        <input type="date" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                        <input type="datetime-local" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     {/switch}
                 </div>
                 {if $type >= 100 && $type < 800}

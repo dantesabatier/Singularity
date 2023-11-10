@@ -21,6 +21,7 @@ use Sabatier\Foundation\UUID;
  * @property bool $preservesValueInHistoryOnDeletion
  * @property string|null $derivationExpressionFormat
  * @property bool $isDerived
+ * @property bool $usesDefaultValue
  */
 class Attribute extends Property
 {

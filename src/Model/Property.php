@@ -15,6 +15,8 @@ use Sabatier\Foundation\Dictionary;
  * @property mixed $maxValue
  * @property string|null $regex
  * @property Entity $entityProperty
+ * @property bool $usesMinValue
+ * @property bool $usesMaxValue
  */
 abstract class Property extends ManagedObject
 {
