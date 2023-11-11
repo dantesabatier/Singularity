@@ -64,9 +64,6 @@ class Attribute extends Property
         } else {
             $dictionary["defaultValue"] = $this->defaultValue;
         }
-        if ($attributeValueClassName = $this->attributeValueClassName) {
-            $dictionary["attributeValueClassName"] = $attributeValueClassName;
-        }
         if ($valueTransformerName = $this->valueTransformerName) {
             $dictionary["valueTransformerName"] = $valueTransformerName;
         }
