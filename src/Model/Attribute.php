@@ -64,6 +64,21 @@ class Attribute extends Property
         } else {
             $dictionary["defaultValue"] = $this->defaultValue;
         }
+        if ($attributeValueClassName = $this->attributeValueClassName) {
+            $dictionary["attributeValueClassName"] = $attributeValueClassName;
+        }
+        if ($valueTransformerName = $this->valueTransformerName) {
+            $dictionary["valueTransformerName"] = $valueTransformerName;
+        }
+        if ($allowsExternalBinaryDataStorage = $this->allowsExternalBinaryDataStorage) {
+            $dictionary["allowsExternalBinaryDataStorage"] = $allowsExternalBinaryDataStorage;
+        }
+        if ($preservesValueInHistoryOnDeletion = $this->preservesValueInHistoryOnDeletion) {
+            $dictionary["preservesValueInHistoryOnDeletion"] = $preservesValueInHistoryOnDeletion;
+        }
+        if ($usesDefaultValue = $this->usesDefaultValue) {
+            $dictionary["usesDefaultValue"] = $usesDefaultValue;
+        }
         return $dictionary;
     }
 }
