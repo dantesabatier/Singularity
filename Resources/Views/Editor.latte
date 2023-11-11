@@ -3,6 +3,7 @@
 {varType App\Model\Project $project}
 {varType App\Model\Entity $selectedEntity}
 {varType Sabatier\Foundation\ArrayClass $allEntities}
+{varType Sabatier\Foundation\ArrayClass $breadcrumb}
 {block title}{$project?->name} - {$title}{/block}
 {block content}
     <div id="content">
@@ -91,6 +92,13 @@
         </nav>
         <div class="container-fluid d-flex flex-column user-select-none">
             <div class="row flex-grow-1" style="padding-top: 64px;">
+                <nav class="border-bottom" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
+                            {$item}
+                        </li>
+                    </ol>
+                </nav>
                 <div class="col-3 border-end overflow-auto px-0" style="height: 85vh;">
                     {include sidebar from "Sidebar.latte"}
                 </div>

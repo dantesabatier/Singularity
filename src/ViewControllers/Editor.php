@@ -71,6 +71,9 @@ class Editor extends ViewController
     public ?UniquenessConstraint $selectedUniquenessConstraint = null;
     #[Outlet]
     public ?FetchRequestTemplate $selectedFetchRequestTemplate = null;
+    /** @var ArrayClass<string> */
+    #[Outlet]
+    public ArrayClass $breadcrumb;
 
     public function __construct()
     {
@@ -79,6 +82,7 @@ class Editor extends ViewController
         unset($this->rootEntities);
         unset($this->allEntities);
         unset($this->fetchRequestTemplates);
+        unset($this->breadcrumb);
     }
 
     /**
@@ -122,6 +126,9 @@ class Editor extends ViewController
                 "name" => AttributeType::string,
             ]);
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
+            return $this->$name;
+        } elseif ($name == "breadcrumb") {
+            $this->$name = new ArrayClass();
             return $this->$name;
         } else {
             return parent::__get($name);
@@ -284,6 +291,7 @@ class Editor extends ViewController
      */
     public function viewWillLoad(): void
     {
+        $this->breadcrumb->append($this->project?->name ?? "");
         $keys = ["entity", "fetchRequest", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
@@ -306,16 +314,22 @@ class Editor extends ViewController
             }
             if ($selection instanceof Entity) {
                 $this->selectedEntity = $selection;
+                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof FetchRequestTemplate) {
                 $this->selectedFetchRequestTemplate = $selection;
+                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof UniquenessConstraint) {
                 $this->selectedUniquenessConstraint = $selection;
+                $this->breadcrumb->append($selection->stringValue);
             } elseif ($selection instanceof Property) {
                 $this->selectedProperty = $selection;
+                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof FetchIndex) {
                 $this->selectedIndex = $selection;
+                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof FetchIndexElement) {
                 $this->selectedIndexElement = $selection;
+                $this->breadcrumb->append($selection->propertyName);
             }
         }
     }
