@@ -39,10 +39,10 @@ class FetchRequestTemplate extends ManagedObject
         if ($fetchBatchSize = $this->fetchBatchSize) {
             $dictionary["fetchBatchSize"] = $fetchBatchSize;
         }
-        if ($includesSubentities = $this->includesSubentities) {
+        if (!($includesSubentities = $this->includesSubentities)) {
             $dictionary["includesSubentities"] = $includesSubentities;
         }
-        if ($includesPropertyValues = $this->includesPropertyValues) {
+        if (!($includesPropertyValues = $this->includesPropertyValues)) {
             $dictionary["includesPropertyValues"] = $includesPropertyValues;
         }
         if ($returnsObjectsAsFaults = $this->returnsObjectsAsFaults) {
