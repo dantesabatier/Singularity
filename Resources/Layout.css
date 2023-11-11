@@ -87,6 +87,6 @@ ul {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.33);
 }
 
-.--bs-breadcrumb-divider {
-url("&#34;data:image/svg+xml,%3Csvg xmlns= 'http://www.w3.org/2000/svg' width= '8' height= '8' %3E%3Cpath d= 'M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill= '%236c757d' /%3E%3C/svg%3E&#34;");
+.breadcrumb-item + .breadcrumb-item::before {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='none' stroke='white' class='bi bi-chevron-compact-right' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M6.776 1.553a.5.5 0 0 1 .671.223l3 6a.5.5 0 0 1 0 .448l-3 6a.5.5 0 1 1-.894-.448L9.44 8 6.553 2.224a.5.5 0 0 1 .223-.671z'/%3E%3C/svg%3E");
 }
