@@ -38,6 +38,12 @@ abstract class Property extends ManagedObject
         if ($regex = $this->regex) {
             $dictionary["regex"] = $regex;
         }
+        if ($usesMinValue = $this->usesMinValue) {
+            $dictionary["usesMinValue"] = $usesMinValue;
+        }
+        if ($usesMaxValue = $this->usesMaxValue) {
+            $dictionary["usesMaxValue"] = $usesMaxValue;
+        }
         return $dictionary;
     }
 }
