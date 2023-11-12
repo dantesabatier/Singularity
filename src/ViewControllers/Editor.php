@@ -237,7 +237,7 @@ class Editor extends ViewController
             }
             return "$string \$$attribute->name";
         });
-        $properties->appendContentsOf($fetchedProperties->map(fn(FetchedProperty $fetchedProperty): string => " * @property-read $arrayClassName<$fetchedProperty->fetchRequestEntityName> \$$fetchedProperty->name"));
+        $properties->appendContentsOf($fetchedProperties->map(fn(FetchedProperty $fetchedProperty): string => " * @property-read $arrayClassName<$fetchedProperty->entityName> \$$fetchedProperty->name"));
         $properties->appendContentsOf($relationships->compactMap(function (Relationship $relationship) use ($setClassName): string {
             $lazyDestinationEntityName = $relationship->lazyDestinationEntityName;
             $string = " * @property ";
