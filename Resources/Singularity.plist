@@ -141,6 +141,20 @@
                         <string>entityProperty</string>
                     </dict>
                 </array>
+                <key>indexes</key>
+                <array>
+                    <dict>
+                        <key>name</key>
+                        <string>name</string>
+                        <key>elements</key>
+                        <array>
+                            <dict>
+                                <key>propertyName</key>
+                                <string>name</string>
+                            </dict>
+                        </array>
+                    </dict>
+                </array>
             </dict>
             <dict>
                 <key>name</key>
@@ -349,6 +363,20 @@
                         <string>fetchRequestTemplates</string>
                     </dict>
                 </array>
+                <key>indexes</key>
+                <array>
+                    <dict>
+                        <key>name</key>
+                        <string>name</string>
+                        <key>elements</key>
+                        <array>
+                            <dict>
+                                <key>propertyName</key>
+                                <string>name</string>
+                            </dict>
+                        </array>
+                    </dict>
+                </array>
             </dict>
             <dict>
                 <key>name</key>
@@ -456,6 +484,20 @@
                     <array>
                         <string>url</string>
                     </array>
+                </array>
+                <key>indexes</key>
+                <array>
+                    <dict>
+                        <key>name</key>
+                        <string>name</string>
+                        <key>elements</key>
+                        <array>
+                            <dict>
+                                <key>propertyName</key>
+                                <string>name</string>
+                            </dict>
+                        </array>
+                    </dict>
                 </array>
             </dict>
             <dict>
