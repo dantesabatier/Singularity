@@ -269,19 +269,19 @@
                     </dict>
                     <dict>
                         <key>name</key>
-                        <string>fetchRequestEntityName</string>
+                        <string>entityName</string>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
                     <dict>
                         <key>name</key>
-                        <string>fetchRequestPredicateFormat</string>
+                        <string>predicateFormat</string>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
                     <dict>
                         <key>name</key>
-                        <string>fetchRequestResultType</string>
+                        <string>resultType</string>
                         <key>isOptional</key>
                         <false/>
                         <key>type</key>
