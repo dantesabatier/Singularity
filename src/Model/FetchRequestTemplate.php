@@ -22,9 +22,11 @@ use Sabatier\Foundation\Dictionary;
  */
 class FetchRequestTemplate extends ManagedObject
 {
-    public function validateFetchRequestResultType(int &$fetchRequestResultType): bool
+    public function validateFetchRequestResultType(FetchRequestResultType|int|null &$fetchRequestResultType): bool
     {
-        $fetchRequestResultType = FetchRequestResultType::from($fetchRequestResultType);
+        if (is_int($fetchRequestResultType)) {
+            $fetchRequestResultType = FetchRequestResultType::from($fetchRequestResultType);
+        }
         return true;
     }
 

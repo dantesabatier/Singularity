@@ -51,9 +51,9 @@ class Attribute extends Property
         });
     }
 
-    public function validateType(int|AttributeType &$type): bool
+    public function validateType(AttributeType|int|null &$type): bool
     {
-        if (!$type instanceof AttributeType) {
+        if (is_int($type)) {
             $type = AttributeType::from($type);
         }
         return true;

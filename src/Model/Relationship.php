@@ -56,9 +56,9 @@ class Relationship extends Property
         }
     }
 
-    public function validateDeleteRule(int|DeleteRule &$deleteRule): bool
+    public function validateDeleteRule(DeleteRule|int|null &$deleteRule): bool
     {
-        if (!$deleteRule instanceof DeleteRule) {
+        if (is_int($deleteRule)) {
             $deleteRule = DeleteRule::from($deleteRule);
         }
         return true;
