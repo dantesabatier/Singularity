@@ -86,14 +86,16 @@ class Relationship extends Property
         if ($deleteRule !== DeleteRule::nullifyDeleteRule) {
             $dictionary["deleteRule"] = $deleteRule->value;
         }
-        if ($isMinCountBounded = $this->isMinCountBounded) {
+        $isMinCountBounded = $this->isMinCountBounded;
+        if ($isMinCountBounded) {
             $dictionary["isMinCountBounded"] = $isMinCountBounded;
         }
-        if ($isMaxCountBounded = $this->isMaxCountBounded) {
+        $isMaxCountBounded = $this->isMaxCountBounded;
+        if ($isMaxCountBounded) {
             $dictionary["isMaxCountBounded"] = $isMaxCountBounded;
         }
-        $dictionary["minCount"] = $this->isMinCountBounded ? $this->minCount : null;
-        $dictionary["maxCount"] = $this->isMaxCountBounded ? $this->maxCount : null;
+        $dictionary["minCount"] = $isMinCountBounded ? $this->minCount : null;
+        $dictionary["maxCount"] = $isMaxCountBounded ? $this->maxCount : null;
         $dictionary["lazyDestinationEntityName"] = $this->lazyDestinationEntityName;
         $dictionary["lazyInverseRelationshipName"] = $this->lazyInverseRelationshipName;
         return $dictionary;
