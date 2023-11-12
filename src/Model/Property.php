@@ -33,17 +33,19 @@ abstract class Property extends ManagedObject
         }
         $dictionary["versionHashModifier"] = $this->versionHashModifier;
         $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
-        $dictionary["minValue"] = $this->minValue;
-        $dictionary["maxValue"] = $this->maxValue;
         if ($regex = $this->regex) {
             $dictionary["regex"] = $regex;
         }
-        if ($isMinValueBounded = $this->isMinValueBounded) {
+        $isMinValueBounded = $this->isMinValueBounded;
+        if ($isMinValueBounded) {
             $dictionary["isMinValueBounded"] = $isMinValueBounded;
         }
-        if ($isMaxValueBounded = $this->isMaxValueBounded) {
+        $isMaxValueBounded = $this->isMaxValueBounded;
+        if ($isMaxValueBounded) {
             $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
         }
+        $dictionary["minValue"] = $isMinValueBounded ? $this->minValue : null;
+        $dictionary["maxValue"] = $isMaxValueBounded ? $this->maxValue : null;
         return $dictionary;
     }
 }
