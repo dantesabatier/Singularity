@@ -498,6 +498,21 @@
                             </dict>
                         </array>
                     </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>byDateValues</string>
+                        <key>elements</key>
+                        <array>
+                            <dict>
+                                <key>propertyName</key>
+                                <string>creationDate</string>
+                            </dict>
+                            <dict>
+                                <key>propertyName</key>
+                                <string>lastModifiedDate</string>
+                            </dict>
+                        </array>
+                    </dict>
                 </array>
             </dict>
             <dict>
