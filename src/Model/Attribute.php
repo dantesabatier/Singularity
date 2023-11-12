@@ -89,14 +89,14 @@ class Attribute extends Property
         if ($isMinValueBounded) {
             $dictionary["isMinValueBounded"] = $isMinValueBounded;
         }
-        $dictionary["minValue"] = match ($type) {
-            AttributeType::date => $isMinValueBounded ? $this->minValue : null,
-            default => $this->minValue
-        };
         $isMaxValueBounded = $this->isMaxValueBounded;
         if ($isMaxValueBounded) {
             $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
         }
+        $dictionary["minValue"] = match ($type) {
+            AttributeType::date => $isMinValueBounded ? $this->minValue : null,
+            default => $this->minValue
+        };
         $dictionary["maxValue"] = match ($type) {
             AttributeType::date => $isMaxValueBounded ? $this->maxValue : null,
             default => $this->maxValue
