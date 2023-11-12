@@ -73,20 +73,32 @@ class Attribute extends Property
         if ($type !== AttributeType::undefined) {
             $dictionary["type"] = $type->value;
         }
+        $isDefaultValueBounded = $this->isDefaultValueBounded;
+        if ($isDefaultValueBounded) {
+            $dictionary["isDefaultValueBounded"] = $isDefaultValueBounded;
+        }
         if ($this->isDerived) {
             $dictionary["derivationExpressionFormat"] = $this->derivationExpressionFormat;
         } else {
             $dictionary["defaultValue"] = match ($type) {
-                AttributeType::string, AttributeType::date => $this->isDefaultValueBounded ? $this->defaultValue : null,
+                AttributeType::string, AttributeType::date => $isDefaultValueBounded ? $this->defaultValue : null,
                 default => $this->defaultValue
             };
         }
+        $isMinValueBounded = $this->isMinValueBounded;
+        if ($isMinValueBounded) {
+            $dictionary["isMinValueBounded"] = $isMinValueBounded;
+        }
         $dictionary["minValue"] = match ($type) {
-            AttributeType::date => $this->isMinValueBounded ? $this->minValue : null,
+            AttributeType::date => $isMinValueBounded ? $this->minValue : null,
             default => $this->minValue
         };
+        $isMaxValueBounded = $this->isMaxValueBounded;
+        if ($isMaxValueBounded) {
+            $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
+        }
         $dictionary["maxValue"] = match ($type) {
-            AttributeType::date => $this->isMaxValueBounded ? $this->maxValue : null,
+            AttributeType::date => $isMaxValueBounded ? $this->maxValue : null,
             default => $this->maxValue
         };
         if ($valueTransformerName = $this->valueTransformerName) {
@@ -97,9 +109,6 @@ class Attribute extends Property
         }
         if ($preservesValueInHistoryOnDeletion = $this->preservesValueInHistoryOnDeletion) {
             $dictionary["preservesValueInHistoryOnDeletion"] = $preservesValueInHistoryOnDeletion;
-        }
-        if ($isDefaultValueBounded = $this->isDefaultValueBounded) {
-            $dictionary["isDefaultValueBounded"] = $isDefaultValueBounded;
         }
         return $dictionary;
     }
