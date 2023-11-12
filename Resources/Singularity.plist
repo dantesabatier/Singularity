@@ -14,6 +14,8 @@
                     <dict>
                         <key>name</key>
                         <string>name</string>
+                        <key>isOptional</key>
+                        <false/>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
@@ -46,6 +48,8 @@
                     <dict>
                         <key>name</key>
                         <string>subentitiesCount</string>
+                        <key>isOptional</key>
+                        <false/>
                         <key>type</key>
                         <integer>300</integer>
                         <key>derivationExpressionFormat</key>
@@ -54,6 +58,8 @@
                     <dict>
                         <key>name</key>
                         <string>indexesCount</string>
+                        <key>isOptional</key>
+                        <false/>
                         <key>type</key>
                         <integer>300</integer>
                         <key>derivationExpressionFormat</key>
@@ -146,6 +152,8 @@
                     <dict>
                         <key>name</key>
                         <string>name</string>
+                        <key>isOptional</key>
+                        <false/>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
@@ -192,6 +200,8 @@
                     <dict>
                         <key>name</key>
                         <string>propertyName</string>
+                        <key>isOptional</key>
+                        <false/>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
@@ -238,6 +248,8 @@
                     <dict>
                         <key>name</key>
                         <string>name</string>
+                        <key>isOptional</key>
+                        <false/>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
@@ -659,12 +671,16 @@
                             <dict>
                                 <key>name</key>
                                 <string>lazyDestinationEntityName</string>
+                                <key>isOptional</key>
+                                <false/>
                                 <key>type</key>
                                 <integer>700</integer>
                             </dict>
                             <dict>
                                 <key>name</key>
                                 <string>lazyInverseRelationshipName</string>
+                                <key>isOptional</key>
+                                <false/>
                                 <key>type</key>
                                 <integer>700</integer>
                             </dict>
