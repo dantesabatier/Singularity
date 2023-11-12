@@ -8,9 +8,9 @@ use Sabatier\Foundation\Dictionary;
 
 /**
  * @property string $name
- * @property string|null $fetchRequestEntityName
- * @property string|null $fetchRequestPredicateFormat
- * @property FetchRequestResultType $fetchRequestResultType
+ * @property string|null $entityName
+ * @property string|null $predicateFormat
+ * @property FetchRequestResultType $resultType
  * @property int $fetchLimit
  * @property int $fetchBatchSize
  * @property bool $includesSubentities
@@ -22,10 +22,10 @@ use Sabatier\Foundation\Dictionary;
  */
 class FetchRequestTemplate extends ManagedObject
 {
-    public function validateFetchRequestResultType(FetchRequestResultType|int|null &$fetchRequestResultType): bool
+    public function validateFetchResultType(FetchRequestResultType|int|null &$resultType): bool
     {
-        if (is_int($fetchRequestResultType)) {
-            $fetchRequestResultType = FetchRequestResultType::from($fetchRequestResultType);
+        if (is_int($resultType)) {
+            $resultType = FetchRequestResultType::from($resultType);
         }
         return true;
     }
@@ -35,11 +35,11 @@ class FetchRequestTemplate extends ManagedObject
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = new Dictionary();
         $dictionary["name"] = $this->name;
-        $dictionary["fetchRequestEntityName"] = $this->fetchRequestEntityName;
-        $dictionary["fetchRequestPredicateFormat"] = $this->fetchRequestPredicateFormat;
-        $fetchRequestResultType = $this->fetchRequestResultType;
-        if ($fetchRequestResultType !== FetchRequestResultType::managedObjectResultType) {
-            $dictionary["fetchRequestResultType"] = $fetchRequestResultType->value;
+        $dictionary["entityName"] = $this->entityName;
+        $dictionary["predicateFormat"] = $this->predicateFormat;
+        $resultType = $this->resultType;
+        if ($resultType !== FetchRequestResultType::managedObjectResultType) {
+            $dictionary["resultType"] = $resultType->value;
         }
         if ($fetchLimit = $this->fetchLimit) {
             $dictionary["fetchLimit"] = $fetchLimit;
