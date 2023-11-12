@@ -43,7 +43,7 @@
             {var array $items = [0 => "No Action", 1 => "Nullify", 2 => "Cascade", 3 => "Deny"]}
             <label for="deleteRule" class="form-label">Delete Rule</label>
             <select name="deleteRule" id="deleteRule" class="form-select" data-autosave="true">
-                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->deleteRule ? selected}>{$value}</option>
+                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->deleteRule->value ? selected}>{$value}</option>
             </select>
         </div>
         <hr>
