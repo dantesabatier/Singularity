@@ -6,6 +6,7 @@ use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\KeyValueObservingOptions;
 
 /**
  * @property string $lazyDestinationEntityName
@@ -28,6 +29,13 @@ class Relationship extends Property
         parent::__construct($managedObjectContext, $entity);
         unset($this->destinationEntity);
         unset($this->inverseRelationship);
+
+        $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship): void {
+            $relationship->minCount = $relationship->isMinCountBounded ? $this->minCount : null;
+        });
+        $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship): void {
+            $relationship->maxCount = $relationship->isMaxCountBounded ? $this->maxCount : null;
+        });
     }
 
     public function __get(string $name)
@@ -84,14 +92,8 @@ class Relationship extends Property
         if ($isMaxCountBounded = $this->isMaxCountBounded) {
             $dictionary["isMaxCountBounded"] = $isMaxCountBounded;
         }
-        $maxCount = $this->maxCount;
-        if ($maxCount !== null) {
-            $dictionary["maxCount"] = $maxCount;
-        }
-        $minCount = $this->minCount;
-        if ($minCount !== null) {
-            $dictionary["minCount"] = $minCount;
-        }
+        $dictionary["minCount"] = $this->isMinCountBounded ? $this->minCount : null;
+        $dictionary["maxCount"] = $this->isMaxCountBounded ? $this->maxCount : null;
         $dictionary["lazyDestinationEntityName"] = $this->lazyDestinationEntityName;
         $dictionary["lazyInverseRelationshipName"] = $this->lazyInverseRelationshipName;
         return $dictionary;
