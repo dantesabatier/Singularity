@@ -37,6 +37,12 @@ class Attribute extends Property
                 default => null,
             };
         });
+        $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute): void {
+            $attribute->minValue = $attribute->isMinValueBounded ? $this->minValue : null;
+        });
+        $this->observe("isMaxValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute): void {
+            $attribute->maxValue = $attribute->isMaxValueBounded ? $this->maxValue : null;
+        });
         $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute): void {
             if ($attribute->defaultValue === "") {
                 $attribute->defaultValue = null;
@@ -70,8 +76,19 @@ class Attribute extends Property
         if ($this->isDerived) {
             $dictionary["derivationExpressionFormat"] = $this->derivationExpressionFormat;
         } else {
-            $dictionary["defaultValue"] = $this->defaultValue;
+            $dictionary["defaultValue"] = match ($type) {
+                AttributeType::string, AttributeType::date => $this->isDefaultValueBounded ? $this->defaultValue : null,
+                default => $this->defaultValue
+            };
         }
+        $dictionary["minValue"] = match ($type) {
+            AttributeType::date => $this->isMinValueBounded ? $this->minValue : null,
+            default => $this->minValue
+        };
+        $dictionary["maxValue"] = match ($type) {
+            AttributeType::date => $this->isMaxValueBounded ? $this->maxValue : null,
+            default => $this->maxValue
+        };
         if ($valueTransformerName = $this->valueTransformerName) {
             $dictionary["valueTransformerName"] = $valueTransformerName;
         }
