@@ -9,7 +9,7 @@ use Sabatier\Foundation\Dictionary;
 /**
  * @property string $name
  * @property string|null $entityName
- * @property string|null $predicateFormat
+ * @property string|null $predicateString
  * @property FetchRequestResultType $resultType
  * @property int $fetchLimit
  * @property int $fetchBatchSize
@@ -36,7 +36,7 @@ class FetchRequestTemplate extends ManagedObject
         $dictionary = new Dictionary();
         $dictionary["name"] = $this->name;
         $dictionary["entityName"] = $this->entityName;
-        $dictionary["predicateFormat"] = $this->predicateFormat;
+        $dictionary["predicateString"] = $this->predicateString;
         $resultType = $this->resultType;
         if ($resultType !== FetchRequestResultType::managedObjectResultType) {
             $dictionary["resultType"] = $resultType->value;
