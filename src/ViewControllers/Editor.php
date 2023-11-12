@@ -294,7 +294,7 @@ class Editor extends ViewController
         if (!($project = $this->project)) {
             return;
         }
-        $this->breadcrumb->append($project);
+        $this->breadcrumb[] = $project;
         $keys = ["entity", "fetchRequest", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
@@ -328,7 +328,7 @@ class Editor extends ViewController
             } elseif ($selection instanceof FetchIndexElement) {
                 $this->selectedIndexElement = $selection;
             }
-            $this->breadcrumb->append($selection);
+            $this->breadcrumb[] = $selection;
         }
     }
 
