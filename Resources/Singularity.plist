@@ -302,8 +302,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <true/>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -312,8 +310,6 @@
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
-                        <key>defaultValue</key>
-                        <true/>
                     </dict>
                     <dict>
                         <key>name</key>
