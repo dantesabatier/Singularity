@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-        "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "https://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist>
     <dict>
         <key>entities</key>
@@ -47,7 +47,7 @@
                         <key>name</key>
                         <string>subentitiesCount</string>
                         <key>type</key>
-                        <integer>800</integer>
+                        <integer>300</integer>
                         <key>derivationExpressionFormat</key>
                         <string>subentities.@count</string>
                     </dict>
@@ -55,7 +55,7 @@
                         <key>name</key>
                         <string>indexesCount</string>
                         <key>type</key>
-                        <integer>800</integer>
+                        <integer>300</integer>
                         <key>derivationExpressionFormat</key>
                         <string>indexes.@count</string>
                     </dict>
@@ -517,19 +517,23 @@
                     </dict>
                     <dict>
                         <key>name</key>
-                        <string>usesMinValue</string>
+                        <string>isMinValueBounded</string>
                         <key>isOptional</key>
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
+                        <key>defaultValue</key>
+                        <false/>
                     </dict>
                     <dict>
                         <key>name</key>
-                        <string>usesMaxValue</string>
+                        <string>isMaxValueBounded</string>
                         <key>isOptional</key>
                         <false/>
                         <key>type</key>
                         <integer>800</integer>
+                        <key>defaultValue</key>
+                        <false/>
                     </dict>
                 </array>
                 <key>relationships</key>
@@ -614,11 +618,13 @@
                             </dict>
                             <dict>
                                 <key>name</key>
-                                <string>usesDefaultValue</string>
+                                <string>isDefaultValueBounded</string>
                                 <key>isOptional</key>
                                 <false/>
                                 <key>type</key>
                                 <integer>800</integer>
+                                <key>defaultValue</key>
+                                <false/>
                             </dict>
                         </array>
                     </dict>
