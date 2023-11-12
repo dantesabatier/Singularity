@@ -2,6 +2,7 @@
 {varType string $title}
 {varType App\Model\Project $project}
 {varType App\Model\Entity $selectedEntity}
+{varType App\Model\FetchIndex $selectedIndex}
 {varType Sabatier\Foundation\ArrayClass $allEntities}
 {varType Sabatier\Foundation\ArrayClass $breadcrumb}
 {block title}{$project?->name} - {$title}{/block}
@@ -95,7 +96,24 @@
                 <nav class="border-bottom" aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
-                            {$item}
+                            {switch true}
+                                {case $item instanceof App\Model\Project}
+                                <span class="nav-toggle" data-href="/Editor?project={$item->objectID->referenceObject}">{$item->name}</span>
+                            {case $item instanceof App\Model\Entity}
+                                <span class="nav-toggle" data-href="/Editor?project={$project->objectID->referenceObject}&entity={$item->objectID->referenceObject}">{$item->name}</span>
+                            {case $item instanceof App\Model\FetchRequestTemplate}
+                                <span class="nav-toggle" data-href="/Editor?project={$project->objectID->referenceObject}&fetchRequest={$item->objectID->referenceObject}">{$item->name}</span>
+                            {case $item instanceof App\Model\FetchRequestTemplate}
+                                <span class="nav-toggle" data-href="/Editor?project={$project->objectID->referenceObject}&fetchRequest={$item->objectID->referenceObject}">{$item->name}</span>
+                            {case $item instanceof App\Model\UniquenessConstraint}
+                                <span class="nav-toggle" data-href="/Editor?project={$project->objectID->referenceObject}&constraint={$item->objectID->referenceObject}">{$item->stringValue}</span>
+                            {case $item instanceof App\Model\Property}
+                                <span class="nav-toggle" data-href="/Editor?project={$project->objectID->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$item->objectID->referenceObject}">{$item->name}</span>
+                            {case $item instanceof App\Model\FetchIndex}
+                                <span class="nav-toggle" data-href="/Editor?project={$project->objectID->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}">{$item->name}</span>
+                            {case $item instanceof App\Model\FetchIndexElement}
+                                <span class="nav-toggle" data-href="/Editor?project={$project->objectID->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$item->objectID->referenceObject}">{$item->propertyName}</span>
+                            {/switch}
                         </li>
                     </ol>
                 </nav>
