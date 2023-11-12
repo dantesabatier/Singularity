@@ -104,7 +104,7 @@
                                 <label class="form-check-label" for="isMaxValueBounded">Maximum Date</label>
                                 <input class="form-check-input" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded}" id="isMaxValueBounded" {$selectedProperty->isMaxValueBounded ? checked}>
                             </div>
-                            <input type="datetime-local" name="maxValue" id="maxValue" placeholder="Default Value" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
+                            <input type="datetime-local" name="maxValue" id="maxValue" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
                         </div>
                         {case 1100, 1200}
                         <div class="mb-3">
