@@ -71,7 +71,7 @@ class Editor extends ViewController
     public ?UniquenessConstraint $selectedUniquenessConstraint = null;
     #[Outlet]
     public ?FetchRequestTemplate $selectedFetchRequestTemplate = null;
-    /** @var ArrayClass<string> */
+    /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     public ArrayClass $breadcrumb;
 
@@ -291,7 +291,10 @@ class Editor extends ViewController
      */
     public function viewWillLoad(): void
     {
-        $this->breadcrumb->append($this->project?->name ?? "");
+        if (!($project = $this->project)) {
+            return;
+        }
+        $this->breadcrumb->append($project);
         $keys = ["entity", "fetchRequest", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
@@ -314,23 +317,18 @@ class Editor extends ViewController
             }
             if ($selection instanceof Entity) {
                 $this->selectedEntity = $selection;
-                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof FetchRequestTemplate) {
                 $this->selectedFetchRequestTemplate = $selection;
-                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof UniquenessConstraint) {
                 $this->selectedUniquenessConstraint = $selection;
-                $this->breadcrumb->append($selection->stringValue);
             } elseif ($selection instanceof Property) {
                 $this->selectedProperty = $selection;
-                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof FetchIndex) {
                 $this->selectedIndex = $selection;
-                $this->breadcrumb->append($selection->name);
             } elseif ($selection instanceof FetchIndexElement) {
                 $this->selectedIndexElement = $selection;
-                $this->breadcrumb->append($selection->propertyName);
             }
+            $this->breadcrumb->append($selection);
         }
     }
 
