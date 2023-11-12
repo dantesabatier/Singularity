@@ -39,12 +39,17 @@
             {switch $type}
                 {case 100, 200, 300, 400, 500, 600, 700, 800, 900}
                 <div class="mb-3">
-                    <label for="defaultValue" class="form-label">Default Value</label>
                     {switch $type}
                         {case 100, 200, 300, 400, 500, 600}
+                        <label for="defaultValue" class="form-label">Default Value</label>
                         <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     {case 700}
-                        <input type="text" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                        <label for="defaultValue" class="form-label">Default Value</label>
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label" for="isDefaultValueBounded">Default String</label>
+                            <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
+                        </div>
+                        <input type="text" name="defaultValue" id="defaultValue" placeholder="Null String" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     {case 800}
                     {var array $values = ["false" => "False", "true" => "True"]}
                         <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
