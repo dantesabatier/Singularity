@@ -7,16 +7,16 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 
 /**
- * @property string|null $name
+ * @property string $name
  * @property string|null $partialIndexPredicateFormat
- * @property Entity $entityProperty
+ * @property Entity|null $entityProperty
  * @property Set<FetchIndexElement> $elements
  * @method void addElementsObject(FetchIndexElement $object)
  * @method void removeElementsObject(FetchIndexElement $object)
- * @method void addElements(Set $objects)
- * @method void removeElements(Set $objects)
- * @method Set<FetchIndexElement> intersectElements(Set $objects)
- * @method void setElements(Set $objects)
+ * @method void addElements(Set<FetchIndexElement> $objects)
+ * @method void removeElements(Set<FetchIndexElement> $objects)
+ * @method Set<FetchIndexElement> intersectElements(Set<FetchIndexElement> $objects)
+ * @method void setElements(Set<FetchIndexElement> $objects)
  */
 class FetchIndex extends ManagedObject
 {

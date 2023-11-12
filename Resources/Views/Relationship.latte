@@ -1,7 +1,6 @@
 {varType App\Model\Relationship $selectedProperty}
 {varType Sabatier\Foundation\ArrayClass $allEntities}
 {define relationship}
-    <!--suppress HtmlUnknownTag -->
     <form action="/Relationship" method="POST">
         <div class="my-2 fs-6 fw-bold text-shadow">
             Relationship
@@ -23,6 +22,7 @@
             <label for="lazyDestinationEntityName" class="form-label">Destination</label>
             <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select" data-autosave="true">
                 <option value="">No Destination Entity</option>
+                <!--suppress HtmlUnknownTag -->
                 <hr>
                 <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->lazyDestinationEntityName ? selected}>{$entity->name}</option>
             </select>
@@ -31,6 +31,7 @@
             <label for="lazyInverseRelationshipName" class="form-label">Inverse</label>
             <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select" data-autosave="true">
                 <option value="">No Inverse Relationship</option>
+                <!--suppress HtmlUnknownTag -->
                 <hr>
                 {var App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
                 {if $destinationEntity}

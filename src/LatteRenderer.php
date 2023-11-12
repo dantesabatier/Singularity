@@ -44,7 +44,7 @@ class LatteRenderer extends Renderer
         };
         $img = function (Property|FetchIndexElement $e) use (&$img, &$fn): string {
             if ($e instanceof Attribute) {
-                return $fn(AttributeType::from($e->type));
+                return $fn($e->type);
             } elseif ($e instanceof Relationship) {
                 return $e->isToMany ? "M" : "O";
             } elseif ($e instanceof FetchIndexElement) {

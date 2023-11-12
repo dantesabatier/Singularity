@@ -13,7 +13,7 @@ use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
 
 /**
- * @property int<0, 2000> $type
+ * @property AttributeType $type
  * @property mixed $defaultValue
  * @property string|null $attributeValueClassName
  * @property string|null $valueTransformerName
@@ -21,7 +21,7 @@ use Sabatier\Foundation\UUID;
  * @property bool $preservesValueInHistoryOnDeletion
  * @property string|null $derivationExpressionFormat
  * @property bool $isDerived
- * @property bool $usesDefaultValue
+ * @property bool $isDefaultValueBounded
  */
 class Attribute extends Property
 {
@@ -29,7 +29,7 @@ class Attribute extends Property
     {
         parent::__construct($managedObjectContext, $entity);
         $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute): void {
-            $attribute->attributeValueClassName = match (AttributeType::from($attribute->type)) {
+            $attribute->attributeValueClassName = match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
@@ -51,13 +51,21 @@ class Attribute extends Property
         });
     }
 
+    public function validateType(int|AttributeType &$type): bool
+    {
+        if (!$type instanceof AttributeType) {
+            $type = AttributeType::from($type);
+        }
+        return true;
+    }
+
     public function dictionaryRepresentation(): Dictionary
     {
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = parent::dictionaryRepresentation();
         $type = $this->type;
-        if ($type !== AttributeType::undefined->value) {
-            $dictionary["type"] = $type;
+        if ($type !== AttributeType::undefined) {
+            $dictionary["type"] = $type->value;
         }
         if ($this->isDerived) {
             $dictionary["derivationExpressionFormat"] = $this->derivationExpressionFormat;
@@ -73,8 +81,8 @@ class Attribute extends Property
         if ($preservesValueInHistoryOnDeletion = $this->preservesValueInHistoryOnDeletion) {
             $dictionary["preservesValueInHistoryOnDeletion"] = $preservesValueInHistoryOnDeletion;
         }
-        if ($usesDefaultValue = $this->usesDefaultValue) {
-            $dictionary["usesDefaultValue"] = $usesDefaultValue;
+        if ($isDefaultValueBounded = $this->isDefaultValueBounded) {
+            $dictionary["isDefaultValueBounded"] = $isDefaultValueBounded;
         }
         return $dictionary;
     }

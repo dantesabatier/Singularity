@@ -7,10 +7,10 @@ use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
 
 /**
- * @property string|null $name
+ * @property string $name
  * @property string|null $fetchRequestEntityName
  * @property string|null $fetchRequestPredicateFormat
- * @property int<0, 3> $fetchRequestResultType
+ * @property FetchRequestResultType $fetchRequestResultType
  * @property int $fetchLimit
  * @property int $fetchBatchSize
  * @property bool $includesSubentities
@@ -18,10 +18,16 @@ use Sabatier\Foundation\Dictionary;
  * @property bool $returnsObjectsAsFaults
  * @property bool $includesPendingChanges
  * @property bool $returnsDistinctResults
- * @property Model|null $model
+ * @property Model $model
  */
 class FetchRequestTemplate extends ManagedObject
 {
+    public function validateFetchRequestResultType(int &$fetchRequestResultType): bool
+    {
+        $fetchRequestResultType = FetchRequestResultType::from($fetchRequestResultType);
+        return true;
+    }
+
     public function dictionaryRepresentation(): Dictionary
     {
         /** @var Dictionary<mixed> $dictionary */
@@ -29,7 +35,7 @@ class FetchRequestTemplate extends ManagedObject
         $dictionary["name"] = $this->name;
         $dictionary["fetchRequestEntityName"] = $this->fetchRequestEntityName;
         $dictionary["fetchRequestPredicateFormat"] = $this->fetchRequestPredicateFormat;
-        $fetchRequestResultType = FetchRequestResultType::from($this->fetchRequestResultType);
+        $fetchRequestResultType = $this->fetchRequestResultType;
         if ($fetchRequestResultType !== FetchRequestResultType::managedObjectResultType) {
             $dictionary["fetchRequestResultType"] = $fetchRequestResultType->value;
         }

@@ -14,9 +14,9 @@ use Sabatier\Foundation\Dictionary;
  * @property mixed $minValue
  * @property mixed $maxValue
  * @property string|null $regex
+ * @property bool $isMinValueBounded
+ * @property bool $isMaxValueBounded
  * @property Entity $entityProperty
- * @property bool $usesMinValue
- * @property bool $usesMaxValue
  */
 abstract class Property extends ManagedObject
 {
@@ -38,11 +38,11 @@ abstract class Property extends ManagedObject
         if ($regex = $this->regex) {
             $dictionary["regex"] = $regex;
         }
-        if ($usesMinValue = $this->usesMinValue) {
-            $dictionary["usesMinValue"] = $usesMinValue;
+        if ($isMinValueBounded = $this->isMinValueBounded) {
+            $dictionary["isMinValueBounded"] = $isMinValueBounded;
         }
-        if ($usesMaxValue = $this->usesMaxValue) {
-            $dictionary["usesMaxValue"] = $usesMaxValue;
+        if ($isMaxValueBounded = $this->isMaxValueBounded) {
+            $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
         }
         return $dictionary;
     }

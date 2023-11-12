@@ -20,6 +20,7 @@
                 <label for="superentityID" class="form-label">Parent Entity</label>
                 <select name="superentityID" id="superentityID" class="form-select" data-autosave="true">
                     <option value="">No Parent Entity</option>
+                    <!--suppress HtmlUnknownTag -->
                     <hr>
                     <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}" {$entity->name === $selectedEntity->superentity?->name ? selected} {$entity->objectID->referenceObject == $selectedEntity->objectID->referenceObject ? disabled}>{$entity->name}</option>
                 </select>

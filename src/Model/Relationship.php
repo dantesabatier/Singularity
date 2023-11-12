@@ -12,7 +12,7 @@ use Sabatier\Foundation\Dictionary;
  * @property string $lazyInverseRelationshipName
  * @property bool $isToMany
  * @property bool $isOrdered
- * @property int<0, 3> $deleteRule
+ * @property DeleteRule $deleteRule
  * @property int|null $minCount
  * @property int|null $maxCount
  * @property bool $isMinCountBounded
@@ -56,6 +56,14 @@ class Relationship extends Property
         }
     }
 
+    public function validateDeleteRule(int|DeleteRule &$deleteRule): bool
+    {
+        if (!$deleteRule instanceof DeleteRule) {
+            $deleteRule = DeleteRule::from($deleteRule);
+        }
+        return true;
+    }
+
     public function dictionaryRepresentation(): Dictionary
     {
         /** @var Dictionary<mixed> $dictionary */
@@ -66,9 +74,15 @@ class Relationship extends Property
         if ($isOrdered = $this->isOrdered) {
             $dictionary["isOrdered"] = $isOrdered;
         }
-        $deleteRule = DeleteRule::from($this->deleteRule);
+        $deleteRule = $this->deleteRule;
         if ($deleteRule !== DeleteRule::nullifyDeleteRule) {
             $dictionary["deleteRule"] = $deleteRule->value;
+        }
+        if ($isMinCountBounded = $this->isMinCountBounded) {
+            $dictionary["isMinCountBounded"] = $isMinCountBounded;
+        }
+        if ($isMaxCountBounded = $this->isMaxCountBounded) {
+            $dictionary["isMaxCountBounded"] = $isMaxCountBounded;
         }
         $maxCount = $this->maxCount;
         if ($maxCount !== null) {

@@ -169,7 +169,7 @@ class Editor extends ViewController
         $attributes = $entity->attributes;
         /** @var ArrayClass<string> $uses */
         $uses = $attributes->compactMap(function (Attribute $attribute): ?string {
-            $attributeValueClassName = $attribute->attributeValueClassName ?? match (AttributeType::from($attribute->type)) {
+            $attributeValueClassName = $attribute->attributeValueClassName ?? match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
@@ -201,7 +201,7 @@ class Editor extends ViewController
         $content .= "\n";
         /** @var ArrayClass<string> $properties */
         $properties = $attributes->compactMap(function (Attribute $attribute): ?string {
-            $attributeValueClassName = $attribute->attributeValueClassName ?? match (AttributeType::from($attribute->type)) {
+            $attributeValueClassName = $attribute->attributeValueClassName ?? match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
@@ -211,7 +211,7 @@ class Editor extends ViewController
             if ($attributeValueClassName !== null && class_exists($attributeValueClassName)) {
                 $attributeValueClassName = class_name($attributeValueClassName);
             }
-            if (!($type = match (AttributeType::from($attribute->type)) {
+            if (!($type = match ($attribute->type) {
                 AttributeType::undefined, AttributeType::transformable => "mixed",
                 AttributeType::integer16, AttributeType::integer32, AttributeType::integer64 => "int",
                 AttributeType::decimal, AttributeType::double => "double",

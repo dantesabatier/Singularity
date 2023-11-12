@@ -9,8 +9,8 @@ use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 
 /**
- * @property string|null $propertyName
- * @property int<0, 2> $collationType
+ * @property string $propertyName
+ * @property FetchIndexElementType $collationType
  * @property bool $isAscending
  * @property FetchIndex $index
  */
@@ -27,11 +27,19 @@ class FetchIndexElement extends ManagedObject
     public function __get(string $name)
     {
         if ($name == "property") {
-            $this->$name = $this->index->entityProperty->attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
+            $this->$name = $this->index->entityProperty?->attributes?->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
             return $this->$name;
         } else {
             return parent::__get($name);
         }
+    }
+
+    public function validateCollationType(int|FetchIndexElementType &$collationType): bool
+    {
+        if (!$collationType instanceof FetchIndexElementType) {
+            $collationType = FetchIndexElementType::from($collationType);
+        }
+        return true;
     }
 
     public function dictionaryRepresentation(): Dictionary
@@ -39,7 +47,7 @@ class FetchIndexElement extends ManagedObject
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = new Dictionary();
         $dictionary["propertyName"] = $this->propertyName;
-        $collationType = FetchIndexElementType::from($this->collationType);
+        $collationType = $this->collationType;
         if ($collationType !== FetchIndexElementType::bTree) {
             $dictionary["collationType"] = $collationType->value;
         }
