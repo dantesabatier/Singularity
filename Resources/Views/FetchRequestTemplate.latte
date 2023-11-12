@@ -10,18 +10,18 @@
             <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control text-truncate" value="{$selectedFetchRequestTemplate->name}" autocomplete="off" spellcheck="false" required>
         </div>
         <div class="mt-3 mb-3">
-            <label for="fetchRequestEntityName" class="form-label">Entity</label>
-            <select name="fetchRequestEntityName" id="fetchRequestEntityName" class="form-select" data-autosave="true">
-                <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedFetchRequestTemplate->fetchRequestEntityName ? selected}>
+            <label for="entityName" class="form-label">Entity</label>
+            <select name="entityName" id="entityName" class="form-select" data-autosave="true">
+                <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedFetchRequestTemplate->entityName ? selected}>
                     {$entity->name}
                 </option>
             </select>
         </div>
         <div class="mt-3 mb-3">
             {var array $items = [0 => "Objects", 1 => "Object IDs", 2 => "Dictionaries"]}
-            <label for="fetchRequestResultType" class="form-label">Type</label>
-            <select name="fetchRequestResultType" id="fetchRequestResultType" class="form-select" data-autosave="true">
-                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedFetchRequestTemplate->fetchRequestResultType ? selected}>
+            <label for="resultType" class="form-label">Type</label>
+            <select name="resultType" id="resultType" class="form-select" data-autosave="true">
+                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedFetchRequestTemplate->resultType ? selected}>
                     {$value}
                 </option>
             </select>
