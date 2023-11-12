@@ -1,5 +1,6 @@
 {varType App\Model\Attribute $selectedProperty}
 {define attribute}
+    {var int $type = $selectedProperty->type->value}
     <form action="/Attribute" method="POST">
         <div class="my-2 fs-6 fw-bold text-shadow">
             Attribute
@@ -29,13 +30,12 @@
             {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
             <label for="type" class="form-label">Type</label>
             <select name="type" id="type" class="form-select" data-autosave="true">
-                <option n:foreach="$types as $key => $value" value="{$key}" {$key === $selectedProperty->type->value ? selected}>
+                <option n:foreach="$types as $key => $value" value="{$key}" {$key === $type ? selected}>
                     {$value}
                 </option>
             </select>
         </div>
         {if !$selectedProperty->isDerived}
-            {var int $type = $selectedProperty->type}
             {switch $type}
                 {case 100, 200, 300, 400, 500, 600, 700, 800, 900}
                 <div class="mb-3">
