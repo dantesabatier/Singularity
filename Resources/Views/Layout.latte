@@ -205,6 +205,14 @@
       e.addEventListener("click", async () => {
         try {
           await submit(e.form)
+          const checkbox = document.getElementById(e.id)
+          if (checkbox instanceof Element) {
+            checkbox.scrollIntoView({
+              behavior: "instant",
+              block: "end",
+              inline: "nearest"
+            })
+          }
         } catch (error) {
           console.error(error)
         }
