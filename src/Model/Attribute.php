@@ -71,7 +71,7 @@ class Attribute extends Property
         $dictionary = parent::dictionaryRepresentation();
         $type = $this->type;
         if ($type !== AttributeType::undefined) {
-            $dictionary["type"] = $type->value;
+            $dictionary["type"] = $type;
         }
         $isDefaultValueBounded = $this->isDefaultValueBounded;
         if ($isDefaultValueBounded) {

@@ -49,7 +49,7 @@ class FetchIndexElement extends ManagedObject
         $dictionary["propertyName"] = $this->propertyName;
         $collationType = $this->collationType;
         if ($collationType !== FetchIndexElementType::bTree) {
-            $dictionary["collationType"] = $collationType->value;
+            $dictionary["collationType"] = $collationType;
         }
         return $dictionary;
     }

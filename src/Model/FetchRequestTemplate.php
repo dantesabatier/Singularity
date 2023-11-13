@@ -39,7 +39,7 @@ class FetchRequestTemplate extends ManagedObject
         $dictionary["predicateString"] = $this->predicateString;
         $resultType = $this->resultType;
         if ($resultType !== FetchRequestResultType::managedObjectResultType) {
-            $dictionary["resultType"] = $resultType->value;
+            $dictionary["resultType"] = $resultType;
         }
         if ($fetchLimit = $this->fetchLimit) {
             $dictionary["fetchLimit"] = $fetchLimit;

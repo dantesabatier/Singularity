@@ -84,7 +84,7 @@ class Relationship extends Property
         }
         $deleteRule = $this->deleteRule;
         if ($deleteRule !== DeleteRule::nullifyDeleteRule) {
-            $dictionary["deleteRule"] = $deleteRule->value;
+            $dictionary["deleteRule"] = $deleteRule;
         }
         $isMinCountBounded = $this->isMinCountBounded;
         if ($isMinCountBounded) {
