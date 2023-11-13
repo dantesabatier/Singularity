@@ -85,6 +85,11 @@ class Attribute extends Property
                 default => $this->defaultValue
             };
         }
+        $attributeValueClassName = $this->attributeValueClassName;
+        $dictionary["attributeValueClassName"] = match ($attributeValueClassName) {
+            Date::class, UUID::class, URL::class, ManagedObjectID::class => null,
+            default => $attributeValueClassName
+        };
         $isMinValueBounded = $this->isMinValueBounded;
         if ($isMinValueBounded) {
             $dictionary["isMinValueBounded"] = $isMinValueBounded;
