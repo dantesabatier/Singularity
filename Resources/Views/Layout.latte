@@ -60,7 +60,12 @@
   }
 
   async function replace(url) {
-    const data = await (await fetch(url)).text()
+    let headers = {}
+    headers["X-Requested-With"] = "XmlHttpRequest"
+    const data = await (await fetch(url, {
+      method: "GET",
+      headers: headers
+    })).text()
     const doc = document.implementation.createHTMLDocument()
     doc.open()
     doc.write(data)
