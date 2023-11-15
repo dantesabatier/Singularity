@@ -165,6 +165,16 @@
     message.textContent = informativeText
     const form = element.querySelector(".modal-content form")
     const footer = form.querySelector(".modal-footer")
+    for (let child of footer.children) {
+      if (child.type !== "hidden") {
+        footer.removeChild(child)
+      }
+    }
+    for (let button of buttons) {
+      let e = document.createElement("button")
+      e.textContent = button.title
+      footer.appendChild(e)
+    }
     console.log(footer)
   }
 
