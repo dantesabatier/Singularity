@@ -155,6 +155,19 @@
     modal.show(undefined)
   }
 
+  function presentAlert(messageText = "Aviso", informativeText = "", buttons = [{
+    title: "OK"
+  }]) {
+    const element = document.getElementById("alert")
+    const title = element.querySelector(".modal-title")
+    title.textContent = messageText
+    const message = element.querySelector(".modal-message")
+    message.textContent = informativeText
+    const form = element.querySelector(".modal-content form")
+    const footer = form.querySelector(".modal-footer")
+    console.log(footer)
+  }
+
   function showPreferences() {
     window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
   }
