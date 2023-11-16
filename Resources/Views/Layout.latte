@@ -164,6 +164,14 @@
    * @param { object[] } buttons
    */
   function presentAlert(messageText = "Aviso", informativeText = "", formAction = "", httpMethod = "", buttons = []) {
+    if (!buttons.length) {
+      buttons = [
+        {
+          title: "OK",
+          color: "primary"
+        }
+      ]
+    }
     const element = document.getElementById("alert")
     const title = element.querySelector(".modal-title")
     title.textContent = messageText
