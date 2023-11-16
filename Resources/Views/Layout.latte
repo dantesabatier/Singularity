@@ -172,21 +172,6 @@
         }
       ]
     }
-    buttons = buttons.map(e => {
-      const button = document.createElement("button")
-      button.type = e.type ?? "button"
-      button.className = "btn btn-outline-" + e.color + " border-0 bg-transparent text-" + e.color
-      button.textContent = e.title
-      button.setAttribute("data-bs-dismiss", "modal")
-      return button
-    })
-    if (httpMethod) {
-      const input = document.createElement("input")
-      input.type = "hidden"
-      input.name = "X-Http-Method-Override"
-      input.value = httpMethod
-      buttons.splice(0, 0, input)
-    }
     const element = document.getElementById("alert")
     const title = element.querySelector(".modal-title")
     title.textContent = messageText
@@ -197,7 +182,21 @@
       form.action = formAction
     }
     const footer = form.querySelector(".modal-footer")
-    footer.replaceChildren(...buttons)
+    footer.replaceChildren(...buttons.map(e => {
+      const button = document.createElement("button")
+      button.type = e.type ?? "button"
+      button.className = "btn btn-outline-" + e.color + " border-0 bg-transparent text-" + e.color
+      button.textContent = e.title
+      button.setAttribute("data-bs-dismiss", "modal")
+      return button
+    }))
+    if (httpMethod) {
+      const input = document.createElement("input")
+      input.type = "hidden"
+      input.name = "X-Http-Method-Override"
+      input.value = httpMethod
+      footer.insertBefore(input, footer.firstChild)
+    }
     const modal = new bootstrap.Modal(element, {})
     modal.show(undefined)
   }
