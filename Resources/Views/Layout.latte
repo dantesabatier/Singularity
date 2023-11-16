@@ -170,6 +170,8 @@
       button.textContent = e.title
       return button
     }))
+    const modal = new bootstrap.Modal(element, {})
+    modal.show(undefined)
   }
 
   function showPreferences() {
