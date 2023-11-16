@@ -164,7 +164,7 @@
    * @param { object[] } buttons
    */
   function presentAlert(messageText = "Aviso", informativeText = "", formAction = "", httpMethod = "", buttons = []) {
-    if (!buttons.length) {
+    if (!!!buttons.length) {
       buttons = [
         {
           title: "OK",
