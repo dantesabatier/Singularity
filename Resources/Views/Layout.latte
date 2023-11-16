@@ -183,8 +183,21 @@
     modal.show(undefined)
   }
 
-  function presentError(error = {}) {
-
+  /**
+   * @param { object } error
+   */
+  function presentError(error) {
+    error ??= error = {
+      localizedDescription: "Ha ocurrido un error inesperado",
+      localizedFailureReason: undefined,
+      localizedRecoverySuggestion: undefined
+    }
+    const title = error.localizedDescription ?? error.name ?? "Ha ocurrido un error inesperado"
+    let message = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? error.message ?? ""
+    if (message && error.localizedRecoverySuggestion && message !== error.localizedRecoverySuggestion) {
+      message = "\n" + error.localizedRecoverySuggestion
+    }
+    presentAlert(title, message)
   }
 
   function showPreferences() {
