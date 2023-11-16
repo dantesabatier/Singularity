@@ -193,11 +193,11 @@
    */
   function presentError(error) {
     error ??= error = {
-      localizedDescription: "Ha ocurrido un error inesperado",
+      localizedDescription: "An unexpected error has occurred",
       localizedFailureReason: undefined,
       localizedRecoverySuggestion: undefined
     }
-    const messageText = error.localizedDescription ?? error.name ?? "Ha ocurrido un error inesperado"
+    const messageText = error.localizedDescription ?? error.name ?? "An unexpected error has occurred"
     let informativeText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? error.message ?? ""
     if (informativeText && error.localizedRecoverySuggestion && informativeText !== error.localizedRecoverySuggestion) {
       informativeText = "\n" + error.localizedRecoverySuggestion
