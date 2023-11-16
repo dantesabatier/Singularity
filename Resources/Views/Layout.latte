@@ -101,11 +101,14 @@
       return result
     }, {}), null, 4)
     const action = form.action
-    await fetch(action, {
+    const response = await fetch(action, {
       method: method,
       headers: headers,
       body: body
     })
+    if (!response.ok) {
+      presentError((await response.json())?.error)
+    }
     form.reset()
     let url = new URL(window.location)
     if (method === "DELETE") {
@@ -233,18 +236,14 @@
     const once = window.location.href.includes("Editor")
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
-        try {
-          await push(new URL(window.location.origin + e.dataset.href))
-          const span = document.getElementById(e.id)
-          if (span instanceof Element) {
-            span.scrollIntoView({
-              behavior: "instant",
-              block: "end",
-              inline: "nearest"
-            })
-          }
-        } catch (error) {
-          presentError(error)
+        await push(new URL(window.location.origin + e.dataset.href))
+        const span = document.getElementById(e.id)
+        if (span instanceof Element) {
+          span.scrollIntoView({
+            behavior: "instant",
+            block: "end",
+            inline: "nearest"
+          })
         }
       }, {
         once: once
@@ -252,18 +251,14 @@
     })
     document.querySelectorAll("tr[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
-        try {
-          await push(new URL(window.location.origin + e.dataset.href))
-          const tr = document.getElementById(e.id)
-          if (tr instanceof Element) {
-            tr.scrollIntoView({
-              behavior: "instant",
-              block: "end",
-              inline: "nearest"
-            })
-          }
-        } catch (error) {
-          presentError(error)
+        await push(new URL(window.location.origin + e.dataset.href))
+        const tr = document.getElementById(e.id)
+        if (tr instanceof Element) {
+          tr.scrollIntoView({
+            behavior: "instant",
+            block: "end",
+            inline: "nearest"
+          })
         }
       }, {
         once: once
@@ -271,30 +266,14 @@
     })
     document.querySelectorAll("input[type=checkbox]").forEach(e => {
       e.addEventListener("click", async () => {
-        try {
-          await submit(e.form)
-          const checkbox = document.getElementById(e.id)
-          if (checkbox instanceof Element) {
-            checkbox.scrollIntoView({
-              behavior: "instant",
-              block: "end",
-              inline: "nearest"
-            })
-          }
-        } catch (error) {
-          presentError(error)
-        }
+        await submit(e.form)
       }, {
         once: once
       })
     })
     document.querySelectorAll("select[data-autosave=true]").forEach(e => {
       e.addEventListener("change", async () => {
-        try {
-          await submit(e.form)
-        } catch (error) {
-          presentError(error)
-        }
+        await submit(e.form)
       }, {
         once: once
       })
@@ -302,11 +281,7 @@
     document.querySelectorAll("form:not(.ignore)").forEach(e => {
       e.addEventListener("submit", async (event) => {
         event.preventDefault()
-        try {
-          await submit(e)
-        } catch (error) {
-          presentError(error)
-        }
+        await submit(e)
       }, {
         once: once
       })
@@ -329,11 +304,7 @@
     const form = alert.querySelector(".modal-content form")
     form.addEventListener("submit", async (event) => {
       event.preventDefault()
-      try {
-        await submit(form)
-      } catch (error) {
-        presentError(error)
-      }
+      await submit(form)
     })
     load()
   }
