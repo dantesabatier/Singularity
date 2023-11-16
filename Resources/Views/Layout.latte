@@ -185,6 +185,10 @@
     modal.show(undefined)
   }
 
+  function presentError(error = {}) {
+
+  }
+
   function showPreferences() {
     window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
   }
@@ -211,7 +215,7 @@
             })
           }
         } catch (error) {
-          console.error(error)
+          presentError(error)
         }
       }, {
         once: once
@@ -230,7 +234,7 @@
             })
           }
         } catch (error) {
-          console.error(error)
+          presentError(error)
         }
       }, {
         once: once
@@ -249,7 +253,7 @@
             })
           }
         } catch (error) {
-          console.error(error)
+          presentError(error)
         }
       }, {
         once: once
@@ -260,7 +264,7 @@
         try {
           await submit(e.form)
         } catch (error) {
-          console.error(error)
+          presentError(error)
         }
       }, {
         once: once
@@ -272,7 +276,7 @@
         try {
           await submit(e)
         } catch (error) {
-          console.error(error)
+          presentError(error)
         }
       }, {
         once: once
@@ -299,7 +303,7 @@
       try {
         await submit(form)
       } catch (error) {
-        console.error(error)
+        presentError(error)
       }
     })
     load()
