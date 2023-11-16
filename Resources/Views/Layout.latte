@@ -145,19 +145,13 @@
       {
         title: "Remove",
         color: "primary",
-        type: "submit",
-        formAction: url(endpoint, {
-          objectID: item.objectID
-        })
+        type: "submit"
       }
     ].map(e => {
       let button = document.createElement("button")
       button.textContent = e.title
       button.className = "btn btn-outline-" + e.color + " border-0 bg-transparent text-" + e.color
       button.type = e.type ?? "button"
-      if (e.formAction) {
-        button.formAction = e.formAction
-      }
       button.setAttribute("data-bs-dismiss", "modal")
       return button
     })
@@ -166,21 +160,25 @@
     input.name = "X-Http-Method-Override"
     input.value = "DELETE"
     buttons.splice(0, 0, input)
-    presentAlert("Remove " + action.toLowerCase() + " \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?", "This action cannot be undone.", buttons)
+    presentAlert("Remove " + action.toLowerCase() + " \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?", "This action cannot be undone.", url(endpoint, {
+      objectID: item.objectID
+    }), buttons)
   }
 
   /**
    * @param { string } messageText
    * @param { string } informativeText
+   * @param { string } action
    * @param { HTMLButtonElement[] }buttons
    */
-  function presentAlert(messageText = "Aviso", informativeText = "", buttons = []) {
+  function presentAlert(messageText = "Aviso", informativeText = "", action = undefined, buttons = []) {
     const element = document.getElementById("alert")
     const title = element.querySelector(".modal-title")
     title.textContent = messageText
     const message = element.querySelector(".modal-message")
     message.textContent = informativeText
     const form = element.querySelector(".modal-content form")
+    form.action = action
     const footer = form.querySelector(".modal-footer")
     footer.replaceChildren(...buttons)
     const modal = new bootstrap.Modal(element, {})
