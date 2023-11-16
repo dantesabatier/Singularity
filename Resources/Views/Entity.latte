@@ -84,17 +84,17 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form id="addUniquenessConstraint" action="/UniquenessConstraint" method="POST">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addUniquenessConstraintLabel">Add Constraint</h5>
-                        </div>
                         <div class="modal-body">
+                            <div class="mb-3">
+                                <h5 class="modal-title" id="addUniquenessConstraintLabel">Add Constraint</h5>
+                            </div>
                             <div class="mb-3">
                                 <label for="stringValue" class="form-label">Name</label>
                                 <input type="text" name="stringValue" id="stringValue" class="form-control" required>
                             </div>
                         </div>
                         <input type="hidden" name="entityPropertyID" value="{$selectedEntity->objectID->referenceObject}">
-                        <div class="modal-footer">
+                        <div class="modal-footer border-0">
                             <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
                                 Cancel
                             </button>

@@ -132,6 +132,11 @@
     await push(url)
   }
 
+  /**
+   *
+   * @param { HTMLElement } sender
+   * @param { object } item
+   */
   async function remove(sender, item) {
     const action = sender.getAttribute("data-bs-action-name")
     const endpoint = action.split(" ").join("")
