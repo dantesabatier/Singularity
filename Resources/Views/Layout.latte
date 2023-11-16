@@ -178,7 +178,7 @@
     const message = element.querySelector(".modal-message")
     message.textContent = informativeText
     const form = element.querySelector(".modal-content form")
-    form.action = action
+    form.action = action ?? ""
     const footer = form.querySelector(".modal-footer")
     footer.replaceChildren(...buttons)
     const modal = new bootstrap.Modal(element, {})
