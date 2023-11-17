@@ -195,6 +195,7 @@
       button.type = e.type ?? "button"
       button.className = "btn btn-outline-" + e.color + " border-0 bg-transparent text-" + e.color
       button.textContent = e.title
+      button.setAttribute("min-width", "82px")
       button.setAttribute("data-bs-dismiss", "modal")
       return button
     }))
