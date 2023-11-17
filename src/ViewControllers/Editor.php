@@ -212,7 +212,7 @@ class Editor extends ViewController
                 $attributeValueClassName = class_name($attributeValueClassName);
             }
             if (!($type = match ($attribute->type) {
-                AttributeType::undefined, AttributeType::transformable => "mixed",
+                AttributeType::transformable => "mixed",
                 AttributeType::integer16, AttributeType::integer32, AttributeType::integer64 => "int",
                 AttributeType::decimal, AttributeType::double => "double",
                 AttributeType::float => "float",
