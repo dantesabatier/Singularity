@@ -52,6 +52,10 @@ class Attribute extends Property
             if ($attribute->isDerived) {
                 $attribute->isDefaultValueBounded = false;
                 $attribute->defaultValue = null;
+                $attribute->isMaxValueBounded = false;
+                $attribute->minValue = null;
+                $attribute->isMinValueBounded = false;
+                $attribute->maxValue = null;
             } else {
                 $attribute->derivationExpressionFormat = null;
             }
