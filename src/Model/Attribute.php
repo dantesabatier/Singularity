@@ -10,6 +10,7 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Error;
 use Sabatier\Foundation\InternalInconsistencyException;
+use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
@@ -33,8 +34,8 @@ class Attribute extends Property
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute): void {
-            $attribute->attributeValueClassName = match ($attribute->type) {
+        $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+            $attribute->attributeValueClassName = match ($change->newValue) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
@@ -43,19 +44,20 @@ class Attribute extends Property
                 default => null,
             };
         });
-        $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute): void {
-            $attribute->minValue = $attribute->isMinValueBounded ? $this->minValue : null;
+        $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+            $attribute->minValue = $change->newValue ? $attribute->minValue : null;
         });
-        $this->observe("isMaxValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute): void {
-            $attribute->maxValue = $attribute->isMaxValueBounded ? $this->maxValue : null;
+        $this->observe("isMaxValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+            $attribute->maxValue = $change->newValue ? $attribute->maxValue : null;
         });
-        $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute): void {
-            if ($attribute->defaultValue === "") {
+        $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+            if ($change->newValue === "") {
                 $attribute->defaultValue = null;
             }
         });
-        $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute): void {
-            if ($attribute->isDerived) {
+        $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+            if ($change->newValue) {
+                $attribute->isTransient = false;
                 $attribute->isDefaultValueBounded = false;
                 $attribute->defaultValue = null;
                 $attribute->isMaxValueBounded = false;
