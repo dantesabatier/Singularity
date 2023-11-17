@@ -50,6 +50,7 @@ class Attribute extends Property
         });
         $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute): void {
             if ($attribute->isDerived) {
+                $attribute->isDefaultValueBounded = false;
                 $attribute->defaultValue = null;
             } else {
                 $attribute->derivationExpressionFormat = null;
