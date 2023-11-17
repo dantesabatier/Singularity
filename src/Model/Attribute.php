@@ -13,7 +13,6 @@ use Sabatier\Foundation\InternalInconsistencyException;
 use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
-use function Sabatier\Foundation\fatal_error;
 use const Sabatier\Foundation\CocoaErrorDomain;
 use const Sabatier\Foundation\LocalizedDescriptionKey;
 use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
