@@ -89,27 +89,27 @@ class Attribute extends Property
                 AttributeType::string, AttributeType::date => $isDefaultValueBounded ? $this->defaultValue : null,
                 default => $this->defaultValue
             };
+            $isMinValueBounded = $this->isMinValueBounded;
+            if ($isMinValueBounded) {
+                $dictionary["isMinValueBounded"] = $isMinValueBounded;
+            }
+            $isMaxValueBounded = $this->isMaxValueBounded;
+            if ($isMaxValueBounded) {
+                $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
+            }
+            $dictionary["minValue"] = match ($type) {
+                AttributeType::date => $isMinValueBounded ? $this->minValue : null,
+                default => $this->minValue
+            };
+            $dictionary["maxValue"] = match ($type) {
+                AttributeType::date => $isMaxValueBounded ? $this->maxValue : null,
+                default => $this->maxValue
+            };
         }
         $attributeValueClassName = $this->attributeValueClassName;
         $dictionary["attributeValueClassName"] = match ($attributeValueClassName) {
             Date::class, UUID::class, URL::class, ManagedObjectID::class => null,
             default => $attributeValueClassName
-        };
-        $isMinValueBounded = $this->isMinValueBounded;
-        if ($isMinValueBounded) {
-            $dictionary["isMinValueBounded"] = $isMinValueBounded;
-        }
-        $isMaxValueBounded = $this->isMaxValueBounded;
-        if ($isMaxValueBounded) {
-            $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
-        }
-        $dictionary["minValue"] = match ($type) {
-            AttributeType::date => $isMinValueBounded ? $this->minValue : null,
-            default => $this->minValue
-        };
-        $dictionary["maxValue"] = match ($type) {
-            AttributeType::date => $isMaxValueBounded ? $this->maxValue : null,
-            default => $this->maxValue
         };
         if ($valueTransformerName = $this->valueTransformerName) {
             $dictionary["valueTransformerName"] = $valueTransformerName;
