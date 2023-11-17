@@ -8,9 +8,15 @@ use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\ManagedObjectID;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Error;
+use Sabatier\Foundation\InternalInconsistencyException;
 use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
+use function Sabatier\Foundation\fatal_error;
+use const Sabatier\Foundation\CocoaErrorDomain;
+use const Sabatier\Foundation\LocalizedDescriptionKey;
+use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
 
 /**
  * @property AttributeType $type
@@ -34,6 +40,7 @@ class Attribute extends Property
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
+                AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, 0, new Dictionary([LocalizedDescriptionKey => "{$attribute->entityProperty->name}.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "{$attribute->entityProperty->name}.$attribute->name cannot use an attribute type of \"Undefined\""]))),
                 default => null,
             };
         });
