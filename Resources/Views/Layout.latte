@@ -58,7 +58,7 @@
       headers: headers
     })
     if (!response.ok) {
-      presentError((await response.json())?.error)
+      presentError(await response.json())
       return
     }
     const data = await response.text()
@@ -112,7 +112,7 @@
       body: body
     })
     if (!response.ok) {
-      presentError((await response.json())?.error)
+      presentError(await response.json())
     }
     form.reset()
     let url = new URL(window.location)
