@@ -23,7 +23,7 @@
         </div>
         <div n:if="$selectedProperty->isDerived" class="mb-3">
             <label for="derivationExpressionFormat" class="form-label">Derivation</label>
-            <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Derived Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false">
+            <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Derived Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" required>
         </div>
         <hr>
         <div class="mt-3 mb-3">
@@ -119,12 +119,12 @@
                 </div>
             {case 1800}
                 <div class="mb-3">
-                    <label for="valueTransformerName" class="form-label">Value Transformer</label>
-                    <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
-                </div>
-                <div class="mb-3">
                     <label for="attributeValueClassName" class="form-label">Custom Class</label>
                     <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="mb-3">
+                    <label for="valueTransformerName" class="form-label">Value Transformer</label>
+                    <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer Name" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
                 </div>
                 {default}
             {/switch}
@@ -138,6 +138,15 @@
                         Deletion</label>
                     <input class="form-check-input" type="checkbox" name="preservesValueInHistoryOnDeletion" value="{$selectedProperty->preservesValueInHistoryOnDeletion}" id="preservesValueInHistoryOnDeletion" {$selectedProperty->preservesValueInHistoryOnDeletion ? checked}>
                 </div>
+            </div>
+        {elseif ($type === 1800)}
+            <div class="mb-3">
+                <label for="attributeValueClassName" class="form-label">Custom Class</label>
+                <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="mb-3">
+                <label for="valueTransformerName" class="form-label">Value Transformer</label>
+                <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer Name" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
             </div>
         {/if}
         <hr>
