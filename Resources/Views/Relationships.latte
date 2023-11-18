@@ -1,0 +1,64 @@
+{varType App\Model\Project $project}
+{varType App\Model\Entity $selectedEntity}
+{varType App\Model\Relationship $selectedProperty}
+{varType Sabatier\Foundation\Set $relationships}
+{varType Sabatier\Foundation\ArrayClass $allEntities}
+{define relationships, $relationships}
+    <table class="table table-sm caption-top">
+        <caption class="fw-bold text-shadow">Relationships</caption>
+        <thead>
+        <tr>
+            <th scope="col" class="col-sm-2 text-shadow">Name</th>
+            <th scope="col" class="col-sm-2 text-shadow">Destination</th>
+            <th scope="col" class="col-sm-2 text-shadow">Inverse</th>
+            <th scope="col" class="col-sm-6 text-shadow"></th>
+        </tr>
+        </thead>
+        <tbody n:if="$relationships">
+        <tr n:foreach="$relationships as $relationship" id="property-{$relationship->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$relationship->objectID->referenceObject}" n:class="$relationship->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
+            {var string $img = img($relationship)}
+            <td>
+                <img src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
+                {$relationship->name}
+            </td>
+            <td>
+                <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Destination" data-autosave="true">
+                    <option value="">No Value</option>
+                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $relationship->lazyDestinationEntityName ? selected}>{$entity->name}</option>
+                </select>
+            </td>
+            <td>
+                <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Inverse" data-autosave="true">
+                    <option value="">No Inverse</option>¡
+                    {var App\Model\Entity $destinationEntity = $relationship->destinationEntity}
+                    {if $destinationEntity}
+                        <option n:foreach="$destinationEntity->relationships as $e" value="{$e->name}" {$e->name === $relationship->lazyInverseRelationshipName ? selected}>{$e->name}</option>
+                    {/if}
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td>
+                <div class="d-inline-block">
+                    <button class="btn border-0 bg-transparent p-2" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Relationship">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                        </svg>
+                    </button>
+                    <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Relationship" onclick="remove(this, {$selectedProperty})" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+{/define}
