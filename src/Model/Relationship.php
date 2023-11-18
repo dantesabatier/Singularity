@@ -6,6 +6,7 @@ use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
 
 /**
@@ -30,11 +31,11 @@ class Relationship extends Property
         unset($this->destinationEntity);
         unset($this->inverseRelationship);
 
-        $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship): void {
-            $relationship->minCount = $relationship->isMinCountBounded ? $this->minCount : null;
+        $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
+            $relationship->minCount = $change->newValue ? $this->minCount : null;
         });
-        $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship): void {
-            $relationship->maxCount = $relationship->isMaxCountBounded ? $this->maxCount : null;
+        $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
+            $relationship->maxCount = $change->newValue ? $this->maxCount : null;
         });
     }
 
