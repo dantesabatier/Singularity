@@ -1,0 +1,54 @@
+{varType App\Model\Project $project}
+{varType App\Model\Entity $selectedEntity}
+{varType App\Model\Property $selectedProperty}
+{varType Sabatier\Foundation\Set $attributes}
+{define attributes, $attributes}
+    <table class="table table-sm caption-top">
+        <caption class="fw-bold text-shadow">Attributes</caption>
+        <thead>
+        <tr>
+            <th scope="col" class="col-sm-4 text-shadow">Name</th>
+            <th scope="col" class="col-sm-2 text-shadow">Type</th>
+            <th scope="col" class="col-sm-6 text-shadow"></th>
+        </tr>
+        </thead>
+        <tbody n:if="$attributes">
+        <tr n:foreach="$attributes as $attribute" id="property-{$attribute->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$attribute->objectID->referenceObject}" n:class="$attribute->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
+            {var string $img = img($attribute)}
+            <td>
+                <img src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
+                {$attribute->name}
+            </td>
+            <td>
+                {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
+                <select name="type" id="type" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Type" data-autosave="true">
+                    <option n:foreach="$types as $key => $value" value="{$key}" {$key === $attribute->type->value ? selected}>
+                        {$value}
+                    </option>
+                </select>
+            </td>
+            <td></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td>
+                <div class="d-inline-block">
+                    <button class="btn border-0 bg-transparent p-2" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Attribute">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                        </svg>
+                    </button>
+                    <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Attribute" onclick="remove(this, {$selectedProperty})" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+{/define}
