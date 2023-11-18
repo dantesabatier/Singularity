@@ -5,9 +5,9 @@
     {if $selectedIndex}
         {include fetchIndexElements from "FetchIndexElements.latte"}
     {elseif $selectedEntity}
-        {include properties from "Properties.latte", $selectedEntity->attributes, "Attributes", "Attribute", "Attribute"}
-        {include properties from "Properties.latte", $selectedEntity->relationships, "Relationships", "Relationship", "Relationship"}
-        {include properties from "Properties.latte", $selectedEntity->fetchedProperties, "Fetched Properties", "Fetched Property", "FetchedProperty"}
+        {include attributes from "Attributes.latte", $selectedEntity->attributes}
+        {include relationships from "Relationships.latte", $selectedEntity->relationships}
+        {include fetchedProperties from "FetchedProperties.latte", $selectedEntity->fetchedProperties}
     {elseif $selectedFetchRequestTemplate}
         {include fetchRequestTemplatePredicate from "FetchRequestTemplatePredicate.latte"}
     {/if}
