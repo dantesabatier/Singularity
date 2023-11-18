@@ -30,7 +30,15 @@ class Relationship extends Property
         parent::__construct($managedObjectContext, $entity);
         unset($this->destinationEntity);
         unset($this->inverseRelationship);
-
+        $this->observe("isToMany", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
+            if (!$change->newValue) {
+                $relationship->minCount = null;
+                $relationship->maxCount = null;
+                $relationship->isOrdered = false;
+                $relationship->isMinCountBounded = false;
+                $relationship->isMaxCountBounded = false;
+            }
+        });
         $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
             $relationship->minCount = $change->newValue ? $this->minCount : null;
         });
@@ -79,24 +87,24 @@ class Relationship extends Property
         $dictionary = parent::dictionaryRepresentation();
         if ($isToMany = $this->isToMany) {
             $dictionary["isToMany"] = $isToMany;
-        }
-        if ($isOrdered = $this->isOrdered) {
-            $dictionary["isOrdered"] = $isOrdered;
+            if ($isOrdered = $this->isOrdered) {
+                $dictionary["isOrdered"] = $isOrdered;
+            }
+            $isMinCountBounded = $this->isMinCountBounded;
+            if ($isMinCountBounded) {
+                $dictionary["isMinCountBounded"] = $isMinCountBounded;
+            }
+            $isMaxCountBounded = $this->isMaxCountBounded;
+            if ($isMaxCountBounded) {
+                $dictionary["isMaxCountBounded"] = $isMaxCountBounded;
+            }
+            $dictionary["minCount"] = $isMinCountBounded ? $this->minCount : null;
+            $dictionary["maxCount"] = $isMaxCountBounded ? $this->maxCount : null;
         }
         $deleteRule = $this->deleteRule;
         if ($deleteRule !== DeleteRule::nullifyDeleteRule) {
             $dictionary["deleteRule"] = $deleteRule;
         }
-        $isMinCountBounded = $this->isMinCountBounded;
-        if ($isMinCountBounded) {
-            $dictionary["isMinCountBounded"] = $isMinCountBounded;
-        }
-        $isMaxCountBounded = $this->isMaxCountBounded;
-        if ($isMaxCountBounded) {
-            $dictionary["isMaxCountBounded"] = $isMaxCountBounded;
-        }
-        $dictionary["minCount"] = $isMinCountBounded ? $this->minCount : null;
-        $dictionary["maxCount"] = $isMaxCountBounded ? $this->maxCount : null;
         $dictionary["lazyDestinationEntityName"] = $this->lazyDestinationEntityName;
         $dictionary["lazyInverseRelationshipName"] = $this->lazyInverseRelationshipName;
         return $dictionary;
