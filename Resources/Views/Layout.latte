@@ -72,6 +72,13 @@
     }
     const e1 = document.getElementById("content")
     e1.innerHTML = e2.innerHTML
+    const body = document.body
+    body.removeAttribute("class")
+    body.removeAttribute("style")
+    const backdrop = document.querySelector(".modal-backdrop")
+    if (backdrop) {
+      backdrop.remove()
+    }
     load()
   }
 

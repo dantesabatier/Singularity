@@ -24,7 +24,6 @@ ul {
 }
 
 .table-sm > :not(caption) > * > * {
-    padding: 0;
     font-size: .875rem;
 }
 

@@ -22,19 +22,27 @@
                 {$relationship->name}
             </td>
             <td>
-                <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Destination" data-autosave="true">
-                    <option value="">No Value</option>
-                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $relationship->lazyDestinationEntityName ? selected}>{$entity->name}</option>
-                </select>
+                <form action="/Relationship" method="POST">
+                    <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Destination" data-autosave="true">
+                        <option value="">No Value</option>
+                        <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $relationship->lazyDestinationEntityName ? selected}>{$entity->name}</option>
+                    </select>
+                    <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                </form>
             </td>
             <td>
-                <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Inverse" data-autosave="true">
-                    <option value="">No Inverse</option>¡
-                    {var App\Model\Entity $destinationEntity = $relationship->destinationEntity}
+                <form action="/Relationship" method="POST">
+                    <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Inverse" data-autosave="true">
+                        <option value="">No Inverse</option>
+                        {var App\Model\Entity $destinationEntity = $relationship->destinationEntity}
                     {if $destinationEntity}
-                        <option n:foreach="$destinationEntity->relationships as $e" value="{$e->name}" {$e->name === $relationship->lazyInverseRelationshipName ? selected}>{$e->name}</option>
-                    {/if}
-                </select>
+                            <option n:foreach="$destinationEntity->relationships as $e" value="{$e->name}" {$e->name === $relationship->lazyInverseRelationshipName ? selected}>{$e->name}</option>
+                        {/if}
+                    </select>
+                    <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                </form>
             </td>
             <td></td>
         </tr>

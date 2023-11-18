@@ -20,12 +20,16 @@
                 {$attribute->name}
             </td>
             <td>
-                {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
-                <select name="type" id="type" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Type" data-autosave="true">
-                    <option n:foreach="$types as $key => $value" value="{$key}" {$key === $attribute->type->value ? selected}>
-                        {$value}
-                    </option>
-                </select>
+                <form action="/Attribute" method="POST">
+                    {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
+                    <select name="type" id="type" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Type" data-autosave="true">
+                        <option n:foreach="$types as $key => $value" value="{$key}" {$key === $attribute->type->value ? selected}>
+                            {$value}
+                        </option>
+                    </select>
+                    <input type="hidden" name="objectID" value="{$attribute->objectID->referenceObject}">
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                </form>
             </td>
             <td></td>
         </tr>
