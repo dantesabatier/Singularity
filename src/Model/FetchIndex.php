@@ -11,8 +11,6 @@ use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\Set;
 
-use function Sabatier\Foundation\human_readable_value;
-
 /**
  * @property string $name
  * @property string|null $partialIndexPredicateFormat

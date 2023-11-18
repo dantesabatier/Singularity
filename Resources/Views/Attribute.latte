@@ -105,7 +105,7 @@
                             </div>
                             <input type="datetime-local" name="maxValue" id="maxValue" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
                         </div>
-                        {case 1100, 1200}
+                    {case 1100, 1200}
                         <div class="mb-3">
                             <label for="defaultValue" class="form-label">Default Value</label>
                             <input type="text" name="defaultValue" id="defaultValue" class="form-control text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
