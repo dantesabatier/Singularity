@@ -112,6 +112,7 @@
       })()
       return result
     }, {}), null, 4)
+    console.log(body)
     const action = form.action
     const response = await fetch(action, {
       method: method,
@@ -121,7 +122,6 @@
     if (!response.ok) {
       presentError((await response.json())?.error)
     }
-    form.reset()
     let url = new URL(window.location)
     if (method === "DELETE") {
       let keys = []

@@ -6,16 +6,31 @@
     <table class="table table-sm">
         <thead>
         <tr>
-            <th scope="col">Property</th>
+            <th scope="col" class="col-sm-4 text-shadow">Property</th>
+            <th scope="col" class="col-sm-2 text-shadow">Ascending</th>
+            <th scope="col" class="col-sm-6 text-shadow"></th>
         </tr>
         </thead>
         <tbody>
         <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
-            {var string $img = img($element)}
             <td>
-                <img src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
-                {$element->propertyName}
+                <form action="/FetchIndexElement" method="POST">
+                    <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                <select name="propertyName" id="propertyName" class="form-select form-select-sm bg-transparent border-0 p-0" aria-label="Property" data-autosave="true">
+                    <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}" {$attribute->name === $element->propertyName ? selected}>{$attribute->name}</option>
+                </select>
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                </form>
             </td>
+            <td>
+                <form action="/FetchIndexElement" method="POST">
+                    <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                    <input type="hidden" name="propertyName" value="{$element->propertyName}">
+                    <input class="form-check-input" type="checkbox" name="isAscending" value="{$element->isAscending}" id="isAscending" aria-label="Ascending" {$element->isAscending ? checked}>
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                </form>
+            </td>
+            <td></td>
         </tr>
         </tbody>
         <tfoot>
@@ -34,6 +49,8 @@
                     </button>
                 </div>
             </td>
+            <td></td>
+            <td></td>
         </tr>
         </tfoot>
     </table>

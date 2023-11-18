@@ -5,6 +5,7 @@
         <div class="my-2 fs-6 fw-bold text-shadow">
             Attribute
         </div>
+        <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
@@ -161,7 +162,6 @@
             <label for="renamingIdentifier" class="form-label">Renaming ID</label>
             <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
         </div>
-        <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
         <input class="d-none" type="submit">
     </form>

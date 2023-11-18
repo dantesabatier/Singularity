@@ -5,6 +5,7 @@
         <div class="my-2 fs-6 fw-bold text-shadow">
             Relationship
         </div>
+        <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
             <input type="text" name="name" id="name" placeholder="Relationship Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
@@ -73,7 +74,6 @@
                 <input type="number" name="maxValue" id="maxValue" aria-label="Maximum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxCountBounded ? disabled}>
             </div>
         </div>
-        <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
         <input class="d-none" type="submit">
     </form>
