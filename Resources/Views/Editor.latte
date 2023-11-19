@@ -11,12 +11,12 @@
         <nav class="navbar navbar-expand-sm fixed-top border-bottom">
             <div class="container-fluid">
                 <div class="btn-group">
-                    <a href="/" class="btn border-0 bg-transparent p-2 d-inline-flex">
+                    <button class="btn btn-back border-0 bg-transparent" onclick="history.back()">
                         <span class="material-icons-outlined">
                             arrow_back_ios
                         </span>
                         <span>Back</span>
-                    </a>
+                    </button>
                     <button type="button" class="btn border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         Editor
                     </button>
@@ -93,8 +93,8 @@
         </nav>
         <div class="container-fluid d-flex flex-column user-select-none">
             <div class="row flex-grow-1" style="padding-top: 64px;">
-                <nav class="border-bottom" aria-label="breadcrumb">
-                    <ol class="breadcrumb">
+                <nav class="border-bottom justify-content-center" aria-label="breadcrumb">
+                    <ol class="breadcrumb align-items-center">
                         <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
                             {switch true}
                                 {case $item instanceof App\Model\Project}
