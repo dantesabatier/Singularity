@@ -55,12 +55,17 @@
     doc.open()
     doc.write(data)
     doc.close()
-    const e2 = doc.getElementById("content")
+    const e2 = doc.getElementById("main")
     if (!!!e2) {
       return
     }
-    const e1 = document.getElementById("content")
+    const info = Array.from(document.querySelectorAll(`[class*="overflow-auto"]`)).reduce((r, e) => {
+      r[e.id] = e.scrollTop
+      return r
+    }, {})
+    const e1 = document.getElementById("main")
     e1.innerHTML = e2.innerHTML
+    document.querySelectorAll(`[class*="overflow-auto"]`).forEach(e => e.scroll(0, info[e.id]))
     const body = document.body
     body.removeAttribute("class")
     body.removeAttribute("style")

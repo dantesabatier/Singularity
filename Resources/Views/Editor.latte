@@ -7,7 +7,7 @@
 {varType Sabatier\Foundation\ArrayClass $breadcrumb}
 {block title}{$project?->name} - {$title}{/block}
 {block content}
-    <div id="content">
+    <div id="main">
         <nav class="navbar navbar-expand-sm fixed-top border-bottom">
             <div class="container-fluid">
                 <div class="btn-group">
@@ -117,13 +117,13 @@
                         </li>
                     </ol>
                 </nav>
-                <div class="col-sm-3 col-md-2 border-end overflow-auto px-0" style="height: 85vh;">
-                    {include sidebar from "Sidebar.latte"}
+                <div id="source" class="col-sm-3 col-md-2 border-end overflow-auto px-0" style="height: 85vh;">
+                    {include sourceList from "SourceList.latte"}
                 </div>
-                <div class="col-sm-6 col-md-8 overflow-auto" style="height: 85vh;">
+                <div id="content" class="col-sm-6 col-md-8 overflow-auto" style="height: 85vh;">
                     {include content from "Content.latte"}
                 </div>
-                <div class="col-sm-3 col-md-2 border-start overflow-auto" style="height: 85vh;">
+                <div id="sidebar" class="col-sm-3 col-md-2 border-start overflow-auto" style="height: 85vh;">
                     {include inspector from "Inspector.latte"}
                 </div>
             </div>
