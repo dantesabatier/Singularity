@@ -11,22 +11,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="stylesheet" type="text/css" href="/Resources/Layout.css" media="screen">
 </head>
-<body onload="init()">
+<body>
 {block content}{/block}
-<div class="modal fade" id="alert" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItemLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form id="alert" class="ignore" method="POST">
-                <div class="modal-body">
-                    <h5 class="modal-title mb-3" id="removeItemLabel"></h5>
-                    <div class="modal-message"></div>
-                </div>
-                <div class="modal-footer border-0">
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous" defer></script>
 <!--suppress JSCheckFunctionSignatures -->
@@ -79,7 +65,7 @@
     if (backdrop) {
       backdrop.remove()
     }
-    load()
+    register()
   }
 
   async function push(url) {
@@ -112,7 +98,6 @@
       })()
       return result
     }, {}), null, 4)
-    console.log(body)
     const action = form.action
     const response = await fetch(action, {
       method: method,
@@ -203,7 +188,9 @@
       button.className = "btn btn-outline-" + e.color + " border-0 bg-transparent text-" + e.color
       button.textContent = e.title
       button.setAttribute("min-width", "82px")
-      button.setAttribute("data-bs-dismiss", "modal")
+      if (button.type !== "submit") {
+        button.setAttribute("data-bs-dismiss", "modal")
+      }
       return button
     }))
     if (httpMethod) {
@@ -244,20 +231,12 @@
     document.querySelectorAll(`[class*="overflow-auto"]`).forEach(e => e.style.height = document.documentElement.clientHeight - (64 + 40 + 2 + 40) + "px")
   }
 
-  function load() {
+  function register() {
     layout()
-    const once = window.location.href.includes("Editor")
+    const once = true//window.location.href.includes("Editor")
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         await push(new URL(window.location.origin + e.dataset.href))
-        const span = document.getElementById(e.id)
-        if (span instanceof Element) {
-          span.scrollIntoView({
-            behavior: "instant",
-            block: "end",
-            inline: "nearest"
-          })
-        }
       }, {
         once: once
       })
@@ -265,27 +244,21 @@
     document.querySelectorAll("tr[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         await push(new URL(window.location.origin + e.dataset.href))
-        const tr = document.getElementById(e.id)
-        if (tr instanceof Element) {
-          tr.scrollIntoView({
-            behavior: "instant",
-            block: "end",
-            inline: "nearest"
-          })
-        }
       }, {
         once: once
       })
     })
     document.querySelectorAll("input[type=checkbox]").forEach(e => {
-      e.addEventListener("click", async () => {
+      e.addEventListener("click", async (event) => {
+        event.stopPropagation()
         await submit(e.form)
       }, {
         once: once
       })
     })
     document.querySelectorAll("select[data-autosave=true]").forEach(e => {
-      e.addEventListener("change", async () => {
+      e.addEventListener("change", async (event) => {
+        event.stopPropagation()
         await submit(e.form)
       }, {
         once: once
@@ -308,19 +281,13 @@
       e.textContent = "Add " + action
       const form = addItem.querySelector(".modal-content form")
       form.action = url(endpoint)
+    }, {
+      once: once
     })
   }
 
-  function init() {
-    window.addEventListener("resize", layout)
-    const alert = document.getElementById("alert")
-    const form = alert.querySelector(".modal-content form")
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault()
-      await submit(form)
-    })
-    load()
-  }
+  window.addEventListener("resize", layout)
+  register()
 </script>
 </body>
 </html>
