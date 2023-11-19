@@ -307,11 +307,8 @@
   }
 
   window.addEventListener("resize", layout)
-  window.addEventListener('popstate', async (event) => {
-    const url = event.state?.url
-    if (url) {
-      await replace(url)
-    }
+  window.addEventListener("popstate", async (event) => {
+    await replace(event.state?.url ?? window.location.origin)
   });
   register()
 </script>
