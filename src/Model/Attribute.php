@@ -43,6 +43,12 @@ class Attribute extends Property
                 AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, 0, new Dictionary([LocalizedDescriptionKey => "{$attribute->entityProperty->name}.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "{$attribute->entityProperty->name}.$attribute->name cannot use an attribute type of \"Undefined\""]))),
                 default => null,
             };
+            $attribute->isDefaultValueBounded = false;
+            $attribute->defaultValue = null;
+            $attribute->isMaxValueBounded = false;
+            $attribute->minValue = null;
+            $attribute->isMinValueBounded = false;
+            $attribute->maxValue = null;
         });
         $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             $attribute->minValue = $change->newValue ? $attribute->minValue : null;
