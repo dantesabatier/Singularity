@@ -237,13 +237,9 @@
   }
 
   async function load(project) {
-    try {
-      await push(url("Editor", {
-        project: project.objectID
-      }))
-    } catch (error) {
-      presentError(error)
-    }
+    await push(url("Editor", {
+      project: project.objectID
+    }))
   }
 </script>
 <!--suppress JSCheckFunctionSignatures -->
