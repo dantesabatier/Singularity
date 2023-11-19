@@ -37,7 +37,7 @@
   }
 
   /**
-   * @param { URL } url
+   * @param { string } url
    */
   async function replace(url) {
     let headers = {}
@@ -77,13 +77,23 @@
   }
 
   /**
-   * @param { URL } url
+   * @param { string } url
    */
   async function push(url) {
     await replace(url)
     await history.pushState({
-      url: url.href,
+      url: url,
     }, "", url)
+  }
+
+  async function load(project) {
+    try {
+      await push(url("Editor", {
+        project: project.objectID
+      }))
+    } catch (error) {
+      presentError(error)
+    }
   }
 
   async function submit(form) {
@@ -140,7 +150,7 @@
       }
       url.search = keys.map(k => k + "=" + url.searchParams.get(k)).join("&")
     }
-    await push(url)
+    await push(url.href)
   }
 
   /**
@@ -246,14 +256,14 @@
     layout()
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
-        await push(new URL(window.location.origin + e.dataset.href))
+        await push(window.location.origin + e.dataset.href)
       }, {
         once: true
       })
     })
     document.querySelectorAll("tr[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
-        await push(new URL(window.location.origin + e.dataset.href))
+        await push(window.location.origin + e.dataset.href)
       }, {
         once: true
       })
@@ -300,8 +310,7 @@
   window.addEventListener('popstate', async (event) => {
     const url = event.state?.url
     if (url) {
-      console.log(url)
-      await replace(new URL(url))
+      await replace(url)
     }
   });
   register()
