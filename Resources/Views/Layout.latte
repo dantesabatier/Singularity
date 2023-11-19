@@ -86,16 +86,6 @@
     }, "", url)
   }
 
-  async function load(project) {
-    try {
-      await push(url("Editor", {
-        project: project.objectID
-      }))
-    } catch (error) {
-      presentError(error)
-    }
-  }
-
   async function submit(form) {
     let headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
@@ -244,6 +234,16 @@
 
   function showPreferences() {
     window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
+  }
+
+  async function load(project) {
+    try {
+      await push(url("Editor", {
+        project: project.objectID
+      }))
+    } catch (error) {
+      presentError(error)
+    }
   }
 </script>
 <!--suppress JSCheckFunctionSignatures -->
