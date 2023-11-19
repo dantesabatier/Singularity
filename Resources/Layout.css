@@ -27,6 +27,11 @@ ul {
     font-size: .875rem;
 }
 
+.btn-back {
+    display: flex;
+    align-items: center
+}
+
 .btn-toggle {
     display: inline-flex;
     align-items: center;
