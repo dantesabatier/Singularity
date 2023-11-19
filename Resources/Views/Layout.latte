@@ -233,19 +233,18 @@
 
   function register() {
     layout()
-    const once = true//window.location.href.includes("Editor")
     document.querySelectorAll("span[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         await push(new URL(window.location.origin + e.dataset.href))
       }, {
-        once: once
+        once: true
       })
     })
     document.querySelectorAll("tr[data-href]").forEach(e => {
       e.addEventListener("click", async () => {
         await push(new URL(window.location.origin + e.dataset.href))
       }, {
-        once: once
+        once: true
       })
     })
     document.querySelectorAll("input[type=checkbox]").forEach(e => {
@@ -253,7 +252,7 @@
         event.stopPropagation()
         await submit(e.form)
       }, {
-        once: once
+        once: true
       })
     })
     document.querySelectorAll("select[data-autosave=true]").forEach(e => {
@@ -261,7 +260,7 @@
         event.stopPropagation()
         await submit(e.form)
       }, {
-        once: once
+        once: true
       })
     })
     document.querySelectorAll("form:not(.ignore)").forEach(e => {
@@ -269,7 +268,7 @@
         event.preventDefault()
         await submit(e)
       }, {
-        once: once
+        once: true
       })
     })
     const addItem = document.getElementById("addItem")
@@ -282,7 +281,7 @@
       const form = addItem.querySelector(".modal-content form")
       form.action = url(endpoint)
     }, {
-      once: once
+      once: true
     })
   }
 
