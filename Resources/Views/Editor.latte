@@ -162,7 +162,7 @@
         <div class="modal fade" id="addEntity" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addEntityLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form id="addEntity" action="/Entity" method="POST">
+                    <form action="/Entity" id="addEntity" method="POST">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <h5 class="modal-title" id="addEntityLabel">Add Entity</h5>
@@ -196,7 +196,7 @@
         <div class="modal fade" id="addFetchRequest" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addFetchRequestLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form id="addFetchRequest" action="/FetchRequestTemplate" method="POST">
+                    <form action="/FetchRequestTemplate" id="addFetchRequest" method="POST">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <h5 class="modal-title" id="addFetchRequestLabel">Add Fetch Request</h5>
@@ -216,6 +216,20 @@
                             <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">
                                 Add
                             </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="alert" data-bs-backdrop="static" tabindex="-1" aria-labelledby="removeItemLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="alert" method="POST">
+                        <div class="modal-body">
+                            <h5 class="modal-title mb-3" id="removeItemLabel"></h5>
+                            <div class="modal-message"></div>
+                        </div>
+                        <div class="modal-footer border-0">
                         </div>
                     </form>
                 </div>
