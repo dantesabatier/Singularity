@@ -36,6 +36,9 @@
     return url
   }
 
+  /**
+   * @param { URL } url
+   */
   async function replace(url) {
     let headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
@@ -68,11 +71,14 @@
     register()
   }
 
+  /**
+   * @param { URL } url
+   */
   async function push(url) {
     await replace(url)
-    if (window.location.href !== url.href) {
-      window.history.pushState({}, "", url)
-    }
+    await history.pushState({
+      url: url.href,
+    }, "", url)
   }
 
   async function submit(form) {
@@ -286,6 +292,13 @@
   }
 
   window.addEventListener("resize", layout)
+  window.addEventListener('popstate', async (event) => {
+    const url = event.state?.url
+    if (url) {
+      console.log(url)
+      await replace(new URL(url))
+    }
+  });
   register()
 </script>
 </body>
