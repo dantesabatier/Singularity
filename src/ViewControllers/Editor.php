@@ -104,7 +104,11 @@ class Editor extends ViewController
                     "url" => AttributeType::uri,
                 ]
             ]);
-            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
+            $projects = $this->managedObjectContext->fetch($fetchRequest);
+            if ($projects->count() > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
+                $projects->insertAt($projects->removeAt($index), 0);
+            }
+            $this->$name = $projects;
             return $this->$name;
         } elseif ($name == "project") {
             $project = null;
