@@ -23,9 +23,14 @@
                             {$project?->name}
                         </button>
                         <ul class="dropdown-menu">
-                            <li n:foreach="$projects as $e" >
-                                <a class="dropdown-item" href="/Editor?project={$e->objectID->referenceObject}">{$e->name}</a>
-                            </li>
+                            {foreach $projects as $i => $e}
+                                <li>
+                                    <button class="dropdown-item" type="button" onclick="load({$e})">{$e->name}</button>
+                                </li>
+                                <li n:if="$projects->count() > 1 && $i === 0">
+                                    <hr class="dropdown-divider">
+                                </li>
+                            {/foreach}
                         </ul>
                     </div>
                     <div class="dropdown">
