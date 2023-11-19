@@ -115,9 +115,6 @@
       headers: headers,
       body: body
     })
-    if (!response.ok) {
-      presentError((await response.json())?.error)
-    }
     let url = new URL(window.location)
     if (method === "DELETE") {
       let keys = []
@@ -141,6 +138,9 @@
       url.search = keys.map(k => k + "=" + url.searchParams.get(k)).join("&")
     }
     await push(url.href)
+    if (!response.ok) {
+      presentError((await response.json())?.error)
+    }
   }
 
   /**
