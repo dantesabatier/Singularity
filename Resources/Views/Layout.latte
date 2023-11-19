@@ -115,7 +115,7 @@
       headers: headers,
       body: body
     })
-    let url = new URL(window.location)
+    const url = new URL(window.location)
     if (method === "DELETE") {
       let keys = []
       const destinationURL = new URL(action)
