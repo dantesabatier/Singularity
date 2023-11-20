@@ -34,7 +34,8 @@ class Attribute extends Property
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+        $observation = $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+            $observation->invalidate();
             $attribute->attributeValueClassName = match ($change->newValue) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
@@ -50,29 +51,30 @@ class Attribute extends Property
             $attribute->isMinValueBounded = false;
             $attribute->maxValue = null;
         });
-        $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+        $observation = $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+            $observation->invalidate();
             $attribute->minValue = $change->newValue ? $attribute->minValue : null;
         });
-        $this->observe("isMaxValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+        $observation = $this->observe("isMaxValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+            $observation->invalidate();
             $attribute->maxValue = $change->newValue ? $attribute->maxValue : null;
         });
-        $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+        $observation = $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+            $observation->invalidate();
             if ($change->newValue === "") {
                 $attribute->defaultValue = null;
             }
         });
-        $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
-            if ($change->newValue) {
-                $attribute->isTransient = false;
-                $attribute->isDefaultValueBounded = false;
-                $attribute->defaultValue = null;
-                $attribute->isMaxValueBounded = false;
-                $attribute->minValue = null;
-                $attribute->isMinValueBounded = false;
-                $attribute->maxValue = null;
-            } else {
-                $attribute->derivationExpressionFormat = null;
-            }
+        $observation = $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+            $observation->invalidate();
+            $attribute->isTransient = false;
+            $attribute->isDefaultValueBounded = false;
+            $attribute->defaultValue = null;
+            $attribute->isMaxValueBounded = false;
+            $attribute->minValue = null;
+            $attribute->isMinValueBounded = false;
+            $attribute->maxValue = null;
+            $attribute->derivationExpressionFormat = null;
         });
     }
 
