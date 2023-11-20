@@ -65,7 +65,7 @@ class Attribute extends Property
                 $attribute->defaultValue = null;
             }
         });
-        $observation = $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+        $observation = $this->observe("isDerived", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
             $observation->invalidate();
             $attribute->isTransient = false;
             $attribute->isDefaultValueBounded = false;
