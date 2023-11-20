@@ -30,19 +30,18 @@ class Relationship extends Property
         parent::__construct($managedObjectContext, $entity);
         unset($this->destinationEntity);
         unset($this->inverseRelationship);
-        $this->observe("isToMany", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
-            if (!$change->newValue) {
-                $relationship->minCount = null;
-                $relationship->maxCount = null;
-                $relationship->isOrdered = false;
-                $relationship->isMinCountBounded = false;
-                $relationship->isMaxCountBounded = false;
-            }
+        $observation = $this->observe("isToMany", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
+            $observation->invalidate();
+            $relationship->minCount = null;
+            $relationship->maxCount = null;
+            $relationship->isOrdered = false;
+            $relationship->isMinCountBounded = false;
+            $relationship->isMaxCountBounded = false;
         });
-        $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
+        $observation = $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
             $relationship->minCount = $change->newValue ? $this->minCount : null;
         });
-        $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
+        $observation = $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
             $relationship->maxCount = $change->newValue ? $this->maxCount : null;
         });
     }
