@@ -6,13 +6,14 @@ body {
 ul {
     list-style-type: none;
     padding-left: 1rem;
+    margin: 0;
 }
 
 .alert {
 }
 
 .table {
-    --bs-table-active-bg: rgba(25, 118, 210, 0.85);
+    --bs-table-active-bg: rgba(0, 0, 0, 0.11);
     --bs-table-active-color: var(--bs-table-active-bg);
     --bs-table-hover-color: white;
     --bs-table-hover-bg: var(--bs-table-active-color);
@@ -43,7 +44,7 @@ ul {
 
 .btn-toggle:hover,
 .btn-toggle:focus {
-    color: rgba(255, 255, 255, .16);
+    color: rgba(255, 255, 255, 0.16);
 }
 
 .btn-toggle::before {
@@ -72,7 +73,8 @@ ul {
 }
 
 .selected {
-    background-color: rgba(25, 118, 210, 0.85);
+    background-color: rgba(0, 0, 0, 0.11);
+    border-radius: 6px;
 }
 
 .space {
