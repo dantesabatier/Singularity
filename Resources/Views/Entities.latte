@@ -3,7 +3,7 @@
 {varType App\Model\FetchIndex $selectedIndex}
 {varType Sabatier\Foundation\ArrayClass $entities}
 {define entities, $entities, $flag}
-    <ul class="{!$flag ? 'flex-column w-100 ps-0' : 'flex-column w-100'}">
+    <ul class="{!$flag ? 'flex-column w-100 px-2' : 'flex-column w-100'}">
         {foreach $entities as $entity}
             <li class="text-truncate{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
                 {if !$entity->subentitiesCount}
