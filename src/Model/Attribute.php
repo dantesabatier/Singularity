@@ -14,6 +14,7 @@ use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
+use const Sabatier\CoreData\ManagedObjectValidationError;
 use const Sabatier\Foundation\CocoaErrorDomain;
 use const Sabatier\Foundation\LocalizedDescriptionKey;
 use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
@@ -41,7 +42,7 @@ class Attribute extends Property
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
-                AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, 0, new Dictionary([LocalizedDescriptionKey => "{$attribute->entityProperty->name}.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "{$attribute->entityProperty->name}.$attribute->name cannot use an attribute type of \"Undefined\""]))),
+                AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, ManagedObjectValidationError, new Dictionary([LocalizedDescriptionKey => "{$attribute->entityProperty->name}.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "{$attribute->entityProperty->name}.$attribute->name cannot use an attribute type of \"Undefined\""]))),
                 default => null,
             };
             $attribute->isDefaultValueBounded = false;
