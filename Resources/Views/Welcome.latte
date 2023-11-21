@@ -31,7 +31,7 @@
                                         <ol class="list-group">
                                             <li n:foreach="$projects as $project" class="list-group-item display-block">
                                                 <div class="row p-2">
-                                                    <div class="col-10">
+                                                    <div class="col-sm-9">
                                                         <span class="fw-bold">
                                                             <button class="dropdown-item" type="button" onclick="load({$project})">
                                                                 <i class="bi bi-box"></i>
@@ -40,7 +40,7 @@
                                                         </span>
                                                         <div class="text-truncate">{$project->url->path}</div>
                                                     </div>
-                                                    <div class="col-2">
+                                                    <div class="col-sm-3">
                                                         <button class="btn border-0 bg-transparent" data-bs-action-name="Project" onclick="remove(this, {$project})">
                                                             <i class="material-icons-outlined">
                                                                 highlight_off
