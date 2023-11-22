@@ -31,6 +31,20 @@
                                     <hr class="dropdown-divider">
                                 </li>
                             {/foreach}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form class="d-flex" action="/Save" method="POST">
+                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
+                                    <button class="dropdown-item" type="submit">
+                                        Save
+                                    </button>
+                                </form>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="button" onclick="push('/')">Close</button>
+                            </li>
                         </ul>
                     </div>
                     <div class="dropdown">
@@ -101,12 +115,6 @@
                         </ul>
                     </div>
                 </div>
-                <form class="d-flex" action="/Save" method="POST">
-                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                    <button class="btn border-0 bg-transparent p-2" type="submit">
-                        Save
-                    </button>
-                </form>
             </div>
         </nav>
         <div class="container-fluid d-flex flex-column user-select-none">
