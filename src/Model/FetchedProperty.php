@@ -5,7 +5,7 @@ namespace App\Model;
 use Sabatier\Foundation\Dictionary;
 
 /**
- * @property string|null $fetchRequestEntityName
+ * @property string $fetchRequestEntityName
  * @property string|null $fetchRequestPredicateFormat
  */
 class FetchedProperty extends Property

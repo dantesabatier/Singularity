@@ -282,6 +282,8 @@
                     <dict>
                         <key>name</key>
                         <string>entityName</string>
+                        <key>isOptional</key>
+                        <false/>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
@@ -453,6 +455,14 @@
                 <array>
                     <dict>
                         <key>name</key>
+                        <string>name</string>
+                        <key>isOptional</key>
+                        <false/>
+                        <key>type</key>
+                        <integer>700</integer>
+                    </dict>
+                    <dict>
+                        <key>name</key>
                         <string>creationDate</string>
                         <key>isOptional</key>
                         <false/>
@@ -464,12 +474,6 @@
                         <string>lastModifiedDate</string>
                         <key>type</key>
                         <integer>900</integer>
-                    </dict>
-                    <dict>
-                        <key>name</key>
-                        <string>name</string>
-                        <key>type</key>
-                        <integer>700</integer>
                     </dict>
                     <dict>
                         <key>name</key>
@@ -715,6 +719,8 @@
                             <dict>
                                 <key>name</key>
                                 <string>fetchRequestEntityName</string>
+                                <key>isOptional</key>
+                                <false/>
                                 <key>type</key>
                                 <integer>700</integer>
                             </dict>

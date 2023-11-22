@@ -8,7 +8,7 @@ use Sabatier\Foundation\Dictionary;
 
 /**
  * @property string $name
- * @property string|null $entityName
+ * @property string $entityName
  * @property string|null $predicateString
  * @property FetchRequestResultType $resultType
  * @property int $fetchLimit

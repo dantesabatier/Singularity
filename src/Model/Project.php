@@ -11,9 +11,9 @@ use Sabatier\Foundation\UserDefaults;
 use const App\AutomaticallyDeleteProjectFolders;
 
 /**
+ * @property string $name
  * @property Date $creationDate
  * @property Date|null $lastModifiedDate
- * @property string|null $name
  * @property URL|null $url
  * @property Model|null $model
  */
