@@ -51,6 +51,9 @@ class FetchIndexElement extends ManagedObject
         if ($collationType !== FetchIndexElementType::bTree) {
             $dictionary["collationType"] = $collationType;
         }
+        if (!($isAscending = $this->isAscending)) {
+            $dictionary["isAscending"] = $isAscending;
+        }
         return $dictionary;
     }
 }
