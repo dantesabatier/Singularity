@@ -33,13 +33,7 @@ class FetchIndex extends ManagedObject
             $index->elements->setValueForKey($change->newValue, "collationType");
         });
     }
-
-    public function awakeFromInsert(): void
-    {
-        parent::awakeFromInsert();
-        $this->setPrimitiveValueForKey(FetchIndexElementType::from($this->primitiveValueForKey("collationType")), "collationType");
-    }
-
+    
     public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool
     {
         if (is_int($collationType)) {
