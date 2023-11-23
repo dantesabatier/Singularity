@@ -98,11 +98,7 @@ class Editor extends ViewController
             $fetchRequest = Project::fetchRequest();
             $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
             $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string,
-                "url" => AttributeType::uri,
-                "model" => [
-                    "url" => AttributeType::uri,
-                ]
+                "name" => AttributeType::string
             ]);
             $projects = $this->managedObjectContext->fetch($fetchRequest);
             if ($projects->count() > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
