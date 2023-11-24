@@ -14,7 +14,7 @@
             <th scope="col" class="col-sm-6 text-shadow"></th>
         </tr>
         </thead>
-        <tbody n:if="$relationships">
+        <tbody>
         <tr n:foreach="clone $relationships as $relationship" id="property-{$relationship->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$relationship->objectID->referenceObject}" n:class="$relationship->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
             {var string $img = img($relationship)}
             <td>
