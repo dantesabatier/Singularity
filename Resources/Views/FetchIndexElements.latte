@@ -17,7 +17,7 @@
                 <form action="/FetchIndexElement" method="POST">
                     <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
                     <select name="propertyName" id="propertyName" class="form-select form-select-sm bg-transparent border-0 p-0 w-auto" aria-label="Property" data-autosave="true">
-                        <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}" {$attribute->name === $element->propertyName ? selected}>{$attribute->name}</option>
+                        <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
                     </select>
                     <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                 </form>
@@ -64,7 +64,7 @@
                         </div>
                         <label for="propertyName" class="form-label">Property</label>
                         <select name="propertyName" id="propertyName" class="form-select" required>
-                            <option n:foreach="$selectedEntity->attributes as $attribute" value="{$attribute->name}">{$attribute->name}</option>
+                            <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}">{$attributeName}</option>
                         </select>
                     </div>
                     <div class="modal-footer border-0">
