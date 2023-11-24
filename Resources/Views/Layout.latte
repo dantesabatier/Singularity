@@ -4,9 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{block title}{/block}</title>
-    <!--suppress JSUnresolvedLibraryURL -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <!--suppress JSUnresolvedLibraryURL -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link rel="stylesheet" type="text/css" href="/Resources/Layout.css" media="screen">
@@ -59,9 +57,9 @@
     if (!!!e2) {
       return
     }
-    const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((r, e) => {
-      r[e.id] = e.scrollTop
-      return r
+    const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
+      obj[e.id] = e.scrollTop
+      return obj
     }, {})
     const e1 = document.getElementById("main")
     e1.innerHTML = e2.innerHTML
@@ -183,7 +181,7 @@
         }
       ]
     }
-    const element = document.getElementById("alert")
+    const element = document.getElementById("addAlert")
     const title = element.querySelector(".modal-title")
     title.textContent = messageText
     const message = element.querySelector(".modal-message")
@@ -298,7 +296,27 @@
       const form = addItem.querySelector(".modal-content form")
       form.action = url(endpoint)
     }, {
-      once: true
+      once: false
+    })
+    addItem?.addEventListener("hidden.bs.modal", () => {
+      /**
+       * @type { HTMLFormElement } form
+       */
+      const form = addItem.querySelector(".modal-content form")
+      form.reset()
+    }, {
+      once: false
+    })
+    document.querySelectorAll(".modal").forEach(e => {
+      e.addEventListener("hidden.bs.modal", () => {
+        /**
+         * @type { HTMLFormElement } form
+         */
+        const form = e.querySelector(".modal-content form")
+        form.reset()
+      }, {
+        once: false
+      })
     })
   }
 
