@@ -60,6 +60,8 @@ class Entity extends ManagedObject
     public readonly ArrayClass $relationships;
     /** @var ArrayClass<FetchedProperty> */
     public readonly ArrayClass $fetchedProperties;
+    /** @var ArrayClass<string> */
+    public readonly ArrayClass $allAttributeNames;
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
@@ -69,6 +71,7 @@ class Entity extends ManagedObject
         unset($this->attributes);
         unset($this->relationships);
         unset($this->fetchedProperties);
+        unset($this->allAttributeNames);
     }
 
     /**
@@ -105,6 +108,21 @@ class Entity extends ManagedObject
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
             return $this->$name;
+        } elseif ($name == "allAttributeNames") {
+            /** @var ArrayClass<string> */
+            $allAttributeNames = new ArrayClass();
+            $transform = fn(Attribute $attribute): string => $attribute->name;
+            $superentity = $this->superentity;
+            while ($superentity) {
+                $allAttributeNames->appendContentsOf($superentity->attributes->map($transform));
+                $superentity = $superentity->superentity;
+            }
+            $allAttributeNames->appendContentsOf($this->attributes->map($transform));
+            foreach ($this->subentities as $subentity) {
+                $allAttributeNames->appendContentsOf($subentity->attributes->map($transform));
+            }
+            $this->$name = $allAttributeNames;
+            return $this->$name;
         } else {
             return parent::__get($name);
         }
@@ -112,7 +130,7 @@ class Entity extends ManagedObject
 
     public function __set(string $name, mixed $value): void
     {
-        if ($name == "isRootEntity" || $name == "rootEntity" || $name == "attributes" || $name == "relationships" || $name == "fetchedProperties") {
+        if ($name == "isRootEntity" || $name == "rootEntity" || $name == "attributes" || $name == "relationships" || $name == "fetchedProperties" || $name == "allAttributeNames") {
             $this->$name = $value;
         } else {
             parent::__set($name, $value);
