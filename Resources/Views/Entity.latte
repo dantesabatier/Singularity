@@ -8,72 +8,91 @@
             <div class="my-2 fs-6 fw-bold text-shadow">
                 Entity
             </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" id="name" placeholder="Entity Name" class="form-control text-truncate" value="{$selectedEntity->name}" autocomplete="off" spellcheck="false" required>
+            <div class="row mb-3 align-items-center">
+                <label for="name" class="col-sm-3 col-form-label text-end pe-0">Name</label>
+                <div class="col-sm-9">
+                    <input type="text" name="name" id="name" placeholder="Entity Name" class="form-control text-truncate" value="{$selectedEntity->name}" autocomplete="off" spellcheck="false" required>
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <label class="form-check-label" for="isAbstract">Abstract Entity</label>
-                <input class="form-check-input" type="checkbox" name="isAbstract" id="isAbstract" value="{$selectedEntity->isAbstract}" {$selectedEntity->isAbstract ? checked}>
+            <div class="row mb-3 align-items-center">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-9">
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label" for="isAbstract">Abstract Entity</label>
+                        <input class="form-check-input" type="checkbox" name="isAbstract" id="isAbstract" value="{$selectedEntity->isAbstract}" {$selectedEntity->isAbstract ? checked}>
+                    </div>
+                </div>
             </div>
-            <div class="mt-3 mb-3">
-                <label for="superentityID" class="form-label">Parent Entity</label>
-                <select name="superentityID" id="superentityID" class="form-select" data-autosave="true">
-                    <option value="">No Parent Entity</option>
-                    <!--suppress HtmlUnknownTag -->
-                    <hr>
-                    <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}" {$entity->name === $selectedEntity->superentity?->name ? selected} {$entity->objectID->referenceObject == $selectedEntity->objectID->referenceObject ? disabled}>{$entity->name}</option>
-                </select>
+            <div class="row mb-3 align-items-center">
+                <label for="superentityID" class="col-sm-3 col-form-label text-end pe-0">Parent Entity</label>
+                <div class="col-sm-9">
+                    <select name="superentityID" id="superentityID" class="form-select" data-autosave="true">
+                        <option value="">No Parent Entity</option>
+                        <!--suppress HtmlUnknownTag -->
+                        <hr>
+                        <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}" {$entity->name === $selectedEntity->superentity?->name ? selected} {$entity->objectID->referenceObject == $selectedEntity->objectID->referenceObject ? disabled}>{$entity->name}</option>
+                    </select>
+                </div>
             </div>
             <hr>
             <div class="my-2 fs-6 fw-bold text-shadow">
                 Class
             </div>
-            <div class="mt-3 mb-3">
-                <label for="managedObjectClassName" class="form-label">Name</label>
-                <input type="text" name="managedObjectClassName" id="managedObjectClassName" placeholder="Entity Name" class="form-control text-truncate" value="{$selectedEntity->managedObjectClassName}" autocomplete="off" spellcheck="false">
+            <div class="row mb-3 align-items-center">
+                <label for="managedObjectClassName" class="col-sm-3 col-form-label text-end pe-0">Name</label>
+                <div class="col-sm-9">
+                    <input type="text" name="managedObjectClassName" id="managedObjectClassName" placeholder="Entity Name" class="form-control text-truncate" value="{$selectedEntity->managedObjectClassName}" autocomplete="off" spellcheck="false">
+                </div>
             </div>
-            <div>Constraints</div>
-            <table class="table table-bordered table-sm" id="uniquenessConstraints">
-                <thead>
-                <tr>
-                </tr>
-                </thead>
-                <tbody>
-                <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" n:class="$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? table-active">
-                    <td>{$uniquenessConstraint->stringValue}</td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td>
-                        <div class="d-inline-block">
-                            <button type="button" class="btn border-0 bg-transparent p-2" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint" data-bs-action-name="Uniqueness Constraint">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-                                </svg>
-                            </button>
-                            <button type="button" class="btn border-0 bg-transparent p-2" data-bs-action-name="Uniqueness Constraint" onclick="remove(this, {$selectedUniquenessConstraint})" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
+            <div class="row mb-3 align-items-start">
+                <label class="col-sm-3 col-form-label text-end pe-0">Constraints</label>
+                <div class="col-sm-9">
+                    <table class="table table-bordered table-sm" id="uniquenessConstraints">
+                        <thead>
+                        <tr>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" n:class="$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? table-active">
+                            <td>{$uniquenessConstraint->stringValue}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td>
+                                <div class="d-inline-block">
+                                    <button type="button" class="btn border-0 bg-transparent p-2" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint" data-bs-action-name="Uniqueness Constraint">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="btn border-0 bg-transparent p-2" data-bs-action-name="Uniqueness Constraint" onclick="remove(this, {$selectedUniquenessConstraint})" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
             <hr>
             <div class="mb-3 fs-5">
                 Versioning
             </div>
-            <div class="mb-3">
-                <label for="versionHashModifier" class="form-label">Hash Modifier</label>
-                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control text-truncate" value="{$selectedEntity->versionHashModifier}" autocomplete="off" spellcheck="false">
+            <div class="row mb-3 align-items-center">
+                <label for="versionHashModifier" class="col-sm-3 col-form-label text-end pe-0">Hash Modifier</label>
+                <div class="col-sm-9">
+                    <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control text-truncate" value="{$selectedEntity->versionHashModifier}" autocomplete="off" spellcheck="false">
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="renamingIdentifier" class="form-label">Renaming ID</label>
-                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
+            <div class="row mb-3 align-items-center">
+                <label for="renamingIdentifier" class="col-sm-3 col-form-label text-end pe-0">Renaming ID</label>
+                <div class="col-sm-9">
+                    <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
+                </div>
             </div>
             <input type="hidden" name="objectID" value="{$selectedEntity->objectID->referenceObject}">
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
