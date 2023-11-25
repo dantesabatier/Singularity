@@ -6,10 +6,11 @@
     <table class="table table-sm">
         <thead>
         <tr>
-            <th scope="col" class="col-sm-4 text-shadow">Property</th>
+            <th scope="col" class="col-sm-2 text-shadow">Property</th>
+            <th scope="col" class="col-sm-2 text-shadow">Type</th>
             <th scope="col" class="col-sm-2 text-shadow">Expression</th>
             <th scope="col" class="col-sm-2 text-shadow">Ascending</th>
-            <th scope="col" class="col-sm-6 text-shadow"></th>
+            <th scope="col" class="col-sm-4 text-shadow"></th>
         </tr>
         </thead>
         <tbody>
@@ -21,6 +22,18 @@
                         <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
                     </select>
                     <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                </form>
+            </td>
+            <td>
+                <form action="/FetchIndexElement" method="POST">
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                    <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                    <select name="type" id="type" class="form-select form-select-sm bg-transparent border-0 p-0 w-auto" aria-label="Type" data-autosave="true"  {$element->propertyName !== "Expression" ? disabled}>
+                        {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
+                        <option n:foreach="$types as $key => $value" value="{$key}" {$key === $element->expressionResultType->value ? selected}>
+                            {$value}
+                        </option>
+                    </select>
                 </form>
             </td>
             <td>
