@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
@@ -14,7 +15,8 @@ use Sabatier\Foundation\KeyValueObservingOptions;
  * @property string $propertyName
  * @property FetchIndexElementType $collationType
  * @property bool $isAscending
- * @property ExpressionDescriptionTemplate|null $expression
+ * @property AttributeType $expressionResultType
+ * @property string|null $expressionFormat
  * @property FetchIndex $index
  */
 class FetchIndexElement extends ManagedObject
@@ -26,11 +28,10 @@ class FetchIndexElement extends ManagedObject
         parent::__construct($managedObjectContext, $entity);
         $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use ($managedObjectContext, &$observation): void {
             $observation->invalidate();
-            $element->expression ??= match ($change->newValue) {
-                "Expression" => new ExpressionDescriptionTemplate($managedObjectContext),
-                default => null,
-            };
-            $managedObjectContext->save();
+            if ($change->newValue !== "Expression") {
+                $element->expressionFormat = null;
+                $element->expressionResultType = AttributeType::undefined;
+            }
         });
         unset($this->property);
     }
@@ -49,6 +50,14 @@ class FetchIndexElement extends ManagedObject
     {
         if (is_int($collationType)) {
             $collationType = FetchIndexElementType::from($collationType);
+        }
+        return true;
+    }
+
+    public function validateExpressionResultType(AttributeType|int|null &$expressionResultType): bool
+    {
+        if (is_int($expressionResultType)) {
+            $expressionResultType = AttributeType::from($expressionResultType);
         }
         return true;
     }
