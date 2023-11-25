@@ -20,7 +20,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
 {
     public static function initialize(): void
     {
-        SQLCore::$debugDefault = 3;
+        SQLCore::$debugDefault = 0;
         SQLCore::$coloredLoggingDefault = true;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
