@@ -2,7 +2,7 @@
 {define attribute}
     {var int $type = $selectedProperty->type->value}
     <form action="/Attribute" method="POST">
-        <div class="my-2 fs-6 fw-bold text-shadow">
+        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
             Attribute
         </div>
         <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
@@ -58,7 +58,7 @@
                             <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                         </div>
                     </div>
-                    <div class="row mb-3 align-items-center">
+                    <div class="row mb-3 align-items-baseline">
                         <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">
@@ -87,7 +87,7 @@
                             <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null String'}" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
                     </div>
-                    <div class="row mb-3 align-items-center">
+                    <div class="row mb-3 align-items-lg-baseline">
                         <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">

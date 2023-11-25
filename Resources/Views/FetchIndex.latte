@@ -1,7 +1,7 @@
 {varType App\Model\FetchIndex $selectedIndex}
 {define fetchIndex}
     <form action="/FetchIndex" method="POST">
-        <div class="my-2 fs-6 fw-bold text-shadow">
+        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
             Fetch Index
         </div>
         <input type="hidden" name="objectID" value="{$selectedIndex->objectID->referenceObject}">
