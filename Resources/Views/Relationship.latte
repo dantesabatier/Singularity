@@ -6,72 +6,98 @@
             Relationship
         </div>
         <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" name="name" id="name" placeholder="Relationship Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+        <div class="row mb-3 align-items-center">
+            <label for="name" class="col-sm-3 col-form-label text-end pe-0">Name</label>
+            <div class="col-sm-9">
+                <input type="text" name="name" id="name" placeholder="Relationship Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-            <label class="form-check-label" for="isTransient">Transient</label>
-            <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked}>
-        </div>
-        <div class="form-check form-check-inline">
-            <label class="form-check-label" for="isOptional">Optional</label>
-            <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
+        <div class="row mb-3 align-items-center">
+            <label class="col-sm-3 col-form-label text-end pe-0">Properties</label>
+            <div class="col-sm-9">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="isTransient">Transient</label>
+                    <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="isOptional">Optional</label>
+                    <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
+                </div>
+            </div>
         </div>
         <hr>
-        <div class="mt-3 mb-3">
-            <label for="lazyDestinationEntityName" class="form-label">Destination</label>
-            <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select" data-autosave="true">
-                <option value="">No Destination Entity</option>
-                <!--suppress HtmlUnknownTag -->
-                <hr>
-                <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->lazyDestinationEntityName ? selected}>{$entity->name}</option>
-            </select>
+        <div class="row mt-3 mb-3 align-items-center">
+            <label for="lazyDestinationEntityName" class="col-sm-3 col-form-label text-end pe-0">Destination</label>
+            <div class="col-sm-9">
+                <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select" data-autosave="true">
+                    <option value="">No Destination Entity</option>
+                    <!--suppress HtmlUnknownTag -->
+                    <hr>
+                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->lazyDestinationEntityName ? selected}>{$entity->name}</option>
+                </select>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="lazyInverseRelationshipName" class="form-label">Inverse</label>
-            <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select" data-autosave="true">
-                <option value="">No Inverse Relationship</option>
-                <!--suppress HtmlUnknownTag -->
-                <hr>
-                {var App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
+        <div class="row mt-3 mb-3 align-items-center">
+            <label for="lazyInverseRelationshipName" class="col-sm-3 col-form-label text-end pe-0">Inverse</label>
+            <div class="col-sm-9">
+                <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select" data-autosave="true">
+                    <option value="">No Inverse Relationship</option>
+                    <!--suppress HtmlUnknownTag -->
+                    <hr>
+                    {var App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
                 {if $destinationEntity}
-                    <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
-                {/if}
-            </select>
+                        <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
+                    {/if}
+                </select>
+            </div>
         </div>
-        <div class="mb-3">
-            {var array $items = [0 => "No Action", 1 => "Nullify", 2 => "Cascade", 3 => "Deny"]}
-            <label for="deleteRule" class="form-label">Delete Rule</label>
-            <select name="deleteRule" id="deleteRule" class="form-select" data-autosave="true">
-                <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedProperty->deleteRule->value ? selected}>{$value}</option>
-            </select>
+        <div class="row mt-3 mb-3 align-items-center">
+            <label for="deleteRule" class="col-sm-3 col-form-label text-end pe-0">Delete Rule</label>
+            <div class="col-sm-9">
+                <select name="deleteRule" id="deleteRule" class="form-select" data-autosave="true">
+                    {var array $deleteRules = [0 => "No Action", 1 => "Nullify", 2 => "Cascade", 3 => "Deny"]}
+                    <option n:foreach="$deleteRules as $key => $deleteRule" value="{$key}" {$key === $selectedProperty->deleteRule->value ? selected}>{$deleteRule}</option>
+                </select>
+            </div>
         </div>
         <hr>
-        <div class="mb-3">
-            <div class="form-check{$selectedProperty->isToMany ? ' form-check-inline'}">
-                <label class="form-check-label" for="isToMany">To Many</label>
-                <input class="form-check-input" type="checkbox" name="isToMany" value="{$selectedProperty->isToMany}" id="isToMany" {$selectedProperty->isToMany ? checked}>
-            </div>
-            <div n:if="$selectedProperty->isToMany" class="form-check form-check-inline">
-                <label class="form-check-label" for="isOrdered">Ordered</label>
-                <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
+        <div class="row mb-3 align-items-center">
+            <label for="isToMany" class="col-sm-3 col-form-label text-end pe-0">Type</label>
+            <div class="col-sm-9">
+                <select name="isToMany" id="isToMany" class="form-select" data-autosave="true">
+                    {var array $options = [0 => "To One", 1 => "To Many"]}
+                    <option n:foreach="$options as $key => $option" value="{$key}" {$key == $selectedProperty->isToMany ? selected}>{$option}</option>
+                </select>
             </div>
         </div>
-        <div n:if="$selectedProperty->isToMany" class="mb-3 row">
-            <div class="col">
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9">
                 <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="isMinCountBounded">Minimum</label>
-                    <input class="form-check-input" type="checkbox" name="isMinCountBounded" value="{$selectedProperty->isMinCountBounded}" id="isMinCountBounded" {$selectedProperty->isMinCountBounded ? checked}>
+                    <label class="form-check-label" for="isOrdered">Ordered</label>
+                    <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
                 </div>
-                <input type="number" name="minCount" id="minCount" aria-label="Minimum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->minCount}" {!$selectedProperty->isMinCountBounded ? disabled}>
             </div>
-            <div class="col">
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="isMaxCountBounded">Maximum</label>
-                    <input class="form-check-input" type="checkbox" name="isMaxCountBounded" value="{$selectedProperty->isMaxCountBounded}" id="isMaxCountBounded" {$selectedProperty->isMaxCountBounded ? checked}>
+        </div>
+        <div class="row mb-3 align-items-end">
+            <label class="col-sm-3 col-form-label text-end pe-0">Count</label>
+            <div class="col-sm-9">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label" for="isMinCountBounded">Minimum</label>
+                            <input class="form-check-input" type="checkbox" name="isMinCountBounded" value="{$selectedProperty->isMinCountBounded}" id="isMinCountBounded" {$selectedProperty->isMinCountBounded ? checked}>
+                        </div>
+                        <input type="number" name="minCount" id="minCount" aria-label="Minimum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->minCount}" {!$selectedProperty->isMinCountBounded ? disabled}>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label" for="isMaxCountBounded">Maximum</label>
+                            <input class="form-check-input" type="checkbox" name="isMaxCountBounded" value="{$selectedProperty->isMaxCountBounded}" id="isMaxCountBounded" {$selectedProperty->isMaxCountBounded ? checked}>
+                        </div>
+                        <input type="number" name="maxValue" id="maxValue" aria-label="Maximum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxCountBounded ? disabled}>
+                    </div>
                 </div>
-                <input type="number" name="maxValue" id="maxValue" aria-label="Maximum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxCountBounded ? disabled}>
             </div>
         </div>
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
