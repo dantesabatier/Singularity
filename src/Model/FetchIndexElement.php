@@ -74,6 +74,11 @@ class FetchIndexElement extends ManagedObject
         if (!($isAscending = $this->isAscending)) {
             $dictionary["isAscending"] = $isAscending;
         }
+        $expressionResultType = $this->expressionResultType;
+        if ($expressionResultType !== AttributeType::undefined) {
+            $dictionary["expressionResultType"] = $expressionResultType;
+        }
+        $dictionary["expressionFormat"] = $this->expressionFormat;
         return $dictionary;
     }
 }
