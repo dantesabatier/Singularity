@@ -7,6 +7,7 @@
         <thead>
         <tr>
             <th scope="col" class="col-sm-4 text-shadow">Property</th>
+            <th scope="col" class="col-sm-2 text-shadow">Expression</th>
             <th scope="col" class="col-sm-2 text-shadow">Ascending</th>
             <th scope="col" class="col-sm-6 text-shadow"></th>
         </tr>
@@ -21,6 +22,9 @@
                     </select>
                     <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                 </form>
+            </td>
+            <td>
+                {$element->expressionFormat}
             </td>
             <td>
                 <form action="/FetchIndexElement" method="POST">
@@ -49,6 +53,7 @@
                     </button>
                 </div>
             </td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
