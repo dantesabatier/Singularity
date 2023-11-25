@@ -12,11 +12,12 @@ use Sabatier\Foundation\Dictionary;
  * @property string $propertyName
  * @property FetchIndexElementType $collationType
  * @property bool $isAscending
+ * @property ExpressionDescriptionTemplate|null $expression
  * @property FetchIndex $index
  */
 class FetchIndexElement extends ManagedObject
 {
-    public ?Property $property = null;
+    public readonly ?Property $property;
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {

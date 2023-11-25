@@ -262,6 +262,14 @@
                         <key>lazyInverseRelationshipName</key>
                         <string>elements</string>
                     </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>expression</string>
+                        <key>lazyDestinationEntityName</key>
+                        <string>ExpressionDescriptionTemplate</string>
+                        <key>lazyInverseRelationshipName</key>
+                        <string>element</string>
+                    </dict>
                 </array>
             </dict>
             <dict>
@@ -706,6 +714,42 @@
                                 <integer>800</integer>
                                 <key>defaultValue</key>
                                 <false/>
+                            </dict>
+                        </array>
+                    </dict>
+                    <dict>
+                        <key>name</key>
+                        <string>ExpressionDescriptionTemplate</string>
+                        <key>managedObjectClassName</key>
+                        <string>App\Model\ExpressionDescriptionTemplate</string>
+                        <key>attributes</key>
+                        <array>
+                            <dict>
+                                <key>name</key>
+                                <string>expressionFormat</string>
+                                <key>type</key>
+                                <integer>700</integer>
+                            </dict>
+                            <dict>
+                                <key>name</key>
+                                <string>resultType</string>
+                                <key>isOptional</key>
+                                <false/>
+                                <key>type</key>
+                                <integer>100</integer>
+                                <key>defaultValue</key>
+                                <integer>0</integer>
+                            </dict>
+                        </array>
+                        <key>relationships</key>
+                        <array>
+                            <dict>
+                                <key>name</key>
+                                <string>element</string>
+                                <key>lazyDestinationEntityName</key>
+                                <string>FetchIndexElement</string>
+                                <key>lazyInverseRelationshipName</key>
+                                <string>expression</string>
                             </dict>
                         </array>
                     </dict>
