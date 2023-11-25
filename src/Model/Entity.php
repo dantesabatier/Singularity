@@ -121,6 +121,7 @@ class Entity extends ManagedObject
             foreach ($this->subentities as $subentity) {
                 $allAttributeNames->appendContentsOf($subentity->attributes->map($transform));
             }
+            $allAttributeNames[] = "Expression";
             $this->$name = $allAttributeNames;
             return $this->$name;
         } else {

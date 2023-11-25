@@ -7,6 +7,9 @@ use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\KeyValueObservedChange;
+use Sabatier\Foundation\KeyValueObservingOptions;
+use function Sabatier\Foundation\human_readable_value;
 
 /**
  * @property string $propertyName
@@ -22,6 +25,14 @@ class FetchIndexElement extends ManagedObject
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
+        $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use ($managedObjectContext, &$observation): void {
+            $observation->invalidate();
+            $element->expression ??= match ($change->newValue) {
+                "Expression" => new ExpressionDescriptionTemplate($managedObjectContext),
+                default => null,
+            };
+            $managedObjectContext->save();
+        });
         unset($this->property);
     }
 

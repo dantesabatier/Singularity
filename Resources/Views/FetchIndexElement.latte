@@ -10,9 +10,7 @@
             <label for="propertyName" class="col-sm-3 col-form-label text-end pe-0">Property</label>
             <div class="col-sm-9">
                 <select name="propertyName" id="propertyName" class="form-select" data-autosave="true" required>
-                    {var Sabatier\Foundation\ArrayClass $attributeNames = clone $selectedEntity->allAttributeNames}
-                    {$attributeNames->append("Expression")}
-                    <option n:foreach="$attributeNames as $attributeName" value="{$attributeName}" {$attributeName === $selectedIndexElement->propertyName ? selected}>{$attributeName}</option>
+                    <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $selectedIndexElement->propertyName ? selected}>{$attributeName}</option>
                 </select>
             </div>
         </div>
@@ -33,8 +31,8 @@
             {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
             <label for="type" class="col-sm-3 col-form-label text-end pe-0">Type</label>
             <div class="col-sm-9">
-                <select name="type" id="type" class="form-select" data-autosave="true" {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
-                    <option n:foreach="$types as $key => $value" value="{$key}" {$key === $selectedIndexElement->collationType ? selected}>
+                <select name="expression.type" class="form-select" data-autosave="true" {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
+                    <option n:foreach="$types as $key => $value" value="{$key}" {$key === $selectedIndexElement->expression?->resultType?->value ? selected}>
                         {$value}
                     </option>
                 </select>
@@ -43,7 +41,7 @@
         <div class="row mb-3 align-items-center">
             <div class="col-sm-3"></div>
             <div class="col-sm-9">
-                <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control text-truncate" value="{$selectedIndexElement->expression?->expressionFormat}" aria-label="derivationExpressionFormat" autocomplete="off" spellcheck="false" required {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
+                <input type="text" name="expression.expressionFormat" placeholder="Expression" class="form-control text-truncate" value="{$selectedIndexElement->expression?->expressionFormat}" aria-label="expression.expressionFormat" autocomplete="off" spellcheck="false" required {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
             </div>
         </div>
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">

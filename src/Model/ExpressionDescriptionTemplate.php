@@ -5,15 +5,11 @@ namespace App\Model;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
-use Sabatier\CoreData\ManagedObjectID;
-use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Error;
 use Sabatier\Foundation\InternalInconsistencyException;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
-use Sabatier\Foundation\URL;
-use Sabatier\Foundation\UUID;
 use const Sabatier\CoreData\ManagedObjectValidationError;
 use const Sabatier\Foundation\CocoaErrorDomain;
 use const Sabatier\Foundation\LocalizedDescriptionKey;
@@ -28,16 +24,9 @@ class ExpressionDescriptionTemplate extends Property
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        $observation = $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+        $observation = $this->observe("resultType", KeyValueObservingOptions::new, function (ExpressionDescriptionTemplate $expression, KeyValueObservedChange $change) use (&$observation): void {
             $observation->invalidate();
-            $attribute->attributeValueClassName = match ($change->newValue) {
-                AttributeType::date => Date::class,
-                AttributeType::uuid => UUID::class,
-                AttributeType::uri => URL::class,
-                AttributeType::objectID => ManagedObjectID::class,
-                AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, ManagedObjectValidationError, new Dictionary([LocalizedDescriptionKey => "{$attribute->entityProperty->name}.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "{$attribute->entityProperty->name}.$attribute->name cannot use an attribute type of \"Undefined\""]))),
-                default => null,
-            };
+            $change->newValue !== AttributeType::undefined ?: throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, ManagedObjectValidationError, new Dictionary([LocalizedDescriptionKey => "{$expression->entityProperty->name}.$expression->name must be a defined type", LocalizedFailureReasonErrorKey => "{$expression->entityProperty->name}.$expression->name cannot use an attribute type of \"Undefined\""])));
         });
     }
 
