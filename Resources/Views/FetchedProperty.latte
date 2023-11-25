@@ -6,20 +6,26 @@
             Fetch Property
         </div>
         <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" name="name" id="name" placeholder="Fetch Property Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+        <div class="row mb-3 align-items-center">
+            <label for="name" class="col-sm-3 col-form-label text-end pe-0">Name</label>
+            <div class="col-sm-9">
+                <input type="text" name="name" id="name" placeholder="Fetch Property Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+            </div>
         </div>
-        <div class="mt-3 mb-3">
-            <label for="fetchRequestEntityName" class="form-label">Destination</label>
-            <select name="fetchRequestEntityName" id="fetchRequestEntityName" class="form-select" data-autosave="true">
-                <option value="">No Destination Entity</option>
-                <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->fetchRequestEntityName ? selected}>{$entity->name}</option>
-            </select>
+        <div class="row mb-3 align-items-center">
+            <label for="fetchRequestEntityName" class="col-sm-3 col-form-label text-end pe-0">Destination</label>
+            <div class="col-sm-9">
+                <select name="fetchRequestEntityName" id="fetchRequestEntityName" class="form-select" data-autosave="true">
+                    <option value="">No Destination Entity</option>
+                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->fetchRequestEntityName ? selected}>{$entity->name}</option>
+                </select>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="fetchRequestPredicateFormat" class="form-label">Predicate</label>
-            <input type="text" name="fetchRequestPredicateFormat" id="fetchRequestPredicateFormat" placeholder="Predicate" class="form-control text-truncate" value="{$selectedProperty->fetchRequestPredicateFormat}" autocomplete="off" spellcheck="false" required>
+        <div class="row mb-3 align-items-center">
+            <label for="fetchRequestPredicateFormat" class="col-sm-3 col-form-label text-end pe-0">Predicate</label>
+            <div class="col-sm-9">
+                <input type="text" name="fetchRequestPredicateFormat" id="fetchRequestPredicateFormat" placeholder="Predicate" class="form-control text-truncate" value="{$selectedProperty->fetchRequestPredicateFormat}" autocomplete="off" spellcheck="false" required>
+            </div>
         </div>
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
         <input class="d-none" type="submit">
