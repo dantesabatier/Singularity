@@ -6,112 +6,159 @@
             Attribute
         </div>
         <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+        <div class="row mb-3 align-items-center">
+            <label for="name" class="col-sm-3 form-label text-end pe-0">Name</label>
+            <div class="col-sm-9">
+                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-            <label class="form-check-label" for="isTransient">Transient</label>
-            <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked} {$selectedProperty->isDerived ? disabled}>
+        <div class="row mb-3 align-items-center">
+            <div class="col-sm-3 text-end pe-0"></div>
+            <div class="col-sm-9">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="isTransient">Transient</label>
+                    <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked} {$selectedProperty->isDerived ? disabled}>
+                </div>
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label" for="isOptional">Optional</label>
+                    <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label" for="isDerived">Derived</label>
+                    <input class="form-check-input" type="checkbox" name="isDerived" value="{$selectedProperty->isDerived}" id="isDerived" {$selectedProperty->isDerived ? checked}>
+                </div>
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-            <label class="form-check-label" for="isOptional">Optional</label>
-            <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
-        </div>
-        <div class="form-check">
-            <label class="form-check-label" for="isDerived">Derived</label>
-            <input class="form-check-input" type="checkbox" name="isDerived" value="{$selectedProperty->isDerived}" id="isDerived" {$selectedProperty->isDerived ? checked}>
-        </div>
-        <div n:if="$selectedProperty->isDerived" class="mb-3">
-            <label for="derivationExpressionFormat" class="form-label">Derivation</label>
-            <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Derived Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" required>
+        <div n:if="$selectedProperty->isDerived" class="row mb-3 align-items-center">
+            <label for="derivationExpressionFormat" class="col-sm-3 col-form-label text-end pe-0">Derivation</label>
+            <div class="col-sm-9">
+                <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" required>
+            </div>
         </div>
         <hr>
-        <div class="mt-3 mb-3">
+        <div class="row mt-3 mb-3 align-items-center">
             {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
-            <label for="type" class="form-label">Type</label>
-            <select name="type" id="type" class="form-select" data-autosave="true">
-                <option n:foreach="$types as $key => $value" value="{$key}" {$key === $type ? selected}>
-                    {$value}
-                </option>
-            </select>
+            <label for="type" class="col-sm-3 col-form-label text-end pe-0">Type</label>
+            <div class="col-sm-9">
+                <select name="type" id="type" class="form-select" data-autosave="true">
+                    <option n:foreach="$types as $key => $value" value="{$key}" {$key === $type ? selected}>
+                        {$value}
+                    </option>
+                </select>
+            </div>
         </div>
         {if !$selectedProperty->isDerived}
             {switch $type}
                 {case 100, 200, 300, 400, 500, 600, 700, 800, 900, 1100, 1200}
-                <div class="mb-3">
-                    {switch $type}
-                        {case 100, 200, 300, 400, 500, 600}
-                        <div class="mb-3">
-                            <label for="defaultValue" class="form-label">Default Value</label>
+                {switch $type}
+                    {case 100, 200, 300, 400, 500, 600}
+                    <div class="row mb-3 align-items-center">
+                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <div class="col-sm-9">
                             <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                         </div>
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <label class="form-label" for="minValue">Minimum</label>
-                                <input type="number" class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
-                            </div>
-                            <div class="col">
-                                <label class="form-label" for="maxValue">Maximum</label>
-                                <input type="number" class="form-control" name="minValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <div class="col-sm-9">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <input type="number" class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                    <label class="form-label" for="minValue">Minimum</label>
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" name="minValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                    <label class="form-label" for="maxValue">Maximum</label>
+                                </div>
                             </div>
                         </div>
-                    {case 700}
-                        <div class="mb-3">
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label" for="isDefaultValueBounded">Default String</label>
-                                <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
-                            </div>
+                    </div>
+                {case 700}
+                    <div class="row align-items-center">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9">
+                            <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
+                            <label class="form-check-label" for="isDefaultValueBounded">Default String</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <div class="col-sm-9">
                             <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null String'}" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <label class="form-label" for="minValue">Min Length</label>
-                                <input type="number" class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
-                            </div>
-                            <div class="col">
-                                <label class="form-label" for="maxValue">Max Length</label>
-                                <input type="number" class="form-control" name="minValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <div class="col-sm-9">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <input type="number" class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                    <label class="form-label" for="minValue">Min Length</label>
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" name="minValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                    <label class="form-label" for="maxValue">Max Length</label>
+                                </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="regex" class="form-label">Reg. Ex.</label>
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label for="regex" class="col-sm-3 col-form-label text-end pe-0">Reg. Ex.</label>
+                        <div class="col-sm-9">
                             <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
                         </div>
-                    {case 800}
-                    {var array $values = ["false" => "False", "true" => "True"]}
+                    </div>
+                {case 800}
+                <div class="row mb-3 align-items-center">
+                    <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                    <div class="col-sm-9">
                         <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
+                            {var array $values = ["" => "None", "true" => "True", "false" => "False"]}
                             <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
                         </select>
-                    {case 900}
-                        <div class="mb-3">
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label" for="isDefaultValueBounded">Default Date</label>
-                                <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
-                            </div>
+                    </div>
+                </div>
+                {case 900}
+                    <div class="row align-items-center">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
+                        <label class="form-check-label" for="isDefaultValueBounded">Default Date</label>
+                    </div>
+                </div>
+                    <div class="row mb-3 align-items-center">
+                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <div class="col-sm-9">
                             <input type="datetime-local" name="defaultValue" id="defaultValue" class="form-control" value="{$selectedProperty->defaultValue}" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
-                        <div class="mb-3">
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label" for="isMinValueBounded">Minimum Date</label>
-                                <input class="form-check-input" type="checkbox" name="isMinValueBounded" value="{$selectedProperty->isMinValueBounded}" id="isMinValueBounded" {$selectedProperty->isMinValueBounded ? checked}>
+                    </div>
+                    <div class="row mb-3 align-items-end">
+                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <div class="col-sm-9">
+                            <div class="row align-items-center">
+                                <div class="col-sm-6">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label" for="isMinValueBounded">Minimum Date</label>
+                                        <input class="form-check-input" type="checkbox" name="isMinValueBounded" value="{$selectedProperty->isMinValueBounded}" id="isMinValueBounded" {$selectedProperty->isMinValueBounded ? checked}>
+                                    </div>
+                                    <input type="datetime-local" name="minValue" id="minValue" class="form-control" value="{$selectedProperty->minValue}" {!$selectedProperty->isMinValueBounded ? disabled}>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label" for="isMaxValueBounded">Maximum Date</label>
+                                        <input class="form-check-input" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded}" id="isMaxValueBounded" {$selectedProperty->isMaxValueBounded ? checked}>
+                                    </div>
+                                    <input type="datetime-local" name="maxValue" id="maxValue" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
+                                </div>
                             </div>
-                            <input type="datetime-local" name="minValue" id="minValue" class="form-control" value="{$selectedProperty->minValue}" {!$selectedProperty->isMinValueBounded ? disabled}>
                         </div>
-                        <div class="mb-3">
-                            <div class="form-check form-check-inline">
-                                <label class="form-check-label" for="isMaxValueBounded">Maximum Date</label>
-                                <input class="form-check-input" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded}" id="isMaxValueBounded" {$selectedProperty->isMaxValueBounded ? checked}>
-                            </div>
-                            <input type="datetime-local" name="maxValue" id="maxValue" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
-                        </div>
-                    {case 1100, 1200}
-                        <div class="mb-3">
-                            <label for="defaultValue" class="form-label">Default Value</label>
-                            <input type="text" name="defaultValue" id="defaultValue" class="form-control text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                        </div>
-                    {/switch}
-                </div>
+                    </div>
+                {case 1100, 1200}
+                    <div class="mb-3">
+                        <label for="defaultValue" class="form-label">Default Value</label>
+                        <input type="text" name="defaultValue" id="defaultValue" class="form-control text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                    </div>
+                {/switch}
             {case 1000}
                 <div class="form-check">
                     <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External
