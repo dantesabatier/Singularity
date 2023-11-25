@@ -9,7 +9,6 @@ use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
-use function Sabatier\Foundation\human_readable_value;
 
 /**
  * @property string $propertyName
