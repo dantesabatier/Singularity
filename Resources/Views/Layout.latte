@@ -286,6 +286,17 @@
         once: true
       })
     })
+    document.querySelectorAll(".modal").forEach(e => {
+      e.addEventListener("hidden.bs.modal", () => {
+        /**
+         * @type { HTMLFormElement } form
+         */
+        const form = e.querySelector(".modal-content form")
+        form.reset()
+      }, {
+        once: false
+      })
+    })
     const addItem = document.getElementById("addItem")
     addItem?.addEventListener("show.bs.modal", (event) => {
       const button = event.relatedTarget
@@ -297,26 +308,6 @@
       form.action = url(endpoint)
     }, {
       once: false
-    })
-    addItem?.addEventListener("hidden.bs.modal", () => {
-      /**
-       * @type { HTMLFormElement } form
-       */
-      const form = addItem.querySelector(".modal-content form")
-      form.reset()
-    }, {
-      once: false
-    })
-    document.querySelectorAll(".modal").forEach(e => {
-      e.addEventListener("hidden.bs.modal", () => {
-        /**
-         * @type { HTMLFormElement } form
-         */
-        const form = e.querySelector(".modal-content form")
-        form.reset()
-      }, {
-        once: false
-      })
     })
   }
 
