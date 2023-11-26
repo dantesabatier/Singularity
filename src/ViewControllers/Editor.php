@@ -101,7 +101,7 @@ class Editor extends ViewController
                 "name" => AttributeType::string
             ]);
             $projects = $this->managedObjectContext->fetch($fetchRequest);
-            if ($projects->count() > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
+            if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
                 $projects->insertAt($projects->removeAt($index), 0);
             }
             $this->$name = $projects;
@@ -118,7 +118,7 @@ class Editor extends ViewController
                         "url" => AttributeType::uri,
                     ]
                 ]);
-                $project = $this->managedObjectContext->fetch($fetchRequest)->first();
+                $project = $this->managedObjectContext->fetch($fetchRequest)->first;
             }
             $this->$name = $project;
             return $this->$name;
@@ -202,13 +202,13 @@ class Editor extends ViewController
             $uses->append("use " . Set::class . ";");
         }
         $fetchedProperties = $entity->fetchedProperties;
-        if (!$fetchedProperties->isEmpty()) {
+        if (!$fetchedProperties->isEmpty) {
             $uses->append("use " . ArrayClass::class . ";");
         }
         if (!$superentity) {
             $uses->append("use " . ManagedObject::class . ";");
         }
-        if (!$uses->isEmpty()) {
+        if (!$uses->isEmpty) {
             if ($superentity) {
                 $content .= "\n";
             }
@@ -279,13 +279,13 @@ class Editor extends ViewController
                 " * @method void set$relationshipName($setClassName<$entityClassName> \$objects)"
             ]))->join("\n");
         });
-        if (!$uses->isEmpty()) {
+        if (!$uses->isEmpty) {
             $content .= "\n";
         }
-        if (!$properties->isEmpty()) {
+        if (!$properties->isEmpty) {
             $content .= "/**\n";
             $content .= $properties->join("\n");
-            if (!$methods->isEmpty()) {
+            if (!$methods->isEmpty) {
                 $content .= "\n";
                 $content .= $methods->join("\n");
             }

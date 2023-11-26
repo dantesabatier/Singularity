@@ -150,27 +150,27 @@ class Entity extends ManagedObject
         $dictionary["versionHashModifier"] = $this->versionHashModifier;
         $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
         $attributes = $this->attributes->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation());
-        if (!$attributes->isEmpty()) {
+        if (!$attributes->isEmpty) {
             $dictionary["attributes"] = $attributes;
         }
         $relationships = $this->relationships->map(fn(Relationship $relationship): Dictionary => $relationship->dictionaryRepresentation());
-        if (!$relationships->isEmpty()) {
+        if (!$relationships->isEmpty) {
             $dictionary["relationships"] = $relationships;
         }
         $fetchedProperties = $this->fetchedProperties->map(fn(FetchedProperty $property): Dictionary => $property->dictionaryRepresentation());
-        if (!$fetchedProperties->isEmpty()) {
+        if (!$fetchedProperties->isEmpty) {
             $dictionary["fetchedProperties"] = $fetchedProperties;
         }
         $uniquenessConstraints = $this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => (new ArrayClass(explode(",", $uniquenessConstraint->stringValue)))->map(fn(string $e): string => trim($e)));
-        if (!$uniquenessConstraints->isEmpty()) {
+        if (!$uniquenessConstraints->isEmpty) {
             $dictionary["uniquenessConstraints"] = $uniquenessConstraints;
         }
         $indexes = $this->indexes->map(fn(FetchIndex $index): Dictionary => $index->dictionaryRepresentation());
-        if (!$indexes->isEmpty()) {
+        if (!$indexes->isEmpty) {
             $dictionary["indexes"] = $indexes;
         }
         $subentities = $this->subentities->map(fn(Entity $subentity): Dictionary => $subentity->dictionaryRepresentation());
-        if (!$subentities->isEmpty()) {
+        if (!$subentities->isEmpty) {
             $dictionary["subentities"] = $subentities;
         }
         return $dictionary;

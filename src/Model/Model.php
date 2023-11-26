@@ -163,7 +163,7 @@ class Model extends ManagedObject
         $context = $this->managedObjectContext;
         $entities = $this->entities;
         $progress = $this->progress;
-        if (!$entities->isEmpty()) {
+        if (!$entities->isEmpty) {
             foreach ($entities as $entity) {
                 if ($entity->isRootEntity) {
                     $context->delete($entity);
@@ -172,7 +172,7 @@ class Model extends ManagedObject
             $context->save();
         }
         $fetchRequestTemplates = $this->fetchRequestTemplates;
-        if (!$fetchRequestTemplates->isEmpty()) {
+        if (!$fetchRequestTemplates->isEmpty) {
             foreach ($fetchRequestTemplates as $fetchRequestTemplate) {
                 $context->delete($fetchRequestTemplate);
             }
@@ -185,7 +185,7 @@ class Model extends ManagedObject
             if ($representations) {
                 /** @var Set<Entity> $entities */
                 $entities = new Set();
-                $progress->totalUnitCount = $representations->count();
+                $progress->totalUnitCount = $representations->count;
                 foreach ($representations as $index => $representation) {
                     if ($progress->isCancelled) {
                         break;

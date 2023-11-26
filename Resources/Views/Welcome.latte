@@ -27,7 +27,7 @@
                                     </button>
                                 </div>
                                 <div class="col-sm-6 overflow-auto" style="max-height: 300px">
-                                    {if !$projects->isEmpty()}
+                                    {if !$projects->isEmpty}
                                         <ol class="list-group">
                                             <li n:foreach="$projects as $project" class="list-group-item display-block">
                                                 <div class="row p-2">

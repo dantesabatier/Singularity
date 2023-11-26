@@ -27,7 +27,7 @@
                                 <li>
                                     <button class="dropdown-item" type="button" onclick="load({$e})">{$e->name}</button>
                                 </li>
-                                <li n:if="$projects->count() > 1 && $i === 0">
+                                <li n:if="$projects->count > 1 && $i === 0">
                                     <hr class="dropdown-divider">
                                 </li>
                             {/foreach}
@@ -89,7 +89,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetch Index" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty() ? disabled}>
+                                <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetch Index" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                                     Add Fetch Index
                                 </button>
                             </li>
@@ -174,7 +174,7 @@
                                 <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
                             </div>
                             <label for="superentityID" class="form-label">Parent Entity</label>
-                            <select name="superentityID" id="superentityID" class="form-select" {$allEntities->isEmpty() ? disabled}>
+                            <select name="superentityID" id="superentityID" class="form-select" {$allEntities->isEmpty ? disabled}>
                                 <option value="">No Parent Entity</option>
                                 <hr>
                                 <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}">
