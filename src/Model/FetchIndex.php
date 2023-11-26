@@ -47,6 +47,7 @@ class FetchIndex extends ManagedObject
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = new Dictionary();
         $dictionary["name"] = $this->name;
+        $dictionary["partialIndexPredicateFormat"] = $this->partialIndexPredicateFormat;
         $dictionary["elements"] = $this->elements->map(fn(FetchIndexElement $element): Dictionary => $element->dictionaryRepresentation());
         return $dictionary;
     }
