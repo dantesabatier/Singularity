@@ -9,6 +9,8 @@ use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
+use Sabatier\Foundation\Nil;
+use Sabatier\Foundation\Number;
 use Sabatier\Foundation\Set;
 
 /**
@@ -33,12 +35,15 @@ class FetchIndex extends ManagedObject
             $index->elements->setValueForKey($change->newValue, "collationType");
         });
     }
-    
-    public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool
+
+    public function validateCollationType(FetchIndexElementType|Number|Nil|int|null &$collationType): bool
     {
-        if (is_int($collationType)) {
-            $collationType = FetchIndexElementType::from($collationType);
-        }
+        $collationType = match (true) {
+            $collationType instanceof Number => FetchIndexElementType::from($collationType->intValue),
+            $collationType instanceof Nil => FetchIndexElementType::bTree,
+            is_int($collationType) => FetchIndexElementType::from($collationType),
+            default => $collationType
+        };
         return true;
     }
 
