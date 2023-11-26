@@ -7,15 +7,15 @@
         <caption class="fw-bold text-shadow">Attributes</caption>
         <thead>
         <tr>
-            <th scope="col" class="col-sm-4 text-shadow">Name</th>
+            <th scope="col" class="col-sm-2 text-shadow">Name</th>
             <th scope="col" class="col-sm-2 text-shadow">Type</th>
-            <th scope="col" class="col-sm-6 text-shadow"></th>
+            <th scope="col" class="col-sm-8 text-shadow"></th>
         </tr>
         </thead>
         <tbody n:if="$attributes">
         <tr n:foreach="$attributes as $attribute" id="property-{$attribute->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$attribute->objectID->referenceObject}" n:class="$attribute->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
             {var string $img = img($attribute)}
-            <td>
+            <td class="text-truncate">
                 <img src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
                 {$attribute->name}
             </td>
