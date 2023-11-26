@@ -29,9 +29,9 @@
         </div>
         <div class="row mt-3 mb-3 align-items-center">
             {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
-            <label for="type" class="col-sm-3 col-form-label text-end pe-0">Type</label>
+            <label for="expressionResultType" class="col-sm-3 col-form-label text-end pe-0">Type</label>
             <div class="col-sm-9">
-                <select name="expressionResultType" class="form-select" aria-label="expressionResultType" data-autosave="true" {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
+                <select name="expressionResultType" id="expressionResultType" class="form-select" data-autosave="true" {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
                     <option n:foreach="$types as $key => $value" value="{$key}" {$key === $selectedIndexElement->expressionResultType?->value ? selected}>
                         {$value}
                     </option>
