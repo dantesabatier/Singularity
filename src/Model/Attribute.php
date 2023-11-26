@@ -12,6 +12,8 @@ use Sabatier\Foundation\Error;
 use Sabatier\Foundation\InternalInconsistencyException;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
+use Sabatier\Foundation\Nil;
+use Sabatier\Foundation\Number;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
 use const Sabatier\CoreData\ManagedObjectValidationError;
@@ -79,11 +81,14 @@ class Attribute extends Property
         });
     }
 
-    public function validateType(AttributeType|int|null &$type): bool
+    public function validateType(AttributeType|Number|Nil|int|null &$type): bool
     {
-        if (is_int($type)) {
-            $type = AttributeType::from($type);
-        }
+        $type = match (true) {
+            $type instanceof Number => AttributeType::from($type->intValue),
+            $type instanceof Nil => AttributeType::undefined,
+            is_int($type) => AttributeType::from($type),
+            default => $type
+        };
         return true;
     }
 
