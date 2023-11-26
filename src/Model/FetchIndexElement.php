@@ -10,6 +10,8 @@ use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
+use Sabatier\Foundation\Nil;
+use Sabatier\Foundation\Number;
 
 /**
  * @property string $propertyName
@@ -46,19 +48,25 @@ class FetchIndexElement extends ManagedObject
         }
     }
 
-    public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool
+    public function validateCollationType(FetchIndexElementType|Number|Nil|int|null &$collationType): bool
     {
-        if (is_int($collationType)) {
-            $collationType = FetchIndexElementType::from($collationType);
-        }
+        $collationType = match (true) {
+            $collationType instanceof Number => FetchIndexElementType::from($collationType->intValue),
+            $collationType instanceof Nil => FetchIndexElementType::bTree,
+            is_int($collationType) => FetchIndexElementType::from($collationType),
+            default => $collationType
+        };
         return true;
     }
 
-    public function validateExpressionResultType(AttributeType|int|null &$expressionResultType): bool
+    public function validateExpressionResultType(AttributeType|Number|Nil|int|null &$expressionResultType): bool
     {
-        if (is_int($expressionResultType)) {
-            $expressionResultType = AttributeType::from($expressionResultType);
-        }
+        $expressionResultType = match (true) {
+            $expressionResultType instanceof Number => AttributeType::from($expressionResultType->intValue),
+            $expressionResultType instanceof Nil => AttributeType::undefined,
+            is_int($expressionResultType) => AttributeType::from($expressionResultType),
+            default => $expressionResultType
+        };
         return true;
     }
 
