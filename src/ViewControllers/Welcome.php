@@ -176,9 +176,7 @@ class Welcome extends ViewController
         /** @var class-string|null $principalClass */
         $principalClass = $bundle->object(kCFBundlePrincipalClassKey);
         if ($principalClass !== null) {
-            $components = new ArrayClass(explode("\\", $principalClass));
-            $class = $components->popLast() ?? class_name(Delegate::class);
-            $namespace = $components->join("\\");
+            $class = class_name($principalClass, $namespace);
             $sourcesURL = $url->appendingPathComponent("src");
             if (!$fileManager->fileExists($sourcesURL->path)) {
                 $fileManager->createDirectory($sourcesURL, attributes: $attributes);
