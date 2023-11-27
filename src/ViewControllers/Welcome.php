@@ -198,7 +198,7 @@ class Welcome extends ViewController
                 "description" => "description",
                 "license" => "license",
                 "keywords" => [
-                    $lowerCaseName,
+                    $lowerCaseName
                 ],
                 "require" => [
                     "php" => sprintf("^%s", PHP_VERSION),
@@ -209,7 +209,7 @@ class Welcome extends ViewController
                     "ext-mbstring" => "*",
                     "sabatier/foundation" => "^1.0-dev",
                     "sabatier/coredata" => "^1.0-dev",
-                    "sabatier/service" => "^1.0-dev",
+                    "sabatier/service" => "^1.0-dev"
                 ],
                 "config" => [
                     "platform" => [
@@ -217,7 +217,7 @@ class Welcome extends ViewController
                         "ext-posix" => PHP_VERSION,
                         "ext-gd" => PHP_VERSION,
                         "ext-intl" => PHP_VERSION,
-                        "ext-fileinfo" => PHP_VERSION,
+                        "ext-fileinfo" => PHP_VERSION
                     ]
                 ],
                 "autoload" => [
