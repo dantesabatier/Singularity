@@ -173,8 +173,8 @@ class Editor extends ViewController
 
     private function generateSubclass(Entity $entity, string $class, string $namespace): string
     {
-        $setClassName = Set::className();
-        $arrayClassName = ArrayClass::className();
+        $setClassName = class_name(Set::class);
+        $arrayClassName = class_name(ArrayClass::class);
         $superentity = $entity->superentity;
         $content = "<?php\n";
         $content .= "\n";
@@ -296,7 +296,7 @@ class Editor extends ViewController
             $content .= "abstract ";
         }
         $content .= "class $class extends ";
-        $content .= $superentity ? $superentity->name : ManagedObject::className();
+        $content .= $superentity ? $superentity->name : class_name(ManagedObject::class);
         $content .= "\n";
         $content .= "{\n";
         return "$content}\n";
