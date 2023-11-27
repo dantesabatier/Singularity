@@ -18,6 +18,7 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\SearchPathDirectory;
 use Sabatier\Foundation\SearchPathDomainMask;
 use Sabatier\Service\Renderer;
+use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\human_readable_value;
 use function Sabatier\Foundation\localized_string;
 use function Sabatier\Foundation\substring_to_index;
@@ -53,7 +54,7 @@ class LatteRenderer extends Renderer
                 }
                 return $fn(AttributeType::undefined);
             }
-            return substring_to_index($e::className(), 1);
+            return substring_to_index(class_name($e::class), 1);
         };
         $this->engine->addFunction("img", $img);
         $this->engine->addFunction("localized", fn(string $value): string => localized_string($value));
