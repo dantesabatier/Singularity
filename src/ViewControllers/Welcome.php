@@ -24,6 +24,7 @@ use Sabatier\Service\ApplicationDelegate;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
+use function Sabatier\Foundation\class_name;
 use const App\CompanyNameKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDevelopmentRegionKey;
@@ -176,7 +177,7 @@ class Welcome extends ViewController
         $principalClass = $bundle->object(kCFBundlePrincipalClassKey);
         if ($principalClass !== null) {
             $components = new ArrayClass(explode("\\", $principalClass));
-            $class = $components->popLast() ?? Delegate::className();
+            $class = $components->popLast() ?? class_name(Delegate::class);
             $namespace = $components->join("\\");
             $sourcesURL = $url->appendingPathComponent("src");
             if (!$fileManager->fileExists($sourcesURL->path)) {
