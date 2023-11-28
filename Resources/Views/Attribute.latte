@@ -12,8 +12,8 @@
                 <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
             </div>
         </div>
-        <div class="row mb-3 align-items-center">
-            <div class="col-sm-3 text-end pe-0"></div>
+        <div class="row mb-3 align-items-baseline">
+            <label class="col-sm-3 col-form-label text-end pe-0">Properties</label>
             <div class="col-sm-9">
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="isTransient">Transient</label>
@@ -58,7 +58,7 @@
                             <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                         </div>
                     </div>
-                    <div class="row mb-3 align-items-baseline">
+                    <div class="row mb-3 align-items-start">
                         <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">
@@ -87,7 +87,7 @@
                             <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null String'}" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
                     </div>
-                    <div class="row mb-3 align-items-lg-baseline">
+                    <div class="row mb-3 align-items-start">
                         <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">
