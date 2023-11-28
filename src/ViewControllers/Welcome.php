@@ -183,8 +183,7 @@ class Welcome extends ViewController
             }
             $path = $sourcesURL->appendingPathComponent($class)->appendingPathExtension("php")->path;
             if (!$fileManager->fileExists($path)) {
-                /** @psalm-suppress PossiblyNullArgument */
-                $fileManager->createFile($path, $this->generateDelegateClass($class, $namespace));
+                $fileManager->createFile($path, $this->generateDelegateClass($class, $namespace ?? ""));
             }
         }
         $storeURL = $resourceURL->appendingPathComponent($name)->appendingPathExtension("plist");
