@@ -41,17 +41,12 @@ class LatteRenderer extends Renderer
             default => strtoupper(substring_to_index($type->name, 1))
         };
         $img = function (Property|FetchIndexElement $e) use (&$img, &$fn): string {
-            if ($e instanceof Attribute) {
-                return $fn($e->type);
-            } elseif ($e instanceof Relationship) {
-                return $e->isToMany ? "M" : "O";
-            } elseif ($e instanceof FetchIndexElement) {
-                if ($property = $e->property) {
-                    return $img($property);
-                }
-                return $fn(AttributeType::undefined);
-            }
-            return substring_to_index($e->entity->name, 1);
+            return match (true) {
+                $e instanceof Attribute => $fn($e->type),
+                $e instanceof Relationship => $e->isToMany ? "M" : "O",
+                $e instanceof FetchIndexElement => ($property = $e->property) ? $img($property) : $fn(AttributeType::undefined),
+                default => substring_to_index($e->entity->name, 1)
+            };
         };
         $this->engine->addFunction("img", $img);
         $this->engine->addFunction("localized", fn(string $value): string => localized_string($value));
