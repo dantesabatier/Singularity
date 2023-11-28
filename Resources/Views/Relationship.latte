@@ -70,36 +70,38 @@
                 </select>
             </div>
         </div>
-        <div class="row mb-3 align-items-center">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-9">
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label" for="isOrdered">Ordered</label>
-                    <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-3 align-items-end">
-            <label class="col-sm-3 col-form-label text-end pe-0">Count</label>
-            <div class="col-sm-9">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <div class="form-check form-check-inline">
-                            <label class="form-check-label" for="isMinCountBounded">Minimum</label>
-                            <input class="form-check-input" type="checkbox" name="isMinCountBounded" value="{$selectedProperty->isMinCountBounded}" id="isMinCountBounded" {$selectedProperty->isMinCountBounded ? checked}>
-                        </div>
-                        <input type="number" name="minCount" id="minCount" aria-label="Minimum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->minCount}" {!$selectedProperty->isMinCountBounded ? disabled}>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-check form-check-inline">
-                            <label class="form-check-label" for="isMaxCountBounded">Maximum</label>
-                            <input class="form-check-input" type="checkbox" name="isMaxCountBounded" value="{$selectedProperty->isMaxCountBounded}" id="isMaxCountBounded" {$selectedProperty->isMaxCountBounded ? checked}>
-                        </div>
-                        <input type="number" name="maxValue" id="maxValue" aria-label="Maximum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxCountBounded ? disabled}>
+        {if $selectedProperty->isToMany}
+            <div class="row mb-3 align-items-center">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-9">
+                    <div class="form-check form-check-inline">
+                        <label class="form-check-label" for="isOrdered">Ordered</label>
+                        <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="row mb-3 align-items-end">
+                <label class="col-sm-3 col-form-label text-end pe-0">Count</label>
+                <div class="col-sm-9">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label" for="isMinCountBounded">Minimum</label>
+                                <input class="form-check-input" type="checkbox" name="isMinCountBounded" value="{$selectedProperty->isMinCountBounded}" id="isMinCountBounded" {$selectedProperty->isMinCountBounded ? checked}>
+                            </div>
+                            <input type="number" name="minCount" id="minCount" aria-label="Minimum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->minCount}" {!$selectedProperty->isMinCountBounded ? disabled}>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label" for="isMaxCountBounded">Maximum</label>
+                                <input class="form-check-input" type="checkbox" name="isMaxCountBounded" value="{$selectedProperty->isMaxCountBounded}" id="isMaxCountBounded" {$selectedProperty->isMaxCountBounded ? checked}>
+                            </div>
+                            <input type="number" name="maxValue" id="maxValue" aria-label="Maximum" placeholder="Unbounded" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxCountBounded ? disabled}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {/if}
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
         <input class="d-none" type="submit">
     </form>
