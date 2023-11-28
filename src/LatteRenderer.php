@@ -35,12 +35,10 @@ class LatteRenderer extends Renderer
         $this->engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
         $this->engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
         $this->engine->addFilter("json", fn(mixed $value): string => json_encode($value));
-        $fn = function (AttributeType $type): string {
-            return match ($type) {
-                AttributeType::integer16, AttributeType::integer32, AttributeType::integer64, AttributeType::decimal, AttributeType::double, AttributeType::float => "N",
-                AttributeType::uuid, AttributeType::undefined => $type->name,
-                default => strtoupper(substring_to_index($type->name, 1))
-            };
+        $fn = fn(AttributeType $type): string => match ($type) {
+            AttributeType::integer16, AttributeType::integer32, AttributeType::integer64, AttributeType::decimal, AttributeType::double, AttributeType::float => "N",
+            AttributeType::uuid, AttributeType::undefined => $type->name,
+            default => strtoupper(substring_to_index($type->name, 1))
         };
         $img = function (Property|FetchIndexElement $e) use (&$img, &$fn): string {
             if ($e instanceof Attribute) {
