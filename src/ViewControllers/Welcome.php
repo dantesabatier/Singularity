@@ -13,6 +13,8 @@ use Sabatier\Foundation\Error;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
+use Sabatier\Foundation\Networking\HTTPStatusCode;
+use Sabatier\Foundation\Networking\HTTPURLResponse;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\SortDescriptor;
@@ -256,5 +258,10 @@ class Welcome extends ViewController
     #[Action(HTTPRequestMethod::delete)]
     public function remove(): void
     {
+    }
+
+    public function response(): HTTPURLResponse
+    {
+        return new HTTPURLResponse($this->request->url, HTTPStatusCode::noContent);
     }
 }

@@ -27,6 +27,8 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
+use Sabatier\Foundation\Networking\HTTPStatusCode;
+use Sabatier\Foundation\Networking\HTTPURLResponse;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Predicates\Predicate;
@@ -419,5 +421,10 @@ class Editor extends ViewController
             }
         }
         $this->save();
+    }
+
+    public function response(): HTTPURLResponse
+    {
+        return new HTTPURLResponse($this->request->url, HTTPStatusCode::noContent);
     }
 }

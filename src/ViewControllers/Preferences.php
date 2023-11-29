@@ -3,6 +3,8 @@
 namespace App\ViewControllers;
 
 use Exception;
+use Sabatier\Foundation\Networking\HTTPStatusCode;
+use Sabatier\Foundation\Networking\HTTPURLResponse;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
@@ -35,5 +37,10 @@ class Preferences extends ViewController
         foreach ($body as $key => $value) {
             UserDefaults::standard()->setObject($value, $key);
         }
+    }
+
+    public function response(): HTTPURLResponse
+    {
+        return new HTTPURLResponse($this->request->url, HTTPStatusCode::noContent);
     }
 }
