@@ -38,9 +38,4 @@ class Preferences extends ViewController
             UserDefaults::standard()->setObject($value, $key);
         }
     }
-
-    public function response(): HTTPURLResponse
-    {
-        return new HTTPURLResponse($this->request->url, HTTPStatusCode::noContent);
-    }
 }

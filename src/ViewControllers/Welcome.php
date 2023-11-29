@@ -259,9 +259,4 @@ class Welcome extends ViewController
     public function remove(): void
     {
     }
-
-    public function response(): HTTPURLResponse
-    {
-        return new HTTPURLResponse($this->request->url, HTTPStatusCode::noContent);
-    }
 }
