@@ -3,8 +3,6 @@
 namespace App\ViewControllers;
 
 use Exception;
-use Sabatier\Foundation\Networking\HTTPStatusCode;
-use Sabatier\Foundation\Networking\HTTPURLResponse;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;

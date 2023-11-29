@@ -13,8 +13,6 @@ use Sabatier\Foundation\Error;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
-use Sabatier\Foundation\Networking\HTTPStatusCode;
-use Sabatier\Foundation\Networking\HTTPURLResponse;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\SortDescriptor;
