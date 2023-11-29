@@ -8,6 +8,7 @@ use App\Model\Project;
 use Exception;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
+use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Error;
 use Sabatier\Foundation\FileAttributeKey;
@@ -244,6 +245,7 @@ class Welcome extends ViewController
         $model = new Model($context);
         $model->url = $bundle->url($name, "plist");
         $project = new Project($context);
+        $project->creationDate = new Date();
         $project->name = $name;
         $project->url = $url;
         $project->model = $model;
