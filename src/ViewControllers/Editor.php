@@ -39,6 +39,7 @@ use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Foundation\UUID;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\class_name;
@@ -307,9 +308,7 @@ class Editor extends ViewController
      */
     public function viewWillLoad(): void
     {
-        if (!($project = $this->project)) {
-            return;
-        }
+        $project = $this->project ?? throw new NotFoundException();
         $this->breadcrumb[] = $project;
         $keys = ["entity", "fetchRequest", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
