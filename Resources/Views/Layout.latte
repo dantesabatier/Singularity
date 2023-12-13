@@ -107,12 +107,15 @@
       })()
       return result
     }, {}), null, 4)
+    const spinner = document.querySelector(".spinner-border")
+    spinner.hidden = false
     const action = form.action
     const response = await fetch(action, {
       method: method,
       headers: headers,
       body: body
     })
+    spinner.hidden = true
     const url = new URL(window.location)
     if (method === "DELETE") {
       let keys = []
