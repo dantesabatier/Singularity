@@ -371,8 +371,6 @@ class Editor extends ViewController
         $project->lastModifiedDate = new Date();
         $model->url = $modelURL;
         $this->managedObjectContext->save();
-        $this->content = json_encode($project->serialized($this->serialization), JSON_PRESERVE_ZERO_FRACTION);
-        $this->contentType = "application/json; charset=utf-8";
     }
 
     /**
@@ -389,8 +387,6 @@ class Editor extends ViewController
             return;
         }
         $model->load($modelURL);
-        $this->content = json_encode($model->serialized($this->serialization), JSON_PRESERVE_ZERO_FRACTION);
-        $this->contentType = "application/json; charset=utf-8";
     }
 
     /**
