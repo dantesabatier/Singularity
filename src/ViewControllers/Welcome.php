@@ -250,8 +250,6 @@ class Welcome extends ViewController
         $project->url = $url;
         $project->model = $model;
         $context->save();
-        $this->content = json_encode($project->serialized($this->serialization), JSON_PRESERVE_ZERO_FRACTION);
-        $this->contentType = "application/json; charset=utf-8";
     }
 
     /**
