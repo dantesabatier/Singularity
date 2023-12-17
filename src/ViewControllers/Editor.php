@@ -18,6 +18,7 @@ use Exception;
 use ReflectionClass;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\ManagedObjectID;
 use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
@@ -27,6 +28,8 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
+use Sabatier\Foundation\Notification;
+use Sabatier\Foundation\NotificationCenter;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Predicates\Predicate;
@@ -36,6 +39,7 @@ use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\URLComponents;
 use Sabatier\Foundation\URLQueryItem;
+use Sabatier\Foundation\UserDefaults;
 use Sabatier\Foundation\UUID;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
@@ -44,6 +48,7 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
+use const App\AutomaticallySaveModel;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint]
@@ -88,6 +93,11 @@ class Editor extends ViewController
         unset($this->allEntities);
         unset($this->fetchRequestTemplates);
         unset($this->breadcrumb);
+        NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (/** @noinspection PhpUnusedParameterInspection */ Notification $notification): void {
+            if (UserDefaults::standard()->bool(AutomaticallySaveModel)) {
+                $this->save();
+            }
+        });
     }
 
     /**
