@@ -26,6 +26,8 @@ class Delegate extends ObjectClass implements ApplicationDelegate
         UserDefaults::standard()->register(new Dictionary([
             PersistentHistoryTrackingKey => false,
             PersistentStoreRemoteChangeNotificationPostOptionKey => false,
+            AutomaticallyDeleteProjectFolders => false,
+            AutomaticallySaveModel => false,
             CompanyNameKey => full_user_name()
         ]));
     }
