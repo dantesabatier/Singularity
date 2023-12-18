@@ -4,13 +4,17 @@
 
 namespace App;
 
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\SQLCore;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Error;
+use Sabatier\Foundation\Notification;
+use Sabatier\Foundation\NotificationCenter;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
+use Sabatier\Service\PersistentSpace;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\full_user_name;
 use const Sabatier\CoreData\PersistentHistoryTrackingKey;
@@ -35,6 +39,14 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     public function applicationWillFinishLaunching(Application $application): void
     {
         $application->isProtectedContentAvailable = true;
+        NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (/** @noinspection PhpUnusedParameterInspection */ Notification $notification) use ($application): void {
+            if (UserDefaults::standard()->bool(AutomaticallySaveModel)) {
+                $firstResponder = $application->firstResponder;
+                if ($firstResponder instanceof PersistentSpace) {
+                    //TODO: get the project, create an Editor and save the model to disk
+                }
+            }
+        });
     }
 
     public function applicationDidFinishLaunching(Application $application): void
