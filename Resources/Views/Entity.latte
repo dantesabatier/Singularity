@@ -8,6 +8,7 @@
             <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
                 Entity
             </div>
+            <input type="hidden" name="objectID" value="{$selectedEntity->objectID->referenceObject}">
             <div class="row mb-3 align-items-center">
                 <label for="name" class="col-sm-3 col-form-label text-end pe-0">Name</label>
                 <div class="col-sm-9">
@@ -94,7 +95,6 @@
                     <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-            <input type="hidden" name="objectID" value="{$selectedEntity->objectID->referenceObject}">
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             <input class="d-none" type="submit">
         </form>
