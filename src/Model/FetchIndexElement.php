@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 namespace App\Model;
 
 use Sabatier\CoreData\AttributeType;
@@ -29,6 +31,9 @@ class FetchIndexElement extends ManagedObject
     {
         parent::__construct($managedObjectContext, $entity);
         $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use ($managedObjectContext, &$observation): void {
+            if ($element->isSuppressingKVO || $element->isSuppressingChangeNotifications) {
+                return;
+            }
             $observation->invalidate();
             if ($change->newValue !== "Expression") {
                 $element->expressionFormat = null;

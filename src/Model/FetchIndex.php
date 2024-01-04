@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 namespace App\Model;
 
 use Sabatier\CoreData\EntityDescription;
@@ -32,6 +34,9 @@ class FetchIndex extends ManagedObject
     {
         parent::__construct($managedObjectContext, $entity);
         $this->observe("collationType", KeyValueObservingOptions::new, function (FetchIndex $index, KeyValueObservedChange $change): void {
+            if ($index->isSuppressingKVO || $index->isSuppressingChangeNotifications) {
+                return;
+            }
             $index->elements->setValueForKey($change->newValue, "collationType");
         });
     }

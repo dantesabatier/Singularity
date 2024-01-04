@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 namespace App\Model;
 
 use Sabatier\CoreData\DeleteRule;
@@ -31,6 +33,9 @@ class Relationship extends Property
         unset($this->destinationEntity);
         unset($this->inverseRelationship);
         $observation = $this->observe("isToMany", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
+            if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
+                return;
+            }
             $observation->invalidate();
             $relationship->minCount = null;
             $relationship->maxCount = null;
@@ -39,9 +44,15 @@ class Relationship extends Property
             $relationship->isMaxCountBounded = false;
         });
         $observation = $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
+            if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
+                return;
+            }
             $relationship->minCount = $change->newValue ? $this->minCount : null;
         });
         $observation = $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
+            if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
+                return;
+            }
             $relationship->maxCount = $change->newValue ? $this->maxCount : null;
         });
     }
