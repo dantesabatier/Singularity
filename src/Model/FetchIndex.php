@@ -34,10 +34,11 @@ class FetchIndex extends ManagedObject
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        $this->observe("collationType", KeyValueObservingOptions::new, function (FetchIndex $index, KeyValueObservedChange $change): void {
+        $observation = $this->observe("collationType", KeyValueObservingOptions::new, function (FetchIndex $index, KeyValueObservedChange $change) use (&$observation): void {
             if ($index->isSuppressingKVO || $index->isSuppressingChangeNotifications) {
                 return;
             }
+            $observation->invalidate();
             $index->elements->setValueForKey($change->newValue, "collationType");
         });
     }
