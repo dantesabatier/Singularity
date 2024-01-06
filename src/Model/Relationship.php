@@ -10,6 +10,9 @@ use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
+use Sabatier\Foundation\Nil;
+use Sabatier\Foundation\Number;
+use Sabatier\Foundation\Value;
 
 /**
  * @property string $lazyDestinationEntityName
@@ -47,12 +50,14 @@ class Relationship extends Property
             if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
                 return;
             }
+            $observation->invalidate();
             $relationship->minCount = $change->newValue ? $this->minCount : null;
         });
         $observation = $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
             if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
                 return;
             }
+            $observation->invalidate();
             $relationship->maxCount = $change->newValue ? $this->maxCount : null;
         });
     }
@@ -79,8 +84,11 @@ class Relationship extends Property
         }
     }
 
-    public function validateDeleteRule(DeleteRule|int|null &$deleteRule): bool
+    public function validateDeleteRule(DeleteRule|Number|Nil|int|null &$deleteRule): bool
     {
+        if ($deleteRule instanceof Value) {
+            $deleteRule = $deleteRule->value;
+        }
         if (is_int($deleteRule)) {
             $deleteRule = DeleteRule::from($deleteRule);
         }
