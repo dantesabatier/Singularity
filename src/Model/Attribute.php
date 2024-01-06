@@ -18,6 +18,7 @@ use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\Number;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
+use Sabatier\Foundation\Value;
 use const Sabatier\CoreData\ManagedObjectValidationError;
 use const Sabatier\Foundation\CocoaErrorDomain;
 use const Sabatier\Foundation\LocalizedDescriptionKey;
@@ -106,12 +107,12 @@ class Attribute extends Property
 
     public function validateType(AttributeType|Number|Nil|int|null &$type): bool
     {
-        $type = match (true) {
-            $type instanceof Number => AttributeType::from($type->intValue),
-            $type instanceof Nil => AttributeType::undefined,
-            is_int($type) => AttributeType::from($type),
-            default => $type
-        };
+        if ($type instanceof Value) {
+            $type = $type->value;
+        }
+        if (is_int($type)) {
+            $type = AttributeType::from($type);
+        }
         return true;
     }
 

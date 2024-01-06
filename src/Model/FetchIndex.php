@@ -14,6 +14,7 @@ use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\Number;
 use Sabatier\Foundation\Set;
+use Sabatier\Foundation\Value;
 
 /**
  * @property string $name
@@ -43,12 +44,12 @@ class FetchIndex extends ManagedObject
 
     public function validateCollationType(FetchIndexElementType|Number|Nil|int|null &$collationType): bool
     {
-        $collationType = match (true) {
-            $collationType instanceof Number => FetchIndexElementType::from($collationType->intValue),
-            $collationType instanceof Nil => FetchIndexElementType::bTree,
-            is_int($collationType) => FetchIndexElementType::from($collationType),
-            default => $collationType
-        };
+        if ($collationType instanceof Value) {
+            $collationType = $collationType->value;
+        }
+        if (is_int($collationType)) {
+            $collationType = FetchIndexElementType::from($collationType);
+        }
         return true;
     }
 

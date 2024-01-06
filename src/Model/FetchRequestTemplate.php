@@ -5,6 +5,9 @@ namespace App\Model;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Nil;
+use Sabatier\Foundation\Number;
+use Sabatier\Foundation\Value;
 
 /**
  * @property string $name
@@ -22,9 +25,12 @@ use Sabatier\Foundation\Dictionary;
  */
 class FetchRequestTemplate extends ManagedObject
 {
-    public function validateFetchResultType(FetchRequestResultType|int|null &$resultType): bool
+    public function validateFetchResultType(FetchRequestResultType|Number|Nil|int|null &$resultType): bool
     {
-        if (is_int($resultType)) {
+        if ($resultType instanceof Value) {
+            $resultType = $resultType->value;
+        }
+        if (is_int(value: $resultType)) {
             $resultType = FetchRequestResultType::from($resultType);
         }
         return true;
