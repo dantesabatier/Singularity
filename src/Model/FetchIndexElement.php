@@ -31,7 +31,7 @@ class FetchIndexElement extends ManagedObject
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use ($managedObjectContext, &$observation): void {
+        $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use (&$observation): void {
             if ($element->isSuppressingKVO || $element->isSuppressingChangeNotifications) {
                 return;
             }
