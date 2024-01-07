@@ -35,6 +35,7 @@ class Relationship extends Property
         parent::__construct($managedObjectContext, $entity);
         unset($this->destinationEntity);
         unset($this->inverseRelationship);
+        /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("isToMany", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
             if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
                 return;
