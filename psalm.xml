@@ -19,6 +19,7 @@
         <MissingConstructor errorLevel="suppress"/>
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
         <InaccessibleProperty errorLevel="suppress"/>
+        <InternalProperty errorLevel="suppress"/>
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
                 <file name="src/ViewControllers/Welcome.php" />
