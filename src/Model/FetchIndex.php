@@ -34,6 +34,7 @@ class FetchIndex extends ManagedObject
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
+        /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("collationType", KeyValueObservingOptions::new, function (FetchIndex $index, KeyValueObservedChange $change) use (&$observation): void {
             if ($index->isSuppressingKVO || $index->isSuppressingChangeNotifications) {
                 return;
