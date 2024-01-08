@@ -19,8 +19,6 @@
         <MissingConstructor errorLevel="suppress"/>
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
         <InaccessibleProperty errorLevel="suppress"/>
-        <InternalClass errorLevel="suppress"/>
-        <InternalProperty errorLevel="suppress"/>
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
                 <file name="src/ViewControllers/Welcome.php" />
@@ -31,5 +29,7 @@
                 <file name="src/ViewControllers/Welcome.php" />
             </errorLevel>
         </ReferenceConstraintViolation>
+        <InternalClass errorLevel="suppress"/>
+        <InternalProperty errorLevel="suppress"/>
     </issueHandlers>
 </psalm>
