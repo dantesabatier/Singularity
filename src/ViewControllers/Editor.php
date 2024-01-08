@@ -325,7 +325,6 @@ class Editor extends ViewController
                 "element" => FetchIndexElement::class,
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
-            /** @psalm-suppress InternalClass */
             $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
             if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first())) {
                 break;
