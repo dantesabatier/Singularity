@@ -3,11 +3,11 @@ php_flag display_errors off
 php_value docref_root 0
 php_value docref_ext 0
 php_flag log_errors on
-php_value error_log /home/ht/Documents/Development/Projects/PHP/Sabatier/Singularity/Library/Logs/errors.log
+php_value error_log /var/www/html/backend/Sabatier/Singularity/Logs/errors.log
 php_value error_reporting -1
 php_value upload_max_filesize 2M
 
 Options +FollowSymLinks
 RewriteEngine on
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule . index.php [L]
+RewriteCond %{REQUEST_URI} !index.php
+RewriteRule ^(.*)$ /index.php?url=$1 [L]
