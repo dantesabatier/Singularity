@@ -246,7 +246,10 @@ class Editor extends ViewController
             $string .= " $type";
             $minValue = $attribute->minValue;
             $maxValue = $attribute->maxValue;
-            if (($type === "int") && ($minValue !== null || $maxValue !== null)) {
+            if (match ($type) {
+                    "int", "double", "float" => true,
+                    default => false
+                } && ($minValue !== null || $maxValue !== null)) {
                 $string .= sprintf("<%s, %s>", $minValue ?? "min", $maxValue ?? "max");
             }
             if ($attribute->isOptional && $type !== "mixed") {
