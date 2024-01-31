@@ -2,7 +2,6 @@
 
 namespace App\ViewControllers;
 
-use Exception;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
@@ -29,9 +28,6 @@ class Preferences extends ViewController
         $this->automaticallySaveModel = UserDefaults::standard()->bool(AutomaticallySaveModel);
     }
 
-    /**
-     * @throws Exception
-     */
     #[Action]
     public function synchronize(): void
     {
