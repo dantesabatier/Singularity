@@ -31,5 +31,6 @@
         </ReferenceConstraintViolation>
         <InternalClass errorLevel="suppress"/>
         <InternalProperty errorLevel="suppress"/>
+        <RiskyTruthyFalsyComparison errorLevel="suppress"/>
     </issueHandlers>
 </psalm>
