@@ -111,6 +111,7 @@
                                 <input type="text" name="stringValue" id="stringValue" class="form-control" required>
                             </div>
                         </div>
+                        <input type="hidden" name="entityPropertyID" value="{$selectedEntity?->objectID?->referenceObject}">
                         <div class="modal-footer border-0">
                             <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
                                 Cancel
