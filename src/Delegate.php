@@ -4,13 +4,20 @@
 
 namespace App;
 
+use App\Model\Project;
+use App\ViewControllers\Editor;
+use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\SQLCore;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Error;
 use Sabatier\Foundation\Notification;
 use Sabatier\Foundation\NotificationCenter;
 use Sabatier\Foundation\ObjectClass;
+use Sabatier\Foundation\Predicates\Predicate;
+use Sabatier\Foundation\URLComponents;
+use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
@@ -39,11 +46,28 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     public function applicationWillFinishLaunching(Application $application): void
     {
         $application->isProtectedContentAvailable = true;
-        NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (/** @noinspection PhpUnusedParameterInspection */ Notification $notification) use ($application): void {
+        NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (Notification $notification) use ($application): void {
             if (UserDefaults::standard()->bool(AutomaticallySaveModel)) {
-                $firstResponder = $application->firstResponder;
-                if ($firstResponder instanceof PersistentSpace) {
-                    //TODO: get the project, create an Editor and save the model to disk
+                /** @var ManagedObjectContext $context */
+                $context = $notification->object;
+                $responder = $application->firstResponder;
+                if ($responder instanceof PersistentSpace && ($referer = $responder->request->valueForHttpHeaderField("Referer"))) {
+                    $components = new URLComponents($referer);
+                    $referenceObject = $components->queryItems?->first(fn(URLQueryItem $item): bool => $item->name === "project")?->value;
+                    if (is_numeric($referenceObject)) {
+                        $fetchRequest = Project::fetchRequest();
+                        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
+                        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                            "name" => AttributeType::string,
+                            "url" => AttributeType::uri,
+                            "model" => [
+                                "url" => AttributeType::uri
+                            ]
+                        ]);
+                        $editor = new Editor();
+                        $editor->project = $context->fetch($fetchRequest)->first;
+                        $editor->save();
+                    }
                 }
             }
         });
