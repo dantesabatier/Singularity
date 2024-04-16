@@ -116,7 +116,7 @@ class Editor extends ViewController
                     "name" => AttributeType::string,
                     "url" => AttributeType::uri,
                     "model" => [
-                        "url" => AttributeType::uri,
+                        "url" => AttributeType::uri
                     ]
                 ]);
                 $project = $this->managedObjectContext->fetch($fetchRequest)->first;
@@ -128,7 +128,7 @@ class Editor extends ViewController
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
             $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
             $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string,
+                "name" => AttributeType::string
             ]);
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
             return $this->$name;
@@ -140,7 +140,7 @@ class Editor extends ViewController
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
             $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
             $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string,
+                "name" => AttributeType::string
             ]);
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
             return $this->$name;
@@ -325,7 +325,7 @@ class Editor extends ViewController
                 "constraint" => UniquenessConstraint::class,
                 "property" => Property::class,
                 "index" => FetchIndex::class,
-                "element" => FetchIndexElement::class,
+                "element" => FetchIndexElement::class
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
             $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
