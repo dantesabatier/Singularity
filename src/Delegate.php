@@ -48,11 +48,11 @@ class Delegate extends ObjectClass implements ApplicationDelegate
         $application->isProtectedContentAvailable = true;
         NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (Notification $notification) use ($application): void {
             if (UserDefaults::standard()->bool(AutomaticallySaveModel) && $application->firstResponder instanceof PersistentSpace && ($referer = $application->firstResponder->request->valueForHttpHeaderField("Referer"))) {
-                /** @var ManagedObjectContext $context */
-                $context = $notification->object;
                 $components = new URLComponents($referer);
                 $referenceObject = $components->queryItems?->first(fn(URLQueryItem $item): bool => $item->name === "project")?->value;
                 if (is_numeric($referenceObject)) {
+                    /** @var ManagedObjectContext $context */
+                    $context = $notification->object;
                     $fetchRequest = Project::fetchRequest();
                     $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
                     $fetchRequest->serialization = Dictionary::dictionaryWithArray([
