@@ -47,27 +47,24 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     {
         $application->isProtectedContentAvailable = true;
         NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (Notification $notification) use ($application): void {
-            if (UserDefaults::standard()->bool(AutomaticallySaveModel)) {
+            if (UserDefaults::standard()->bool(AutomaticallySaveModel) && $application->firstResponder instanceof PersistentSpace && ($referer = $application->firstResponder->request->valueForHttpHeaderField("Referer"))) {
                 /** @var ManagedObjectContext $context */
                 $context = $notification->object;
-                $responder = $application->firstResponder;
-                if ($responder instanceof PersistentSpace && ($referer = $responder->request->valueForHttpHeaderField("Referer"))) {
-                    $components = new URLComponents($referer);
-                    $referenceObject = $components->queryItems?->first(fn(URLQueryItem $item): bool => $item->name === "project")?->value;
-                    if (is_numeric($referenceObject)) {
-                        $fetchRequest = Project::fetchRequest();
-                        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
-                        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                            "name" => AttributeType::string,
-                            "url" => AttributeType::uri,
-                            "model" => [
-                                "url" => AttributeType::uri
-                            ]
-                        ]);
-                        $editor = new Editor();
-                        $editor->project = $context->fetch($fetchRequest)->first;
-                        $editor->save();
-                    }
+                $components = new URLComponents($referer);
+                $referenceObject = $components->queryItems?->first(fn(URLQueryItem $item): bool => $item->name === "project")?->value;
+                if (is_numeric($referenceObject)) {
+                    $fetchRequest = Project::fetchRequest();
+                    $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
+                    $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                        "name" => AttributeType::string,
+                        "url" => AttributeType::uri,
+                        "model" => [
+                            "url" => AttributeType::uri
+                        ]
+                    ]);
+                    $editor = new Editor();
+                    $editor->project = $context->fetch($fetchRequest)->first;
+                    $editor->save();
                 }
             }
         });
