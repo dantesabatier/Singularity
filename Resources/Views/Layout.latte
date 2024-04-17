@@ -254,20 +254,12 @@
 
   function register() {
     layout()
-    document.querySelectorAll("span[data-href]").forEach(e => {
-      e.addEventListener("click", async () => {
-        await push(window.location.origin + e.dataset.href)
-      }, {
-        once: true
-      })
-    })
-    document.querySelectorAll("tr[data-href]").forEach(e => {
-      e.addEventListener("click", async () => {
-        await push(window.location.origin + e.dataset.href)
-      }, {
-        once: true
-      })
-    })
+    document.querySelectorAll("span[data-href]").forEach(e => e.addEventListener("click", async () => await push(window.location.origin + e.dataset.href), {
+      once: true
+    }))
+    document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => await push(window.location.origin + e.dataset.href), {
+      once: true
+    }))
     document.querySelectorAll("input[type=checkbox]").forEach(e => {
       e.addEventListener("click", async (event) => {
         event.stopPropagation()
@@ -276,33 +268,27 @@
         once: true
       })
     })
-    document.querySelectorAll("select[data-autosave=true]").forEach(e => {
-      e.addEventListener("change", async (event) => {
-        event.stopPropagation()
-        await submit(e.form)
-      }, {
-        once: true
-      })
-    })
-    document.querySelectorAll("form:not(.ignore)").forEach(e => {
-      e.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        await submit(e)
-      }, {
-        once: true
-      })
-    })
-    document.querySelectorAll(".modal").forEach(e => {
-      e.addEventListener("hidden.bs.modal", () => {
-        /**
-         * @type { HTMLFormElement } form
-         */
-        const form = e.querySelector(".modal-content form")
-        form.reset()
-      }, {
-        once: false
-      })
-    })
+    document.querySelectorAll("select[data-autosave=true]").forEach(e => e.addEventListener("change", async (event) => {
+      event.stopPropagation()
+      await submit(e.form)
+    }, {
+      once: true
+    }))
+    document.querySelectorAll("form:not(.ignore)").forEach(e => e.addEventListener("submit", async (event) => {
+      event.preventDefault()
+      await submit(e)
+    }, {
+      once: true
+    }))
+    document.querySelectorAll(".modal").forEach(e => e.addEventListener("hidden.bs.modal", () => {
+      /**
+       * @type { HTMLFormElement } form
+       */
+      const form = e.querySelector(".modal-content form")
+      form.reset()
+    }, {
+      once: false
+    }))
     const addItem = document.getElementById("addItem")
     addItem?.addEventListener("show.bs.modal", (event) => {
       /**
@@ -324,9 +310,7 @@
   }
 
   window.addEventListener("resize", layout)
-  window.addEventListener("popstate", async (event) => {
-    await replace(event.state?.url ?? window.location.origin)
-  });
+  window.addEventListener("popstate", async (event) => await replace(event.state?.url ?? window.location.origin))
   register()
 </script>
 </body>
