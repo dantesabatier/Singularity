@@ -21,7 +21,6 @@ use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
-use Sabatier\Service\PersistentSpace;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\full_user_name;
 use const Sabatier\CoreData\PersistentHistoryTrackingKey;
