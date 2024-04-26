@@ -31,7 +31,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     public static function initialize(): void
     {
         SQLCore::$debugDefault = 0;
-        SQLCore::$coloredLoggingDefault = HAS_ESCAPE_SEQUENCES;
+        SQLCore::$coloredLoggingDefault = true;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
             PersistentHistoryTrackingKey => false,
