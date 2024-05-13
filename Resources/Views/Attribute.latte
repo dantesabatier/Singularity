@@ -51,7 +51,7 @@
             {switch $type}
                 {case 100, 200, 300, 400, 500, 600, 700, 800, 900, 1100, 1200}
                 {switch $type}
-                    {case 100, 200, 300, 400, 500, 600}
+                    {case 100, 200, 300}
                     <div class="row mb-3 align-items-center">
                         <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
@@ -68,6 +68,28 @@
                                 </div>
                                 <div class="col">
                                     <input type="number" class="form-control" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                    <label class="form-label" for="maxValue">Maximum</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {case 400, 500, 600}
+                    <div class="row mb-3 align-items-center">
+                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <div class="col-sm-9">
+                            <input name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                    <div class="row mb-3 align-items-start">
+                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <div class="col-sm-9">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <input class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                    <label class="form-label" for="minValue">Minimum</label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-control" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
                                     <label class="form-label" for="maxValue">Maximum</label>
                                 </div>
                             </div>
