@@ -90,18 +90,20 @@ class Attribute extends Property
                 $attribute->defaultValue = null;
             }
         });
-        $observation = $this->observe("isDerived", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
+        $observation = $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
             if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {
                 return;
             }
             $observation->invalidate();
-            $attribute->isTransient = false;
-            $attribute->isDefaultValueBounded = false;
-            $attribute->defaultValue = null;
-            $attribute->isMaxValueBounded = false;
-            $attribute->minValue = null;
-            $attribute->isMinValueBounded = false;
-            $attribute->maxValue = null;
+            if ($change->newValue) {
+                $attribute->isTransient = false;
+                $attribute->isDefaultValueBounded = false;
+                $attribute->defaultValue = null;
+                $attribute->isMaxValueBounded = false;
+                $attribute->minValue = null;
+                $attribute->isMinValueBounded = false;
+                $attribute->maxValue = null;
+            }
             $attribute->derivationExpressionFormat = null;
         });
     }
