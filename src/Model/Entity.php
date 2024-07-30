@@ -27,28 +27,28 @@ use Sabatier\Foundation\Set;
  * @property Set<UniquenessConstraint> $uniquenessConstraints
  * @method void addSubentitiesObject(Entity $object)
  * @method void removeSubentitiesObject(Entity $object)
- * @method void addSubentities(Set<Entity> $objects)
- * @method void removeSubentities(Set<Entity> $objects)
- * @method Set<Entity> intersectSubentities(Set<Entity> $objects)
- * @method void setSubentities(Set<Entity> $objects)
+ * @method void addSubentities(Set $objects)
+ * @method void removeSubentities(Set $objects)
+ * @method Set<Entity> intersectSubentities(Set $objects)
+ * @method void setSubentities(Set $objects)
  * @method void addPropertiesObject(Property $object)
  * @method void removePropertiesObject(Property $object)
- * @method void addProperties(Set<Property> $objects)
- * @method void removeProperties(Set<Property> $objects)
- * @method Set<Property> intersectProperties(Set<Property> $objects)
- * @method void setProperties(Set<Property> $objects)
+ * @method void addProperties(Set $objects)
+ * @method void removeProperties(Set $objects)
+ * @method Set<Property> intersectProperties(Set $objects)
+ * @method void setProperties(Set $objects)
  * @method void addIndexesObject(FetchIndex $object)
  * @method void removeIndexesObject(FetchIndex $object)
- * @method void addIndexes(Set<FetchIndex> $objects)
- * @method void removeIndexes(Set<FetchIndex> $objects)
- * @method Set<FetchIndex> intersectIndexes(Set<FetchIndex> $objects)
- * @method void setIndexes(Set<FetchIndex> $objects)
+ * @method void addIndexes(Set $objects)
+ * @method void removeIndexes(Set $objects)
+ * @method Set<FetchIndex> intersectIndexes(Set $objects)
+ * @method void setIndexes(Set $objects)
  * @method void addUniquenessConstraintsObject(UniquenessConstraint $object)
  * @method void removeUniquenessConstraintsObject(UniquenessConstraint $object)
- * @method void addUniquenessConstraints(Set<UniquenessConstraint> $objects)
- * @method void removeUniquenessConstraints(Set<UniquenessConstraint> $objects)
- * @method Set<UniquenessConstraint> intersectUniquenessConstraints(Set<UniquenessConstraint> $objects)
- * @method void setUniquenessConstraints(Set<UniquenessConstraint> $objects)
+ * @method void addUniquenessConstraints(Set $objects)
+ * @method void removeUniquenessConstraints(Set $objects)
+ * @method Set<UniquenessConstraint> intersectUniquenessConstraints(Set $objects)
+ * @method void setUniquenessConstraints(Set $objects)
  */
 class Entity extends ManagedObject
 {
@@ -109,7 +109,7 @@ class Entity extends ManagedObject
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
             return $this->$name;
         } elseif ($name == "allAttributeNames") {
-            /** @var ArrayClass<string> */
+            /** @var ArrayClass<string> $allAttributeNames */
             $allAttributeNames = new ArrayClass();
             $transform = fn(Attribute $attribute): string => $attribute->name;
             $superentity = $this->superentity;

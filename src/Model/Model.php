@@ -21,16 +21,16 @@ use Sabatier\Foundation\URL;
  * @property Set<FetchRequestTemplate> $fetchRequestTemplates
  * @method void addEntitiesObject(Entity $object)
  * @method void removeEntitiesObject(Entity $object)
- * @method void addEntities(Set<Entity> $objects)
- * @method void removeEntities(Set<Entity> $objects)
- * @method Set<Entity> intersectEntities(Set<Entity> $objects)
- * @method void setEntities(Set<Entity> $objects)
+ * @method void addEntities(Set $objects)
+ * @method void removeEntities(Set $objects)
+ * @method Set<Entity> intersectEntities(Set $objects)
+ * @method void setEntities(Set $objects)
  * @method void addFetchRequestTemplatesObject(FetchRequestTemplate $object)
  * @method void removeFetchRequestTemplatesObject(FetchRequestTemplate $object)
- * @method void addFetchRequestTemplates(Set<FetchRequestTemplate> $objects)
- * @method void removeFetchRequestTemplates(Set<FetchRequestTemplate> $objects)
- * @method Set<FetchRequestTemplate> intersectFetchRequestTemplates(Set<FetchRequestTemplate> $objects)
- * @method void setFetchRequestTemplates(Set<FetchRequestTemplate> $objects)
+ * @method void addFetchRequestTemplates(Set $objects)
+ * @method void removeFetchRequestTemplates(Set $objects)
+ * @method Set<FetchRequestTemplate> intersectFetchRequestTemplates(Set $objects)
+ * @method void setFetchRequestTemplates(Set $objects)
  */
 class Model extends ManagedObject
 {

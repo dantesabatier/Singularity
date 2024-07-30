@@ -246,8 +246,8 @@ class Editor extends ViewController
             $string .= " $type";
             $minValue = $attribute->minValue;
             $maxValue = $attribute->maxValue;
-            if (match ($type) {
-                    "int", "double", "float" => true,
+            if (match ($attribute->type) {
+                    AttributeType::integer16, AttributeType::integer32, AttributeType::integer64 => true,
                     default => false
                 } && ($minValue !== null || $maxValue !== null)) {
                 $string .= sprintf("<%s, %s>", $minValue ?? "min", $maxValue ?? "max");
@@ -277,10 +277,10 @@ class Editor extends ViewController
             return (new ArrayClass([
                 " * @method void add{$relationshipName}Object($entityClassName \$object)",
                 " * @method void remove{$relationshipName}Object($entityClassName \$object)",
-                " * @method void add$relationshipName($setClassName<$entityClassName> \$objects)",
-                " * @method void remove$relationshipName($setClassName<$entityClassName> \$objects)",
-                " * @method $setClassName<$entityClassName> intersect$relationshipName($setClassName<$entityClassName> \$objects)",
-                " * @method void set$relationshipName($setClassName<$entityClassName> \$objects)"
+                " * @method void add$relationshipName($setClassName \$objects)",
+                " * @method void remove$relationshipName($setClassName \$objects)",
+                " * @method $setClassName<$entityClassName> intersect$relationshipName($setClassName \$objects)",
+                " * @method void set$relationshipName($setClassName \$objects)"
             ]))->join("\n");
         });
         if (!$uses->isEmpty) {
