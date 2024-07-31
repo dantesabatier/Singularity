@@ -44,6 +44,9 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
+use function Sabatier\Foundation\string_has_prefix;
+use function Sabatier\Foundation\substring_from_index;
+use function Sabatier\Foundation\substring_to_index;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint]
@@ -161,7 +164,7 @@ class Editor extends ViewController
         return null;
     }
 
-    private function class(Entity $entity, string $namespace): string
+    private function className(Entity $entity, string $namespace): string
     {
         /** @var class-string $class */
         $class = $entity->managedObjectClassName ?? $entity->name;
@@ -172,7 +175,10 @@ class Editor extends ViewController
         return class_name($class);
     }
 
-    private function generateSubclass(Entity $entity, string $class, string $namespace): string
+    /**
+     * @throws Exception
+     */
+    private function generateSubclass(Entity $entity, string $class, string $namespace, URL $fileURL): string
     {
         $setClassName = class_name(Set::class);
         $arrayClassName = class_name(ArrayClass::class);
@@ -184,8 +190,8 @@ class Editor extends ViewController
             $content .= "\n";
         }
         $attributes = $entity->attributes;
-        /** @var ArrayClass<string> $uses */
-        $uses = $attributes->compactMap(function (Attribute $attribute): ?string {
+        /** @var Set<string> $uses */
+        $uses = new Set($attributes->compactMap(function (Attribute $attribute): ?string {
             $attributeValueClassName = $attribute->attributeValueClassName ?? match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
@@ -197,7 +203,7 @@ class Editor extends ViewController
                 return "use $attributeValueClassName;";
             }
             return null;
-        });
+        }));
         $relationships = $entity->relationships;
         if ($relationships->contains(fn(Relationship $relationship): bool => $relationship->isToMany)) {
             $uses->append("use " . Set::class . ";");
@@ -209,11 +215,21 @@ class Editor extends ViewController
         if (!$superentity) {
             $uses->append("use " . ManagedObject::class . ";");
         }
+        $path = $fileURL->path;
+        if (FileManager::default()->fileExists($path) && ($contents = FileManager::default()->contents($path)) && ($index = strpos($contents, "class"))) {
+            $uses->formUnion(new Set(array_filter(preg_split(sprintf("/%s/", preg_quote("\n", "/")), substring_to_index($contents, $index), -1, PREG_SPLIT_NO_EMPTY), fn(string $e): bool => string_has_prefix($e, "use"))));
+            $declaration = substring_from_index($contents, $index);
+        } else {
+            $declaration = "class $class extends ";
+            $declaration .= $superentity ? $superentity->name : class_name(ManagedObject::class);
+            $declaration .= "\n";
+            $declaration .= "{\n}\n";
+        }
         if (!$uses->isEmpty) {
             if ($superentity) {
                 $content .= "\n";
             }
-            $content .= (new Set($uses))->sort()->join("\n");
+            $content .= $uses->sort()->join("\n");
         }
         $content .= "\n";
         /** @var ArrayClass<string> $properties */
@@ -273,7 +289,7 @@ class Editor extends ViewController
                 return null;
             }
             $relationshipName = ucfirst($relationship->name);
-            $entityClassName = $this->class($destinationEntity, $namespace);
+            $entityClassName = $this->className($destinationEntity, $namespace);
             return (new ArrayClass([
                 " * @method void add{$relationshipName}Object($entityClassName \$object)",
                 " * @method void remove{$relationshipName}Object($entityClassName \$object)",
@@ -299,11 +315,8 @@ class Editor extends ViewController
         if ($entity->isAbstract) {
             $content .= "abstract ";
         }
-        $content .= "class $class extends ";
-        $content .= $superentity ? $superentity->name : class_name(ManagedObject::class);
-        $content .= "\n";
-        $content .= "{\n";
-        return "$content}\n";
+        $content .= $declaration;
+        return $content;
     }
 
     /**
@@ -412,9 +425,9 @@ class Editor extends ViewController
             $fileManager->createDirectory($directoryURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
         }
         foreach ($model->entities as $entity) {
-            $class = $this->class($entity, $namespace);
+            $class = $this->className($entity, $namespace);
             $fileURL = $directoryURL->appendingPathComponent($class)->appendPathExtension("php");
-            if ($fileManager->createFile($fileURL->path, $this->generateSubclass($entity, $class, $namespace))) {
+            if ($fileManager->createFile($fileURL->path, $this->generateSubclass($entity, $class, $namespace, $fileURL))) {
                 $entity->managedObjectClassName = "$namespace\\$class";
             }
         }
