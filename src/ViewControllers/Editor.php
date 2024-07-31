@@ -222,8 +222,7 @@ class Editor extends ViewController
         } else {
             $declaration = "class $class extends ";
             $declaration .= $superentity ? $superentity->name : class_name(ManagedObject::class);
-            $declaration .= "\n";
-            $declaration .= "{\n}\n";
+            $declaration .= "\n{\n}\n";
         }
         if (!$uses->isEmpty) {
             if ($superentity) {
