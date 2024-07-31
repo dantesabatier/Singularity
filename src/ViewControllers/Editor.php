@@ -221,7 +221,7 @@ class Editor extends ViewController
             $declaration = substring_from_index($contents, $index);
         } else {
             $declaration = "class $class extends ";
-            $declaration .= $superentity ? $superentity->name : class_name(ManagedObject::class);
+            $declaration .= $superentity?->name ?? class_name(ManagedObject::class);
             $declaration .= "\n{\n}\n";
         }
         if (!$uses->isEmpty) {
