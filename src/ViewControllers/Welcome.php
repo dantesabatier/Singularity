@@ -195,8 +195,8 @@ class Welcome extends ViewController
         if (!$fileManager->fileExists($path)) {
             $fileManager->createFile($path, json_encode([
                 "name" => "vendor/$lowerCaseName",
-                "description" => "description",
-                "license" => "license",
+                "description" => $lowerCaseName,
+                "license" => "MIT",
                 "keywords" => [
                     $lowerCaseName
                 ],
@@ -207,9 +207,9 @@ class Welcome extends ViewController
                     "ext-gettext" => "*",
                     "ext-json" => "*",
                     "ext-mbstring" => "*",
-                    "sabatier/foundation" => "^1.0-dev",
-                    "sabatier/coredata" => "^1.0-dev",
-                    "sabatier/service" => "^1.0-dev"
+                    "sabatier/foundation" => "dev-master",
+                    "sabatier/coredata" => "dev-master",
+                    "sabatier/service" => "dev-master"
                 ],
                 "config" => [
                     "platform" => [
