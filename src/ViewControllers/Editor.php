@@ -128,6 +128,7 @@ class Editor extends ViewController
             return $this->$name;
         } elseif ($name == "allEntities") {
             $fetchRequest = Entity::fetchRequest();
+            /** @noinspection DuplicatedCode */
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
             $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
             $fetchRequest->serialization = Dictionary::dictionaryWithArray([
@@ -140,6 +141,7 @@ class Editor extends ViewController
             return $this->$name;
         } elseif ($name == "fetchRequestTemplates") {
             $fetchRequest = FetchRequestTemplate::fetchRequest();
+            /** @noinspection DuplicatedCode */
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
             $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
             $fetchRequest->serialization = Dictionary::dictionaryWithArray([
