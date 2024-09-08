@@ -16,246 +16,7 @@
 {block content}{/block}
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
-<!--suppress JSUnresolvedReference -->
-<script>
-    function url(endpoint, parameters) {
-        let url = endpoint
-        if (!url.startsWith("/")) {
-            url = "/" + url
-        }
-        if (!!parameters && JSON.stringify(parameters) !== JSON.stringify({})) {
-            url += "?" + (() => {
-                let array = []
-                for (const k in parameters) {
-                    if (parameters.hasOwnProperty(k)) {
-                        array.push(encodeURIComponent(k) + "=" + encodeURIComponent(parameters[k]))
-                    }
-                }
-                return array.join("&")
-            })()
-        }
-        return url
-    }
-
-    /**
-     * @param { string } url
-     */
-    async function replace(url) {
-        let headers = {}
-        headers["X-Requested-With"] = "XmlHttpRequest"
-        const response = await fetch(url, {
-            method: "GET",
-            headers: headers
-        })
-        if (!response.ok) {
-            presentError((await response.json())?.error)
-            return
-        }
-        const data = await response.text()
-        const doc = document.implementation.createHTMLDocument()
-        doc.open()
-        doc.write(data)
-        doc.close()
-        const e2 = doc.getElementById("main")
-        if (!!!e2) {
-            return
-        }
-        const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
-            obj[e.id] = e.scrollTop
-            return obj
-        }, {})
-        const e1 = document.getElementById("main")
-        e1.innerHTML = e2.innerHTML
-        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
-        const body = document.body
-        body.removeAttribute("class")
-        body.removeAttribute("style")
-        const backdrop = document.querySelector(".modal-backdrop")
-        if (backdrop) {
-            backdrop.remove()
-        }
-        register()
-    }
-
-    /**
-     * @param { string } url
-     */
-    async function push(url) {
-        await replace(url)
-        await history.pushState({
-            url: url,
-        }, "", url)
-    }
-
-    /**
-     * @param { string } messageText
-     * @param { string } informativeText
-     * @param { object[] } buttons
-     * @param { function } completion
-     */
-    function presentAlert(messageText = "Aviso", informativeText = "", buttons = [], completion = () => {
-    }) {
-        if (!!!buttons.length) {
-            buttons = [
-                {
-                    title: "OK",
-                    color: "primary"
-                }
-            ]
-        }
-        const element = document.getElementById("addAlert")
-        const titleElement = element.querySelector(".modal-title")
-        titleElement.textContent = messageText
-        const messageElement = element.querySelector(".modal-message")
-        messageElement.textContent = informativeText
-        const form = element.querySelector(".modal-content form")
-        const footer = form.querySelector(".modal-footer")
-        footer.replaceChildren(...buttons.map(e => {
-            /**
-             * @type { HTMLButtonElement }
-             */
-            const button = document.createElement("button")
-            button.type = e.type ?? "button"
-            button.className = "btn btn-outline-" + e.color + " border-0 bg-transparent text-" + e.color
-            button.textContent = e.title
-            button.setAttribute("min-width", "82px")
-            if (button.type !== "submit") {
-                button.setAttribute("data-bs-dismiss", "modal")
-            }
-            button.addEventListener("click", (event) => completion(event, button))
-            return button
-        }))
-        const modal = new bootstrap.Modal(element, {})
-        modal.show(undefined)
-    }
-
-    /**
-     * @param { object } error
-     */
-    function presentError(error) {
-        error ??= error = {
-            localizedDescription: "An unexpected error has occurred",
-            localizedFailureReason: undefined,
-            localizedRecoverySuggestion: undefined
-        }
-        const messageText = error.localizedDescription ?? error.name ?? "An unexpected error has occurred"
-        let informativeText = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? error.message ?? ""
-        if (informativeText && error.localizedRecoverySuggestion && informativeText !== error.localizedRecoverySuggestion) {
-            informativeText = "\n" + error.localizedRecoverySuggestion
-        }
-        presentAlert(messageText, informativeText)
-    }
-
-    function showPreferences() {
-        window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
-    }
-
-    /**
-     * @param { string } action
-     * @param { object|undefined } body
-     * @param { string } method
-     */
-    async function submit(action, body = undefined, method = "POST") {
-        let headers = {}
-        headers["X-Requested-With"] = "XmlHttpRequest"
-        headers["Content-Type"] = "application/json; charset=utf-8"
-        const spinner = document.querySelector(".spinner-border")
-        spinner.hidden = false
-        const response = await fetch(action, {
-            method: method,
-            headers: headers,
-            body: !!body ? JSON.stringify(body, null, 2) : undefined
-        })
-        spinner.hidden = true
-        const location = new URL(window.location)
-        if (method === "DELETE") {
-            let keys = []
-            switch (action.replace("/", "")) {
-                case "Entity":
-                case "FetchRequestTemplate":
-                    keys.push("project")
-                    break
-                case "Attribute":
-                case "Relationship":
-                case "FetchedProperty":
-                case "FetchIndex":
-                case "UniquenessConstraint":
-                    keys.push(...["project", "entity"])
-                    break
-                case "FetchIndexElement":
-                    keys.push(...["project", "entity", "index"])
-                    break
-            }
-            location.search = keys.map(k => k + "=" + location.searchParams.get(k)).join("&")
-        }
-        await push(location.href)
-        if (!response.ok) {
-            presentError((await response.json())?.error)
-        }
-    }
-
-    /**
-     * @param  { HTMLFormElement } form
-     */
-    async function submitForm(form) {
-        let headers = {}
-        headers["X-Requested-With"] = "XmlHttpRequest"
-        headers["Content-Type"] = "application/json; charset=utf-8"
-        const elements = Array.from(form.elements)
-        await submit(form.action, elements.filter(e => !!e.name && e.type !== "submit" && e.name !== "X-Http-Method-Override").reduce((result, e) => {
-            result[e.name] = (() => {
-                let value = e.type === "checkbox" ? e.checked : e.value
-                if (value === "true") {
-                    return true
-                } else if (value === "false") {
-                    return false
-                } else if (value === "" || value === "null") {
-                    return null
-                } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
-                    return parseFloat(value)
-                }
-                return value
-            })()
-            return result
-        }, {}), elements.find(e => e.name === "X-Http-Method-Override")?.value ?? form.method)
-    }
-
-    /**
-     * @param { HTMLElement } sender
-     * @param { object } item
-     */
-    async function remove(sender, item) {
-        const action = sender.getAttribute("data-bs-action-name")
-        const buttons = [
-            {
-                title: "Cancel",
-                color: "secondary"
-            },
-            {
-                title: "Remove",
-                color: "primary",
-                type: "submit"
-            }
-        ]
-        presentAlert("Remove " + action.toLowerCase() + " \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?", "This action cannot be undone.", buttons, async (event, button) => {
-            if (button.type === "submit") {
-                event.preventDefault()
-                await submit(url(action.split(" ").join("")), {
-                    objectID: item.objectID
-                }, "DELETE")
-            }
-        })
-    }
-
-    /**
-     * @param { object } project
-     */
-    async function load(project) {
-        await push(url("Editor", {
-            project: project.objectID
-        }))
-    }
-</script>
+<script src="../../Electron/renderer.js"></script>
 <!--suppress JSCheckFunctionSignatures -->
 <script>
     function layout() {
@@ -272,7 +33,7 @@
             })
             e.addEventListener("change", async (event) => {
                 event.stopPropagation()
-                await submitForm(e.form)
+                await submit(e.form)
             }, {
                 once: true
             })
@@ -286,14 +47,14 @@
         document.querySelectorAll("input[type=checkbox]").forEach(e => {
             e.addEventListener("click", async (event) => {
                 event.stopPropagation()
-                await submitForm(e.form)
+                await submit(e.form)
             }, {
                 once: true
             })
         })
         document.querySelectorAll("form:not(.ignore)").forEach(e => e.addEventListener("submit", async (event) => {
             event.preventDefault()
-            await submitForm(e)
+            await submit(e)
         }, {
             once: true
         }))

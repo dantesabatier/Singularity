@@ -15,8 +15,7 @@
                     <button class="btn btn-back border-0 bg-transparent" onclick="history.back()">
                         <span class="material-icons-outlined">
                             arrow_back_ios
-                        </span>
-                        <span>Back</span>
+                        </span> <span>Back</span>
                     </button>
                     <div class="dropdown">
                         <button type="button" class="btn border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -97,20 +96,14 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <form action="/Subclass" method="POST">
-                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                                    <button class="dropdown-item" type="submit">
-                                        Create ManagedObject Subclass...
-                                    </button>
-                                </form>
+                                <button class="dropdown-item" onclick="subclass({$project})">
+                                    Create ManagedObject Subclass...
+                                </button>
                             </li>
                             <li>
-                                <form action="/Import" method="POST">
-                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                                    <button class="dropdown-item" type="submit">
-                                        Import...
-                                    </button>
-                                </form>
+                                <button class="dropdown-item" onclick="importModel({$project})">
+                                    Import...
+                                </button>
                             </li>
                         </ul>
                     </div>

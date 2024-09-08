@@ -1,7 +1,7 @@
 if (require("electron-squirrel-startup")) {
     return
 }
-const {app, nativeTheme, BrowserWindow, Menu} = require("electron")
+const { app, nativeTheme, ipcMain, dialog, BrowserWindow, Menu } = require("electron")
 const ChildProcess = require("child_process")
 const path = require("path")
 
@@ -16,7 +16,7 @@ function handleSquirrelEvent() {
     const spawn = function (command, args) {
         let spawnedProcess
         try {
-            spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+            spawnedProcess = ChildProcess.spawn(command, args, { detached: true });
         } catch (error) {
         }
         return spawnedProcess
@@ -56,7 +56,7 @@ const createWindow = () => {
             webSecurity: false,
             allowRunningInsecureContent: true,
             nodeIntegration: true,
-            contextIsolation: false,
+            contextIsolation: true,
             enableBlinkFeatures: "CSSColorSchemeUARendering, OverlayScrollbars, FluentOverlayScrollbars, ElasticOverscrollWin",
             preload: path.join(__dirname, "preload.js")
         },
@@ -66,6 +66,23 @@ const createWindow = () => {
     window.loadURL("http://localhost:8000")
     window.maximize()
 }
+ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(
+    BrowserWindow.fromWebContents(event.sender),
+    arg
+))
+ipcMain.handle("showErrorBox", async (event, arg) => {
+    arg ??= arg = {
+        localizedDescription: "An unexpected error has occurred",
+        localizedFailureReason: undefined,
+        localizedRecoverySuggestion: undefined
+    }
+    const messageText = arg.localizedDescription ?? arg.name ?? "An unexpected error has occurred"
+    let informativeText = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? arg.message ?? ""
+    if (informativeText && arg.localizedRecoverySuggestion && informativeText !== arg.localizedRecoverySuggestion) {
+        informativeText = "\n" + arg.localizedRecoverySuggestion
+    }
+    return dialog.showErrorBox(messageText, informativeText)
+})
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())

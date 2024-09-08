@@ -1,11 +1,11 @@
-window.addEventListener("DOMContentLoaded", () => {
-    const replaceText = (selector, text) => {
-        const element = document.getElementById(selector)
-        if (element) {
-            element.innerText = text
-        }
-    }
-    for (const dependency of ["chrome", "node", "electron"]) {
-        replaceText(`${dependency}-version`, process.versions[dependency])
-    }
+const { contextBridge, ipcRenderer } = require("electron")
+
+contextBridge.exposeInMainWorld("api", {
+    showMessageBox: (messageText, informativeText, buttons) => ipcRenderer.invoke("showMessageBox", {
+        type: "question",
+        message: messageText,
+        detail: informativeText,
+        buttons: buttons
+    }),
+    showErrorBox: (error) => ipcRenderer.invoke("showErrorBox", error),
 })
