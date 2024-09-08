@@ -9,7 +9,7 @@
 {block title}{$project?->name} - {$title}{/block}
 {block content}
     <div id="main">
-        <nav class="navbar navbar-expand-sm fixed-top border-bottom">
+        <nav class="navbar navbar-expand-sm fixed-top border-bottom py-0" style="height: 56px">
             <div class="container-fluid">
                 <div class="btn-group">
                     <button class="btn btn-back border-0 bg-transparent" onclick="history.back()">
@@ -120,10 +120,10 @@
                 </div>
             </div>
         </nav>
-        <div class="container-fluid d-flex flex-column user-select-none">
-            <div class="row flex-grow-1" style="padding-top: 64px;">
-                <nav class="border-bottom" aria-label="breadcrumb">
-                    <ol class="breadcrumb mt-auto mb-2">
+        <div class="container-fluid d-flex flex-column p-0">
+            <div class="row flex-grow-1" style="padding-top: 56px;">
+                <nav class="border-bottom py-0" aria-label="breadcrumb" style="height: 36px">
+                    <ol class="breadcrumb mt-1 ms-2" style="height: 24px">
                         <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
                             {switch true}
                                 {case $item instanceof App\Model\Project}
