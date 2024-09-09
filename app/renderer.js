@@ -1,5 +1,7 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
+const cameCase = (string) => string.replace(/\s(.)/g, $1 => $1.toUpperCase()).replace(/\s/g, '').replace(/^(.)/, $1 => $1.toLowerCase())
+
 const url = (endpoint, parameters) => {
     let url = endpoint
     if (!url.startsWith("/")) {
@@ -153,6 +155,15 @@ const subclass = async (project) => await send(url("subclass"), { project: proje
  * @param { object } project
  */
 const importModel = async (project) => await send(url("import"), { project: project.objectID })
+
+/**
+ * @param { string } endpoint
+ * @param { object } entity
+ */
+const add = async (endpoint, entity) => await send(url(endpoint), {
+    name: cameCase(endpoint),
+    entityPropertyID: entity.objectID
+})
 
 /**
  * @param { object } item

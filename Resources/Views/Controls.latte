@@ -29,17 +29,17 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li>
-                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Attribute" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                         Add Attribute
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetched Property" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                         Add Fetched Property
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Relationship" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                         Add Relationship
                     </button>
                 </li>
@@ -47,7 +47,7 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li>
-                    <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#addItem" data-bs-action-name="Fetch Index" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                         Add Fetch Index
                     </button>
                 </li>
@@ -66,7 +66,7 @@
                 </svg>
             </button>
         {elseif $selectedFetchRequestTemplate}
-            <button class="btn border-0 bg-transparent p-2" data-bs-action-name="Fetch Request Template" onclick="remove({$selectedFetchRequestTemplate})">
+            <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedFetchRequestTemplate})">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
                 </svg>

@@ -8,6 +8,7 @@ module.exports = {
         appName: "Singularity",
         appBundleId: "com.sabatiersoftware.singularity",
         appCopyright: "Copyright © 2024 Dante Sabatier. All rights reserved.",
+        icon: "icon",
         asar: true,
     },
     rebuildConfig: {},
@@ -15,6 +16,8 @@ module.exports = {
         {
             name: "@electron-forge/maker-squirrel",
             config: {
+                icon: "icon.ico",
+                setupIcon: "icon.ico",
                 language: 1033,
                 manufacturer: "Dante Sabatier"
             }

@@ -67,24 +67,6 @@
         }, {
             once: false
         }))
-        const addItem = document.getElementById("addItem")
-        addItem?.addEventListener("show.bs.modal", (event) => {
-            /**
-             * @type { HTMLButtonElement }
-             */
-            const button = event.relatedTarget
-            const action = button.getAttribute("data-bs-action-name")
-            const endpoint = action.split(" ").join("")
-            const element = addItem.querySelector(".modal-title")
-            element.textContent = "Add " + action
-            /**
-             * @type { HTMLFormElement } form
-             */
-            const form = addItem.querySelector(".modal-content form")
-            form.action = url(endpoint)
-        }, {
-            once: false
-        })
     }
 
     window.addEventListener("resize", layout)

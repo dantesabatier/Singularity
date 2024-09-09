@@ -70,10 +70,10 @@ app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverl
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())
 
-ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(
-    BrowserWindow.fromWebContents(event.sender),
-    arg
-))
+ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(BrowserWindow.fromWebContents(event.sender), {
+    ...arg,
+    icon: path.join(__dirname, "icon.png")
+}))
 ipcMain.handle("showErrorBox", async (event, arg) => {
     arg ??= arg = {
         localizedDescription: "An unexpected error has occurred",
