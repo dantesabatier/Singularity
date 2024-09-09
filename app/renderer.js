@@ -87,9 +87,10 @@ const send = async (action, body = undefined, method = "POST") => {
     })
     spinner.hidden = true
     const location = new URL(window.location)
-    if (method === "DELETE") {
-        let keys = []
-        switch (action.replace("/", "")) {
+    let keys = []
+    const entity = action.replace("/", "")
+    if (method === "DELETE" || method === "POST") {
+        switch (entity) {
             case "Entity":
             case "FetchRequestTemplate":
                 keys.push("project")
@@ -105,12 +106,34 @@ const send = async (action, body = undefined, method = "POST") => {
                 keys.push(...["project", "entity", "index"])
                 break
         }
-        location.search = keys.map(k => k + "=" + location.searchParams.get(k)).join("&")
+        const values = keys.map(k => k + "=" + location.searchParams.get(k))
+        if (method === "POST") {
+            values.push(`${(() => {
+                switch (entity) {
+                    case "Entity":
+                        return "entity"
+                    case "FetchRequestTemplate":
+                        return "fetchRequest"
+                    case "Attribute":
+                    case "Relationship":
+                    case "FetchedProperty":
+                        return "property"
+                    case "FetchIndex":
+                        return "index"
+                    case "UniquenessConstraint":
+                        return "constraint"
+                    case "FetchIndexElement":
+                        return "element"
+                }
+            })()}=${(await response.json())?.objectID}`)
+        }
+        location.search = values.join("&")
     }
     await push(location.href)
     if (!response.ok) {
-        await window.api.showErrorBox((await response.json())?.error)
+        return await window.api.showErrorBox((await response.json())?.error)
     }
+    return response
 }
 
 /**
