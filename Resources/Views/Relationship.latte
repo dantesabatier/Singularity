@@ -15,11 +15,11 @@
         <div class="row mb-3 align-items-baseline">
             <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Properties</label>
             <div class="col-sm-9">
-                <div class="form-check form-check-inline">
+                <div class="form-check form-check-inline form-control-sm">
                     <label class="form-check-label" for="isTransient">Transient</label>
                     <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient}" id="isTransient" {$selectedProperty->isTransient ? checked}>
                 </div>
-                <div class="form-check form-check-inline">
+                <div class="form-check form-check-inline form-control-sm">
                     <label class="form-check-label" for="isOptional">Optional</label>
                     <input class="form-check-input" type="checkbox" name="isOptional" value="{$selectedProperty->isOptional}" id="isOptional" {$selectedProperty->isOptional ? checked}>
                 </div>
@@ -74,7 +74,7 @@
             <div class="row mb-3 align-items-center">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-9">
-                    <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline form-control-sm">
                         <label class="form-check-label" for="isOrdered">Ordered</label>
                         <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
                     </div>
@@ -85,14 +85,14 @@
                 <div class="col-sm-9">
                     <div class="row align-items-center">
                         <div class="col-sm-6">
-                            <div class="form-check form-check-inline">
+                            <div class="form-check form-check-inline form-control-sm">
                                 <label class="form-check-label" for="isMinCountBounded">Minimum</label>
                                 <input class="form-check-input" type="checkbox" name="isMinCountBounded" value="{$selectedProperty->isMinCountBounded}" id="isMinCountBounded" {$selectedProperty->isMinCountBounded ? checked}>
                             </div>
                             <input type="number" name="minCount" id="minCount" aria-label="Minimum" placeholder="Unbounded" class="form-control form-control-sm" value="{$selectedProperty->minCount}" {!$selectedProperty->isMinCountBounded ? disabled}>
                         </div>
                         <div class="col-sm-6">
-                            <div class="form-check form-check-inline">
+                            <div class="form-check form-check-inline form-control-sm">
                                 <label class="form-check-label" for="isMaxCountBounded">Maximum</label>
                                 <input class="form-check-input" type="checkbox" name="isMaxCountBounded" value="{$selectedProperty->isMaxCountBounded}" id="isMaxCountBounded" {$selectedProperty->isMaxCountBounded ? checked}>
                             </div>

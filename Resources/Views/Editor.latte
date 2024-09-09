@@ -12,13 +12,13 @@
         <nav class="navbar navbar-expand-sm fixed-top border-bottom py-0" style="height: 56px">
             <div class="container-fluid">
                 <div class="btn-group">
-                    <button class="btn btn-back border-0 bg-transparent" onclick="history.back()">
+                    <button class="btn btn-sm btn-back border-0 bg-transparent" onclick="history.back()">
                         <span class="material-icons-outlined">
                             arrow_back_ios
                         </span> <span>Back</span>
                     </button>
                     <div class="dropdown">
-                        <button type="button" class="btn border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-sm border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             {$project?->name}
                         </button>
                         <ul class="dropdown-menu">
@@ -47,7 +47,7 @@
                         </ul>
                     </div>
                     <div class="dropdown">
-                        <button type="button" class="btn border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-sm border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Editor
                         </button>
                         <ul class="dropdown-menu">
@@ -115,7 +115,7 @@
         </nav>
         <div class="container-fluid d-flex flex-column p-0">
             <div class="row flex-grow-1" style="padding-top: 56px;">
-                <nav class="border-bottom py-0" aria-label="breadcrumb" style="height: 36px">
+                <nav class="border-bottom small py-0" aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>';height: 36px">
                     <ol class="breadcrumb mt-1 ms-2" style="height: 24px">
                         <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
                             {switch true}
@@ -167,7 +167,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
+                                <input type="text" name="name" id="name" class="form-control form-control-sm" autocomplete="off" required>
                             </div>
                             <label for="superentityID" class="form-label">Parent Entity</label>
                             <select name="superentityID" id="superentityID" class="form-select form-select-sm " {$allEntities->isEmpty ? disabled}>
@@ -198,7 +198,7 @@
                         <div class="modal-body">
                             <h5 class="modal-title mb-3" id="addItemLabel">Add</h5>
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
+                            <input type="text" name="name" id="name" class="form-control form-control-sm" autocomplete="off" required>
                         </div>
                         <input type="hidden" name="entityPropertyID" value="{$selectedEntity?->objectID?->referenceObject}">
                         <div class="modal-footer border-0">
@@ -223,7 +223,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
+                                <input type="text" name="name" id="name" class="form-control form-control-sm" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
