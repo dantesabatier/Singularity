@@ -15,7 +15,7 @@
         <div class="row mb-3 align-items-center">
             <label for="fetchRequestEntityName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Destination</label>
             <div class="col-sm-9">
-                <select name="fetchRequestEntityName" id="fetchRequestEntityName" class="form-select form-select-sm " data-autosave="true">
+                <select name="fetchRequestEntityName" id="fetchRequestEntityName" class="form-select form-select-sm" data-autosave="true">
                     <option value="">No Destination Entity</option>
                     <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->fetchRequestEntityName ? selected}>{$entity->name}</option>
                 </select>

@@ -40,7 +40,7 @@
             {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
             <label for="type" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
             <div class="col-sm-9">
-                <select name="type" id="type" class="form-select form-select-sm " data-autosave="true">
+                <select name="type" id="type" class="form-select form-select-sm" data-autosave="true">
                     <option n:foreach="$types as $key => $value" value="{$key}" {$key === $type ? selected}>
                         {$value}
                     </option>
@@ -136,7 +136,7 @@
                     <div class="row mb-3 align-items-center">
                         <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
-                            <select name="defaultValue" id="defaultValue" class="form-select form-select-sm " data-autosave="true">
+                            <select name="defaultValue" id="defaultValue" class="form-select form-select-sm" data-autosave="true">
                                 {var array $values = ["" => "None", "true" => "True", "false" => "False"]}
                                 <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
                             </select>

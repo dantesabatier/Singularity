@@ -9,7 +9,7 @@
         <div class="row mb-3 align-items-center">
             <label for="propertyName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Property</label>
             <div class="col-sm-9">
-                <select name="propertyName" id="propertyName" class="form-select form-select-sm " data-autosave="true" required>
+                <select name="propertyName" id="propertyName" class="form-select form-select-sm" data-autosave="true" required>
                     <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $selectedIndexElement->propertyName ? selected}>{$attributeName}</option>
                 </select>
             </div>
@@ -31,7 +31,7 @@
             {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
             <label for="expressionResultType" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
             <div class="col-sm-9">
-                <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm " data-autosave="true" {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
+                <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm" data-autosave="true" {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
                     <option n:foreach="$types as $key => $value" value="{$key}" {$key === $selectedIndexElement->expressionResultType?->value ? selected}>
                         {$value}
                     </option>
