@@ -5,7 +5,8 @@ contextBridge.exposeInMainWorld("api", {
         type: "question",
         message: messageText,
         detail: informativeText,
-        buttons: buttons
+        buttons: buttons,
+        noLink: true
     }),
     showErrorBox: (error) => ipcRenderer.invoke("showErrorBox", error),
     showOpenDialog: (title, message, buttonLabel, defaultPath, properties) => ipcRenderer.invoke("showOpenDialog", {
