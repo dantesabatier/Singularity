@@ -7,10 +7,8 @@
 {block title}{$title}{/block}
 {block content}
     <div id="main" class="container-fluid min-vh-100 d-flex flex-column user-select-none">
-        <div class="row flex-grow-1">
-            <div class="col-md-2 col-lg-3 col-xl-4 align-self-center">
-            </div>
-            <div class="col-md-8 col-lg-6 col-xl-4 align-self-center">
+        <div class="row flex-grow-1  justify-content-center">
+            <div class="ratio ratio-16x9 w-50 h-25 align-self-center">
                 <div class="card" style="min-height: 380px">
                     <div class="card-header">
                         <button class="btn border-0 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#showAboutPanel">
@@ -66,8 +64,6 @@
                         </button>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-2 col-lg-3 col-xl-4 align-self-center">
             </div>
         </div>
         <div class="modal fade" id="showAboutPanel" data-bs-backdrop="static" tabindex="-1" aria-labelledby="showAboutPanelLabel" aria-hidden="true">
