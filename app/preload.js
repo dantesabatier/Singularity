@@ -15,5 +15,6 @@ contextBridge.exposeInMainWorld("api", {
         buttonLabel: buttonLabel,
         defaultPath: defaultPath,
         properties: properties
-    })
+    }),
+    showAboutPanel: (options) => ipcRenderer.send("showAboutPanel", options)
 })
