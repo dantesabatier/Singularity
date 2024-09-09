@@ -17,7 +17,7 @@
                         <key>isOptional</key>
                         <false/>
                         <key>regex</key>
-                        <string>/^[a-z](?:\w*)?$/</string>
+                        <string>/^[A-Z](?:\w*)?$/</string>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
