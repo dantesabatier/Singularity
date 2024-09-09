@@ -156,6 +156,7 @@ async function load(project) {
  * @param { object } project
  */
 async function subclass(project) {
+    console.log(JSON.stringify(project, null, 2))
     const response = await window.api.showMessageBox("Create managed object subclass?", "This action cannot be undone.", ["Cancel", "OK"])
     if (response.response) {
         await send(url("subclass"), {

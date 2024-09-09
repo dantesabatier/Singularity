@@ -8,4 +8,11 @@ contextBridge.exposeInMainWorld("api", {
         buttons: buttons
     }),
     showErrorBox: (error) => ipcRenderer.invoke("showErrorBox", error),
+    showOpenDialog: (title, message, buttonLabel, defaultPath, properties) => ipcRenderer.invoke("showOpenDialog", {
+        title: title,
+        message: message,
+        buttonLabel: buttonLabel,
+        defaultPath: defaultPath,
+        properties: properties
+    })
 })

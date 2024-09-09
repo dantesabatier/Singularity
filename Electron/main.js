@@ -66,23 +66,26 @@ const createWindow = () => {
     window.loadURL("http://localhost:8000")
     window.maximize()
 }
-ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(
-    BrowserWindow.fromWebContents(event.sender),
-    arg
-))
-ipcMain.handle("showErrorBox", async (event, arg) => {
-    arg ??= arg = {
-        localizedDescription: "An unexpected error has occurred",
-        localizedFailureReason: undefined,
-        localizedRecoverySuggestion: undefined
-    }
-    const messageText = arg.localizedDescription ?? arg.name ?? "An unexpected error has occurred"
-    let informativeText = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? arg.message ?? ""
-    if (informativeText && arg.localizedRecoverySuggestion && informativeText !== arg.localizedRecoverySuggestion) {
-        informativeText = "\n" + arg.localizedRecoverySuggestion
-    }
-    return dialog.showErrorBox(messageText, informativeText)
-})
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
-app.whenReady().then(() => createWindow())
+app.whenReady().then(() => {
+    createWindow()
+    ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(
+        BrowserWindow.fromWebContents(event.sender),
+        arg
+    ))
+    ipcMain.handle("showErrorBox", async (event, arg) => {
+        arg ??= arg = {
+            localizedDescription: "An unexpected error has occurred",
+            localizedFailureReason: undefined,
+            localizedRecoverySuggestion: undefined
+        }
+        const messageText = arg.localizedDescription ?? arg.name ?? "An unexpected error has occurred"
+        let informativeText = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? arg.message ?? ""
+        if (informativeText && arg.localizedRecoverySuggestion && informativeText !== arg.localizedRecoverySuggestion) {
+            informativeText = "\n" + arg.localizedRecoverySuggestion
+        }
+        return dialog.showErrorBox(messageText, informativeText)
+    })
+    ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
+})
 app.on("window-all-closed", () => app.quit())

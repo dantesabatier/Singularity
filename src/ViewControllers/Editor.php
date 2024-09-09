@@ -184,6 +184,7 @@ class Editor extends ViewController
     {
         $setClassName = class_name(Set::class);
         $arrayClassName = class_name(ArrayClass::class);
+        /** @noinspection SpellCheckingInspection */
         $superentity = $entity->superentity;
         $content = "<?php\n";
         $content .= "\n";
