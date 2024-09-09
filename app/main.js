@@ -1,7 +1,7 @@
 if (require("electron-squirrel-startup")) {
     return
 }
-const { app, nativeTheme, ipcMain, dialog, BrowserWindow, Menu } = require("electron")
+const {app, nativeTheme, ipcMain, dialog, BrowserWindow, Menu} = require("electron")
 const ChildProcess = require("child_process")
 const path = require("path")
 
@@ -16,7 +16,7 @@ function handleSquirrelEvent() {
     const spawn = function (command, args) {
         let spawnedProcess
         try {
-            spawnedProcess = ChildProcess.spawn(command, args, { detached: true });
+            spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
         } catch (error) {
         }
         return spawnedProcess
@@ -110,3 +110,4 @@ ipcMain.on("showAboutPanel", (event, arg) => {
     })
     app.showAboutPanel()
 })
+ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
