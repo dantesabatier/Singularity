@@ -79,12 +79,27 @@ app.whenReady().then(() => {
             localizedFailureReason: undefined,
             localizedRecoverySuggestion: undefined
         }
-        const messageText = arg.localizedDescription ?? arg.name ?? "An unexpected error has occurred"
-        let informativeText = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? arg.message ?? ""
-        if (informativeText && arg.localizedRecoverySuggestion && informativeText !== arg.localizedRecoverySuggestion) {
-            informativeText = "\n" + arg.localizedRecoverySuggestion
+        /**
+         * @type {string}
+         */
+        const title = arg.localizedDescription ?? arg.message ?? "Ha ocurrido un error inesperado"
+        /**
+         * @type {string}
+         */
+        let content = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? ""
+        if (!!content && arg.localizedRecoverySuggestion && content !== arg.localizedRecoverySuggestion) {
+            if (!content.endsWith(".")) {
+                content += "."
+            }
+            content += `\n${arg.localizedRecoverySuggestion}`
         }
-        return dialog.showErrorBox(messageText, informativeText)
+        if (!!arg.userInfo) {
+            content += `\n${JSON.stringify(arg.userInfo, null, 4)}`
+        }
+        if (!!content && !content.endsWith(".")) {
+            content += "."
+        }
+        return dialog.showErrorBox(title, content)
     })
     ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
 })
