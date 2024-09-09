@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-const cameCase = (string) => string.replace(/\s(.)/g, $1 => $1.toUpperCase()).replace(/\s/g, '').replace(/^(.)/, $1 => $1.toLowerCase())
+const cameCase = (string) => string.replace(/\s(.)/g, $1 => $1.toUpperCase()).replace(/\s/g, "").replace(/^(.)/, $1 => $1.toLowerCase())
 
 const url = (endpoint, parameters) => {
     let url = endpoint
@@ -66,7 +66,7 @@ const replace = async (url) => {
  */
 const push = async (url) => {
     await replace(url)
-    await history.pushState({ url: url }, "", url)
+    await history.pushState({url: url}, "", url)
 }
 
 /**
@@ -106,7 +106,7 @@ const send = async (action, body = undefined, method = "POST") => {
                 keys.push(...["project", "entity", "index"])
                 break
         }
-        const values = keys.map(k => k + "=" + location.searchParams.get(k))
+        const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
         if (method === "POST") {
             values.push(`${(() => {
                 switch (entity) {
@@ -162,23 +162,20 @@ const submit = async (form) => {
     }, {}), elements.find(e => e.name === "X-Http-Method-Override")?.value ?? form.method)
 }
 
-const showPreferences = () => window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
-const showAboutPanel = (options) => window.api.showAboutPanel(options)
+/**
+ * @param { object } project
+ */
+const load = async (project) => await push(url("Editor", {project: project.objectID}))
 
 /**
  * @param { object } project
  */
-const load = async (project) => await push(url("Editor", { project: project.objectID }))
+const subclass = async (project) => await send(url("subclass"), {project: project.objectID})
 
 /**
  * @param { object } project
  */
-const subclass = async (project) => await send(url("subclass"), { project: project.objectID })
-
-/**
- * @param { object } project
- */
-const importModel = async (project) => await send(url("import"), { project: project.objectID })
+const importModel = async (project) => await send(url("import"), {project: project.objectID})
 
 /**
  * @param { string } endpoint
@@ -193,7 +190,12 @@ const add = async (endpoint, entity) => await send(url(endpoint), {
  * @param { object } item
  */
 const remove = async (item) => {
-    if ((await window.api.showMessageBox("Remove \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?", "This action cannot be undone.", ["Cancel", "OK"])).response) {
-        await send(url(item.entityName), { objectID: item.objectID }, "DELETE")
+    if ((await window.api.showMessageBox(`Remove "${item.name ?? item.propertyName ?? item.stringValue}"?`, "This action cannot be undone.", ["Cancel", "OK"])).response) {
+        await send(url(item.entityName), {objectID: item.objectID}, "DELETE")
     }
 }
+
+// noinspection SpellCheckingInspection
+const showPreferences = () => window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
+const showAboutPanel = (options) => window.api.showAboutPanel(options)
+const setProgressBar = (progress) => window.api.setProgressBar(progress)
