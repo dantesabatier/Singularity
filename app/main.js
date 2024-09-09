@@ -103,3 +103,10 @@ ipcMain.handle("showErrorBox", async (event, arg) => {
     return dialog.showErrorBox(title, content)
 })
 ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
+ipcMain.on("showAboutPanel", (event, arg) => {
+    app.setAboutPanelOptions({
+        ...arg,
+        iconPath: path.join(__dirname, "icon.png")
+    })
+    app.showAboutPanel()
+})
