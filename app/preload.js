@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require("electron")
+const {contextBridge, ipcRenderer} = require("electron")
 
 contextBridge.exposeInMainWorld("api", {
     showMessageBox: (messageText, informativeText, buttons) => ipcRenderer.invoke("showMessageBox", {
@@ -16,5 +16,6 @@ contextBridge.exposeInMainWorld("api", {
         defaultPath: defaultPath,
         properties: properties
     }),
-    showAboutPanel: (options) => ipcRenderer.send("showAboutPanel", options)
+    showAboutPanel: (options) => ipcRenderer.send("showAboutPanel", options),
+    setProgressBar: (progress => ipcRenderer.send("setProgressBar", progress)),
 })
