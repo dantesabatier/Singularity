@@ -163,6 +163,7 @@ const submit = async (form) => {
 }
 
 const showPreferences = () => window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
+const showAboutPanel = (options) => window.api.showAboutPanel(options)
 
 /**
  * @param { object } project
