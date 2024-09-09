@@ -170,7 +170,7 @@
                                 <input type="text" name="name" id="name" class="form-control" autocomplete="off" required>
                             </div>
                             <label for="superentityID" class="form-label">Parent Entity</label>
-                            <select name="superentityID" id="superentityID" class="form-select" {$allEntities->isEmpty ? disabled}>
+                            <select name="superentityID" id="superentityID" class="form-select form-select-sm " {$allEntities->isEmpty ? disabled}>
                                 <option value="">No Parent Entity</option>
                                 <hr>
                                 <option n:foreach="$allEntities as $entity" value="{$entity->objectID->referenceObject}">

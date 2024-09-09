@@ -7,13 +7,13 @@
         </div>
         <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
         <div class="row mb-3 align-items-center">
-            <label for="name" class="col-sm-3 col-form-label text-end pe-0">Name</label>
+            <label for="name" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Name</label>
             <div class="col-sm-9">
-                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
+                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
             </div>
         </div>
         <div class="row mb-3 align-items-baseline">
-            <label class="col-sm-3 col-form-label text-end pe-0">Properties</label>
+            <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Properties</label>
             <div class="col-sm-9">
                 <div class="form-check form-check-inline">
                     <label class="form-check-label" for="isTransient">Transient</label>
@@ -30,17 +30,17 @@
             </div>
         </div>
         <div n:if="$selectedProperty->isDerived" class="row mb-3 align-items-center">
-            <label for="derivationExpressionFormat" class="col-sm-3 col-form-label text-end pe-0">Derivation</label>
+            <label for="derivationExpressionFormat" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Derivation</label>
             <div class="col-sm-9">
-                <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" required>
+                <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control form-control-sm text-truncate" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" required>
             </div>
         </div>
         <hr>
         <div class="row mt-3 mb-3 align-items-center">
             {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
-            <label for="type" class="col-sm-3 col-form-label text-end pe-0">Type</label>
+            <label for="type" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
             <div class="col-sm-9">
-                <select name="type" id="type" class="form-select" data-autosave="true">
+                <select name="type" id="type" class="form-select form-select-sm " data-autosave="true">
                     <option n:foreach="$types as $key => $value" value="{$key}" {$key === $type ? selected}>
                         {$value}
                     </option>
@@ -53,21 +53,21 @@
                 {switch $type}
                     {case 100, 200, 300}
                     <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
-                            <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                            <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                         </div>
                     </div>
                     <div class="row mb-3 align-items-start">
-                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <input type="number" class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                    <input type="number" class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
                                     <label class="form-label" for="minValue">Minimum</label>
                                 </div>
                                 <div class="col">
-                                    <input type="number" class="form-control" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                    <input type="number" class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
                                     <label class="form-label" for="maxValue">Maximum</label>
                                 </div>
                             </div>
@@ -75,21 +75,21 @@
                     </div>
                 {case 400, 500, 600}
                     <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
-                            <input name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                            <input name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                         </div>
                     </div>
                     <div class="row mb-3 align-items-start">
-                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <input class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                    <input class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
                                     <label class="form-label" for="minValue">Minimum</label>
                                 </div>
                                 <div class="col">
-                                    <input class="form-control" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                    <input class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
                                     <label class="form-label" for="maxValue">Maximum</label>
                                 </div>
                             </div>
@@ -104,37 +104,37 @@
                         </div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
-                            <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null String'}" class="form-control text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
+                            <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null String'}" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
                     </div>
                     <div class="row mb-3 align-items-start">
-                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <input type="number" class="form-control" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                    <input type="number" class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
                                     <label class="form-label" for="minValue">Min Length</label>
                                 </div>
                                 <div class="col">
-                                    <input type="number" class="form-control" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                    <input type="number" class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
                                     <label class="form-label" for="maxValue">Max Length</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                        <label for="regex" class="col-sm-3 col-form-label text-end pe-0">Reg. Ex.</label>
+                        <label for="regex" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Reg. Ex.</label>
                         <div class="col-sm-9">
-                            <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
+                            <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control form-control-sm text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
                         </div>
                     </div>
                 {case 800}
                     <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
-                            <select name="defaultValue" id="defaultValue" class="form-select" data-autosave="true">
+                            <select name="defaultValue" id="defaultValue" class="form-select form-select-sm " data-autosave="true">
                                 {var array $values = ["" => "None", "true" => "True", "false" => "False"]}
                                 <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
                             </select>
@@ -149,13 +149,13 @@
                         </div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
-                            <input type="datetime-local" name="defaultValue" id="defaultValue" class="form-control" value="{$selectedProperty->defaultValue}" {!$selectedProperty->isDefaultValueBounded ? disabled}>
+                            <input type="datetime-local" name="defaultValue" id="defaultValue" class="form-control form-control-sm" value="{$selectedProperty->defaultValue}" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
                     </div>
                     <div class="row mb-3 align-items-end">
-                        <label class="col-sm-3 col-form-label text-end pe-0">Validation</label>
+                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
                         <div class="col-sm-9">
                             <div class="row align-items-center">
                                 <div class="col-sm-6">
@@ -163,23 +163,23 @@
                                         <label class="form-check-label" for="isMinValueBounded">Minimum Date</label>
                                         <input class="form-check-input" type="checkbox" name="isMinValueBounded" value="{$selectedProperty->isMinValueBounded}" id="isMinValueBounded" {$selectedProperty->isMinValueBounded ? checked}>
                                     </div>
-                                    <input type="datetime-local" name="minValue" id="minValue" class="form-control" value="{$selectedProperty->minValue}" {!$selectedProperty->isMinValueBounded ? disabled}>
+                                    <input type="datetime-local" name="minValue" id="minValue" class="form-control form-control-sm" value="{$selectedProperty->minValue}" {!$selectedProperty->isMinValueBounded ? disabled}>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-check form-check-inline">
                                         <label class="form-check-label" for="isMaxValueBounded">Maximum Date</label>
                                         <input class="form-check-input" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded}" id="isMaxValueBounded" {$selectedProperty->isMaxValueBounded ? checked}>
                                     </div>
-                                    <input type="datetime-local" name="maxValue" id="maxValue" class="form-control" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
+                                    <input type="datetime-local" name="maxValue" id="maxValue" class="form-control form-control-sm" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
                                 </div>
                             </div>
                         </div>
                     </div>
                 {case 1100, 1200}
                     <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label text-end pe-0">Default Value</label>
+                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
-                            <input type="text" name="defaultValue" id="defaultValue" class="form-control text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
+                            <input type="text" name="defaultValue" id="defaultValue" class="form-control form-control-sm text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                         </div>
                     </div>
                 {/switch}
@@ -196,23 +196,23 @@
                 </div>
             {case 1800}
                 <div class="row mb-3 align-items-center">
-                    <label for="attributeValueClassName" class="col-sm-3 col-form-label text-end pe-0">Custom
+                    <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom
                         Class</label>
                     <div class="col-sm-9">
-                        <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
+                        <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
                     </div>
                 </div>
                 <div class="row mb-3 align-items-center">
-                    <label for="valueTransformerName" class="col-sm-3 col-form-label text-end pe-0">Transformer</label>
+                    <label for="valueTransformerName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Transformer</label>
                     <div class="col-sm-9">
-                        <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer Name" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
+                        <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
                     </div>
                 </div>
                 {default}
             {/switch}
             <hr>
             <div class="row mt-3 align-items-center">
-                <label class="col-sm-3 col-form-label text-end pe-0">Advanced</label>
+                <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Advanced</label>
                 <div class="col-sm-9">
                     <div class="form-check">
                         <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After
@@ -223,16 +223,16 @@
             </div>
         {elseif ($type === 1800)}
             <div class="row mb-3 align-items-center">
-                <label for="attributeValueClassName" class="col-sm-3 col-form-label text-end pe-0">Custom
+                <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom
                     Class</label>
                 <div class="col-sm-9">
-                    <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
+                    <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
             <div class="row mb-3 align-items-center">
-                <label for="valueTransformerName" class="col-sm-3 col-form-label text-end pe-0">Transformer</label>
+                <label for="valueTransformerName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Transformer</label>
                 <div class="col-sm-9">
-                    <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer Name" class="form-control text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
+                    <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="Value Transformer Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         {/if}
@@ -241,15 +241,15 @@
             Versioning
         </div>
         <div class="row mb-3 align-items-center">
-            <label for="versionHashModifier" class="col-sm-3 col-form-label text-end pe-0">Hash Modifier</label>
+            <label for="versionHashModifier" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Hash Modifier</label>
             <div class="col-sm-9">
-                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control text-truncate" value="{$selectedProperty->versionHashModifier}" autocomplete="off" spellcheck="false">
+                <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control form-control-sm text-truncate" value="{$selectedProperty->versionHashModifier}" autocomplete="off" spellcheck="false">
             </div>
         </div>
         <div class="row mb-3 align-items-center">
-            <label for="renamingIdentifier" class="col-sm-3 col-form-label text-end pe-0">Renaming ID</label>
+            <label for="renamingIdentifier" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Renaming ID</label>
             <div class="col-sm-9">
-                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
+                <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control form-control-sm text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
             </div>
         </div>
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">

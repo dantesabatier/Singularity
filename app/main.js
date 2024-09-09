@@ -67,40 +67,39 @@ const createWindow = () => {
     window.maximize()
 }
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
-app.whenReady().then(() => {
-    createWindow()
-    ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(
-        BrowserWindow.fromWebContents(event.sender),
-        arg
-    ))
-    ipcMain.handle("showErrorBox", async (event, arg) => {
-        arg ??= arg = {
-            localizedDescription: "An unexpected error has occurred",
-            localizedFailureReason: undefined,
-            localizedRecoverySuggestion: undefined
-        }
-        /**
-         * @type {string}
-         */
-        const title = arg.localizedDescription ?? arg.message ?? "Ha ocurrido un error inesperado"
-        /**
-         * @type {string}
-         */
-        let content = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? ""
-        if (!!content && arg.localizedRecoverySuggestion && content !== arg.localizedRecoverySuggestion) {
-            if (!content.endsWith(".")) {
-                content += "."
-            }
-            content += `\n${arg.localizedRecoverySuggestion}`
-        }
-        if (!!arg.userInfo) {
-            content += `\n${JSON.stringify(arg.userInfo, null, 4)}`
-        }
-        if (!!content && !content.endsWith(".")) {
+app.whenReady().then(() => createWindow())
+app.on("window-all-closed", () => app.quit())
+
+ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(
+    BrowserWindow.fromWebContents(event.sender),
+    arg
+))
+ipcMain.handle("showErrorBox", async (event, arg) => {
+    arg ??= arg = {
+        localizedDescription: "An unexpected error has occurred",
+        localizedFailureReason: undefined,
+        localizedRecoverySuggestion: undefined
+    }
+    /**
+     * @type {string}
+     */
+    const title = arg.localizedDescription ?? arg.message ?? "Ha ocurrido un error inesperado"
+    /**
+     * @type {string}
+     */
+    let content = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? ""
+    if (!!content && arg.localizedRecoverySuggestion && content !== arg.localizedRecoverySuggestion) {
+        if (!content.endsWith(".")) {
             content += "."
         }
-        return dialog.showErrorBox(title, content)
-    })
-    ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
+        content += `\n${arg.localizedRecoverySuggestion}`
+    }
+    if (!!arg.userInfo) {
+        content += `\n${JSON.stringify(arg.userInfo, null, 4)}`
+    }
+    if (!!content && !content.endsWith(".")) {
+        content += "."
+    }
+    return dialog.showErrorBox(title, content)
 })
-app.on("window-all-closed", () => app.quit())
+ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))

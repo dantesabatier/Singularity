@@ -1,6 +1,6 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-function url(endpoint, parameters) {
+const url = (endpoint, parameters) => {
     let url = endpoint
     if (!url.startsWith("/")) {
         url = "/" + url
@@ -22,7 +22,7 @@ function url(endpoint, parameters) {
 /**
  * @param { string } url
  */
-async function replace(url) {
+const replace = async (url) => {
     let headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     const response = await fetch(url, {
@@ -62,11 +62,9 @@ async function replace(url) {
 /**
  * @param { string } url
  */
-async function push(url) {
+const push = async (url) => {
     await replace(url)
-    await history.pushState({
-        url: url,
-    }, "", url)
+    await history.pushState({ url: url }, "", url)
 }
 
 /**
@@ -74,7 +72,7 @@ async function push(url) {
  * @param { object|undefined } body
  * @param { string } method
  */
-async function send(action, body = undefined, method = "POST") {
+const send = async (action, body = undefined, method = "POST") => {
     let headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     headers["Content-Type"] = "application/json; charset=utf-8"
@@ -116,7 +114,7 @@ async function send(action, body = undefined, method = "POST") {
 /**
  * @param  { HTMLFormElement } form
  */
-async function submit(form) {
+const submit = async (form) => {
     let headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     headers["Content-Type"] = "application/json; charset=utf-8"
@@ -139,52 +137,28 @@ async function submit(form) {
     }, {}), elements.find(e => e.name === "X-Http-Method-Override")?.value ?? form.method)
 }
 
-function showPreferences() {
-    window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
-}
+const showPreferences = () => window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
 
 /**
  * @param { object } project
  */
-async function load(project) {
-    await push(url("Editor", {
-        project: project.objectID
-    }))
-}
+const load = async (project) => await push(url("Editor", { project: project.objectID }))
 
 /**
  * @param { object } project
  */
-async function subclass(project) {
-    console.log(JSON.stringify(project, null, 2))
-    const response = await window.api.showMessageBox("Create managed object subclass?", "This action cannot be undone.", ["Cancel", "OK"])
-    if (response.response) {
-        await send(url("subclass"), {
-            project: project.objectID
-        })
-    }
-}
+const subclass = async (project) => await send(url("subclass"), { project: project.objectID })
 
 /**
  * @param { object } project
  */
-async function importModel(project) {
-    const response = await window.api.showMessageBox("Import model?", "This action cannot be undone.", ["Cancel", "OK"])
-    if (response.response) {
-        await send(url("import"), {
-            project: project.objectID
-        })
-    }
-}
+const importModel = async (project) => await send(url("import"), { project: project.objectID })
 
 /**
  * @param { object } item
  */
-async function remove(item) {
-    const response = await window.api.showMessageBox("Remove \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?", "This action cannot be undone.", ["Cancel", "OK"])
-    if (response.response) {
-        await send(url(item.entityName), {
-            objectID: item.objectID
-        }, "DELETE")
+const remove = async (item) => {
+    if ((await window.api.showMessageBox("Remove \"" + (item.name ?? item.propertyName ?? item.stringValue) + "\"?", "This action cannot be undone.", ["Cancel", "OK"])).response) {
+        await send(url(item.entityName), { objectID: item.objectID }, "DELETE")
     }
 }
