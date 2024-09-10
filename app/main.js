@@ -1,7 +1,7 @@
 if (require("electron-squirrel-startup")) {
     return
 }
-const {app, nativeTheme, ipcMain, dialog, BrowserWindow, Menu} = require("electron")
+const {app, ipcMain, dialog, BrowserWindow, Menu} = require("electron")
 const ChildProcess = require("child_process")
 const path = require("path")
 
@@ -45,8 +45,6 @@ if (handleSquirrelEvent()) {
     return
 }
 
-nativeTheme.themeSource = "dark"
-
 Menu.setApplicationMenu(null)
 const createWindow = () => {
     const window = new BrowserWindow({
@@ -60,8 +58,17 @@ const createWindow = () => {
             enableBlinkFeatures: "CSSColorSchemeUARendering, OverlayScrollbars, FluentOverlayScrollbars, ElasticOverscrollWin",
             preload: path.join(__dirname, "preload.js")
         },
-        darkTheme: true
+        darkTheme: true,
+        backgroundColor: "#272727"
     })
+    window.webContents.setWindowOpenHandler(({url}) =>
+        url.endsWith("Preferences") ? {
+            action: "allow",
+            overrideBrowserWindowOptions: {
+                darkTheme: true,
+                backgroundColor: "#272727"
+            }
+        } : {action: "deny"})
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     window.loadURL("http://localhost:8000")
     window.maximize()
