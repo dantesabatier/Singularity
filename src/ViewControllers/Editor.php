@@ -218,7 +218,6 @@ class Editor extends ViewController
         if (!$superentity) {
             $uses->append("use " . ManagedObject::class . ";");
         }
-
         /** @var Set<string> $properties */
         $properties = new Set();
         $path = $fileURL->path;
