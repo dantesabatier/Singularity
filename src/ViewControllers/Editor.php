@@ -44,7 +44,6 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
-use function Sabatier\Foundation\string_has_prefix;
 use function Sabatier\Foundation\substring_from_index;
 use function Sabatier\Foundation\substring_to_index;
 use const Sabatier\Foundation\kCFBundleNameKey;
@@ -192,9 +191,10 @@ class Editor extends ViewController
         if (!$superentity) {
             $content .= "\n";
         }
-        $attributes = $entity->attributes;
+        /** @var Set<Property> $attributes */
+        $attributes = new Set($entity->attributes);
         /** @var Set<string> $uses */
-        $uses = new Set($attributes->compactMap(function (Attribute $attribute): ?string {
+        $uses = $attributes->compactMap(function (Attribute $attribute): ?string {
             $attributeValueClassName = $attribute->attributeValueClassName ?? match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
@@ -206,7 +206,7 @@ class Editor extends ViewController
                 return "use $attributeValueClassName;";
             }
             return null;
-        }));
+        });
         $relationships = $entity->relationships;
         if ($relationships->contains(fn(Relationship $relationship): bool => $relationship->isToMany)) {
             $uses->append("use " . Set::class . ";");
@@ -218,24 +218,25 @@ class Editor extends ViewController
         if (!$superentity) {
             $uses->append("use " . ManagedObject::class . ";");
         }
+
+        /** @var Set<string> $properties */
+        $properties = new Set();
         $path = $fileURL->path;
         if (FileManager::default()->fileExists($path) && ($contents = FileManager::default()->contents($path)) && ($index = strpos($contents, "class"))) {
-            $uses->appendContentsOf(array_filter(preg_split(sprintf("/%s/", preg_quote("\n", "/")), substring_to_index($contents, $index), -1, PREG_SPLIT_NO_EMPTY), fn(string $e): bool => string_has_prefix($e, "use")));
+            $array = preg_split(sprintf("/%s/", preg_quote("\n", "/")), substring_to_index($contents, $index), -1, PREG_SPLIT_NO_EMPTY);
+            $properties->appendContentsOf(array_filter($array, fn(string $e): bool => str_contains($e, "@property")));
+            $uses->appendContentsOf(array_filter($array, fn(string $e): bool => str_starts_with($e, "use")));
             $declaration = substring_from_index($contents, $index);
         } else {
             $declaration = "class $class extends ";
+            //FIXME: superclass needs to be checked
             $declaration .= $superentity?->name ?? class_name(ManagedObject::class);
             $declaration .= "\n{\n}\n";
         }
-        if (!$uses->isEmpty) {
-            if ($superentity) {
-                $content .= "\n";
+        $properties->appendContentsOf($attributes->compactMap(function (Attribute $attribute) use ($properties): ?string {
+            if ($properties->contains(fn(string $e): bool => str_ends_with($e, $attribute->name))) {
+                return null;
             }
-            $content .= $uses->sort()->join("\n");
-        }
-        $content .= "\n";
-        /** @var ArrayClass<string> $properties */
-        $properties = $attributes->compactMap(function (Attribute $attribute): ?string {
             $attributeValueClassName = $attribute->attributeValueClassName ?? match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
@@ -274,7 +275,7 @@ class Editor extends ViewController
                 $string .= "|null";
             }
             return "$string \$$attribute->name";
-        });
+        }));
         $properties->appendContentsOf($fetchedProperties->map(fn(FetchedProperty $fetchedProperty): string => " * @property-read $arrayClassName<$fetchedProperty->fetchRequestEntityName> \$$fetchedProperty->name"));
         $properties->appendContentsOf($relationships->compactMap(function (Relationship $relationship) use ($setClassName): string {
             $lazyDestinationEntityName = $relationship->lazyDestinationEntityName;
@@ -285,6 +286,13 @@ class Editor extends ViewController
             }
             return "$string \$$relationship->name";
         }));
+        if (!$uses->isEmpty) {
+            if ($superentity) {
+                $content .= "\n";
+            }
+            $content .= $uses->sort()->join("\n");
+        }
+        $content .= "\n";
         /** @var ArrayClass<string> $methods */
         $methods = $relationships->compactMap(function (Relationship $relationship) use ($namespace, $setClassName): ?string {
             if (!$relationship->isToMany || !($destinationEntity = $relationship->destinationEntity)) {
