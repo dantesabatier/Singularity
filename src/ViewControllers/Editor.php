@@ -191,7 +191,7 @@ class Editor extends ViewController
         if (!$superentity) {
             $content .= "\n";
         }
-        /** @var Set<Property> $attributes */
+        /** @var Set<Attribute> $attributes */
         $attributes = new Set($entity->attributes);
         /** @var Set<string> $uses */
         $uses = $attributes->compactMap(function (Attribute $attribute): ?string {
@@ -232,6 +232,7 @@ class Editor extends ViewController
             $declaration .= $superentity?->name ?? class_name(ManagedObject::class);
             $declaration .= "\n{\n}\n";
         }
+        /** @psalm-suppress InvalidArgument */
         $properties->appendContentsOf($attributes->compactMap(function (Attribute $attribute) use ($properties): ?string {
             if ($properties->contains(fn(string $e): bool => str_ends_with($e, $attribute->name))) {
                 return null;
