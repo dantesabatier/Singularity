@@ -218,6 +218,7 @@ class Editor extends ViewController
         if (!$superentity) {
             $uses->append("use " . ManagedObject::class . ";");
         }
+        $superclass = $superentity?->name ?? class_name(ManagedObject::class);
         /** @var Set<string> $properties */
         $properties = new Set();
         $path = $fileURL->path;
@@ -227,10 +228,7 @@ class Editor extends ViewController
             $properties->appendContentsOf(array_filter($array, fn(string $e): bool => str_contains($e, "@property")));
             $declaration = substring_from_index($contents, $index);
         } else {
-            $declaration = "class $class extends ";
-            //FIXME: superclass needs to be checked
-            $declaration .= $superentity?->name ?? class_name(ManagedObject::class);
-            $declaration .= "\n{\n}\n";
+            $declaration = "class $class extends $superclass\n{\n}\n";
         }
         /** @psalm-suppress InvalidArgument */
         $properties->appendContentsOf($attributes->compactMap(function (Attribute $attribute) use ($properties): ?string {
