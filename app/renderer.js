@@ -84,7 +84,8 @@ const send = async (action, body = undefined, method = "POST") => {
         method: method,
         headers: headers,
         body: !!body ? JSON.stringify(body, null, 2) : undefined,
-        credentials: "include"
+        credentials: "include",
+        mode: "no-cors"
     })
     spinner.hidden = true
     const location = new URL(window.location)
