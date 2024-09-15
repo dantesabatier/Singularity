@@ -83,7 +83,8 @@ const send = async (action, body = undefined, method = "POST") => {
     const response = await fetch(action, {
         method: method,
         headers: headers,
-        body: !!body ? JSON.stringify(body, null, 2) : undefined
+        body: !!body ? JSON.stringify(body, null, 2) : undefined,
+        credentials: "include"
     })
     spinner.hidden = true
     const location = new URL(window.location)
@@ -175,7 +176,7 @@ const subclass = async (project) => await send(url("subclass"), {project: projec
 /**
  * @param { object } project
  */
-const importModel = async (project) => await send(url("import"), {project: project.objectID})
+const model = async (project) => await send(url("import"), {project: project.objectID})
 
 /**
  * @param { string } endpoint
