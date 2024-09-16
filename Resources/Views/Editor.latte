@@ -1,11 +1,5 @@
 {layout "Layout.latte"}
-{varType string $title}
-{varType App\Model\Project $project}
-{varType App\Model\Entity $selectedEntity}
-{varType App\Model\FetchIndex $selectedIndex}
-{varType Sabatier\Foundation\ArrayClass $projects}
-{varType Sabatier\Foundation\ArrayClass $allEntities}
-{varType Sabatier\Foundation\ArrayClass $breadcrumb}
+{templateType App\Contexts\EditorContext}
 {block title}{$project?->name} - {$title}{/block}
 {block content}
     <div id="main">
