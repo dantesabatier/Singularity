@@ -30,32 +30,46 @@ class LatteRenderer extends Renderer
     public function __construct(Bundle $bundle)
     {
         parent::__construct($bundle);
-        $this->engine = new Engine();
-        $this->engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
-        /** @psalm-suppress InternalMethod */
-        $this->engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
-        $this->engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
-        $this->engine->addFilter("json", fn(mixed $value): string => json_encode($value));
-        $fn = fn(AttributeType $type): string => match ($type) {
-            AttributeType::integer16, AttributeType::integer32, AttributeType::integer64, AttributeType::decimal, AttributeType::double, AttributeType::float => "N",
-            AttributeType::uuid, AttributeType::undefined => $type->name,
-            default => strtoupper(substring_to_index($type->name, 1))
+        unset($this->engine);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function __get(string $name)
+    {
+        return $this->$name = match ($name) {
+            "engine" => (function () {
+                $engine = new Engine();
+                $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
+                /** @psalm-suppress InternalMethod */
+                $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
+                $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
+                $engine->addFilter("json", fn(mixed $value): string => json_encode($value));
+                $fn = fn(AttributeType $type): string => match ($type) {
+                    AttributeType::integer16, AttributeType::integer32, AttributeType::integer64, AttributeType::decimal, AttributeType::double, AttributeType::float => "N",
+                    AttributeType::uuid, AttributeType::undefined => $type->name,
+                    default => strtoupper(substring_to_index($type->name, 1))
+                };
+                $img = function (Property|FetchIndexElement $e) use (&$img, &$fn): string {
+                    return match (true) {
+                        $e instanceof Attribute => $fn($e->type),
+                        $e instanceof Relationship => $e->isToMany ? "M" : "O",
+                        $e instanceof FetchIndexElement => ($property = $e->property) ? $img($property) : $fn(AttributeType::undefined),
+                        default => substring_to_index($e->entity->name, 1)
+                    };
+                };
+                $engine->addFunction("img", $img);
+                $engine->addFunction("localized", fn(string $value): string => localized_string($value));
+                try {
+                    $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
+                } catch (Exception) {
+                }
+                $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
+                return $engine;
+            })(),
+            default => throw new Exception("Unknown property $name")
         };
-        $img = function (Property|FetchIndexElement $e) use (&$img, &$fn): string {
-            return match (true) {
-                $e instanceof Attribute => $fn($e->type),
-                $e instanceof Relationship => $e->isToMany ? "M" : "O",
-                $e instanceof FetchIndexElement => ($property = $e->property) ? $img($property) : $fn(AttributeType::undefined),
-                default => substring_to_index($e->entity->name, 1)
-            };
-        };
-        $this->engine->addFunction("img", $img);
-        $this->engine->addFunction("localized", fn(string $value): string => localized_string($value));
-        try {
-            $this->engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
-        } catch (Exception) {
-        }
-        $this->engine->setLoader(new FileLoader($bundle->resourceURL?->appendingPathComponent("Views")?->path));
     }
 
     #[Override]
