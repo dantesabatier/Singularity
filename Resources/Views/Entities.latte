@@ -1,10 +1,7 @@
-{varType App\Model\Project $project}
-{varType App\Model\Entity $selectedEntity}
-{varType App\Model\FetchIndex $selectedIndex}
-{varType Sabatier\Foundation\ArrayClass $entities}
-{define entities, $entities, $flag}
-    <ul class="{!$flag ? 'flex-column w-100 px-2' : 'flex-column w-100'}">
-        {foreach $entities as $entity}
+{templateType App\Contexts\Editor}
+{define entities, $entities}
+    <ul class="{$entities ? 'flex-column w-100 px-2' : 'flex-column w-100'}">
+        {foreach $entities ?? $rootEntities as $entity}
             <li class="text-truncate{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
                 {if !$entity->subentitiesCount}
                     <span class="space"></span>
@@ -31,7 +28,7 @@
                 {/if}
                 {if $entity->subentitiesCount}
                     <div class="collapse show" id="{$entity->name}">
-                        {include entities, $entity->subentities, true}
+                        {include entities, $entity->subentities}
                     </div>
                 {/if}
             </li>
