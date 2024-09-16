@@ -2,6 +2,7 @@
 
 namespace App\ViewControllers;
 
+use Override;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
@@ -21,6 +22,7 @@ class Preferences extends ViewController
     #[Outlet]
     public bool $automaticallySaveModel = false;
 
+    #[Override]
     public function viewWillLoad(): void
     {
         $this->companyName = UserDefaults::standard()->string(CompanyNameKey);

@@ -6,6 +6,7 @@ use App\Delegate;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
+use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
@@ -111,6 +112,7 @@ class Welcome extends ViewController
     /**
      * @throws Exception
      */
+    #[Override]
     public function viewWillLoad(): void
     {
         $fetchRequest = Project::fetchRequest();

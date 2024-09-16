@@ -11,6 +11,7 @@ use App\Model\Relationship;
 use Exception;
 use Latte\Engine;
 use Latte\Loaders\FileLoader;
+use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Bundle;
@@ -57,6 +58,7 @@ class LatteRenderer extends Renderer
         $this->engine->setLoader(new FileLoader($bundle->resourceURL?->appendingPathComponent("Views")?->path));
     }
 
+    #[Override]
     public function render(string $name, object|array $context): string
     {
         return $this->engine->renderToString("$name.latte", $context);

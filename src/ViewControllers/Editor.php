@@ -15,6 +15,7 @@ use App\Model\Property;
 use App\Model\Relationship;
 use App\Model\UniquenessConstraint;
 use Exception;
+use Override;
 use ReflectionClass;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
@@ -330,6 +331,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
+    #[Override]
     public function viewWillLoad(): void
     {
         $project = $this->project ?? throw new NotFoundException();
