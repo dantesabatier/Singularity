@@ -86,6 +86,13 @@ const send = async (action, body = undefined, method = "POST") => {
         body: !!body ? JSON.stringify(body, null, 2) : undefined,
         credentials: "include"
     })
+    const ok = response.ok
+    const json = ok ? await response.json() : undefined
+    if (!ok) {
+        spinner.hidden = true
+        await window.api.showErrorBox({localizedDescription: "An unexpected error has occurred"})
+        return
+    }
     spinner.hidden = true
     const location = new URL(window.location)
     let keys = []
@@ -126,15 +133,11 @@ const send = async (action, body = undefined, method = "POST") => {
                     case "FetchIndexElement":
                         return "element"
                 }
-            })()}=${(await response.json())?.objectID}`)
+            })()}=${json.objectID}`)
         }
         location.search = values.join("&")
     }
     await push(location.href)
-    if (!response.ok) {
-        return await window.api.showErrorBox((await response.json())?.error)
-    }
-    return response
 }
 
 /**
