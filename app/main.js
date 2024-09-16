@@ -70,7 +70,7 @@ const createWindow = () => {
             }
         } : {action: "deny"})
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
-    window.loadURL("http://localhost:8000")
+    window.loadURL("http://localhost:8001")
     window.maximize()
 }
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
@@ -81,8 +81,8 @@ ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(Bro
     ...arg,
     icon: path.join(__dirname, "icon.png")
 }))
-ipcMain.handle("showErrorBox", async (event, arg) => {
-    arg ??= arg = {
+ipcMain.handle("showErrorBox", async (event, error) => {
+    error ??= error = {
         localizedDescription: "An unexpected error has occurred",
         localizedFailureReason: undefined,
         localizedRecoverySuggestion: undefined
@@ -90,19 +90,19 @@ ipcMain.handle("showErrorBox", async (event, arg) => {
     /**
      * @type {string}
      */
-    const title = arg.localizedDescription ?? arg.message ?? "Ha ocurrido un error inesperado"
+    const title = error.localizedDescription ?? error.message ?? "Ha ocurrido un error inesperado"
     /**
      * @type {string}
      */
-    let content = arg.localizedFailureReason ?? arg.localizedRecoverySuggestion ?? ""
-    if (!!content && arg.localizedRecoverySuggestion && content !== arg.localizedRecoverySuggestion) {
+    let content = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? ""
+    if (!!content && error.localizedRecoverySuggestion && content !== error.localizedRecoverySuggestion) {
         if (!content.endsWith(".")) {
             content += "."
         }
-        content += `\n${arg.localizedRecoverySuggestion}`
+        content += `\n${error.localizedRecoverySuggestion}`
     }
-    if (!!arg.userInfo) {
-        content += `\n${JSON.stringify(arg.userInfo, null, 4)}`
+    if (!!error.userInfo) {
+        content += `\n${JSON.stringify(error.userInfo, null, 4)}`
     }
     if (!!content && !content.endsWith(".")) {
         content += "."
