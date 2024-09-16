@@ -18,7 +18,7 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-sm-6 border-end">
-                                    <h2 class="text-truncate">Welcome to {$title}</h2>
+                                    <h2 class="text-wrap">Welcome to {$title}</h2>
                                     <button class="list-group-item list-group-item-action text-primary border-0 text-truncate" data-bs-toggle="modal" data-bs-target="#addProject">
                                         Create a new project
                                     </button>
@@ -28,18 +28,16 @@
                                         <ol class="list-group">
                                             <li n:foreach="$projects as $project" class="list-group-item display-block">
                                                 <div class="row p-2">
-                                                    <div class="col-sm-9">
-                                                        <span class="fw-bold">
-                                                            <button class="dropdown-item" type="button" onclick="load({$project})">
-                                                                <i class="bi bi-box"></i>
-                                                                {$project->name}
-                                                            </button>
-                                                        </span>
+                                                    <div class="col-sm-9 cursor-pointer" onclick="load({$project})">
+                                                        <div>
+                                                            <span class="material-symbols-outlined">deployed_code</span>
+                                                            <span class="fw-bold">{$project->name}</span>
+                                                        </div>
                                                         <div class="text-truncate">{$project->url->path}</div>
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <button class="btn border-0 bg-transparent" onclick="remove({$project})">
-                                                            <i class="material-icons-outlined"> highlight_off </i>
+                                                            <span class="material-symbols-outlined">cancel</span>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -54,7 +52,7 @@
                     </div>
                     <div class="card-footer">
                         <button class="btn border-0 bg-transparent" onclick="showPreferences()">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-outlined">
                                 settings
                             </span>
                         </button>
