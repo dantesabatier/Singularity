@@ -94,6 +94,20 @@ ul {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.33);
 }
 
+.text-centered {
+    text-align: center;
+    align-self: center;
+    font-size: 17px;
+}
+
+.text-wrap-word {
+    word-break: break-word;
+}
+
 .icon {
-    padding: 0 2px
+    padding: 0 2px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
