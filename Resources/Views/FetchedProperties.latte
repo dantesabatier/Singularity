@@ -15,7 +15,7 @@
         <tr n:foreach="$fetchedProperties as $fetchedProperty" id="property-{$fetchedProperty->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$fetchedProperty->objectID->referenceObject}" n:class="$fetchedProperty->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
             {var string $img = img($fetchedProperty)}
             <td class="text-truncate">
-                <img src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="" style="padding: 0 2px">
+                <img class="icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                 {$fetchedProperty->name}
             </td>
             <td>{$fetchedProperty->fetchRequestPredicateFormat}</td>
