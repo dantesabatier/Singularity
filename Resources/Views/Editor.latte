@@ -93,7 +93,7 @@
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" onclick="model({$project})">
+                                <button class="dropdown-item" onclick="model({$project}, {$project->model?->url?->deletingLastPathComponent()?->path})">
                                     Import...
                                 </button>
                             </li>
