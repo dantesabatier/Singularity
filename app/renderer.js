@@ -57,7 +57,11 @@ const replace = async (url) => {
         }
         register()
     } catch (e) {
-        await window.api.showErrorBox(e)
+        if (window.hasOwnProperty("api")) {
+            await window.api.showErrorBox(e)
+        } else {
+            console.error(e)
+        }
     }
 }
 
@@ -75,11 +79,11 @@ const push = async (url) => {
  * @param { string } method
  */
 const send = async (action, body = undefined, method = "POST") => {
+    const spinner = document.querySelector(".spinner-border")
     try {
         let headers = {}
         headers["X-Requested-With"] = "XmlHttpRequest"
         headers["Content-Type"] = "application/json; charset=utf-8"
-        const spinner = document.querySelector(".spinner-border")
         spinner.hidden = false
         const response = await fetch(action, {
             method: method,
@@ -142,7 +146,11 @@ const send = async (action, body = undefined, method = "POST") => {
             }
         }
     } catch (e) {
-        await window.api.showErrorBox(e)
+        if (window.hasOwnProperty("api")) {
+            await window.api.showErrorBox(e)
+        } else {
+            console.error(e)
+        }
     } finally {
         spinner.hidden = true
     }
