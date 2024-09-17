@@ -16,7 +16,6 @@ use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\Number;
 use Sabatier\Foundation\Value;
-use function Sabatier\Foundation\human_readable_value;
 
 /**
  * @property string $propertyName
@@ -62,7 +61,6 @@ class FetchIndexElement extends ManagedObject
                 }
             }
             $this->$name = $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
-            error_log(human_readable_value($this->index->entityProperty?->attributes->map(fn(Attribute $attribute): string => $attribute->name)));
             return $this->$name;
         } else {
             return parent::__get($name);
