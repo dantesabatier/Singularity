@@ -126,7 +126,7 @@ class Welcome extends ViewController
     {
         $body = $this->request->getParsedBody();
         /** @var string|null $path */
-        $path = $body["location"] ?? null;
+        $path = $body["path"] ?? null;
         if (!$path) {
             return;
         }
