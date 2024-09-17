@@ -5,9 +5,13 @@
 namespace App;
 
 use App\Model\Attribute;
+use App\Model\Entity;
+use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
+use App\Model\Project;
 use App\Model\Property;
 use App\Model\Relationship;
+use App\Model\UniquenessConstraint;
 use Exception;
 use Latte\Engine;
 use Latte\Loaders\FileLoader;
@@ -51,10 +55,14 @@ class LatteRenderer extends Renderer
                     AttributeType::uuid, AttributeType::undefined => $type->name,
                     default => strtoupper(substring_to_index($type->name, 1))
                 };
-                $img = function (Property|FetchIndexElement $e) use (&$img, &$fn): string {
+                $img = function (Project|Entity|UniquenessConstraint|Property|FetchIndex|FetchIndexElement $e) use (&$img, &$fn): string {
                     return match (true) {
+                        $e instanceof Project => "P",
+                        $e instanceof Entity => "E",
+                        $e instanceof UniquenessConstraint => "U",
                         $e instanceof Attribute => $fn($e->type),
                         $e instanceof Relationship => $e->isToMany ? "M" : "O",
+                        $e instanceof FetchIndex => "I",
                         $e instanceof FetchIndexElement => ($property = $e->property) ? $img($property) : $fn(AttributeType::undefined),
                         default => substring_to_index($e->entity->name, 1)
                     };

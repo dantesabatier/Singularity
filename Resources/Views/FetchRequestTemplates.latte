@@ -3,7 +3,7 @@
     <ul class="flex-column w-100 ps-0">
         <li n:foreach="$fetchRequestTemplates as $fetchRequestTemplate" class="text-truncate{$fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
             <span class="space"></span>
-            <img class="icon" src="/Resources/Images/R@1x.png" srcset="/Resources/Images/R@2x.png 2x, /Resources/Images/R@3x.png 3x" alt="">
+            <img class="ps-2" src="/Resources/Images/R@1x.png" srcset="/Resources/Images/R@2x.png 2x, /Resources/Images/R@3x.png 3x" alt="">
             <span id="fetchRequest-{$fetchRequestTemplate->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$fetchRequestTemplate->objectID->referenceObject}">
                 {$fetchRequestTemplate->name}
             </span>

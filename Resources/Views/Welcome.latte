@@ -23,29 +23,33 @@
                                         Create a new project
                                     </button>
                                 </div>
-                                <div class="col-sm-6 overflow-auto" style="max-height: 300px">
-                                    {if !$projects->isEmpty}
-                                        <ol class="list-group">
-                                            <li n:foreach="$projects as $project" class="list-group-item display-block">
-                                                <div class="row p-2">
-                                                    <div class="col-sm-9 cursor-pointer" onclick="load({$project})">
-                                                        <div>
-                                                            <span class="material-symbols-outlined">deployed_code</span>
-                                                            <span class="fw-bold">{$project->name}</span>
+                                <div class="col-sm-6">
+                                    <div class="overflow-auto border rounded" style="height: 236px">
+                                        {if !$projects->isEmpty}
+                                            <ol class="list-group">
+                                                <li n:foreach="$projects as $project" class="list-group-item display-block rounded-0 border-0 border-bottom">
+                                                    <div class="row">
+                                                        <div class="col-sm-9 cursor-pointer" onclick="load({$project})">
+                                                            <div class="d-flex">
+                                                                <span class="material-symbols-outlined d-inline">deployed_code</span>
+                                                                <span class="fw-bold d-inline">{$project->name}</span>
+                                                            </div>
+                                                            <div class="d-block text-truncate">{$project->url->path}</div>
                                                         </div>
-                                                        <div class="text-truncate">{$project->url->path}</div>
+                                                        <div class="col-sm-3">
+                                                            <div class="d-flex align-items-end">
+                                                                <button class="btn border-0 bg-transparent d-inline" onclick="remove({$project})">
+                                                                    <span class="material-symbols-outlined">cancel</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-sm-3">
-                                                        <button class="btn border-0 bg-transparent" onclick="remove({$project})">
-                                                            <span class="material-symbols-outlined">cancel</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ol>
-                                    {else}
-                                        No Recent Projects
-                                    {/if}
+                                                </li>
+                                            </ol>
+                                        {else}
+                                            No Recent Projects
+                                        {/if}
+                                    </div>
                                 </div>
                             </div>
                         </div>

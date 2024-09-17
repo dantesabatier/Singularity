@@ -19,13 +19,13 @@ use const App\AutomaticallyDeleteProjectFolders;
  */
 class Project extends ManagedObject
 {
+    /**
+     * @throws Exception
+     */
     public function prepareForDeletion(): void
     {
         if (UserDefaults::standard()->bool(AutomaticallyDeleteProjectFolders) && ($url = $this->url) && FileManager::default()->fileExists($url->path, $isDirectory) && $isDirectory) {
-            try {
-                FileManager::default()->removeItem($url);
-            } catch (Exception) {
-            }
+            FileManager::default()->removeItem($url);
         }
     }
 }

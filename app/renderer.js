@@ -86,8 +86,13 @@ const send = async (action, body = undefined, method = "POST") => {
         body: !!body ? JSON.stringify(body, null, 2) : undefined,
         credentials: "include"
     })
+    let json
     const ok = response.ok
-    const json = ok ? await response.json() : undefined
+    try {
+        json = ok ? await response.json() : undefined
+    } catch (e) {
+        json = {}
+    }
     if (!ok) {
         spinner.hidden = true
         await window.api.showErrorBox({localizedDescription: "An unexpected error has occurred"})

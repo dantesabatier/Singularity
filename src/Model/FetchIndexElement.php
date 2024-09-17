@@ -9,12 +9,14 @@ use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
 use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\Number;
 use Sabatier\Foundation\Value;
+use function Sabatier\Foundation\human_readable_value;
 
 /**
  * @property string $propertyName
@@ -48,10 +50,31 @@ class FetchIndexElement extends ManagedObject
     public function __get(string $name)
     {
         if ($name == "property") {
-            $this->$name = $this->index->entityProperty?->attributes?->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
+            /** @var ArrayClass<Attribute> $attributes */
+            $attributes = new ArrayClass();
+            $entity = $this->index->entityProperty;
+            if ($entity) {
+                $attributes->appendContentsOf($entity->attributes);
+                $superentity = $entity->superentity;
+                while ($superentity) {
+                    $attributes->appendContentsOf($superentity->attributes);
+                    $superentity = $superentity->superentity;
+                }
+            }
+            $this->$name = $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
+            error_log(human_readable_value($this->index->entityProperty?->attributes->map(fn(Attribute $attribute): string => $attribute->name)));
             return $this->$name;
         } else {
             return parent::__get($name);
+        }
+    }
+
+    public function __set(string $name, mixed $value): void
+    {
+        if ($name == "property") {
+            $this->$name = $value;
+        } else {
+            parent::__set($name, $value);
         }
     }
 

@@ -104,10 +104,13 @@ ul {
     word-break: break-word;
 }
 
-.icon {
-    padding: 0 2px;
-}
-
 .cursor-pointer {
     cursor: pointer;
 }
+
+.space {
+    display: inline-block;
+    width: 24px;
+    padding: 0 8px;
+}
+
