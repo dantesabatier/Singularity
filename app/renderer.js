@@ -1,5 +1,23 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
+/**
+ * @param {string} string
+ * @param {string} other
+ * @returns {number}
+ */
+function LocalizedStringCompare(string, other) {
+    return string.localeCompare(other, "es", {sensitivity: "base"})
+}
+
+/**
+ * @param {string} string
+ * @param {string} other
+ * @returns {boolean}
+ */
+function StringEqual(string, other) {
+    return LocalizedStringCompare(string, other) === SSComparisonResult.same
+}
+
 const cameCase = (string) => string.replace(/\s(.)/g, $1 => $1.toUpperCase()).replace(/\s/g, "").replace(/^(.)/, $1 => $1.toLowerCase())
 
 const url = (endpoint, parameters) => {
@@ -9,7 +27,7 @@ const url = (endpoint, parameters) => {
     }
     if (!!parameters && JSON.stringify(parameters) !== JSON.stringify({})) {
         url += "?" + (() => {
-            let array = []
+            const array = []
             for (const k in parameters) {
                 if (parameters.hasOwnProperty(k)) {
                     array.push(encodeURIComponent(k) + "=" + encodeURIComponent(parameters[k]))
@@ -26,7 +44,7 @@ const url = (endpoint, parameters) => {
  */
 const replace = async (url) => {
     try {
-        let headers = {}
+        const headers = {}
         headers["X-Requested-With"] = "XmlHttpRequest"
         const response = await fetch(url, {
             method: "GET",
@@ -81,7 +99,7 @@ const push = async (url) => {
 const send = async (action, body = undefined, method = "POST") => {
     const spinner = document.querySelector(".spinner-border")
     try {
-        let headers = {}
+        const headers = {}
         headers["X-Requested-With"] = "XmlHttpRequest"
         headers["Content-Type"] = "application/json; charset=utf-8"
         spinner.hidden = false
@@ -90,61 +108,65 @@ const send = async (action, body = undefined, method = "POST") => {
             headers: headers,
             body: !!body ? JSON.stringify(body, null, 2) : undefined
         })
-        const json = await response.json()
+        const keys = []
+        const json = response.status !== 204 ? await response.json() : undefined
         const location = new URL(window.location)
-        let keys = []
-        const endpoint = action.replace("/", "")
-        if (method === "DELETE" || method === "POST") {
-            switch (endpoint) {
-                case "Entity":
-                case "FetchRequestTemplate":
-                    keys.push("project")
-                    break
-                case "Attribute":
-                case "Relationship":
-                case "FetchedProperty":
-                case "FetchIndex":
-                case "UniquenessConstraint":
-                    keys.push(...["project", "entity"])
-                    break
-                case "FetchIndexElement":
-                    keys.push(...["project", "entity", "index"])
-                    break
-            }
-            const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
-            if (method === "POST") {
-                const objectID = json.objectID
-                if (objectID) {
-                    const entity = (() => {
-                        switch (endpoint) {
-                            case "Entity":
-                                return "entity"
-                            case "FetchRequestTemplate":
-                                return "fetchRequest"
-                            case "Attribute":
-                            case "Relationship":
-                            case "FetchedProperty":
-                                return "property"
-                            case "FetchIndex":
-                                return "index"
-                            case "UniquenessConstraint":
-                                return "constraint"
-                            case "FetchIndexElement":
-                                return "element"
-                            default:
-                                return ""
+        const endpoint = URL.canParse(action) ? new URL(action).pathname.replace("/", "") : action.replace("/", "")
+        const m = method.toUpperCase()
+        switch (m) {
+            case "POST":
+            case "DELETE":
+                switch (endpoint) {
+                    case "Entity":
+                    case "FetchRequestTemplate":
+                        keys.push("project")
+                        break
+                    case "Attribute":
+                    case "Relationship":
+                    case "FetchedProperty":
+                    case "FetchIndex":
+                    case "UniquenessConstraint":
+                        keys.push(...["project", "entity"])
+                        break
+                    case "FetchIndexElement":
+                        keys.push(...["project", "entity", "index"])
+                        break
+                }
+                const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
+                if (m === "POST") {
+                    const objectID = json?.objectID
+                    if (objectID) {
+                        const entity = (() => {
+                            switch (endpoint) {
+                                case "Entity":
+                                    return "entity"
+                                case "FetchRequestTemplate":
+                                    return "fetchRequest"
+                                case "Attribute":
+                                case "Relationship":
+                                case "FetchedProperty":
+                                    return "property"
+                                case "FetchIndex":
+                                    return "index"
+                                case "UniquenessConstraint":
+                                    return "constraint"
+                                case "FetchIndexElement":
+                                    return "element"
+                                default:
+                                    return ""
+                            }
+                        })()
+                        if (entity) {
+                            values.push(`${entity}=${objectID}`)
                         }
-                    })()
-                    if (entity) {
-                        values.push(`${entity}=${objectID}`)
                     }
                 }
-            }
-            if (!!values.length) {
-                location.search = values.join("&")
-                await push(location.href)
-            }
+                if (!!values.length) {
+                    location.search = values.join("&")
+                }
+                break
         }
+        await push(location.href)
     } catch (e) {
         if (window.hasOwnProperty("api")) {
             await window.api.showErrorBox(e)
@@ -160,13 +182,13 @@ const send = async (action, body = undefined, method = "POST") => {
  * @param  { HTMLFormElement } form
  */
 const submit = async (form) => {
-    let headers = {}
+    const headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     headers["Content-Type"] = "application/json; charset=utf-8"
     const elements = Array.from(form.elements)
     await send(form.action, elements.filter(e => !!e.name && e.type !== "submit" && e.name !== "X-Http-Method-Override").reduce((result, e) => {
         result[e.name] = (() => {
-            let value = e.type === "checkbox" ? e.checked : e.value
+            const value = e.type === "checkbox" ? e.checked : e.value
             if (value === "true") {
                 return true
             } else if (value === "false") {
