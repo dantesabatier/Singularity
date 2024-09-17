@@ -25,40 +25,40 @@ const url = (endpoint, parameters) => {
  * @param { string } url
  */
 const replace = async (url) => {
-    let headers = {}
-    headers["X-Requested-With"] = "XmlHttpRequest"
-    const response = await fetch(url, {
-        method: "GET",
-        headers: headers
-    })
-    if (!response.ok) {
-        await window.api.showErrorBox((await response.json())?.error)
-        return
+    try {
+        let headers = {}
+        headers["X-Requested-With"] = "XmlHttpRequest"
+        const response = await fetch(url, {
+            method: "GET",
+            headers: headers
+        })
+        const data = await response.text()
+        const doc = document.implementation.createHTMLDocument()
+        doc.open()
+        doc.write(data)
+        doc.close()
+        const e2 = doc.getElementById("main")
+        if (!!!e2) {
+            return
+        }
+        const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
+            obj[e.id] = e.scrollTop
+            return obj
+        }, {})
+        const e1 = document.getElementById("main")
+        e1.innerHTML = e2.innerHTML
+        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
+        const body = document.body
+        body.removeAttribute("class")
+        body.removeAttribute("style")
+        const backdrop = document.querySelector(".modal-backdrop")
+        if (backdrop) {
+            backdrop.remove()
+        }
+        register()
+    } catch (e) {
+        await window.api.showErrorBox(e)
     }
-    const data = await response.text()
-    const doc = document.implementation.createHTMLDocument()
-    doc.open()
-    doc.write(data)
-    doc.close()
-    const e2 = doc.getElementById("main")
-    if (!!!e2) {
-        return
-    }
-    const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
-        obj[e.id] = e.scrollTop
-        return obj
-    }, {})
-    const e1 = document.getElementById("main")
-    e1.innerHTML = e2.innerHTML
-    document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
-    const body = document.body
-    body.removeAttribute("class")
-    body.removeAttribute("style")
-    const backdrop = document.querySelector(".modal-backdrop")
-    if (backdrop) {
-        backdrop.remove()
-    }
-    register()
 }
 
 /**
@@ -75,74 +75,77 @@ const push = async (url) => {
  * @param { string } method
  */
 const send = async (action, body = undefined, method = "POST") => {
-    let headers = {}
-    headers["X-Requested-With"] = "XmlHttpRequest"
-    headers["Content-Type"] = "application/json; charset=utf-8"
-    const spinner = document.querySelector(".spinner-border")
-    spinner.hidden = false
-    const response = await fetch(action, {
-        method: method,
-        headers: headers,
-        body: !!body ? JSON.stringify(body, null, 2) : undefined,
-        credentials: "include"
-    })
-    let json
-    const ok = response.ok
     try {
-        json = ok ? await response.json() : undefined
-    } catch (e) {
-        json = {}
-    }
-    if (!ok) {
-        spinner.hidden = true
-        await window.api.showErrorBox({localizedDescription: "An unexpected error has occurred"})
-        return
-    }
-    spinner.hidden = true
-    const location = new URL(window.location)
-    let keys = []
-    const entity = action.replace("/", "")
-    if (method === "DELETE" || method === "POST") {
-        switch (entity) {
-            case "Entity":
-            case "FetchRequestTemplate":
-                keys.push("project")
-                break
-            case "Attribute":
-            case "Relationship":
-            case "FetchedProperty":
-            case "FetchIndex":
-            case "UniquenessConstraint":
-                keys.push(...["project", "entity"])
-                break
-            case "FetchIndexElement":
-                keys.push(...["project", "entity", "index"])
-                break
-        }
-        const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
-        if (method === "POST") {
-            values.push(`${(() => {
-                switch (entity) {
-                    case "Entity":
-                        return "entity"
-                    case "FetchRequestTemplate":
-                        return "fetchRequest"
-                    case "Attribute":
-                    case "Relationship":
-                    case "FetchedProperty":
-                        return "property"
-                    case "FetchIndex":
-                        return "index"
-                    case "UniquenessConstraint":
-                        return "constraint"
-                    case "FetchIndexElement":
-                        return "element"
+        let headers = {}
+        headers["X-Requested-With"] = "XmlHttpRequest"
+        headers["Content-Type"] = "application/json; charset=utf-8"
+        const spinner = document.querySelector(".spinner-border")
+        spinner.hidden = false
+        const response = await fetch(action, {
+            method: method,
+            headers: headers,
+            body: !!body ? JSON.stringify(body, null, 2) : undefined
+        })
+        const json = await response.json()
+        const location = new URL(window.location)
+        let keys = []
+        const endpoint = action.replace("/", "")
+        if (method === "DELETE" || method === "POST") {
+            switch (endpoint) {
+                case "Entity":
+                case "FetchRequestTemplate":
+                    keys.push("project")
+                    break
+                case "Attribute":
+                case "Relationship":
+                case "FetchedProperty":
+                case "FetchIndex":
+                case "UniquenessConstraint":
+                    keys.push(...["project", "entity"])
+                    break
+                case "FetchIndexElement":
+                    keys.push(...["project", "entity", "index"])
+                    break
+            }
+            const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
+            if (method === "POST") {
+                const objectID = json.objectID
+                if (objectID) {
+                    const entity = (() => {
+                        switch (endpoint) {
+                            case "Entity":
+                                return "entity"
+                            case "FetchRequestTemplate":
+                                return "fetchRequest"
+                            case "Attribute":
+                            case "Relationship":
+                            case "FetchedProperty":
+                                return "property"
+                            case "FetchIndex":
+                                return "index"
+                            case "UniquenessConstraint":
+                                return "constraint"
+                            case "FetchIndexElement":
+                                return "element"
+                            default:
+                                return ""
+                        }
+                    })()
+                    if (entity) {
+                        values.push(`${entity}=${objectID}`)
+                    }
                 }
-            })()}=${json.objectID}`)
+            }
+            if (!!values.length) {
+                location.search = values.join("&")
+                await push(location.href)
+            }
         }
-        location.search = values.join("&")
+    } catch (e) {
+        await window.api.showErrorBox(e)
+    } finally {
+        spinner.hidden = true
     }
-    await push(location.href)
 }
 
 /**
