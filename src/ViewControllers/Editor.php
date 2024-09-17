@@ -403,14 +403,16 @@ class Editor extends ViewController
     #[Action]
     public function import(): void
     {
-        if (!($url = $this->project?->url) || !($model = $this->project?->model)) {
+        $body = $this->request->getParsedBody();
+        /** @var string|null $path */
+        $path = $body["path"] ?? null;
+        if (!$path) {
             return;
         }
-        $bundle = Bundle::bundleWithURL($url);
-        if (!($modelURL = $bundle->url($bundle->object(kCFBundleNameKey), "plist"))) {
-            return;
+        if (!($model = $this->project?->model)) {
+            fatal_error("Project model not found");
         }
-        $model->load($modelURL);
+        $model->load(URL::fileURL($path));
     }
 
     /**
