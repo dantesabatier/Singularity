@@ -57,7 +57,7 @@ class LatteRenderer extends Renderer
                 };
                 $img = function (Project|Entity|UniquenessConstraint|Property|FetchIndex|FetchIndexElement $e) use (&$img, &$fn): string {
                     return match (true) {
-                        $e instanceof Project => "",
+                        $e instanceof Project => "P",
                         $e instanceof Entity => "E",
                         $e instanceof UniquenessConstraint => "U",
                         $e instanceof Attribute => $fn($e->type),
