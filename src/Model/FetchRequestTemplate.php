@@ -11,9 +11,9 @@ use Sabatier\Foundation\Value;
 
 /**
  * @property string $name
- * @property string $entityName
+ * @property string $fetchEntityName
  * @property string|null $predicateString
- * @property FetchRequestResultType $resultType
+ * @property FetchRequestResultType $fetchResultType
  * @property int $fetchLimit
  * @property int $fetchBatchSize
  * @property bool $includesSubentities
@@ -41,11 +41,11 @@ class FetchRequestTemplate extends ManagedObject
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = new Dictionary();
         $dictionary["name"] = $this->name;
-        $dictionary["entityName"] = $this->entityName;
+        $dictionary["fetchEntityName"] = $this->fetchEntityName;
         $dictionary["predicateString"] = $this->predicateString;
-        $resultType = $this->resultType;
-        if ($resultType !== FetchRequestResultType::managedObjectResultType) {
-            $dictionary["resultType"] = $resultType;
+        $fetchResultType = $this->fetchResultType;
+        if ($fetchResultType !== FetchRequestResultType::managedObjectResultType) {
+            $dictionary["fetchResultType"] = $fetchResultType;
         }
         if ($fetchLimit = $this->fetchLimit) {
             $dictionary["fetchLimit"] = $fetchLimit;
