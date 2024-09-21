@@ -16,7 +16,7 @@
             <label for="entityName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Entity</label>
             <div class="col-sm-9">
                 <select name="entityName" id="entityName" class="form-select form-select-sm" data-autosave="true">
-                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedFetchRequestTemplate->entityName ? selected}>
+                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedFetchRequestTemplate->fetchEntityName ? selected}>
                         {$entity->name}
                     </option>
                 </select>
@@ -27,7 +27,7 @@
             <label for="resultType" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
             <div class="col-sm-9">
                 <select name="resultType" id="resultType" class="form-select form-select-sm" data-autosave="true">
-                    <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedFetchRequestTemplate->resultType ? selected}>
+                    <option n:foreach="$items as $key => $value" value="{$key}" {$key === $selectedFetchRequestTemplate->fetchResultType ? selected}>
                         {$value}
                     </option>
                 </select>
