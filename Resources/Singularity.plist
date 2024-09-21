@@ -305,7 +305,7 @@
                     </dict>
                     <dict>
                         <key>name</key>
-                        <string>entityName</string>
+                        <string>fetchEntityName</string>
                         <key>isOptional</key>
                         <false/>
                         <key>type</key>
@@ -319,7 +319,7 @@
                     </dict>
                     <dict>
                         <key>name</key>
-                        <string>resultType</string>
+                        <string>fetchResultType</string>
                         <key>isOptional</key>
                         <false/>
                         <key>type</key>
