@@ -50,7 +50,7 @@
         <tr>
             <td>
                 <div class="d-inline-block">
-                    <button class="btn border-0 bg-transparent p-2" onclick="add({App\Model\FetchIndexElement::class|className}, {$selectedEntity->attributes->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex->elements->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))?->name}, {$selectedIndex})">
+                    <button class="btn border-0 bg-transparent p-2" onclick="add({App\Model\FetchIndexElement::entity()->name}, {$selectedEntity->attributes->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex->elements->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))?->name}, {$selectedIndex})">
                         <span class="material-symbols-outlined small">add</span>
                     </button>
                     <button class="btn border-0 bg-transparent" onclick="remove({$selectedIndexElement})" {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
