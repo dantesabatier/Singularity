@@ -200,7 +200,7 @@ const load = async (project) => await push(url("Editor", {project: project.objec
 /**
  * @param {object} project
  */
-const subclass = async (project) => await send(url("subclass"), {project: project.objectID})
+const subclass = async (project) => await send(url("Subclass"), {project: project.objectID})
 
 /**
  * @param {object} project
