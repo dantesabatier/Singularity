@@ -1,6 +1,4 @@
-{varType App\Model\Project $project}
-{varType App\Model\Entity $selectedEntity}
-{varType App\Model\Property $selectedProperty}
+{templateType App\Contexts\Editor}
 {varType Sabatier\Foundation\Set $fetchedProperties}
 {define fetchedProperties, $fetchedProperties}
     <table class="table table-sm caption-top">
@@ -11,7 +9,7 @@
             <th scope="col" class="col-sm-10 text-shadow">Predicate</th>
         </tr>
         </thead>
-        <tbody n:if="$fetchedProperties">
+        <tbody>
         <tr n:foreach="$fetchedProperties as $fetchedProperty" id="property-{$fetchedProperty->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$fetchedProperty->objectID->referenceObject}" n:class="$fetchedProperty->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
             {var string $img = img($fetchedProperty)}
             <td class="text-truncate">
