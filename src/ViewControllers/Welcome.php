@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 namespace App\ViewControllers;
 
 use App\Delegate;
@@ -7,6 +9,7 @@ use App\Model\Model;
 use App\Model\Project;
 use Exception;
 use Override;
+use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
@@ -16,6 +19,8 @@ use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\ObjectClass;
+use Sabatier\Foundation\Predicates\ComparisonPredicate;
+use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
@@ -23,7 +28,9 @@ use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
+use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\class_name;
@@ -126,10 +133,7 @@ class Welcome extends ViewController
     {
         $body = $this->request->getParsedBody();
         /** @var string|null $path */
-        $path = $body["path"] ?? null;
-        if (!$path) {
-            return;
-        }
+        $path = $body["path"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
         $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
         $fileManager = FileManager::default();
@@ -254,5 +258,14 @@ class Welcome extends ViewController
     #[Action(HTTPRequestMethod::delete)]
     public function remove(): void
     {
+        $body = $this->request->getParsedBody();
+        /** @var int|null $path */
+        $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
+        $context = $this->managedObjectContext;
+        $fetchRequest = Project::fetchRequest();
+        $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
+        $project = $context->fetch($fetchRequest)->first ?? throw new NotFoundException();
+        $context->delete($project);
+        $context->save();
     }
 }
