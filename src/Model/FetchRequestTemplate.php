@@ -11,7 +11,7 @@ use Sabatier\Foundation\Value;
 
 /**
  * @property string $name
- * @property string $fetchEntityName
+ * @property string|null $fetchEntityName
  * @property string|null $predicateString
  * @property FetchRequestResultType $fetchResultType
  * @property int $fetchLimit

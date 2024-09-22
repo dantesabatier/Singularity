@@ -4,6 +4,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchIndexElementType;
@@ -32,17 +33,6 @@ class FetchIndexElement extends ManagedObject
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        /** @psalm-suppress UndefinedVariable */
-        $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use (&$observation): void {
-            if ($element->isSuppressingKVO || $element->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
-            if ($change->newValue !== "Expression") {
-                $element->expressionFormat = null;
-                $element->expressionResultType = AttributeType::undefined;
-            }
-        });
         unset($this->property);
     }
 
@@ -74,6 +64,22 @@ class FetchIndexElement extends ManagedObject
         } else {
             parent::__set($name, $value);
         }
+    }
+
+    #[Override]
+    public function awakeFromFetch(): void
+    {
+        /** @psalm-suppress UndefinedVariable */
+        $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use (&$observation): void {
+            if ($element->isSuppressingKVO || $element->isSuppressingChangeNotifications) {
+                return;
+            }
+            $observation->invalidate();
+            if ($change->newValue !== "Expression") {
+                $element->expressionFormat = null;
+                $element->expressionResultType = AttributeType::undefined;
+            }
+        });
     }
 
     public function validateCollationType(FetchIndexElementType|Number|Nil|int|null &$collationType): bool

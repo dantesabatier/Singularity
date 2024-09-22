@@ -1,25 +1,5 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-/**
- * @param {string} string
- * @param {string} other
- * @returns {number}
- */
-function LocalizedStringCompare(string, other) {
-    return string.localeCompare(other, "es", {sensitivity: "base"})
-}
-
-/**
- * @param {string} string
- * @param {string} other
- * @returns {boolean}
- */
-function StringEqual(string, other) {
-    return LocalizedStringCompare(string, other) === SSComparisonResult.same
-}
-
-const cameCase = (string) => string.replace(/\s(.)/g, $1 => $1.toUpperCase()).replace(/\s/g, "").replace(/^(.)/, $1 => $1.toLowerCase())
-
 const url = (endpoint, parameters) => {
     let url = endpoint
     if (!url.startsWith("/")) {
@@ -40,7 +20,7 @@ const url = (endpoint, parameters) => {
 }
 
 /**
- * @param { string } url
+ * @param {string} url
  */
 const replace = async (url) => {
     try {
@@ -50,6 +30,10 @@ const replace = async (url) => {
             method: "GET",
             headers: headers
         })
+        if (!response.ok) {
+            await window.api.showErrorBox((await response.json())?.error)
+            return
+        }
         const data = await response.text()
         const doc = document.implementation.createHTMLDocument()
         doc.open()
@@ -84,7 +68,7 @@ const replace = async (url) => {
 }
 
 /**
- * @param { string } url
+ * @param {string} url
  */
 const push = async (url) => {
     await replace(url)
@@ -92,9 +76,9 @@ const push = async (url) => {
 }
 
 /**
- * @param { string } action
- * @param { object|undefined } body
- * @param { string } method
+ * @param {string} action
+ * @param {object|undefined} body
+ * @param {string} method
  */
 const send = async (action, body = undefined, method = "POST") => {
     const spinner = document.querySelector(".spinner-border")
@@ -108,6 +92,10 @@ const send = async (action, body = undefined, method = "POST") => {
             headers: headers,
             body: !!body ? JSON.stringify(body, null, 2) : undefined
         })
+        if (!response.ok && response.status !== 204) {
+            await window.api.showErrorBox((await response.json())?.error)
+            return
+        }
         const keys = []
         const json = response.status !== 204 ? await response.json() : undefined
         const location = new URL(window.location)
@@ -179,7 +167,7 @@ const send = async (action, body = undefined, method = "POST") => {
 }
 
 /**
- * @param  { HTMLFormElement } form
+ * @param  {HTMLFormElement} form
  */
 const submit = async (form) => {
     const headers = {}
@@ -205,17 +193,17 @@ const submit = async (form) => {
 }
 
 /**
- * @param { object } project
+ * @param {object} project
  */
 const load = async (project) => await push(url("Editor", {project: project.objectID}))
 
 /**
- * @param { object } project
+ * @param {object} project
  */
 const subclass = async (project) => await send(url("subclass"), {project: project.objectID})
 
 /**
- * @param { object } project
+ * @param {object} project
  * @param {string|undefined} path
  */
 const model = async (project, path) => {
@@ -238,16 +226,46 @@ const create = async () => {
 }
 
 /**
- * @param { string } endpoint
- * @param { object } entity
+ * @param {string} entity
+ * @param {string} name
+ * @param {object} parent
  */
-const add = async (endpoint, entity) => await send(url(endpoint), {
-    name: cameCase(endpoint),
-    entityPropertyID: entity.objectID
-})
+const add = async (entity, name, parent) => {
+    switch (entity) {
+        case "Entity":
+            await send(url(entity), {
+                name: name ?? entity,
+                modelID: parent.objectID
+            })
+            break
+        case "FetchRequestTemplate":
+            await send(url(entity), {
+                name: name,
+                modelID: parent.objectID
+            })
+            break
+        case "Attribute":
+        case "Relationship":
+        case "FetchedProperty":
+        case "FetchIndex":
+            await send(url(entity), {
+                name: name,
+                entityPropertyID: parent.objectID
+            })
+            break
+        case "FetchIndexElement":
+            await send(url(entity), {
+                propertyName: name,
+                indexID: parent.objectID
+            })
+            break
+        default:
+            break
+    }
+}
 
 /**
- * @param { object } item
+ * @param {object} item
  */
 const remove = async (item) => {
     if ((await window.api.showMessageBox(`Remove "${item.name ?? item.propertyName ?? item.stringValue}"?`, "This action cannot be undone.", ["Cancel", "OK"])).response) {

@@ -1,6 +1,6 @@
 {templateType App\Contexts\Editor}
 {define entities, $entities}
-    <ul class="flex-column w-100 px-2">
+    <ul class="flex-column w-100 ps-2">
         {foreach $entities ?? $rootEntities as $entity}
             <li class="text-truncate{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
                 {if !$entity->subentitiesCount}

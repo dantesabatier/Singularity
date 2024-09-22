@@ -76,7 +76,6 @@ const createWindow = () => {
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())
-
 ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(BrowserWindow.fromWebContents(event.sender), {
     ...arg,
     icon: path.join(__dirname, "icon.png")

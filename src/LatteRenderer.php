@@ -6,10 +6,11 @@ namespace App;
 
 use App\Model\Attribute;
 use App\Model\Entity;
+use App\Model\FetchedProperty;
 use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
+use App\Model\FetchRequestTemplate;
 use App\Model\Project;
-use App\Model\Property;
 use App\Model\Relationship;
 use App\Model\UniquenessConstraint;
 use Exception;
@@ -23,6 +24,7 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\SearchPathDirectory;
 use Sabatier\Foundation\SearchPathDomainMask;
 use Sabatier\Service\Renderer;
+use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\human_readable_value;
 use function Sabatier\Foundation\localized_string;
 use function Sabatier\Foundation\substring_to_index;
@@ -46,6 +48,10 @@ class LatteRenderer extends Renderer
             "engine" => (function () {
                 $engine = new Engine();
                 $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
+                /** @psalm-suppress ArgumentTypeCoercion */
+                $engine->addFilter("className", fn(string $value): string => class_name($value));
+                $engine->addFilter("camelCase", fn(string $value): string => preg_replace_callback("/\s(.)/", fn(array $matches) => strtoupper($matches[1]), $value));
+                $engine->addFilter("firstLower", fn(string $value): string => lcfirst($value));
                 /** @psalm-suppress InternalMethod */
                 $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
                 $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
@@ -55,15 +61,16 @@ class LatteRenderer extends Renderer
                     AttributeType::uuid, AttributeType::undefined => $type->name,
                     default => strtoupper(substring_to_index($type->name, 1))
                 };
-                $img = function (Project|Entity|UniquenessConstraint|Property|FetchIndex|FetchIndexElement $e) use (&$img, &$fn): string {
+                $img = function (Project|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate $e) use (&$img, &$fn): string {
                     return match (true) {
                         $e instanceof Project => "P",
                         $e instanceof Entity => "E",
-                        $e instanceof UniquenessConstraint => "U",
                         $e instanceof Attribute => $fn($e->type),
                         $e instanceof Relationship => $e->isToMany ? "M" : "O",
+                        $e instanceof FetchedProperty, $e instanceof FetchRequestTemplate => "F",
                         $e instanceof FetchIndex => "I",
                         $e instanceof FetchIndexElement => ($property = $e->property) ? $img($property) : $fn(AttributeType::undefined),
+                        $e instanceof UniquenessConstraint => "U",
                         default => substring_to_index($e->entity->name, 1)
                     };
                 };

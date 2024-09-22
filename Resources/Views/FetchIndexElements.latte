@@ -1,7 +1,4 @@
-{varType App\Model\Project $project}
-{varType App\Model\Entity $selectedEntity}
-{varType App\Model\FetchIndex $selectedIndex}
-{varType App\Model\FetchIndexElement $selectedIndexElement}
+{templateType App\Contexts\Editor}
 {define fetchIndexElements}
     <table class="table table-sm">
         <thead>
@@ -20,8 +17,7 @@
                     <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
                     <select name="propertyName" id="propertyName" class="form-select form-select-sm  form-select-sm border-0 p-0 w-auto" aria-label="Property" data-autosave="true">
                         <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
-                    </select>
-                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                    </select> <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                 </form>
             </td>
             <td>
@@ -54,15 +50,11 @@
         <tr>
             <td>
                 <div class="d-inline-block">
-                    <button class="btn border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#addFetchIndexElement">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-                        </svg>
+                    <button class="btn border-0 bg-transparent p-2" onclick="add({App\Model\FetchIndexElement::class|className}, {$selectedEntity->attributes->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex->elements->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))?->name}, {$selectedIndex})">
+                        <span class="material-symbols-outlined">add</span>
                     </button>
                     <button class="btn border-0 bg-transparent" onclick="remove({$selectedIndexElement})" {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                        </svg>
+                        <span class="material-symbols-outlined">remove</span>
                     </button>
                 </div>
             </td>
@@ -73,30 +65,4 @@
         </tr>
         </tfoot>
     </table>
-    <div class="modal fade" id="addFetchIndexElement" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addFetchIndexElementLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="addFetchIndexElement" action="/FetchIndexElement" method="POST">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <h5 class="modal-title" id="addFetchIndexElementLabel">Add Fetch Index Element</h5>
-                        </div>
-                        <label for="propertyName" class="form-label">Property</label>
-                        <select name="propertyName" id="propertyName" class="form-select form-select-sm" required>
-                            <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}">{$attributeName}</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer border-0">
-                        <input type="hidden" name="indexID" value="{$selectedIndex->objectID->referenceObject}">
-                        <button type="button" class="btn btn-outline-secondary border-0 bg-transparent text-secondary" data-bs-dismiss="modal">
-                            Cancel
-                        </button>
-                        <button type="submit" class="btn btn-outline-primary border-0 bg-transparent text-primary">
-                            Add
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 {/define}

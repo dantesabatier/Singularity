@@ -1,22 +1,18 @@
-{varType App\Model\Entity $selectedEntity}
-{varType App\Model\FetchIndex $selectedIndex}
-{varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
+{templateType App\Contexts\Editor}
 {define controls}
     <div class="d-inline-block">
         <div class="dropdown d-inline-flex">
             <button type="button" class="btn border-0 bg-transparent p-2 dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
-                </svg>
+                <span class="material-symbols-outlined">add</span>
             </button>
             <ul class="dropdown-menu">
                 <li>
-                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addEntity">
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::class|className}, undefined, {$project->model})">
                         Add Entity
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#addFetchRequest">
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\FetchRequestTemplate::class|className}, {App\Model\FetchRequestTemplate::class|className|firstLower}, {$project->model})">
                         Add Fetch Request
                     </button>
                 </li>
@@ -29,17 +25,17 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li>
-                    <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::class|className}, {App\Model\Attribute::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                         Add Attribute
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::class|className}, {App\Model\FetchedProperty::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                         Add Fetched Property
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::class|className}, {App\Model\Relationship::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                         Add Relationship
                     </button>
                 </li>
@@ -47,7 +43,7 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li>
-                    <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::class|className}, {App\Model\FetchIndex::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                         Add Fetch Index
                     </button>
                 </li>
@@ -55,27 +51,19 @@
         </div>
         {if $selectedIndex}
             <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedIndex})">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                </svg>
+                <span class="material-symbols-outlined">remove</span>
             </button>
         {elseif $selectedEntity}
             <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedEntity})">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                </svg>
+                <span class="material-symbols-outlined">remove</span>
             </button>
         {elseif $selectedFetchRequestTemplate}
             <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedFetchRequestTemplate})">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                </svg>
+                <span class="material-symbols-outlined">remove</span>
             </button>
         {else}
             <button class="btn border-0 bg-transparent p-2" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
-                </svg>
+                <span class="material-symbols-outlined">remove</span>
             </button>
         {/if}
     </div>

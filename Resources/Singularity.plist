@@ -231,7 +231,7 @@
                         <key>isOptional</key>
                         <false/>
                         <key>regex</key>
-                        <string>/^[a-z](?:\w*)?$/</string>
+                        <string>/^[a-zA-Z](?:\w*)?$/</string>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>
@@ -306,8 +306,6 @@
                     <dict>
                         <key>name</key>
                         <string>fetchEntityName</string>
-                        <key>isOptional</key>
-                        <false/>
                         <key>type</key>
                         <integer>700</integer>
                     </dict>

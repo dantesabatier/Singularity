@@ -4,6 +4,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
@@ -35,6 +36,33 @@ class Relationship extends Property
         parent::__construct($managedObjectContext, $entity);
         unset($this->destinationEntity);
         unset($this->inverseRelationship);
+    }
+
+    public function __get(string $name)
+    {
+        if ($name == "destinationEntity") {
+            $this->$name = $this->entityProperty->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);
+            return $this->$name;
+        } elseif ($name == "inverseRelationship") {
+            $this->$name = $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
+            return $this->$name;
+        } else {
+            return parent::__get($name);
+        }
+    }
+
+    public function __set(string $name, mixed $value): void
+    {
+        if ($name == "destinationEntity" || $name == "inverseRelationship") {
+            $this->$name = $value;
+        } else {
+            parent::__set($name, $value);
+        }
+    }
+
+    #[Override]
+    public function awakeFromFetch(): void
+    {
         /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("isToMany", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
             if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
@@ -61,28 +89,6 @@ class Relationship extends Property
             $observation->invalidate();
             $relationship->maxCount = $change->newValue ? $this->maxCount : null;
         });
-    }
-
-    public function __get(string $name)
-    {
-        if ($name == "destinationEntity") {
-            $this->$name = $this->entityProperty->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);
-            return $this->$name;
-        } elseif ($name == "inverseRelationship") {
-            $this->$name = $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
-            return $this->$name;
-        } else {
-            return parent::__get($name);
-        }
-    }
-
-    public function __set(string $name, mixed $value): void
-    {
-        if ($name == "destinationEntity" || $name == "inverseRelationship") {
-            $this->$name = $value;
-        } else {
-            parent::__set($name, $value);
-        }
     }
 
     public function validateDeleteRule(DeleteRule|Number|Nil|int|null &$deleteRule): bool

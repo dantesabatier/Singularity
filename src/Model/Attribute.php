@@ -4,9 +4,8 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\AttributeType;
-use Sabatier\CoreData\EntityDescription;
-use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\ManagedObjectID;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
@@ -37,9 +36,9 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
  */
 class Attribute extends Property
 {
-    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
+    #[Override]
+    public function awakeFromFetch(): void
     {
-        parent::__construct($managedObjectContext, $entity);
         /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
             if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {

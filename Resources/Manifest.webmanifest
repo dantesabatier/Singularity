@@ -1,9 +1,0 @@
-{
-  "name": "Singularity",
-  "short_name": "Singularity",
-  "description": "A set of tools to build web services in a bit.",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#121212",
-  "theme_color": "#272727"
-}
