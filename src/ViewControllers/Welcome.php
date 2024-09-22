@@ -132,7 +132,6 @@ class Welcome extends ViewController
     public function create(): void
     {
         $body = $this->request->getParsedBody();
-        /** @var string|null $path */
         $path = $body["path"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
         $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
@@ -259,7 +258,6 @@ class Welcome extends ViewController
     public function remove(): void
     {
         $body = $this->request->getParsedBody();
-        /** @var int|null $path */
         $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
         $context = $this->managedObjectContext;
         $fetchRequest = Project::fetchRequest();
