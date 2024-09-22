@@ -10,6 +10,7 @@ use App\Model\FetchedProperty;
 use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
 use App\Model\FetchRequestTemplate;
+use App\Model\Model;
 use App\Model\Project;
 use App\Model\Property;
 use App\Model\Relationship;
@@ -377,10 +378,11 @@ class Editor extends ViewController
     #[Action]
     public function save(): void
     {
-        /** @psalm-suppress NullPropertyFetch */
-        if (!($project = $this->project) || !($url = $project->url) || !($model = $project->model)) {
-            return;
-        }
+        $project = $this->project ?? throw new NotFoundException();
+        /** @var URL $url */
+        $url = $project->url;
+        /** @var Model $model */
+        $model = $project->model;
         $fileManager = FileManager::default();
         $bundle = Bundle::bundleWithURL($url);
         $resourceURL = $bundle->bundleURL->appendingPathComponent("Resources");
@@ -404,14 +406,10 @@ class Editor extends ViewController
     public function import(): void
     {
         $body = $this->request->getParsedBody();
-        /** @var string|null $path */
-        $path = $body["path"] ?? null;
-        if (!$path) {
-            return;
-        }
-        if (!($model = $this->project?->model)) {
-            fatal_error("Project model not found");
-        }
+        $path = $body["path"] ?? throw new NotFoundException();
+        $project = $this->project ?? throw new NotFoundException();
+        /** @var Model $model */
+        $model = $project->model;
         $model->load(URL::fileURL($path));
     }
 
@@ -421,9 +419,11 @@ class Editor extends ViewController
     #[Action]
     public function subclass(): void
     {
-        if (!($url = $this->project?->url) || !($model = $this->project?->model)) {
-            return;
-        }
+        $project = $this->project ?? throw new NotFoundException();
+        /** @var URL $url */
+        $url = $project->url;
+        /** @var Model $model */
+        $model = $project->model;
         $directory = "Model";
         $bundle = Bundle::bundleWithURL($url);
         $principalClass = $bundle->principalClass ?? fatal_error("Unable to load the application principal class");
