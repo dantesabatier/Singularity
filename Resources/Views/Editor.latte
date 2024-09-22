@@ -44,12 +44,12 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::class|className}, undefined, {$project->model})">
+                                <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, undefined, {$project->model})">
                                     Add Entity
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchRequestTemplate::class|className}, {App\Model\FetchRequestTemplate::class|className|firstLower}, {$project->model})">
+                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model})">
                                     Add Fetch Request
                                 </button>
                             </li>
@@ -62,17 +62,17 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::class|className}, {App\Model\Attribute::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                     Add Attribute
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::class|className}, {App\Model\FetchedProperty::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                     Add Fetched Property
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::class|className}, {App\Model\Relationship::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                     Add Relationship
                                 </button>
                             </li>
@@ -80,7 +80,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::class|className}, {App\Model\FetchIndex::class|className|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                                     Add Fetch Index
                                 </button>
                             </li>
