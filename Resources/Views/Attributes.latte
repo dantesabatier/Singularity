@@ -39,7 +39,7 @@
         <tr>
             <td>
                 <div class="d-inline-block">
-                    <button class="btn border-0 bg-transparent p-2" onclick="add({App\Model\Attribute::class|className}, {App\Model\Attribute::class|className|firstLower}, {$selectedEntity})">
+                    <button class="btn border-0 bg-transparent p-2" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity})">
                         <span class="material-symbols-outlined small">add</span>
                     </button>
                     <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
