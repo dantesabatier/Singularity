@@ -16,7 +16,7 @@ ul {
     --bs-table-active-bg: rgba(0, 0, 0, 0.11);
     --bs-table-active-color: var(--bs-table-active-bg);
     --bs-table-hover-color: white;
-    --bs-table-hover-bg: var(--bs-table-active-color);
+    --bs-table-hover-bg: var(--bs-primary);
 }
 
 .table-active {
@@ -26,6 +26,17 @@ ul {
 
 .table-sm > :not(caption) > * > * {
     font-size: .875rem;
+}
+
+.list-group {
+    --bs-list-group-action-hover-bg: var(--bs-primary);
+}
+
+.list-group-item {
+    background-color: inherit;
+}
+
+.form-select {
 }
 
 .btn-back {
@@ -44,7 +55,7 @@ ul {
 
 .btn-toggle:hover,
 .btn-toggle:focus {
-    color: rgba(255, 255, 255, 0.16);
+    color: var(--bs-primary);
 }
 
 .btn-toggle::before {
@@ -73,7 +84,7 @@ ul {
 }
 
 .selected {
-    background-color: rgba(0, 0, 0, 0.11);
+    background-color: var(--bs-primary);
     border-radius: 6px;
 }
 

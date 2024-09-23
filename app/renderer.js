@@ -195,7 +195,13 @@ const submit = async (form) => {
 /**
  * @param {object} project
  */
-const load = async (project) => window.open(url("Editor", {project: project.objectID}), "_blank", "popup=true, noopener, noreferrer, width=1090, height=600")
+const load = async (project) => window.api.showWindow({
+    url: `${window.location.origin}${url("Editor", {project: project.objectID})}`,
+    overrideBrowserWindowOptions: {
+        width: 1090,
+        height: 600
+    }
+})
 
 /**
  * @param {object} project
@@ -279,6 +285,13 @@ const remove = async (item) => {
 }
 
 // noinspection SpellCheckingInspection
-const showPreferences = () => window.open(url("Preferences"), "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
+const showPreferences = () => window.api.showWindow({
+    url: `${window.location.origin}${url("Preferences")}`,
+    overrideBrowserWindowOptions: {
+        width: 600,
+        height: 400,
+        modal: true
+    }
+})
 const showAboutPanel = (options) => window.api.showAboutPanel(options)
 const setProgressBar = (progress) => window.api.setProgressBar(progress)

@@ -8,7 +8,7 @@
                 <div class="scroll-view col-sm-7 overflow-auto vh-100">
                     <div class="container-fluid">
                         <h2 class="text-wrap-word">Welcome to {$title}</h2>
-                        <button class="list-group-item list-group-item-action text-primary border-0 text-truncate" onclick="create()">
+                        <button class="text-primary text-truncate border-0 bg-transparent" onclick="create()">
                             Create a new project
                         </button>
                     </div>
@@ -16,7 +16,7 @@
                 <div class="scroll-view col-sm-5 overflow-auto bg-dark-subtle vh-100">
                     {if !$projects->isEmpty}
                         <ol class="list-group bg-dark-subtle">
-                            <li n:foreach="$projects as $project" class="list-group-item display-block rounded-0 border-0 bg-dark-subtle">
+                            <li n:foreach="$projects as $project" class="list-group-item list-group-item-action display-block border-0 rounded">
                                 <div class="row">
                                     <div class="col-sm-9 cursor-pointer" onclick="load({$project})">
                                         <div class="d-flex">

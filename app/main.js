@@ -46,20 +46,20 @@ if (handleSquirrelEvent()) {
 }
 
 Menu.setApplicationMenu(null)
+const options = {
+    webPreferences: {
+        webSecurity: false,
+        allowRunningInsecureContent: true,
+        nodeIntegration: true,
+        contextIsolation: true,
+        experimentalFeatures: true,
+        enableBlinkFeatures: "CSSColorSchemeUARendering, OverlayScrollbars, FluentOverlayScrollbars, ElasticOverscrollWin",
+        preload: path.join(__dirname, "preload.js")
+    },
+    darkTheme: true,
+    backgroundColor: "#272b2f",
+}
 const createWindow = () => {
-    const options = {
-        webPreferences: {
-            webSecurity: false,
-            allowRunningInsecureContent: true,
-            nodeIntegration: true,
-            contextIsolation: true,
-            experimentalFeatures: true,
-            enableBlinkFeatures: "CSSColorSchemeUARendering, OverlayScrollbars, FluentOverlayScrollbars, ElasticOverscrollWin",
-            preload: path.join(__dirname, "preload.js")
-        },
-        darkTheme: true,
-        backgroundColor: "#272b2f",
-    }
     const window = new BrowserWindow({
         ...options,
         width: 600,
@@ -77,6 +77,17 @@ const createWindow = () => {
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())
+ipcMain.on("showWindow", (event, arg) => {
+    const window = new BrowserWindow({
+        ...options,
+        ...arg.overrideBrowserWindowOptions,
+        parent: arg.overrideBrowserWindowOptions?.modal ? BrowserWindow.fromWebContents(event.sender) : undefined,
+        show: false
+    })
+    window.on("ready-to-show", () => window.show())
+    // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
+    window.loadURL(arg.url)
+})
 ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(BrowserWindow.fromWebContents(event.sender), {
     ...arg,
     icon: path.join(__dirname, "icon.png")
@@ -110,7 +121,7 @@ ipcMain.handle("showErrorBox", async (event, error) => {
     return dialog.showErrorBox(title, content)
 })
 ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
-ipcMain.on("showAboutPanel", (event, arg) => {
+ipcMain.on("showAboutPanel", async (event, arg) => {
     app.setAboutPanelOptions({
         ...arg,
         iconPath: path.join(__dirname, "icon.png")
