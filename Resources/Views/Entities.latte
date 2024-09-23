@@ -1,26 +1,24 @@
 {templateType App\Contexts\Editor}
 {define entities, $entities}
-    <ul class="flex-column w-100 ps-2">
-        <li n:foreach="$entities ?? $rootEntities as $entity" class="text-truncate{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
-            <button n:if="$entity->subentitiesCount" class="btn btn-toggle bg-transparent ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
-            </button>
-            <span n:else class="space"></span>
-            <img class="ps-2" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
-            <span id="entity-{$entity->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">{$entity->name}</span>
-            <ul n:if="$entity->indexesCount" class="flex-column w-100">
-                {foreach $entity->indexes as $index}
-                    <li class="text-truncate{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' selected'}">
-                        <span class="space"></span>
-                        <img class="ps-2" src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="">
-                        <span id="index-{$index->objectID->referenceObject}" class="nav-toggle{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
-                                    {$index->name}
-                                </span>
-                    </li>
-                {/foreach}
-            </ul>
+    <div class="flex-column w-100 ps-{$entities ? 2 : 0}">
+        <div n:foreach="$entities ?? $rootEntities as $entity">
+            <div class="nav-item {$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'} text-truncate" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                <button n:if="$entity->subentitiesCount" class="btn btn-toggle ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
+                </button>
+                <span n:else class="space"></span>
+                <img class="p-2" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
+                <span>{$entity->name}</span>
+            </div>
+            <div n:if="$entity->indexesCount" class="flex-column w-100 ps-2">
+                <div n:foreach="$entity->indexes as $index" class="nav-item {$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'} text-truncate" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
+                    <span class="space"></span>
+                    <img class="p-2" src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="">
+                    <span>{$index->name}</span>
+                </div>
+            </div>
             <div n:if="$entity->subentitiesCount" class="collapse show" id="{$entity->name}">
                 {include entities, $entity->subentities}
             </div>
-        </li>
-    </ul>
+        </div>
+    </div>
 {/define}
