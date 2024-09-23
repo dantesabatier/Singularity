@@ -1,6 +1,6 @@
 {layout "Layout.latte"}
 {templateType App\Contexts\Editor}
-{block title}{$title}{/block}
+{block title}{$project?->name}{/block}
 {block content}
     <div id="main">
         <div class="container-fluid d-flex flex-column">
