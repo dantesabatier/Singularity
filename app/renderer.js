@@ -279,6 +279,6 @@ const remove = async (item) => {
 }
 
 // noinspection SpellCheckingInspection
-const showPreferences = () => window.open("/Preferences", "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
+const showPreferences = () => window.open(url("Preferences"), "_blank", "popup=true, noopener, noreferrer, width=600, height=400")
 const showAboutPanel = (options) => window.api.showAboutPanel(options)
 const setProgressBar = (progress) => window.api.setProgressBar(progress)
