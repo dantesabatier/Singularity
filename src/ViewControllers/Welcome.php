@@ -119,6 +119,7 @@ class Welcome extends ViewController
         $fetchRequest->propertiesToFetch = new ArrayClass(["name", "url"]);
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
         $this->projects = $this->managedObjectContext->fetch($fetchRequest);
+        $this->title = $this->bundle->object(kCFBundleNameKey);
     }
 
     /**
