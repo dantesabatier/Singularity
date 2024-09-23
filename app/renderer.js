@@ -293,5 +293,13 @@ const showPreferences = () => window.api.showWindow({
         modal: true
     }
 })
-const showAboutPanel = (options) => window.api.showAboutPanel(options)
+const showAboutPanel = () => window.api.showWindow({
+    url: `${window.location.origin}${url("About")}`,
+    overrideBrowserWindowOptions: {
+        width: 380,
+        height: 220,
+        modal: true,
+        frame: false
+    }
+})
 const setProgressBar = (progress) => window.api.setProgressBar(progress)

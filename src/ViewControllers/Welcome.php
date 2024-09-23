@@ -39,7 +39,6 @@ use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDevelopmentRegionKey;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleExecutableKey;
-use const Sabatier\Foundation\kCFBundleHumanReadableCopyright;
 use const Sabatier\Foundation\kCFBundleIdentifierKey;
 use const Sabatier\Foundation\kCFBundleLocalizationsKey;
 use const Sabatier\Foundation\kCFBundleNameKey;
@@ -55,8 +54,6 @@ class Welcome extends ViewController
     /** @var ArrayClass<Project> */
     #[Outlet]
     public readonly ArrayClass $projects;
-    #[Outlet]
-    public array $about = [];
 
     private function generateDelegateClass(string $class, string $namespace): string
     {
@@ -122,7 +119,6 @@ class Welcome extends ViewController
         $fetchRequest->propertiesToFetch = new ArrayClass(["name", "url"]);
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
         $this->projects = $this->managedObjectContext->fetch($fetchRequest);
-        $this->about = ["applicationName" => $this->title, "applicationVersion" => $this->bundle->object(kCFBundleVersionKey), "copyright" => $this->bundle->object(kCFBundleHumanReadableCopyright), "version" => $this->bundle->object(kCFBundleShortVersionStringKey)];
     }
 
     /**
