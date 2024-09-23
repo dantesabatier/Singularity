@@ -73,7 +73,6 @@ const createWindow = () => {
     }))
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     window.loadURL("http://localhost:8000")
-    //window.maximize()
 }
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
