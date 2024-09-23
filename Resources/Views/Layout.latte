@@ -43,7 +43,14 @@
                 once: true
             })
         })
-        document.querySelectorAll("span[data-href]").forEach(e => e.addEventListener("click", async () => await push(window.location.origin + e.dataset.href), {
+        document.querySelectorAll(".btn-toggle").forEach(e => {
+            e.addEventListener("click", async event => {
+                event.stopPropagation()
+            }, {
+                once: true
+            })
+        })
+        document.querySelectorAll("div[data-href]").forEach(e => e.addEventListener("click", async () => await push(window.location.origin + e.dataset.href), {
             once: true
         }))
         document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => await push(window.location.origin + e.dataset.href), {
