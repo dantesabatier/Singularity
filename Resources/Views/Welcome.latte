@@ -2,64 +2,68 @@
 {templateType App\Contexts\Welcome}
 {block title}{$title}{/block}
 {block content}
-    <div id="main" class="container-fluid min-vh-100 d-flex flex-column user-select-none">
-        <div class="row flex-grow-1 justify-content-center">
-            <div class="ratio ratio-16x9 w-50 h-25 align-self-center">
-                <div class="card" style="min-height: 380px">
-                    <div class="card-header">
-                        <button class="btn border-0 bg-transparent" type="button" onclick="showAboutPanel({$info})">
-                            {$title}
+    <div id="main">
+        <div class="container-fluid d-flex flex-column">
+            <div class="row flex-grow-1">
+                <div class="scroll-view col-sm-7 overflow-auto vh-100">
+                    <div class="container-fluid">
+                        <h2 class="text-wrap-word">Welcome to {$title}</h2>
+                        <button class="list-group-item list-group-item-action text-primary border-0 text-truncate" onclick="create()">
+                            Create a new project
                         </button>
-                        <div class="spinner-border spinner-border-sm text-primary float-end" role="status" hidden>
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-sm-6 border-end">
-                                    <h2 class="text-wrap-word">Welcome to {$title}</h2>
-                                    <button class="list-group-item list-group-item-action text-primary border-0 text-truncate" onclick="create()">
-                                        Create a new project
-                                    </button>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="overflow-auto border rounded" style="height: 236px">
-                                        {if !$projects->isEmpty}
-                                            <ol class="list-group">
-                                                <li n:foreach="$projects as $project" class="list-group-item display-block rounded-0 border-0 border-bottom">
-                                                    <div class="row">
-                                                        <div class="col-sm-9 cursor-pointer" onclick="load({$project})">
-                                                            <div class="d-flex">
-                                                                <span class="material-symbols-outlined d-inline">deployed_code</span>
-                                                                <span class="fw-bold d-inline">{$project->name}</span>
-                                                            </div>
-                                                            <div class="d-block text-truncate">{$project->url->path}</div>
-                                                        </div>
-                                                        <div class="col-sm-3">
-                                                            <div class="d-flex align-items-end">
-                                                                <button class="btn border-0 bg-transparent d-inline" onclick="remove({$project})">
-                                                                    <span class="material-symbols-outlined small">cancel</span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ol>
-                                        {else}
-                                            No Recent Projects
-                                        {/if}
+                </div>
+                <div class="scroll-view col-sm-5 overflow-auto bg-dark-subtle vh-100">
+                    {if !$projects->isEmpty}
+                        <ol class="list-group bg-dark-subtle">
+                            <li n:foreach="$projects as $project" class="list-group-item display-block rounded-0 border-0 bg-dark-subtle">
+                                <div class="row">
+                                    <div class="col-sm-9 cursor-pointer" onclick="load({$project})">
+                                        <div class="d-flex">
+                                            <span class="material-symbols-outlined d-inline">deployed_code</span>
+                                            <span class="fw-bold d-inline">{$project->name}</span>
+                                        </div>
+                                        <small class="d-block text-truncate text-muted">{$project->url->path}</small>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="d-flex align-items-end">
+                                            <button class="btn border-0 bg-transparent d-inline" onclick="remove({$project})">
+                                                <span class="material-symbols-outlined small">cancel</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn border-0 bg-transparent" onclick="showPreferences()">
-                            <span class="material-symbols-outlined">
-                                settings
-                            </span>
+                            </li>
+                        </ol>
+                    {else}
+                        No Recent Projects
+                    {/if}
+                </div>
+            </div>
+            <div class="row fixed-bottom" style="height: 40px;">
+                <div class="d-inline-block">
+                    <div class="dropdown d-inline-flex">
+                        <button type="button" class="btn border-0 bg-transparent dropdown p-2" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="material-symbols-outlined small">settings</span>
                         </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <button class="dropdown-item" type="button" onclick="showAboutPanel({$about})">
+                                    About
+                                </button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button class="btn border-0 bg-transparent" onclick="showPreferences()">
+                                    Preferences...
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="spinner-border spinner-border-sm text-primary" role="status" hidden>
+                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
             </div>

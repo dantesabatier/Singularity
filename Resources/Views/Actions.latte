@@ -1,0 +1,30 @@
+{templateType App\Contexts\Editor}
+{define actions}
+    <div class="d-inline-block">
+        <div class="spinner-border spinner-border-sm text-primary" role="status" hidden>
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="dropdown d-inline-flex">
+            <button type="button" class="btn border-0 bg-transparent dropdown p-2" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="material-symbols-outlined small">more_vert</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <button class="dropdown-item" onclick="save({$project})">
+                        Save
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" onclick="subclass({$project})">
+                        Create ManagedObject Subclass...
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" onclick="model({$project->model?->url})">
+                        Import...
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+{/define}

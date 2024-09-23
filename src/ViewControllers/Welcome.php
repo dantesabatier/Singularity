@@ -56,7 +56,7 @@ class Welcome extends ViewController
     #[Outlet]
     public readonly ArrayClass $projects;
     #[Outlet]
-    public array $info = [];
+    public array $about = [];
 
     private function generateDelegateClass(string $class, string $namespace): string
     {
@@ -122,7 +122,7 @@ class Welcome extends ViewController
         $fetchRequest->propertiesToFetch = new ArrayClass(["name", "url"]);
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
         $this->projects = $this->managedObjectContext->fetch($fetchRequest);
-        $this->info = ["applicationName" => $this->title, "applicationVersion" => $this->bundle->object(kCFBundleVersionKey), "copyright" => $this->bundle->object(kCFBundleHumanReadableCopyright), "version" => $this->bundle->object(kCFBundleShortVersionStringKey)];
+        $this->about = ["applicationName" => $this->title, "applicationVersion" => $this->bundle->object(kCFBundleVersionKey), "copyright" => $this->bundle->object(kCFBundleHumanReadableCopyright), "version" => $this->bundle->object(kCFBundleShortVersionStringKey)];
     }
 
     /**

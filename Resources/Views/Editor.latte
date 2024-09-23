@@ -3,116 +3,15 @@
 {block title}{$project?->name} - {$title}{/block}
 {block content}
     <div id="main">
-        <nav class="navbar navbar-expand-sm fixed-top border-bottom py-0" style="height: 56px">
-            <div class="container-fluid">
-                <div class="btn-group">
-                    <button class="btn btn-sm btn-back border-0 bg-transparent px-2" onclick="history.back()">
-                        <span class="material-symbols-outlined small">arrow_back_ios</span> <span>Back</span>
-                    </button>
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-sm border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            {$project?->name}
-                        </button>
-                        <ul class="dropdown-menu">
-                            {foreach $projects as $i => $e}
-                                <li>
-                                    <button class="dropdown-item" type="button" onclick="load({$e})">{$e->name}</button>
-                                </li>
-                                <li n:if="$projects->count > 1 && $i === 0">
-                                    <hr class="dropdown-divider">
-                                </li>
-                            {/foreach}
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <form class="d-flex" action="/Save" method="POST">
-                                    <input type="hidden" name="project" value="{$project?->objectID?->referenceObject}">
-                                    <button class="dropdown-item" type="submit">
-                                        Save
-                                    </button>
-                                </form>
-                            </li>
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="push('/')">Close</button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-sm border-0 bg-transparent p-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            Editor
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, undefined, {$project->model})">
-                                    Add Entity
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model})">
-                                    Add Fetch Request
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item" disabled>
-                                    Add Configuration
-                                </button>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                    Add Attribute
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                    Add Fetched Property
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                    Add Relationship
-                                </button>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
-                                    Add Fetch Index
-                                </button>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <button class="dropdown-item" onclick="subclass({$project})">
-                                    Create ManagedObject Subclass...
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item" onclick="model({$project}, {$project->model?->url?->deletingLastPathComponent()?->path})">
-                                    Import...
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="spinner-border spinner-border-sm text-primary float-end" role="status" hidden>
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        </nav>
-        <div class="container-fluid d-flex flex-column p-0">
-            <div class="row flex-grow-1" style="padding-top: 56px;">
-                <nav class="border-bottom small py-0" aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>';height: 36px">
-                    <ol class="breadcrumb mt-1 ms-2" style="height: 24px">
+        <div class="container-fluid d-flex flex-column">
+            <div class="row flex-grow-1">
+                <nav class="border-bottom border-black py-0" aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>'; height: 42px">
+                    <ol class="breadcrumb mt-1 ms-2">
                         <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
                             {var string $img = img($item)}
                             {if $img}
-                                <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">{/if}
+                                <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            {/if}
                             {switch true}
                                 {case $item instanceof App\Model\Project}
                                 <span class="nav-toggle" data-href="/Editor?project={$item->objectID->referenceObject}">{$item->name}</span>
@@ -132,23 +31,24 @@
                         </li>
                     </ol>
                 </nav>
-                <div id="source" class="scroll-view col-sm-3 border-end overflow-auto px-0" style="height: 85vh;">
+                <div id="source" class="scroll-view col-sm-3 overflow-auto border-end border-black" style="height: 100vh;">
                     {include sourceList from "SourceList.latte"}
                 </div>
-                <div id="content" class="scroll-view col-sm-6 overflow-auto" style="height: 85vh;">
+                <div id="content" class="scroll-view col-sm-6 overflow-auto" style="height: 100vh;">
                     {include content from "Content.latte"}
                 </div>
-                <div id="sidebar" class="scroll-view col-sm-3 border-start overflow-auto" style="height: 85vh;">
+                <div id="sidebar" class="scroll-view col-sm-3 overflow-auto border-start border-black" style="height: 100vh;">
                     {include inspector from "Inspector.latte"}
                 </div>
             </div>
-            <div class="row border-top" style="height: 40px;">
+            <div class="row fixed-bottom border-top border-black" style="height: 40px;">
                 <div class="col-sm-3">
                     {include controls from "Controls.latte"}
                 </div>
                 <div class="col-sm-6">
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 text-end">
+                    {include actions from "Actions.latte"}
                 </div>
             </div>
         </div>

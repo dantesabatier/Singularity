@@ -195,7 +195,12 @@ const submit = async (form) => {
 /**
  * @param {object} project
  */
-const load = async (project) => await push(url("Editor", {project: project.objectID}))
+const load = async (project) => window.open(url("Editor", {project: project.objectID}), "_blank", "popup=true, noopener, noreferrer, width=1090, height=600")
+
+/**
+ * @param {object} project
+ */
+const save = async (project) => await send(url("Save"), {project: project.objectID})
 
 /**
  * @param {object} project

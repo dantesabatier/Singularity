@@ -12,7 +12,7 @@ use App\Model\UniquenessConstraint;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 
-class Editor
+readonly class Editor
 {
     /**
      * @param string $title

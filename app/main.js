@@ -47,31 +47,33 @@ if (handleSquirrelEvent()) {
 
 Menu.setApplicationMenu(null)
 const createWindow = () => {
-    const window = new BrowserWindow({
-        minWidth: 1070,
-        minHeight: 600,
+    const options = {
         webPreferences: {
             webSecurity: false,
             allowRunningInsecureContent: true,
             nodeIntegration: true,
             contextIsolation: true,
+            experimentalFeatures: true,
             enableBlinkFeatures: "CSSColorSchemeUARendering, OverlayScrollbars, FluentOverlayScrollbars, ElasticOverscrollWin",
             preload: path.join(__dirname, "preload.js")
         },
         darkTheme: true,
-        backgroundColor: "#272727"
+        backgroundColor: "#272b2f",
+    }
+    const window = new BrowserWindow({
+        ...options,
+        width: 600,
+        height: 480,
     })
-    window.webContents.setWindowOpenHandler(({url}) =>
-        url.endsWith("Preferences") ? {
-            action: "allow",
-            overrideBrowserWindowOptions: {
-                darkTheme: true,
-                backgroundColor: "#272727"
-            }
-        } : {action: "deny"})
+    window.webContents.setWindowOpenHandler(() => ({
+        action: "allow",
+        overrideBrowserWindowOptions: {
+            ...options
+        }
+    }))
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     window.loadURL("http://localhost:8000")
-    window.maximize()
+    //window.maximize()
 }
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())

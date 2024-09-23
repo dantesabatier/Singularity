@@ -1,9 +1,6 @@
 {layout "Layout.latte"}
-{varType string $title}
-{varType string $companyName}
-{varType bool $automaticallyDeleteProjectFolders}
-{varType bool $automaticallySaveModel}
-{block title}Preferences - {$title}{/block}
+{templateType App\Contexts\Preferences}
+{block title}{$title}{/block}
 {block content}
     <div id="content" class="container-fluid user-select-none">
         <div class="card border-0 h-100">
@@ -21,8 +18,7 @@
                         <input class="form-check-input" type="checkbox" name="AutomaticallySaveModel" id="AutomaticallySaveModel" value="{$automaticallySaveModel}" {$automaticallySaveModel ? checked}>
                     </div>
                     <div class="form-check form-control-sm">
-                        <label class="form-check-label" for="AutomaticallyDeleteProjectFolders">Deleting a project also
-                            deletes its folder</label>
+                        <label class="form-check-label" for="AutomaticallyDeleteProjectFolders">Deleting a project also deletes its folder</label>
                         <input class="form-check-input" type="checkbox" name="AutomaticallyDeleteProjectFolders" id="AutomaticallyDeleteProjectFolders" value="{$automaticallyDeleteProjectFolders}" {$automaticallyDeleteProjectFolders ? checked}>
                     </div>
                     <input class="d-none" type="submit">
