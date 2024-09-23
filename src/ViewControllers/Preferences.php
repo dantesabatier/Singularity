@@ -25,7 +25,6 @@ class Preferences extends ViewController
     #[Override]
     public function viewWillLoad(): void
     {
-        $this->title = "Preferences";
         $this->companyName = UserDefaults::standard()->string(CompanyNameKey);
         $this->automaticallyDeleteProjectFolders = UserDefaults::standard()->bool(AutomaticallyDeleteProjectFolders);
         $this->automaticallySaveModel = UserDefaults::standard()->bool(AutomaticallySaveModel);
