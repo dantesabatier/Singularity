@@ -31,7 +31,7 @@ const replace = async (url) => {
             headers: headers
         })
         if (!response.ok) {
-            await window.api.showErrorBox((await response.json())?.error)
+            showErrorBox((await response.json())?.error)
             return
         }
         const data = await response.text()
@@ -59,11 +59,7 @@ const replace = async (url) => {
         }
         register()
     } catch (e) {
-        if (window.hasOwnProperty("api")) {
-            await window.api.showErrorBox(e)
-        } else {
-            console.error(e)
-        }
+        showErrorBox(e)
     }
 }
 
@@ -81,19 +77,18 @@ const push = async (url) => {
  * @param {string} method
  */
 const send = async (action, body = undefined, method = "POST") => {
-    const spinner = document.querySelector(".spinner-border")
     try {
+        setProgressBar(1.1)
         const headers = {}
         headers["X-Requested-With"] = "XmlHttpRequest"
         headers["Content-Type"] = "application/json; charset=utf-8"
-        spinner.hidden = false
         const response = await fetch(action, {
             method: method,
             headers: headers,
             body: !!body ? JSON.stringify(body, null, 2) : undefined
         })
         if (!response.ok && response.status !== 204) {
-            await window.api.showErrorBox((await response.json())?.error)
+            showErrorBox((await response.json())?.error)
             return
         }
         const keys = []
@@ -156,13 +151,9 @@ const send = async (action, body = undefined, method = "POST") => {
         }
         await push(location.href)
     } catch (e) {
-        if (window.hasOwnProperty("api")) {
-            await window.api.showErrorBox(e)
-        } else {
-            console.error(e)
-        }
+        showErrorBox(e)
     } finally {
-        spinner.hidden = true
+        setProgressBar(-1)
     }
 }
 
@@ -283,8 +274,8 @@ const remove = async (item) => {
         await send(url(item.entityName), {objectID: item.objectID}, "DELETE")
     }
 }
-
-// noinspection SpellCheckingInspection
+const showMessageBox = (messageText, informativeText, buttons) => window.api.showMessageBox(messageText, informativeText, buttons)
+const showErrorBox = (error) => window.api.showErrorBox(error)
 const showPreferences = () => window.api.showWindow({
     url: `${window.location.origin}${url("Preferences")}`,
     overrideBrowserWindowOptions: {
