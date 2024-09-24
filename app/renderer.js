@@ -274,8 +274,19 @@ const remove = async (item) => {
         await send(url(item.entityName), {objectID: item.objectID}, "DELETE")
     }
 }
+
+/**
+ * @param {string} messageText
+ * @param {string} informativeText
+ * @param {string[]} buttons
+ */
 const showMessageBox = (messageText, informativeText, buttons) => window.api.showMessageBox(messageText, informativeText, buttons)
+
+/**
+ * @param {object} error
+ */
 const showErrorBox = (error) => window.api.showErrorBox(error)
+
 const showPreferences = () => window.api.showWindow({
     url: `${window.location.origin}${url("Preferences")}`,
     overrideBrowserWindowOptions: {
@@ -284,6 +295,7 @@ const showPreferences = () => window.api.showWindow({
         modal: true
     }
 })
+
 const showAboutPanel = () => window.api.showWindow({
     url: `${window.location.origin}${url("About")}`,
     overrideBrowserWindowOptions: {
@@ -293,4 +305,8 @@ const showAboutPanel = () => window.api.showWindow({
         frame: false
     }
 })
+
+/**
+ * @param {number} progress
+ */
 const setProgressBar = (progress) => window.api.setProgressBar(progress)
