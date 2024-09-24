@@ -91,8 +91,7 @@
                     <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control form-control-sm text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
         <div class="modal fade" id="addUniquenessConstraint" tabindex="-1" aria-labelledby="addUniquenessConstraintLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -104,10 +103,12 @@
                             </div>
                             <div class="mb-3">
                                 <label for="stringValue" class="form-label">Name</label>
-                                <input type="text" name="stringValue" id="stringValue" class="form-control form-control-sm" required>
-                                <div class="invalid-feedback">
-                                    Please provide a valid name.
-                                </div>
+                                <select name="stringValue" id="stringValue" class="form-select form-select-sm" data-autosave="true" required>
+                                    {var $attributeNames = $selectedEntity->allAttributeNames->dropLast(1)}
+                                    <option n:foreach="$attributeNames as $attributeName" value="{$attributeName}">
+                                        {$attributeName}
+                                    </option>
+                                </select>
                             </div>
                         </div>
                         <input type="hidden" name="entityPropertyID" value="{$selectedEntity?->objectID?->referenceObject}">
