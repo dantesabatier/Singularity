@@ -1,68 +1,70 @@
 {templateType App\Contexts\Editor}
 {define fetchIndexElements}
-    <table class="table table-sm">
-        <thead>
-        <tr>
-            <th scope="col" class="col-sm-2 text-shadow">Property</th>
-            <th scope="col" class="col-sm-2 text-shadow">Type</th>
-            <th scope="col" class="col-sm-2 text-shadow">Expression</th>
-            <th scope="col" class="col-sm-2 text-shadow">Ascending</th>
-            <th scope="col" class="col-sm-4 text-shadow"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
-            <td>
-                <form action="/FetchIndexElement" method="POST">
-                    <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
-                    <select name="propertyName" id="propertyName" class="form-select form-select-sm  form-select-sm border-0 py-0 w-auto" aria-label="Property" data-autosave="true">
-                        <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
-                    </select> <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                </form>
-            </td>
-            <td>
-                <form action="/FetchIndexElement" method="POST">
-                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                    <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
-                    <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm bg-transparent border-0 py-0 w-auto" aria-label="expressionResultType" data-autosave="true" {$element->propertyName !== "Expression" ? disabled}>
-                        {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
-                        <option n:foreach="$types as $key => $value" value="{$key}" {$key === $element->expressionResultType->value ? selected}>
-                            {$value}
-                        </option>
-                    </select>
-                </form>
-            </td>
-            <td>
-                {$element->expressionFormat}
-            </td>
-            <td>
-                <form action="/FetchIndexElement" method="POST">
-                    <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
-                    <input type="hidden" name="propertyName" value="{$element->propertyName}">
-                    <input class="form-check-input" type="checkbox" name="isAscending" value="{$element->isAscending}" id="isAscending" aria-label="Ascending" {$element->isAscending ? checked}>
-                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                </form>
-            </td>
-            <td></td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td>
-                <div class="d-inline-block">
-                    <button class="btn icon p-2" onclick="add({App\Model\FetchIndexElement::entity()->name}, {$selectedEntity->attributes->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex->elements->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))?->name}, {$selectedIndex})">
-                        <span class="material-symbols-outlined small">add</span>
-                    </button>
-                    <button class="btn icon" onclick="remove({$selectedIndexElement})" {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
-                        <span class="material-symbols-outlined small">remove</span>
-                    </button>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tfoot>
-    </table>
+   <div class="table-responsive">
+       <table class="table table-sm">
+           <thead>
+           <tr>
+               <th scope="col" class="col-sm-2 text-shadow">Property</th>
+               <th scope="col" class="col-sm-2 text-shadow">Type</th>
+               <th scope="col" class="col-sm-2 text-shadow">Expression</th>
+               <th scope="col" class="col-sm-2 text-shadow">Ascending</th>
+               <th scope="col" class="col-sm-4 text-shadow"></th>
+           </tr>
+           </thead>
+           <tbody>
+           <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
+               <td>
+                   <form action="/FetchIndexElement" method="POST">
+                       <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                       <select name="propertyName" id="propertyName" class="form-select form-select-sm  form-select-sm border-0 py-0 w-auto" aria-label="Property" data-autosave="true">
+                           <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
+                       </select> <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                   </form>
+               </td>
+               <td>
+                   <form action="/FetchIndexElement" method="POST">
+                       <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                       <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                       <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm bg-transparent border-0 py-0 w-auto" aria-label="expressionResultType" data-autosave="true" {$element->propertyName !== "Expression" ? disabled}>
+                           {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
+                           <option n:foreach="$types as $key => $value" value="{$key}" {$key === $element->expressionResultType->value ? selected}>
+                               {$value}
+                           </option>
+                       </select>
+                   </form>
+               </td>
+               <td>
+                   {$element->expressionFormat}
+               </td>
+               <td>
+                   <form action="/FetchIndexElement" method="POST">
+                       <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                       <input type="hidden" name="propertyName" value="{$element->propertyName}">
+                       <input class="form-check-input" type="checkbox" name="isAscending" value="{$element->isAscending}" id="isAscending" aria-label="Ascending" {$element->isAscending ? checked}>
+                       <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                   </form>
+               </td>
+               <td></td>
+           </tr>
+           </tbody>
+           <tfoot>
+           <tr>
+               <td>
+                   <div class="d-inline-block">
+                       <button class="btn icon p-2" onclick="add({App\Model\FetchIndexElement::entity()->name}, {$selectedEntity->attributes->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex->elements->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))?->name}, {$selectedIndex})">
+                           <span class="material-symbols-outlined small">add</span>
+                       </button>
+                       <button class="btn icon" onclick="remove({$selectedIndexElement})" {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
+                           <span class="material-symbols-outlined small">remove</span>
+                       </button>
+                   </div>
+               </td>
+               <td></td>
+               <td></td>
+               <td></td>
+               <td></td>
+           </tr>
+           </tfoot>
+       </table>
+   </div>
 {/define}
