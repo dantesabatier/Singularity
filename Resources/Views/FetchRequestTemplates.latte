@@ -1,12 +1,10 @@
 {templateType App\Contexts\Editor}
 {define fetchRequestTemplates}
-    <ul class="flex-column w-100 ps-2">
-        <li n:foreach="$fetchRequestTemplates as $fetchRequestTemplate" class="text-truncate{$fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject && !$selectedIndex ? ' selected'}">
+    <div class="flex-column w-100">
+        <div n:foreach="$fetchRequestTemplates as $fetchRequestTemplate" class="nav-item {$fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject && !$selectedIndex ? ' active'} text-truncate" id="fetchRequest-{$fetchRequestTemplate->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$fetchRequestTemplate->objectID->referenceObject}">
             <span class="space"></span>
-            <img class="ps-2" src="/Resources/Images/R@1x.png" srcset="/Resources/Images/R@2x.png 2x, /Resources/Images/R@3x.png 3x" alt="">
-            <span id="fetchRequest-{$fetchRequestTemplate->objectID->referenceObject}" class="nav-toggle{$selectedIndex === null && $fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$fetchRequestTemplate->objectID->referenceObject}">
-                {$fetchRequestTemplate->name}
-            </span>
-        </li>
-    </ul>
+            <img class="p-2" src="/Resources/Images/R@1x.png" srcset="/Resources/Images/R@2x.png 2x, /Resources/Images/R@3x.png 3x" alt="">
+            <span>{$fetchRequestTemplate->name}</span>
+        </div>
+    </div>
 {/define}
