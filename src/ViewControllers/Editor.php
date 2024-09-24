@@ -408,6 +408,7 @@ class Editor extends ViewController
         $body = $this->request->getParsedBody();
         $path = $body["path"] ?? throw new NotFoundException();
         $project = $this->project ?? throw new NotFoundException();
+        $project->lastModifiedDate = new Date();
         /** @var Model $model */
         $model = $project->model;
         $model->load(URL::fileURL($path));
