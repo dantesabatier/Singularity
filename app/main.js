@@ -57,6 +57,7 @@ const options = {
     },
     darkTheme: true,
     backgroundColor: "#272b2f",
+    show: false
 }
 const createWindow = () => {
     const window = new BrowserWindow({
@@ -70,6 +71,7 @@ const createWindow = () => {
             ...options
         }
     }))
+    window.on("ready-to-show", () => window.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     window.loadURL("http://localhost:8000")
 }
@@ -80,8 +82,7 @@ ipcMain.on("showWindow", (event, arg) => {
     const window = new BrowserWindow({
         ...options,
         ...arg.overrideBrowserWindowOptions,
-        parent: arg.overrideBrowserWindowOptions?.modal ? BrowserWindow.fromWebContents(event.sender) : undefined,
-        show: false
+        parent: arg.overrideBrowserWindowOptions?.modal ? BrowserWindow.fromWebContents(event.sender) : undefined
     })
     window.on("ready-to-show", () => window.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
