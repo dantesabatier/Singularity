@@ -352,7 +352,7 @@ class Editor extends ViewController
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
             $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
-            if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first())) {
+            if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first)) {
                 break;
             }
             if ($selection instanceof Entity) {
