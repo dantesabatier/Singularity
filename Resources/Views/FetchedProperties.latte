@@ -1,38 +1,40 @@
 {templateType App\Contexts\Editor}
 {varType Sabatier\Foundation\Set $fetchedProperties}
 {define fetchedProperties, $fetchedProperties}
-    <table class="table table-sm caption-top">
-        <caption class="fw-bold text-shadow">Fetched Properties</caption>
-        <thead>
-        <tr>
-            <th scope="col" class="col-sm-2 text-shadow">Name</th>
-            <th scope="col" class="col-sm-10 text-shadow">Predicate</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr n:foreach="$fetchedProperties as $fetchedProperty" id="property-{$fetchedProperty->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$fetchedProperty->objectID->referenceObject}" n:class="$fetchedProperty->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
-            {var string $img = img($fetchedProperty)}
-            <td class="text-truncate">
-                <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                {$fetchedProperty->name}
-            </td>
-            <td>{$fetchedProperty->fetchRequestPredicateFormat}</td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td>
-                <div class="d-inline-block">
-                    <button class="btn icon p-2" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity})">
-                        <span class="material-symbols-outlined small">add</span>
-                    </button>
-                    <button class="btn icon p-2" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\FetchedProperty ? disabled}>
-                        <span class="material-symbols-outlined small">remove</span>
-                    </button>
-                </div>
-            </td>
-            <td></td>
-        </tr>
-        </tfoot>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-sm caption-top">
+            <caption class="fw-bold text-shadow">Fetched Properties</caption>
+            <thead>
+            <tr>
+                <th scope="col" class="col-sm-2 text-shadow">Name</th>
+                <th scope="col" class="col-sm-10 text-shadow">Predicate</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr n:foreach="$fetchedProperties as $fetchedProperty" id="property-{$fetchedProperty->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$fetchedProperty->objectID->referenceObject}" n:class="$fetchedProperty->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
+                {var string $img = img($fetchedProperty)}
+                <td class="text-truncate">
+                    <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                    {$fetchedProperty->name}
+                </td>
+                <td>{$fetchedProperty->fetchRequestPredicateFormat}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>
+                    <div class="d-inline-block">
+                        <button class="btn icon p-2" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity})">
+                            <span class="material-symbols-outlined small">add</span>
+                        </button>
+                        <button class="btn icon p-2" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\FetchedProperty ? disabled}>
+                            <span class="material-symbols-outlined small">remove</span>
+                        </button>
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
 {/define}
