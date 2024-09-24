@@ -62,6 +62,7 @@ class Entity extends ManagedObject
     public readonly ArrayClass $fetchedProperties;
     /** @var ArrayClass<string> */
     public readonly ArrayClass $allAttributeNames;
+    public readonly bool $isLeaf;
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
@@ -72,6 +73,7 @@ class Entity extends ManagedObject
         unset($this->relationships);
         unset($this->fetchedProperties);
         unset($this->allAttributeNames);
+        unset($this->isLeaf);
     }
 
     /**
@@ -124,6 +126,9 @@ class Entity extends ManagedObject
             $allAttributeNames[] = "Expression";
             $this->$name = $allAttributeNames;
             return $this->$name;
+        } elseif ($name == "isLeaf") {
+            $this->$name = !$this->subentitiesCount;
+            return $this->$name;
         } else {
             return parent::__get($name);
         }
@@ -131,7 +136,7 @@ class Entity extends ManagedObject
 
     public function __set(string $name, mixed $value): void
     {
-        if ($name == "isRootEntity" || $name == "rootEntity" || $name == "attributes" || $name == "relationships" || $name == "fetchedProperties" || $name == "allAttributeNames") {
+        if ($name == "isRootEntity" || $name == "rootEntity" || $name == "attributes" || $name == "relationships" || $name == "fetchedProperties" || $name == "allAttributeNames" || $name == "isLeaf") {
             $this->$name = $value;
         } else {
             parent::__set($name, $value);
