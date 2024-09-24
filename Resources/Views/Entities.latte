@@ -3,9 +3,8 @@
     <div class="flex-column w-100 ps-{$entities ? 2 : 0}">
         <div n:foreach="$entities ?? $rootEntities as $entity">
             <div class="nav-item {$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'} text-truncate" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
-                <button n:if="$entity->subentitiesCount" class="btn btn-toggle ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true">
-                </button>
-                <span n:else class="space"></span>
+                <span n:if="$entity->isLeaf" class="space"></span>
+                <button n:else class="btn btn-toggle ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true"></button>
                 <img class="p-2" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
                 <span>{$entity->name}</span>
             </div>
@@ -16,7 +15,7 @@
                     <span>{$index->name}</span>
                 </div>
             </div>
-            <div n:if="$entity->subentitiesCount" class="collapse show" id="{$entity->name}">
+            <div n:if="!$entity->isLeaf" class="collapse show" id="{$entity->name}">
                 {include entities, $entity->subentities}
             </div>
         </div>
