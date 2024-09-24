@@ -61,6 +61,7 @@ ul {
 
 .btn.icon {
     border: 0 !important;
+    background-color: transparent !important;
 }
 
 .nav-item {
