@@ -1,53 +1,55 @@
 {templateType App\Contexts\Editor}
 {varType Sabatier\Foundation\Set $attributes}
 {define attributes, $attributes}
-    <table class="table table-sm caption-top">
-        <caption class="fw-bold text-shadow">Attributes</caption>
-        <thead>
-        <tr>
-            <th scope="col" class="col-sm-2 text-shadow">Name</th>
-            <th scope="col" class="col-sm-2 text-shadow">Type</th>
-            <th scope="col" class="col-sm-8 text-shadow"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr n:foreach="$attributes as $attribute" id="property-{$attribute->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$attribute->objectID->referenceObject}" n:class="$attribute->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
-            <td class="text-truncate">
-                {var string $img = img($attribute)}
+    <div class="table-responsive">
+        <table class="table table-sm caption-top">
+            <caption class="fw-bold text-shadow">Attributes</caption>
+            <thead>
+            <tr>
+                <th scope="col" class="col-sm-2 text-shadow">Name</th>
+                <th scope="col" class="col-sm-2 text-shadow">Type</th>
+                <th scope="col" class="col-sm-8 text-shadow"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr n:foreach="$attributes as $attribute" id="property-{$attribute->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$attribute->objectID->referenceObject}" n:class="$attribute->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
+                <td class="text-truncate">
+                    {var string $img = img($attribute)}
 
                 <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                 {$attribute->name}
-            </td>
-            <td>
-                <form action="/Attribute" method="POST">
-                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                    <input type="hidden" name="objectID" value="{$attribute->objectID->referenceObject}">
-                    {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
-                    <select name="type" id="type" class="form-select form-select-sm border-0 py-0 w-auto" aria-label="Type" data-autosave="true">
-                        <option n:foreach="$types as $key => $value" value="{$key}" {$key === $attribute->type->value ? selected}>
-                            {$value}
-                        </option>
-                    </select>
-                </form>
-            </td>
-            <td></td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td>
-                <div class="d-inline-block">
-                    <button class="btn icon p-2" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity})">
-                        <span class="material-symbols-outlined small">add</span>
-                    </button>
-                    <button class="btn icon p-2" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
-                        <span class="material-symbols-outlined small">remove</span>
-                    </button>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tfoot>
-    </table>
+                </td>
+                <td>
+                    <form action="/Attribute" method="POST">
+                        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                        <input type="hidden" name="objectID" value="{$attribute->objectID->referenceObject}">
+                        {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
+                        <select name="type" id="type" class="form-select form-select-sm border-0 py-0 w-auto" aria-label="Type" data-autosave="true">
+                            <option n:foreach="$types as $key => $value" value="{$key}" {$key === $attribute->type->value ? selected}>
+                                {$value}
+                            </option>
+                        </select>
+                    </form>
+                </td>
+                <td></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>
+                    <div class="d-inline-block">
+                        <button class="btn icon p-2" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity})">
+                            <span class="material-symbols-outlined small">add</span>
+                        </button>
+                        <button class="btn icon p-2" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
+                            <span class="material-symbols-outlined small">remove</span>
+                        </button>
+                    </div>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
 {/define}
