@@ -2,7 +2,7 @@
 {define controls}
     <div class="d-inline-block">
         <div class="dropdown d-inline-flex">
-            <button type="button" class="btn border-0 bg-transparent dropdown p-2" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn dropdown p-2" data-bs-toggle="dropdown" aria-expanded="false">
                 <span class="material-symbols-outlined small">add</span>
             </button>
             <ul class="dropdown-menu">
@@ -50,19 +50,19 @@
             </ul>
         </div>
         {if $selectedIndex}
-            <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedIndex})">
+            <button class="btn icon p-2" onclick="remove({$selectedIndex})">
                 <span class="material-symbols-outlined small">remove</span>
             </button>
         {elseif $selectedEntity}
-            <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedEntity})">
+            <button class="btn icon p-2" onclick="remove({$selectedEntity})">
                 <span class="material-symbols-outlined small">remove</span>
             </button>
         {elseif $selectedFetchRequestTemplate}
-            <button class="btn border-0 bg-transparent p-2" onclick="remove({$selectedFetchRequestTemplate})">
+            <button class="btn icon p-2" onclick="remove({$selectedFetchRequestTemplate})">
                 <span class="material-symbols-outlined small">remove</span>
             </button>
         {else}
-            <button class="btn border-0 bg-transparent p-2" disabled>
+            <button class="btn icon p-2" disabled>
                 <span class="material-symbols-outlined small">remove</span>
             </button>
         {/if}

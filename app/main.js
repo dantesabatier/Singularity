@@ -52,7 +52,6 @@ const options = {
         allowRunningInsecureContent: true,
         nodeIntegration: true,
         contextIsolation: true,
-        experimentalFeatures: true,
         enableBlinkFeatures: "CSSColorSchemeUARendering, OverlayScrollbars, FluentOverlayScrollbars, ElasticOverscrollWin",
         preload: path.join(__dirname, "preload.js")
     },

@@ -59,6 +59,10 @@ ul {
     transform: rotate(90deg);
 }
 
+.btn.icon {
+    border: 0 !important;
+}
+
 .nav-item {
     display: flex;
     cursor: pointer;
