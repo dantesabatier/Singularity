@@ -50,6 +50,10 @@ option:not(:checked) {
     max-height: calc(100vh - 100px);
 }
 
+[contenteditable]:focus {
+    background-color: var(--bs-body-bg) !important;
+}
+
 .scroll-view {
     overflow: hidden;
     overflow-y: auto;
