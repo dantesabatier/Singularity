@@ -40,6 +40,7 @@ use Sabatier\Foundation\URLComponents;
 use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Foundation\UUID;
 use Sabatier\Service\Action;
+use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
@@ -378,7 +379,7 @@ class Editor extends ViewController
     #[Action]
     public function save(): void
     {
-        $project = $this->project ?? throw new NotFoundException();
+        $project = $this->project ?? throw new BadRequestException("project cannot be null");
         /** @var URL $url */
         $url = $project->url;
         /** @var Model $model */
@@ -406,8 +407,8 @@ class Editor extends ViewController
     public function import(): void
     {
         $body = $this->request->getParsedBody();
-        $path = $body["path"] ?? throw new NotFoundException();
-        $project = $this->project ?? throw new NotFoundException();
+        $path = $body["path"] ?? throw new BadRequestException("path cannot be null");
+        $project = $this->project ?? throw new BadRequestException("project cannot be null");
         $project->lastModifiedDate = new Date();
         /** @var Model $model */
         $model = $project->model;
@@ -420,7 +421,7 @@ class Editor extends ViewController
     #[Action]
     public function subclass(): void
     {
-        $project = $this->project ?? throw new NotFoundException();
+        $project = $this->project ?? throw new BadRequestException("project cannot be null");
         /** @var URL $url */
         $url = $project->url;
         /** @var Model $model */
