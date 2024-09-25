@@ -5,14 +5,14 @@
             <div class="nav-item {$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'} text-truncate" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
                 <span n:if="$entity->isLeaf" class="space"></span>
                 <button n:else class="btn btn-toggle ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true"></button>
-                <img class="p-2" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
-                <span>{$entity->name}</span>
+                <img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
+                <span class="ps-2">{$entity->name}</span>
             </div>
             <div n:if="$entity->indexesCount" class="flex-column w-100 ps-2">
                 <div n:foreach="$entity->indexes as $index" class="nav-item {$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'} text-truncate" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
                     <span class="space"></span>
-                    <img class="p-2" src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="">
-                    <span>{$index->name}</span>
+                    <img src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="">
+                    <span class="ps-2">{$index->name}</span>
                 </div>
             </div>
             <div n:if="!$entity->isLeaf" class="collapse show" id="{$entity->name}">
