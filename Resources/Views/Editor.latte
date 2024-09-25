@@ -5,9 +5,9 @@
     <div id="main">
         <div class="container-fluid d-flex flex-column">
             <div class="row flex-grow-1">
-                <nav class="border-bottom border-black py-0" aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>'; height: 42px">
-                    <ol class="breadcrumb mt-1 ms-2">
-                        <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
+                <nav class="border-bottom border-black py-0" aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>'; height: 28px">
+                    <ol class="breadcrumb">
+                        <li n:foreach="$breadcrumb as $item" class="breadcrumb-item small">
                             {var string $img = img($item)}
                             {if $item instanceof App\Model\Project}
                                 <div class="nav-item" data-href="/Editor?project={$item->objectID->referenceObject}">
