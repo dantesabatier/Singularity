@@ -10,7 +10,7 @@ use App\Model\FetchedProperty;
 use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
 use App\Model\FetchRequestTemplate;
-use App\Model\Project;
+use App\Model\Model;
 use App\Model\Relationship;
 use App\Model\UniquenessConstraint;
 use Exception;
@@ -61,9 +61,9 @@ class LatteRenderer extends Renderer
                     AttributeType::uuid, AttributeType::undefined => $type->name,
                     default => strtoupper(substring_to_index($type->name, 1))
                 };
-                $img = function (Project|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate $e) use (&$img, &$fn): string {
+                $img = function (Model|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate $e) use (&$img, &$fn): string {
                     return match (true) {
-                        $e instanceof Project => "P",
+                        $e instanceof Model => "P",
                         $e instanceof Entity => "E",
                         $e instanceof Attribute => $fn($e->type),
                         $e instanceof Relationship => $e->isToMany ? "M" : "O",
