@@ -69,6 +69,7 @@ ul {
     cursor: pointer;
     align-items: center;
     text-decoration: none;
+    padding: 0 8px;
     height: 26px;
 }
 
