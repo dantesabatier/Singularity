@@ -336,7 +336,7 @@ class Editor extends ViewController
     public function viewWillLoad(): void
     {
         $project = $this->project ?? throw new NotFoundException();
-        $this->breadcrumb[] = $project;
+        $this->breadcrumb[] = $project->model;
         $keys = ["entity", "fetchRequest", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
