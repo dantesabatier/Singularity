@@ -36,6 +36,17 @@ ul {
     background-color: inherit;
 }
 
+.dropdown-menu {
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+}
+
+.scroll-view {
+    overflow: hidden;
+    overflow-y: auto;
+}
+
 .btn-toggle {
     display: inline-flex;
     padding: 0;
