@@ -56,6 +56,26 @@
         document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => await push(window.location.origin + e.dataset.href), {
             once: true
         }))
+        document.querySelectorAll("span[contenteditable=true]").forEach(e => {
+            e.addEventListener("click", async event => {
+                event.stopPropagation()
+            }, {
+                once: true
+            })
+            e.addEventListener("keypress", async event => {
+                event.preventDefault()
+                if (event.key === "Enter") {
+                    e.blur()
+                }
+            }, {
+                once: true
+            })
+            e.addEventListener("blur", async event => {
+                event.preventDefault()
+            }, {
+                once: true
+            })
+        })
         document.querySelectorAll("input[type=checkbox]").forEach(e => {
             e.addEventListener("click", async event => {
                 event.stopPropagation()
