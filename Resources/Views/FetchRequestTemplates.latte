@@ -3,8 +3,8 @@
     <div class="flex-column w-100">
         <div n:foreach="$fetchRequestTemplates as $fetchRequestTemplate" class="nav-item {$fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject && !$selectedIndex ? ' active'} text-truncate" id="fetchRequest-{$fetchRequestTemplate->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$fetchRequestTemplate->objectID->referenceObject}">
             <span class="space"></span>
-            <img class="p-2" src="/Resources/Images/R@1x.png" srcset="/Resources/Images/R@2x.png 2x, /Resources/Images/R@3x.png 3x" alt="">
-            <span>{$fetchRequestTemplate->name}</span>
+            <img src="/Resources/Images/R@1x.png" srcset="/Resources/Images/R@2x.png 2x, /Resources/Images/R@3x.png 3x" alt="">
+            <span class="ps-2">{$fetchRequestTemplate->name}</span>
         </div>
     </div>
 {/define}
