@@ -5,6 +5,7 @@
 namespace App\ViewControllers;
 
 use App\Model\Attribute;
+use App\Model\Configuration;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
 use App\Model\FetchIndex;
@@ -68,6 +69,9 @@ class Editor extends ViewController
     /** @var ArrayClass<FetchRequestTemplate> */
     #[Outlet]
     public ArrayClass $fetchRequestTemplates;
+    /** @var ArrayClass<Configuration> */
+    #[Outlet]
+    public ArrayClass $configurations;
     #[Outlet]
     public ?Entity $selectedEntity = null;
     #[Outlet]
@@ -80,6 +84,8 @@ class Editor extends ViewController
     public ?UniquenessConstraint $selectedUniquenessConstraint = null;
     #[Outlet]
     public ?FetchRequestTemplate $selectedFetchRequestTemplate = null;
+    #[Outlet]
+    public ?Configuration $selectedConfiguration = null;
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     public ArrayClass $breadcrumb;
@@ -92,6 +98,7 @@ class Editor extends ViewController
         unset($this->rootEntities);
         unset($this->allEntities);
         unset($this->fetchRequestTemplates);
+        unset($this->configurations);
         unset($this->breadcrumb);
     }
 
@@ -143,6 +150,16 @@ class Editor extends ViewController
             return $this->$name;
         } elseif ($name == "fetchRequestTemplates") {
             $fetchRequest = FetchRequestTemplate::fetchRequest();
+            /** @noinspection DuplicatedCode */
+            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
+            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                "name" => AttributeType::string
+            ]);
+            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
+            return $this->$name;
+        } elseif ($name == "configurations") {
+            $fetchRequest = Configuration::fetchRequest();
             /** @noinspection DuplicatedCode */
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
             $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
@@ -335,9 +352,9 @@ class Editor extends ViewController
     #[Override]
     public function viewWillLoad(): void
     {
-        $project = $this->project ?? throw new NotFoundException();
-        $this->breadcrumb[] = $project->model;
-        $keys = ["entity", "fetchRequest", "constraint", "property", "index", "element"];
+        $model = $this->project?->model ?? throw new NotFoundException();
+        $this->breadcrumb[] = $model;
+        $keys = ["entity", "fetchRequest", "configuration", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
                 continue;
@@ -346,6 +363,7 @@ class Editor extends ViewController
             $managedObjectClass = match ($key) {
                 "entity" => Entity::class,
                 "fetchRequest" => FetchRequestTemplate::class,
+                "configuration" => Configuration::class,
                 "constraint" => UniquenessConstraint::class,
                 "property" => Property::class,
                 "index" => FetchIndex::class,
@@ -360,6 +378,8 @@ class Editor extends ViewController
                 $this->selectedEntity = $selection;
             } elseif ($selection instanceof FetchRequestTemplate) {
                 $this->selectedFetchRequestTemplate = $selection;
+            } elseif ($selection instanceof Configuration) {
+                $this->selectedConfiguration = $selection;
             } elseif ($selection instanceof UniquenessConstraint) {
                 $this->selectedUniquenessConstraint = $selection;
             } elseif ($selection instanceof Property) {

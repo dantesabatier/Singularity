@@ -235,12 +235,8 @@ const create = async () => {
 const add = async (entity, name, parent) => {
     switch (entity) {
         case "Entity":
-            await send(url(entity), {
-                name: name ?? entity,
-                modelID: parent.objectID
-            })
-            break
         case "FetchRequestTemplate":
+        case "Configuration":
             await send(url(entity), {
                 name: name,
                 modelID: parent.objectID

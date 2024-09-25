@@ -1,5 +1,4 @@
-{varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
-{varType Sabatier\Foundation\ArrayClass $allEntities}
+{templateType App\Contexts\Editor}
 {define fetchRequestTemplate}
     <form action="/FetchRequestTemplate" method="POST">
         <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
@@ -71,7 +70,6 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-        <input class="d-none" type="submit">
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
     </form>
 {/define}

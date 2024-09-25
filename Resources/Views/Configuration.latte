@@ -1,0 +1,16 @@
+{templateType App\Contexts\Editor}
+{define configuration}
+    <form action="/Configuration" method="POST">
+        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
+            Configuration
+        </div>
+        <input type="hidden" name="objectID" value="{$selectedConfiguration->objectID->referenceObject}">
+        <div class="row mb-3 align-items-center">
+            <label for="name" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Name</label>
+            <div class="col-sm-9">
+                <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control form-control-sm text-truncate" value="{$selectedConfiguration->name}" autocomplete="off" spellcheck="false" required>
+            </div>
+        </div>
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+    </form>
+{/define}

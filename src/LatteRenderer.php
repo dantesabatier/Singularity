@@ -5,6 +5,7 @@
 namespace App;
 
 use App\Model\Attribute;
+use App\Model\Configuration;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
 use App\Model\FetchIndex;
@@ -61,7 +62,7 @@ class LatteRenderer extends Renderer
                     AttributeType::uuid, AttributeType::undefined => $type->name,
                     default => strtoupper(substring_to_index($type->name, 1))
                 };
-                $img = function (Model|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate $e) use (&$img, &$fn): string {
+                $img = function (Model|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration $e) use (&$img, &$fn): string {
                     return match (true) {
                         $e instanceof Model => "P",
                         $e instanceof Entity => "E",
@@ -71,6 +72,7 @@ class LatteRenderer extends Renderer
                         $e instanceof FetchIndex => "I",
                         $e instanceof FetchIndexElement => ($property = $e->property) ? $img($property) : $fn(AttributeType::undefined),
                         $e instanceof UniquenessConstraint => "U",
+                        $e instanceof Configuration => "C",
                         default => substring_to_index($e->entity->name, 1)
                     };
                 };

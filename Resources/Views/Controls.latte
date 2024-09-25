@@ -7,7 +7,7 @@
             </button>
             <ul class="dropdown-menu">
                 <li>
-                    <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, undefined, {$project->model})">
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model})">
                         Add Entity
                     </button>
                 </li>
@@ -17,7 +17,7 @@
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" disabled>
+                    <button class="dropdown-item" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project->model})">
                         Add Configuration
                     </button>
                 </li>
@@ -59,6 +59,10 @@
             </button>
         {elseif $selectedFetchRequestTemplate}
             <button class="btn icon p-2" onclick="remove({$selectedFetchRequestTemplate})">
+                <span class="material-symbols-outlined small">remove</span>
+            </button>
+        {elseif $selectedConfiguration}
+            <button class="btn icon p-2" onclick="remove({$selectedConfiguration})">
                 <span class="material-symbols-outlined small">remove</span>
             </button>
         {else}
