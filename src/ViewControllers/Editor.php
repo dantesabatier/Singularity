@@ -400,10 +400,12 @@ class Editor extends ViewController
     public function save(): void
     {
         $project = $this->project ?? throw new BadRequestException("project cannot be null");
+        $project->lastModifiedDate = new Date();
         /** @var URL $url */
         $url = $project->url;
         /** @var Model $model */
         $model = $project->model;
+        $this->managedObjectContext->save();
         $fileManager = FileManager::default();
         $bundle = Bundle::bundleWithURL($url);
         $resourceURL = $bundle->bundleURL->appendingPathComponent("Resources");
@@ -415,9 +417,6 @@ class Editor extends ViewController
             $fileManager->removeItem($modelURL);
         }
         PropertyListSerialization::writePropertyList($model->dictionaryRepresentation(), $modelURL);
-        $project->lastModifiedDate = new Date();
-        $model->url = $modelURL;
-        $this->managedObjectContext->save();
     }
 
     /**
