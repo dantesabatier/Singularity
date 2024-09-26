@@ -5,7 +5,7 @@
     <div id="main">
         <div class="container-fluid d-flex flex-column">
             <div class="row flex-grow-1">
-                <div class="scroll-view col-sm-7 overflow-auto vh-100">
+                <div class="col-sm-7 overflow-auto vh-100">
                     <div class="container-fluid">
                         <h2 class="text-wrap-word">Welcome to {$title}</h2>
                         <button class="text-primary text-truncate border-0 bg-transparent" onclick="create()">
@@ -13,7 +13,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="scroll-view col-sm-5 overflow-auto bg-dark-subtle vh-100">
+                <div class="col-sm-5 overflow-auto bg-dark-subtle vh-100">
                     {if !$projects->isEmpty}
                         <ol class="list-group bg-dark-subtle">
                             <li n:foreach="$projects as $project" class="list-group-item list-group-item-action display-block border-0 rounded">
