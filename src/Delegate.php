@@ -53,7 +53,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
                     /** @var ManagedObjectContext $context */
                     $context = $notification->object;
                     $fetchRequest = Project::fetchRequest();
-                    $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
+                    $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["objectID", $referenceObject]));
                     $fetchRequest->serialization = Dictionary::dictionaryWithArray([
                         "name" => AttributeType::string,
                         "url" => AttributeType::uri,
