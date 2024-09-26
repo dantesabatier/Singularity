@@ -50,24 +50,11 @@
                 once: true
             })
         })
-        document.querySelectorAll("div[data-href]").forEach(e => e.addEventListener("click", async event => {
-            const span = e.querySelector("span[contenteditable=false]")
-            if (span === event.target) {
-                const form = e.form
-                if (form) {
-                    event.stopPropagation()
-                    span.contentEditable = true
-                    span.addEventListener("blur", async event => {
-                        event.preventDefault()
-                        span.contentEditable = false
-                        await submit(form)
-                    }, {
-                        once: true
-                    })
-                    return
-                }
+        document.querySelectorAll("div[data-href]").forEach(e => e.addEventListener("click", async () => {
+            const location = window.location.origin + e.dataset.href
+            if (window.location.href !== location) {
+                await push(location)
             }
-            await push(window.location.origin + e.dataset.href)
         }, {
             once: true
         }))
