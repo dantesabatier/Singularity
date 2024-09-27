@@ -114,13 +114,6 @@ option:not(:checked) {
     padding: 0 8px;
 }
 
-.text-non-selectable {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
 .text-shadow {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.33);
 }
