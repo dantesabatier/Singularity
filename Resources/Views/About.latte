@@ -2,14 +2,16 @@
 {templateType App\Contexts\About}
 {block content}
     <div id="main">
-        <div class="navbar small">
-            <div class="container-fluid">
+        <div class="navbar small user-select-none p-0">
+            <div class="container-fluid px-2">
                 <div class="navbar-brand">
                     <!--suppress CheckImageSize -->
                     <img src="/Resources/Images/icon.png" alt="{$bundleName}" width="16" height="16">
                     <small>{$bundleName}</small>
                 </div>
-                <button class="btn icon" onclick="window.close()"><span class="material-symbols-outlined small">close</span></button>
+                <button class="btn icon p-0" onclick="window.close()">
+                    <span class="material-symbols-outlined small">close</span>
+                </button>
             </div>
         </div>
         <div class="container-fluid d-flex flex-column">
