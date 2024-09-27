@@ -86,6 +86,18 @@
                 once: true
             })
         })
+        document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", async event => {
+            if (e.checkValidity()) {
+                event.preventDefault()
+                await submit(e)
+                return
+            }
+            event.preventDefault()
+            event.stopPropagation()
+            e.classList.add("was-validated")
+        }, {
+            once: false
+        }))
         document.querySelectorAll("form:not(.needs-validation)").forEach(e => e.addEventListener("submit", async event => {
             event.preventDefault()
             await submit(e)
@@ -98,18 +110,6 @@
              */
             const form = e.querySelector(".modal-content form")
             form.reset()
-        }, {
-            once: false
-        }))
-        document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", async event => {
-            if (e.checkValidity()) {
-                event.preventDefault()
-                await submit(e)
-                return
-            }
-            event.preventDefault()
-            event.stopPropagation()
-            e.classList.add("was-validated")
         }, {
             once: false
         }))
