@@ -2,7 +2,7 @@
 {templateType App\Contexts\Welcome}
 {block title}{$title}{/block}
 {block content}
-    <div id="main">
+    <div id="main" class="user-select-none">
         <div class="container-fluid d-flex flex-column">
             <div class="row flex-grow-1">
                 <div class="col-sm-7 overflow-auto vh-100">
@@ -17,20 +17,18 @@
                     {if !$projects->isEmpty}
                         <ol class="list-group bg-dark-subtle">
                             <li n:foreach="$projects as $project" class="list-group-item list-group-item-action display-block border-0 rounded">
-                                <div class="row">
-                                    <div class="col-sm-9 cursor-pointer" onclick="load({$project})">
+                                <div class="row align-items-center">
+                                    <div class="col-sm-10 cursor-pointer" onclick="load({$project})">
                                         <div class="d-flex">
                                             <span class="material-symbols-outlined d-inline">deployed_code</span>
                                             <span class="fw-bold d-inline">{$project->name}</span>
                                         </div>
-                                        <small class="d-block text-truncate text-muted">{$project->url->path}</small>
+                                        <small class="d-block text-truncate text-muted" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$project->url->path}">{$project->url->path}</small>
                                     </div>
-                                    <div class="col-sm-3">
-                                        <div class="d-flex align-items-end">
-                                            <button class="btn icon d-inline" onclick="remove({$project})">
-                                                <span class="material-symbols-outlined small">cancel</span>
-                                            </button>
-                                        </div>
+                                    <div class="col-sm-2 text-end">
+                                        <button class="btn icon d-inline p-2" onclick="remove({$project})">
+                                            <span class="material-symbols-outlined small">cancel</span>
+                                        </button>
                                     </div>
                                 </div>
                             </li>
