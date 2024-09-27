@@ -312,4 +312,4 @@ const showAboutPanel = () => window.api?.showWindow({
  */
 const setProgressBar = (progress) => window.api?.setProgressBar(progress)
 const showSourceListContextMenu = (options) => window.api?.showSourceListContextMenu(options)
-window.api?.onRemoveEntity(async item => await remove(item))
+window.api?.onRemove(async item => await remove(item))
