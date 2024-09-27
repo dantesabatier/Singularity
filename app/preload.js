@@ -20,4 +20,6 @@ contextBridge.exposeInMainWorld("api", {
     showAboutPanel: (options) => ipcRenderer.send("showAboutPanel", options),
     showWindow: (options) => ipcRenderer.send("showWindow", options),
     setProgressBar: (progress => ipcRenderer.send("setProgressBar", progress)),
+    showSourceListContextMenu: (options) => ipcRenderer.send("showSourceListContextMenu", options),
+    onRemoveEntity: (callback) => ipcRenderer.on("removeEntity", (e, args) => callback(args))
 })

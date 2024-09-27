@@ -78,16 +78,6 @@ const createWindow = () => {
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())
-ipcMain.on("showWindow", (event, arg) => {
-    const window = new BrowserWindow({
-        ...options,
-        ...arg.overrideBrowserWindowOptions,
-        parent: arg.overrideBrowserWindowOptions?.modal ? BrowserWindow.fromWebContents(event.sender) : undefined
-    })
-    window.on("ready-to-show", () => window.show())
-    // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
-    window.loadURL(arg.url)
-})
 ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(BrowserWindow.fromWebContents(event.sender), {
     ...arg,
     icon: path.join(__dirname, "icon.png")
@@ -128,4 +118,24 @@ ipcMain.on("showAboutPanel", async (event, arg) => {
     })
     app.showAboutPanel()
 })
+ipcMain.on("showWindow", (event, arg) => {
+    const window = new BrowserWindow({
+        ...options,
+        ...arg.overrideBrowserWindowOptions,
+        parent: arg.overrideBrowserWindowOptions?.modal ? BrowserWindow.fromWebContents(event.sender) : undefined
+    })
+    window.on("ready-to-show", () => window.show())
+    // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
+    window.loadURL(arg.url)
+})
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
+ipcMain.on("showSourceListContextMenu", (event, arg) => {
+    Menu.buildFromTemplate([
+        {
+            label: "Remove",
+            click: () => event.sender.send("removeEntity", arg)
+        }
+    ]).popup({
+        window: BrowserWindow.fromWebContents(event.sender)
+    })
+})

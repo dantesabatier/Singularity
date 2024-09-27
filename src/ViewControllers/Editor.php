@@ -89,6 +89,8 @@ class Editor extends ViewController
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     public ArrayClass $breadcrumb;
+    #[Outlet]
+    public ?string $bundleName;
 
     public function __construct()
     {
@@ -100,6 +102,7 @@ class Editor extends ViewController
         unset($this->fetchRequestTemplates);
         unset($this->configurations);
         unset($this->breadcrumb);
+        unset($this->bundleName);
     }
 
     /**
@@ -170,6 +173,9 @@ class Editor extends ViewController
             return $this->$name;
         } elseif ($name == "breadcrumb") {
             $this->$name = new ArrayClass();
+            return $this->$name;
+        } elseif ($name == "bundleName") {
+            $this->$name = Bundle::bundleWithURL($this->project->url)->object(kCFBundleNameKey);
             return $this->$name;
         } else {
             return parent::__get($name);

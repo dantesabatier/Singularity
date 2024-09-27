@@ -25,7 +25,7 @@
 <!--suppress JSCheckFunctionSignatures -->
 <script>
     function layout() {
-        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.style.height = document.documentElement.clientHeight - (28 + 40) + "px")
+        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.style.height = document.documentElement.clientHeight - (40 + 28) + "px")
     }
 
     function register() {
@@ -50,15 +50,32 @@
                 once: true
             })
         })
-        document.querySelectorAll("div[data-href]").forEach(e => e.addEventListener("click", async () => {
+        document.querySelectorAll("div[data-href]").forEach(e => {
+            const location = window.location.origin + e.dataset.href
+            e.addEventListener("click", async () => {
+                if (window.location.href !== location) {
+                    await push(location)
+                }
+            }, {
+                once: true
+            })
+            e.addEventListener("contextmenu", async event => {
+                event.preventDefault()
+                showSourceListContextMenu({
+                    objectID: Number(new URL(location).searchParams.get("entity")),
+                    entityName: "Entity",
+                    name: e.querySelector("span:not(.space)")?.innerText
+                })
+            }, {
+                once: false
+            })
+        })
+        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => {
             const location = window.location.origin + e.dataset.href
             if (window.location.href !== location) {
                 await push(location)
             }
         }, {
-            once: true
-        }))
-        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => await push(window.location.origin + e.dataset.href), {
             once: true
         }))
         document.querySelectorAll("input[type=checkbox]").forEach(e => {

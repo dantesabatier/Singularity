@@ -1,3 +1,8 @@
+:root {
+    --nav-item-active-bg: rgb(13, 110, 253);
+    --nav-item-hover-bg: rgba(13, 110, 253, 0.33);
+}
+
 html,
 body {
     height: 100%;
@@ -13,10 +18,10 @@ ul {
 }
 
 .table {
-    --bs-table-active-bg: var(--bs-primary);
+    --bs-table-active-bg: rgba(13, 110, 253, 0.16);
     --bs-table-active-color: var(--bs-table-active-bg);
     --bs-table-hover-color: white;
-    --bs-table-hover-bg: var(--bs-primary);
+    --bs-table-hover-bg: var(--nav-item-hover-bg);
 }
 
 .table-active {
@@ -99,12 +104,12 @@ option:not(:checked) {
 .nav-item.active {
     font-weight: 600;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.16);
-    background-color: var(--bs-primary);
+    background-color: var(--nav-item-active-bg);
     border-radius: 6px;
 }
 
 .nav-item:hover {
-    background-color: var(--bs-primary);
+    background-color: var(--nav-item-hover-bg);
     border-radius: 6px;
 }
 

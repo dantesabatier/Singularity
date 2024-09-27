@@ -266,7 +266,7 @@ const add = async (entity, name, parent) => {
  * @param {object} item
  */
 const remove = async (item) => {
-    if ((await window.api.showMessageBox(`Remove "${item.name ?? item.propertyName ?? item.stringValue}"?`, "This action cannot be undone.", ["Cancel", "OK"])).response) {
+    if ((await window.api?.showMessageBox(`Remove "${item.name ?? item.propertyName ?? item.stringValue}"?`, "This action cannot be undone.", ["Cancel", "OK"])).response) {
         await send(url(item.entityName), {objectID: item.objectID}, "DELETE")
     }
 }
@@ -276,14 +276,14 @@ const remove = async (item) => {
  * @param {string} informativeText
  * @param {string[]} buttons
  */
-const showMessageBox = (messageText, informativeText, buttons) => window.api.showMessageBox(messageText, informativeText, buttons)
+const showMessageBox = (messageText, informativeText, buttons) => window.api?.showMessageBox(messageText, informativeText, buttons)
 
 /**
  * @param {object} error
  */
-const showErrorBox = (error) => window.api.showErrorBox(error)
+const showErrorBox = (error) => window.api?.showErrorBox(error)
 
-const showPreferences = () => window.api.showWindow({
+const showPreferences = () => window.api?.showWindow({
     url: `${window.location.origin}${url("Preferences")}`,
     overrideBrowserWindowOptions: {
         width: 600,
@@ -292,7 +292,7 @@ const showPreferences = () => window.api.showWindow({
     }
 })
 
-const showAboutPanel = () => window.api.showWindow({
+const showAboutPanel = () => window.api?.showWindow({
     url: `${window.location.origin}${url("About")}`,
     overrideBrowserWindowOptions: {
         width: 380,
@@ -305,4 +305,6 @@ const showAboutPanel = () => window.api.showWindow({
 /**
  * @param {number} progress
  */
-const setProgressBar = (progress) => window.api.setProgressBar(progress)
+const setProgressBar = (progress) => window.api?.setProgressBar(progress)
+const showSourceListContextMenu = (options) => window.api?.showSourceListContextMenu(options)
+window.api?.onRemoveEntity(async item => await remove(item))
