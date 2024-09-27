@@ -79,21 +79,6 @@
                         </li>
                     </ul>
                 </div>
-                <div class="dropdown align-self-start px-1">
-                    <button type="button" class="btn icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        {$project?->name}
-                    </button>
-                    <ul class="dropdown-menu">
-                        {foreach $projects as $e}
-                            <li>
-                                <button class="dropdown-item" type="button" onclick="load({$e})">{$e->name}</button>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                        {/foreach}
-                    </ul>
-                </div>
             </div>
         </nav>
         <div class="container-fluid d-flex flex-column">
