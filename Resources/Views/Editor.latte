@@ -3,14 +3,14 @@
 {block title}{$project?->name}{/block}
 {block content}
     <div id="main" class="user-select-none">
-        <nav class="navbar sticky-top border-bottom border-black p-0" style="height: 40px">
+        <nav class="navbar sticky-top border-bottom border-black user-select-none p-0" style="height: 40px">
             <div class="container-fluid justify-content-start">
                 <div class="navbar-brand">
                     <!--suppress CheckImageSize -->
                     <img src="/Resources/Images/icon.png" alt="Logo" width="24" height="24" class="d-inline-block align-text-top">
                 </div>
                 <div class="dropdown">
-                    <button class="btn icon p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn icon px-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="material-symbols-outlined">menu</span>
                     </button>
                     <ul class="dropdown-menu">
@@ -77,6 +77,21 @@
                                 Import...
                             </button>
                         </li>
+                    </ul>
+                </div>
+                <div class="dropdown align-self-start px-1">
+                    <button type="button" class="btn icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        {$project?->name}
+                    </button>
+                    <ul class="dropdown-menu">
+                        {foreach $projects as $e}
+                            <li>
+                                <button class="dropdown-item" type="button" onclick="load({$e})">{$e->name}</button>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                        {/foreach}
                     </ul>
                 </div>
             </div>
