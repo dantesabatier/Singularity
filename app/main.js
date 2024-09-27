@@ -129,13 +129,17 @@ ipcMain.on("showWindow", (event, arg) => {
     window.loadURL(arg.url)
 })
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
-ipcMain.on("showSourceListContextMenu", (event, arg) => {
-    Menu.buildFromTemplate([
-        {
-            label: "Remove",
-            click: () => event.sender.send("removeEntity", arg)
-        }
-    ]).popup({
-        window: BrowserWindow.fromWebContents(event.sender)
-    })
-})
+ipcMain.on("showSourceListContextMenu", (event, arg) => Menu.buildFromTemplate([
+    {
+        label: "Add"
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Remove",
+        click: () => event.sender.send("remove", arg)
+    }
+]).popup({
+    window: BrowserWindow.fromWebContents(event.sender)
+}))
