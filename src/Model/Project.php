@@ -9,6 +9,7 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
+use function Sabatier\Foundation\random_color;
 use const App\AutomaticallyDeleteProjectFolders;
 
 /**
@@ -24,6 +25,13 @@ class Project extends ManagedObject
     #[Override]
     public function awakeFromInsert(): void
     {
+        $this->color = random_color();
+    }
+
+    #[Override]
+    public function awakeFromFetch(): void
+    {
+        $this->color ??= random_color();
     }
 
     /**
