@@ -29,7 +29,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-sm-10 cursor-pointer" onclick="load({$project})">
                                         <div class="d-flex">
-                                            <small class="rounded bg-primary bg-gradient text-center fw-medium" style="width: 24px; height: 24px">{$project->name|first}</small>
+                                            <small class="rounded text-center fw-medium" style="width: 24px; height: 24px; background-color: {$project->color|noescape};">{$project->name|first}</small>
                                             <span class="fw-bold ps-2">{$project->name}</span>
                                         </div>
                                         <small class="d-block text-truncate text-muted" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$project->url->path}">{$project->url->path}</small>
