@@ -29,8 +29,8 @@
                                 <div class="row align-items-center">
                                     <div class="col-sm-10 cursor-pointer" onclick="load({$project})">
                                         <div class="d-flex">
-                                            <span class="material-symbols-outlined d-inline">deployed_code</span>
-                                            <span class="fw-bold d-inline">{$project->name}</span>
+                                            <small class="rounded bg-primary bg-gradient text-center fw-medium" style="width: 24px; height: 24px">{$project->name|first}</small>
+                                            <span class="fw-bold ps-2">{$project->name}</span>
                                         </div>
                                         <small class="d-block text-truncate text-muted" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$project->url->path}">{$project->url->path}</small>
                                     </div>
@@ -99,7 +99,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="name" class="form-label form-control-sm">Enter new project name</label>
-                                <input type="text" name="name" id="name" class="form-control form-control-sm" autocomplete="off" required>
+                                <input type="text" name="name" id="name" class="form-control form-control-sm" spellcheck="false" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
