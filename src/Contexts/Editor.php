@@ -17,7 +17,6 @@ readonly class Editor
 {
     /**
      * @param string $title
-     * @param ArrayClass<Project> $projects
      * @param Project|null $project
      * @param ArrayClass<Entity> $allEntities
      * @param ArrayClass<Entity> $rootEntities
@@ -34,7 +33,7 @@ readonly class Editor
      * @param string|null $bundleName
      * @param Entity|Property|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration|null $selection
      */
-    public function __construct(public string $title, public ArrayClass $projects, public ?Project $project, public ArrayClass $allEntities, public ArrayClass $rootEntities, public ArrayClass $fetchRequestTemplates, public ArrayClass $configurations, public ?Entity $selectedEntity, public ?Property $selectedProperty, public ?FetchIndex $selectedIndex, public ?FetchIndexElement $selectedIndexElement, public ?UniquenessConstraint $selectedUniquenessConstraint, public ?FetchRequestTemplate $selectedFetchRequestTemplate, public ?Configuration $selectedConfiguration, public ArrayClass $breadcrumb, public ?string $bundleName, public Entity|Property|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration|null $selection)
+    public function __construct(public string $title, public ?Project $project, public ArrayClass $allEntities, public ArrayClass $rootEntities, public ArrayClass $fetchRequestTemplates, public ArrayClass $configurations, public ?Entity $selectedEntity, public ?Property $selectedProperty, public ?FetchIndex $selectedIndex, public ?FetchIndexElement $selectedIndexElement, public ?UniquenessConstraint $selectedUniquenessConstraint, public ?FetchRequestTemplate $selectedFetchRequestTemplate, public ?Configuration $selectedConfiguration, public ArrayClass $breadcrumb, public ?string $bundleName, public Entity|Property|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration|null $selection)
     {
     }
 }
