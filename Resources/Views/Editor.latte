@@ -3,7 +3,7 @@
 {block title}{$project?->name}{/block}
 {block content}
     <div id="main" class="user-select-none">
-        <nav class="navbar border-bottom border-black user-select-none p-0" style="height: 40px">
+        <nav class="navbar sticky-top bg-dark border-bottom border-black user-select-none p-0" style="height: 40px">
             <div class="container-fluid justify-content-start">
                 <div class="navbar-brand">
                     <!--suppress CheckImageSize -->
@@ -93,13 +93,13 @@
         </nav>
         <div class="container-fluid d-flex flex-column">
             <div class="row">
-                <div id="source" class="scroll-view col-sm-3 border-end border-black">
+                <div id="source" class="scroll-view col-sm-3 border-end border-black" style="height: calc(100vh - 68px)">
                     {include sourceList from "SourceList.latte"}
                 </div>
-                <div id="content" class="scroll-view col-sm-6">
+                <div id="content" class="scroll-view col-sm-6" style="height: calc(100vh - 68px)">
                     {include content from "Content.latte"}
                 </div>
-                <div id="sidebar" class="scroll-view col-sm-3 border-start border-black">
+                <div id="sidebar" class="scroll-view col-sm-3 border-start border-black" style="height: calc(100vh - 68px)">
                     {include inspector from "Inspector.latte"}
                 </div>
             </div>
