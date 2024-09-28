@@ -26,7 +26,21 @@
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
     function layout() {
-        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.style.height = document.documentElement.clientHeight - (40 + 28) + "px")
+        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => {
+            e.style.height = document.documentElement.clientHeight - (40 + 28) + "px"
+            e.addEventListener("contextmenu", async event => {
+                event.preventDefault()
+                switch (e.id) {
+                    case "source":
+                        showSourceListContextMenu()
+                        break
+                    default:
+                        break
+                }
+            }, {
+                once: false
+            })
+        })
     }
 
     function register() {
@@ -112,7 +126,7 @@
     function init() {
         window.addEventListener("resize", layout)
         window.addEventListener("popstate", async event => await replace(event.state?.url ?? window.location.origin, register))
-        window.api?.onAdd(() => console.log({$project?->model}))
+        window.api?.onAdd(async arg => await add(...arg, {$project?->model}, register))
         window.api?.onRemove(async item => await remove(item, register))
         register()
     }
