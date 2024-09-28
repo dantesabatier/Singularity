@@ -3,8 +3,17 @@
 {block title}{$title}{/block}
 {block content}
     <div id="main" class="user-select-none">
+        <nav class="navbar sticky-top border-bottom border-black p-0" style="height: 40px">
+            <div class="container-fluid justify-content-start">
+                <div class="navbar-brand">
+                    <!--suppress CheckImageSize -->
+                    <img src="/Resources/Images/icon.png" alt="Logo" width="16" height="16" class="d-inline-block">
+                    <span class="fs-6">{$title}</span>
+                </div>
+            </div>
+        </nav>
         <div class="container-fluid d-flex flex-column">
-            <div class="row flex-grow-1">
+            <div class="row">
                 <div class="col-sm-7 overflow-auto vh-100">
                     <div class="container-fluid">
                         <h2 class="text-wrap-word">Welcome to {$title}</h2>
