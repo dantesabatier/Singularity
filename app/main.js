@@ -57,13 +57,18 @@ const options = {
     },
     darkTheme: true,
     backgroundColor: "#272b2f",
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+        color: "#212529",
+        symbolColor: "#ffffff"
+    },
     show: false
 }
 const createWindow = () => {
     const window = new BrowserWindow({
         ...options,
         width: 600,
-        height: 480,
+        height: 480
     })
     window.webContents.setWindowOpenHandler(() => ({
         action: "allow",
