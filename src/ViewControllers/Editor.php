@@ -360,7 +360,9 @@ class Editor extends ViewController
     #[Override]
     public function viewWillLoad(): void
     {
-        $model = $this->project?->model ?? throw new NotFoundException();
+        $project = $this->project ?? throw new NotFoundException();
+        $this->breadcrumb[] = $project;
+        $model = $project->model ?? throw new NotFoundException();
         $this->breadcrumb[] = $model;
         $keys = ["entity", "fetchRequest", "configuration", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
@@ -379,26 +381,26 @@ class Editor extends ViewController
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
             $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
-            $this->selection = $this->managedObjectContext->fetch($fetchRequest)->first;
-            if (!$this->selection) {
+            if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first)) {
                 break;
             }
-            if ($this->selection instanceof Entity) {
-                $this->selectedEntity = $this->selection;
-            } elseif ($this->selection instanceof FetchRequestTemplate) {
-                $this->selectedFetchRequestTemplate = $this->selection;
-            } elseif ($this->selection instanceof Configuration) {
-                $this->selectedConfiguration = $this->selection;
-            } elseif ($this->selection instanceof UniquenessConstraint) {
-                $this->selectedUniquenessConstraint = $this->selection;
-            } elseif ($this->selection instanceof Property) {
-                $this->selectedProperty = $this->selection;
-            } elseif ($this->selection instanceof FetchIndex) {
-                $this->selectedIndex = $this->selection;
-            } elseif ($this->selection instanceof FetchIndexElement) {
-                $this->selectedIndexElement = $this->selection;
+            if ($selection instanceof Entity) {
+                $this->selectedEntity = $selection;
+            } elseif ($selection instanceof FetchRequestTemplate) {
+                $this->selectedFetchRequestTemplate = $selection;
+            } elseif ($selection instanceof Configuration) {
+                $this->selectedConfiguration = $selection;
+            } elseif ($selection instanceof UniquenessConstraint) {
+                $this->selectedUniquenessConstraint = $selection;
+            } elseif ($selection instanceof Property) {
+                $this->selectedProperty = $selection;
+            } elseif ($selection instanceof FetchIndex) {
+                $this->selectedIndex = $selection;
+            } elseif ($selection instanceof FetchIndexElement) {
+                $this->selectedIndexElement = $selection;
             }
-            $this->breadcrumb[] = $this->selection;
+            $this->selection = $selection;
+            $this->breadcrumb[] = $selection;
         }
     }
 
