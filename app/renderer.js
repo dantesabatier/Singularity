@@ -88,6 +88,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
     if (!response.ok && response.status !== 204) {
         await showErrorBox((await response.json())?.error)
         await replace(location.href, completion)
+        setProgressBar(-1)
         return
     }
     const keys = []
