@@ -116,7 +116,7 @@ class Welcome extends ViewController
     public function viewWillLoad(): void
     {
         $fetchRequest = Project::fetchRequest();
-        $fetchRequest->propertiesToFetch = new ArrayClass(["name", "url"]);
+        $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
         $this->projects = $this->managedObjectContext->fetch($fetchRequest);
         $this->title = $this->bundle->object(kCFBundleNameKey);
