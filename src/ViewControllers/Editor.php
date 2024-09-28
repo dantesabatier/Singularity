@@ -55,9 +55,6 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 #[Endpoint]
 class Editor extends ViewController
 {
-    /** @var ArrayClass<Project> */
-    #[Outlet]
-    public ArrayClass $projects;
     #[Outlet]
     public ?Project $project = null;
     /** @var ArrayClass<Entity> */
@@ -97,7 +94,6 @@ class Editor extends ViewController
     public function __construct()
     {
         parent::__construct();
-        unset($this->projects);
         unset($this->project);
         unset($this->rootEntities);
         unset($this->allEntities);
@@ -112,19 +108,7 @@ class Editor extends ViewController
      */
     public function __get(string $name)
     {
-        if ($name == "projects") {
-            $fetchRequest = Project::fetchRequest();
-            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string
-            ]);
-            $projects = $this->managedObjectContext->fetch($fetchRequest);
-            if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
-                $projects->insertAt($projects->removeAt($index), 0);
-            }
-            $this->$name = $projects;
-            return $this->$name;
-        } elseif ($name == "project") {
+        if ($name == "project") {
             $project = null;
             if ($referenceObject = $this->referenceObject("project")) {
                 $fetchRequest = Project::fetchRequest();
