@@ -24,45 +24,38 @@ const url = (endpoint, parameters) => {
  * @param {function|undefined} completion
  */
 const replace = async (url, completion = undefined) => {
-    try {
-        const headers = {}
-        headers["X-Requested-With"] = "XmlHttpRequest"
-        const response = await fetch(url, {
-            method: "GET",
-            headers: headers
-        })
-        if (!response.ok) {
-            showErrorBox((await response.json())?.error)
-            return
-        }
-        const data = await response.text()
-        const doc = document.implementation.createHTMLDocument()
-        doc.open()
-        doc.write(data)
-        doc.close()
-        const e2 = doc.getElementById("main")
-        if (!!!e2) {
-            return
-        }
-        const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
-            obj[e.id] = e.scrollTop
-            return obj
-        }, {})
-        const e1 = document.getElementById("main")
-        e1.innerHTML = e2.innerHTML
-        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
-        const body = document.body
-        body.removeAttribute("class")
-        body.removeAttribute("style")
-        const backdrop = document.querySelector(".modal-backdrop")
-        if (backdrop) {
-            backdrop.remove()
-        }
-        if (completion) {
-            completion()
-        }
-    } catch (e) {
-        showErrorBox(e)
+    const headers = {}
+    headers["X-Requested-With"] = "XmlHttpRequest"
+    const response = await fetch(url, {
+        method: "GET",
+        headers: headers
+    })
+    if (!response.ok) {
+        showErrorBox((await response.json())?.error)
+        return
+    }
+    const data = await response.text()
+    const doc = document.implementation.createHTMLDocument()
+    doc.open()
+    doc.write(data)
+    doc.close()
+    const e2 = doc.getElementById("main")
+    const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
+        obj[e.id] = e.scrollTop
+        return obj
+    }, {})
+    const e1 = document.getElementById("main")
+    e1.innerHTML = e2.innerHTML
+    document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
+    const body = document.body
+    body.removeAttribute("class")
+    body.removeAttribute("style")
+    const backdrop = document.querySelector(".modal-backdrop")
+    if (backdrop) {
+        backdrop.remove()
+    }
+    if (completion) {
+        completion()
     }
 }
 
@@ -82,85 +75,83 @@ const push = async (url, completion = undefined) => {
  * @param {function|undefined} completion
  */
 const send = async (action, body = undefined, method = "POST", completion = undefined) => {
-    try {
-        setProgressBar(1.1)
-        const location = new URL(window.location)
-        const headers = {}
-        headers["X-Requested-With"] = "XmlHttpRequest"
-        headers["Content-Type"] = "application/json; charset=utf-8"
-        const response = await fetch(action, {
-            method: method,
-            headers: headers,
-            body: !!body ? JSON.stringify(body, null, 2) : undefined
-        })
-        if (!response.ok && response.status !== 204) {
-            await showErrorBox((await response.json())?.error)
-            await replace(location.href)
-            return
-        }
-        const keys = []
-        const json = response.status !== 204 ? await response.json() : undefined
-        const endpoint = URL.canParse(action) ? new URL(action).pathname.replace("/", "") : action.replace("/", "")
-        const m = method.toUpperCase()
-        switch (m) {
-            case "POST":
-            case "DELETE":
-                switch (endpoint) {
-                    case "Entity":
-                    case "FetchRequestTemplate":
-                        keys.push("project")
-                        break
-                    case "Attribute":
-                    case "Relationship":
-                    case "FetchedProperty":
-                    case "FetchIndex":
-                    case "UniquenessConstraint":
-                        keys.push(...["project", "entity"])
-                        break
-                    case "FetchIndexElement":
-                        keys.push(...["project", "entity", "index"])
-                        break
-                }
-                const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
-                if (m === "POST") {
-                    const objectID = json?.objectID
-                    if (objectID) {
-                        const entity = (() => {
-                            switch (endpoint) {
-                                case "Entity":
-                                    return "entity"
-                                case "FetchRequestTemplate":
-                                    return "fetchRequest"
-                                case "Attribute":
-                                case "Relationship":
-                                case "FetchedProperty":
-                                    return "property"
-                                case "FetchIndex":
-                                    return "index"
-                                case "UniquenessConstraint":
-                                    return "constraint"
-                                case "FetchIndexElement":
-                                    return "element"
-                                default:
-                                    return ""
-                            }
-                        })()
-                        if (entity) {
-                            values.push(`${entity}=${objectID}`)
+    const location = new URL(window.location)
+    setProgressBar(1.1)
+    const headers = {}
+    headers["X-Requested-With"] = "XmlHttpRequest"
+    headers["Content-Type"] = "application/json; charset=utf-8"
+    const response = await fetch(action, {
+        method: method,
+        headers: headers,
+        body: !!body ? JSON.stringify(body, null, 2) : undefined
+    })
+    if (!response.ok && response.status !== 204) {
+        await showErrorBox((await response.json())?.error)
+        await replace(location.href, completion)
+        return
+    }
+    const keys = []
+    const json = response.status !== 204 ? await response.json() : undefined
+    const endpoint = URL.canParse(action) ? new URL(action).pathname.replace("/", "") : action.replace("/", "")
+    const m = method.toUpperCase()
+    switch (m) {
+        case "POST":
+        case "DELETE":
+            switch (endpoint) {
+                case "Entity":
+                case "FetchRequestTemplate":
+                case "Configuration":
+                    keys.push("project")
+                    break
+                case "Attribute":
+                case "Relationship":
+                case "FetchedProperty":
+                case "FetchIndex":
+                case "UniquenessConstraint":
+                    keys.push(...["project", "entity"])
+                    break
+                case "FetchIndexElement":
+                    keys.push(...["project", "entity", "index"])
+                    break
+            }
+            const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
+            if (m === "POST") {
+                const objectID = json?.objectID
+                if (objectID) {
+                    const entity = (() => {
+                        switch (endpoint) {
+                            case "Entity":
+                                return "entity"
+                            case "FetchRequestTemplate":
+                                return "fetchRequest"
+                            case "Configuration":
+                                return "configuration"
+                            case "Attribute":
+                            case "Relationship":
+                            case "FetchedProperty":
+                                return "property"
+                            case "FetchIndex":
+                                return "index"
+                            case "UniquenessConstraint":
+                                return "constraint"
+                            case "FetchIndexElement":
+                                return "element"
+                            default:
+                                return ""
                         }
+                    })()
+                    if (entity) {
+                        values.push(`${entity}=${objectID}`)
                     }
                 }
-                if (!!values.length) {
-                    location.search = values.join("&")
-                }
-                break
-        }
-        await push(location.href, completion)
-    } catch (e) {
-        showErrorBox(e)
-    } finally {
-        setProgressBar(-1)
+            }
+            if (!!values.length) {
+                location.search = values.join("&")
+            }
+            break
     }
+    await push(location.href, completion)
+    setProgressBar(-1)
 }
 
 /**
