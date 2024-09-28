@@ -56,7 +56,7 @@ const options = {
         preload: path.join(__dirname, "preload.js")
     },
     darkTheme: true,
-    backgroundColor: "#272b2f",
+    backgroundColor: "#212529",
     titleBarStyle: "hidden",
     titleBarOverlay: {
         color: "#212529",
