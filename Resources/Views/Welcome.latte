@@ -3,7 +3,7 @@
 {block title}{$title}{/block}
 {block content}
     <div id="main" class="user-select-none">
-        <nav class="navbar border-bottom border-black p-0" style="height: 40px">
+        <nav class="navbar sticky-top bg-dark border-bottom border-black p-0" style="height: 40px">
             <div class="container-fluid justify-content-start">
                 <div class="navbar-brand">
                     <!--suppress CheckImageSize -->
@@ -14,7 +14,7 @@
         </nav>
         <div class="container-fluid d-flex flex-column">
             <div class="row">
-                <div class="col-sm-7 overflow-auto vh-100">
+                <div class="col-sm-7 overflow-auto" style="height: calc(100vh - 40px)">
                     <div class="container-fluid">
                         <h2 class="text-wrap-word">Welcome to {$title}</h2>
                         <button class="text-primary text-truncate border-0 bg-transparent" onclick="create(register)">
@@ -22,7 +22,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="col-sm-5 overflow-auto bg-dark-subtle vh-100">
+                <div class="col-sm-5 overflow-auto bg-dark-subtle" style="height: calc(100vh - 40px)">
                     {if !$projects->isEmpty}
                         <ol class="list-group bg-dark-subtle">
                             <li n:foreach="$projects as $project" class="list-group-item list-group-item-action display-block border-0 rounded">
