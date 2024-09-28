@@ -35,9 +35,26 @@
                                         <small class="d-block text-truncate text-muted" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$project->url->path}">{$project->url->path}</small>
                                     </div>
                                     <div class="col-sm-2 text-end">
-                                        <button class="btn icon d-inline p-2" onclick="remove({$project})">
-                                            <span class="material-symbols-outlined small">cancel</span>
-                                        </button>
+                                        <div class="dropdown">
+                                            <button class="btn icon p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="material-symbols-outlined small">info</span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <button class="dropdown-item" onclick="rename({$project})">
+                                                        Rename
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item" onclick="remove({$project}, register)">
+                                                        Remove
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -72,5 +89,51 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="editProject" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editProjectLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="/Rename" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <h5 class="modal-title" id="editProjectLabel">Rename project</h5>
+                            </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label form-control-sm">Enter new project name</label>
+                                <input type="text" name="name" id="name" class="form-control form-control-sm" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                OK
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+    <script>
+        /**
+         * @param { object } project
+         */
+        const rename = async (project) => {
+            const element = document.getElementById("editProject")
+            /**
+             * @type { HTMLFormElement }
+             */
+            const form = element.querySelector(".modal-content form")
+            const nameElement = form.querySelector("input[type=text]")
+            nameElement.value = project.name
+            const footer = form.querySelector(".modal-footer")
+            const projectElement = footer.querySelector("input[name=objectID]")
+            projectElement.value = project.objectID
+            const modal = new bootstrap.Modal(element, {})
+            modal.show(undefined)
+        }
+    </script>
 {/block}
