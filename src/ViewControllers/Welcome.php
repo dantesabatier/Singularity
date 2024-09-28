@@ -263,4 +263,28 @@ class Welcome extends ViewController
         $context->delete($project);
         $context->save();
     }
+
+    /**
+     * @throws Exception
+     */
+    #[Action(HTTPRequestMethod::patch)]
+    public function rename(): void
+    {
+        $body = $this->request->getParsedBody();
+        $name = $body["name"] ?? throw new BadRequestException("path cannot be null");
+        $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
+        $context = $this->managedObjectContext;
+        $fetchRequest = Project::fetchRequest();
+        $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
+        $project = $context->fetch($fetchRequest)->first ?? throw new NotFoundException();
+        $project->name = $name;
+        $context->save();
+        /** @var URL $url */
+        $url = $project->url;
+        $bundle = Bundle::bundleWithURL($url);
+        /** @var Dictionary<mixed> $dictionary */
+        $dictionary = $bundle->infoDictionary;
+        $dictionary[kCFBundleNameKey] = $name;
+        PropertyListSerialization::writePropertyList($dictionary, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
+    }
 }
