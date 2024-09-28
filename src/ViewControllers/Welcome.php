@@ -251,22 +251,6 @@ class Welcome extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(HTTPRequestMethod::delete)]
-    public function remove(): void
-    {
-        $body = $this->request->getParsedBody();
-        $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
-        $context = $this->managedObjectContext;
-        $fetchRequest = Project::fetchRequest();
-        $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
-        $project = $context->fetch($fetchRequest)->first ?? throw new NotFoundException();
-        $context->delete($project);
-        $context->save();
-    }
-
-    /**
-     * @throws Exception
-     */
     #[Action(HTTPRequestMethod::patch)]
     public function rename(): void
     {
@@ -286,5 +270,21 @@ class Welcome extends ViewController
         $dictionary = $bundle->infoDictionary;
         $dictionary[kCFBundleNameKey] = $name;
         PropertyListSerialization::writePropertyList($dictionary, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Action(HTTPRequestMethod::delete)]
+    public function remove(): void
+    {
+        $body = $this->request->getParsedBody();
+        $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
+        $context = $this->managedObjectContext;
+        $fetchRequest = Project::fetchRequest();
+        $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
+        $project = $context->fetch($fetchRequest)->first ?? throw new NotFoundException();
+        $context->delete($project);
+        $context->save();
     }
 }
