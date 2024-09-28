@@ -140,24 +140,17 @@ ipcMain.on("showSourceListContextMenu", (event, arg) => Menu.buildFromTemplate([
         submenu: [
             {
                 label: "Entity",
-                click: () => event.sender.send("add", "Entity")
+                click: () => event.sender.send("add", Array(2).fill("Entity"))
             },
             {
                 label: "Fetch Request",
-                click: () => event.sender.send("add", "FetchRequestTemplate")
+                click: () => event.sender.send("add", ["FetchRequestTemplate", "fetchRequestTemplate"])
             },
             {
                 label: "Configuration",
-                click: () => event.sender.send("add", "Configuration")
+                click: () => event.sender.send("add", Array(2).fill("Configuration"))
             }
         ]
-    },
-    {
-        type: "separator"
-    },
-    {
-        label: "Remove",
-        click: () => event.sender.send("remove", arg)
     }
 ]).popup({
     window: BrowserWindow.fromWebContents(event.sender)
