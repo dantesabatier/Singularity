@@ -273,7 +273,7 @@ const add = async (entity, name, parent, completion = undefined) => {
  * @param completion
  */
 const remove = async (item, completion = undefined) => {
-    if ((await window.api?.showMessageBox(`Remove "${item.name ?? item.propertyName ?? item.stringValue}"?`, "This action cannot be undone.", ["Cancel", "OK"])).response) {
+    if ((await window.api?.showMessageBox(`Remove "${item.name ?? item.propertyName ?? item.stringValue}"?`, "This action cannot be undone.", ["Cancel", "OK"]))?.response) {
         await send(url(item.entityName), {objectID: item.objectID}, "DELETE", completion)
     }
 }
