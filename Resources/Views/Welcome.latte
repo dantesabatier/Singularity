@@ -37,7 +37,7 @@
                                     <div class="col-sm-2 text-end">
                                         <div class="dropdown">
                                             <button class="btn icon p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <span class="material-symbols-outlined small">info</span>
+                                                <span class="material-symbols-outlined small">more_vert</span>
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li>
@@ -89,7 +89,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="editProject" data-bs-backdrop="static" tabindex="-1" aria-labelledby="editProjectLabel" aria-hidden="true">
+        <div class="modal fade" id="editProject" tabindex="-1" aria-labelledby="editProjectLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form action="/Rename" method="POST">
@@ -127,13 +127,20 @@
              * @type { HTMLFormElement }
              */
             const form = element.querySelector(".modal-content form")
+            /**
+             * @type { HTMLInputElement }
+             */
             const nameElement = form.querySelector("input[type=text]")
             nameElement.value = project.name
             const footer = form.querySelector(".modal-footer")
+            /**
+             * @type { HTMLInputElement }
+             */
             const projectElement = footer.querySelector("input[name=objectID]")
             projectElement.value = project.objectID
             const modal = new bootstrap.Modal(element, {})
             modal.show(undefined)
+            element.addEventListener("shown.bs.modal", () => nameElement.focus())
         }
     </script>
 {/block}
