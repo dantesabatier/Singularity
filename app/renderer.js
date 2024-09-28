@@ -194,12 +194,7 @@ const load = async (project) => window.api.showWindow({
     url: `${window.location.origin}${url("Editor", {project: project.objectID})}`,
     overrideBrowserWindowOptions: {
         width: 1090,
-        height: 600,
-        titleBarStyle: "hidden",
-        titleBarOverlay: {
-            color: "#212529",
-            symbolColor: "#ffffff"
-        }
+        height: 600
     }
 })
 
@@ -315,7 +310,7 @@ const showAboutPanel = () => window.api?.showWindow({
         width: 380,
         height: 220,
         modal: true,
-        frame: false
+        titleBarOverlay: false
     }
 })
 
