@@ -417,7 +417,8 @@ class Editor extends ViewController
         $this->managedObjectContext->save();
         $fileManager = FileManager::default();
         $bundle = Bundle::bundleWithURL($url);
-        $resourceURL = $bundle->bundleURL->appendingPathComponent("Resources");
+        /** @var URL $resourceURL */
+        $resourceURL = $bundle->resourceURL;
         if (!$fileManager->fileExists($resourceURL->path)) {
             $fileManager->createDirectory($resourceURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
         }
