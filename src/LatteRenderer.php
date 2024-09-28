@@ -65,8 +65,8 @@ class LatteRenderer extends Renderer
                 };
                 $img = function (Project|Model|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration $e) use (&$img, &$fn): string {
                     return match (true) {
-                        $e instanceof Project => "P",
-                        $e instanceof Model => "M",
+                        $e instanceof Project => "Project",
+                        $e instanceof Model => "Model",
                         $e instanceof Entity => "E",
                         $e instanceof Attribute => $fn($e->type),
                         $e instanceof Relationship => $e->isToMany ? "M" : "O",

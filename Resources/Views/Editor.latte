@@ -109,7 +109,7 @@
                 <li n:foreach="$breadcrumb as $item" class="breadcrumb-item small">
                     {var string $img = img($item)}
                     {if $item instanceof App\Model\Project}
-                        <div class="nav-item">
+                        <div class="nav-item" data-href="/Editor?project={$project?->objectID?->referenceObject}">
                             <img n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span class="ps-2">{$item->name}</span>
                         </div>
