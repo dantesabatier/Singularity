@@ -24,9 +24,8 @@
 <script type="text/javascript" src="../../app/renderer.js" defer></script>
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
-    function layout() {
+    function register() {
         document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => {
-            e.style.height = document.documentElement.clientHeight - (40 + 28) + "px"
             e.addEventListener("contextmenu", async event => {
                 event.preventDefault()
                 switch (e.id) {
@@ -40,10 +39,6 @@
                 once: false
             })
         })
-    }
-
-    function register() {
-        layout()
         document.querySelectorAll(".btn-toggle").forEach(e => {
             e.addEventListener("click", async event => {
                 event.stopPropagation()
@@ -123,7 +118,6 @@
     }
 
     function init() {
-        window.addEventListener("resize", layout)
         window.addEventListener("popstate", async event => await replace(event.state?.url ?? window.location.origin, register))
         window.api?.onAdd(async arg => await add(...arg, {$project?->model}, register))
         window.api?.onRemove(async item => await remove(item, register))
