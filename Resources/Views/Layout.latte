@@ -1,3 +1,4 @@
+{varType App\Model\Project $project}
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
 <head>
@@ -24,7 +25,37 @@
 <script type="text/javascript" src="../../app/renderer.js" defer></script>
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
+    function layout() {
+        document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.style.height = document.documentElement.clientHeight - (40 + 28) + "px")
+    }
+
     function register() {
+        layout()
+        document.querySelectorAll(".btn-toggle").forEach(e => {
+            e.addEventListener("click", async event => {
+                event.stopPropagation()
+            }, {
+                once: true
+            })
+        })
+        document.querySelectorAll("div[data-href]").forEach(e => {
+            const location = window.location.origin + e.dataset.href
+            e.addEventListener("click", async () => {
+                if (window.location.href !== location) {
+                    await push(location, register)
+                }
+            }, {
+                once: true
+            })
+        })
+        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => {
+            const location = window.location.origin + e.dataset.href
+            if (window.location.href !== location) {
+                await push(location, register)
+            }
+        }, {
+            once: true
+        }))
         document.querySelectorAll("select[data-autosave=true]").forEach(e => {
             e.addEventListener("click", async event => {
                 event.stopPropagation()
@@ -79,7 +110,10 @@
     }
 
     function init() {
+        window.addEventListener("resize", layout)
         window.addEventListener("popstate", async event => await replace(event.state?.url ?? window.location.origin, register))
+        window.api?.onAdd(() => console.log({$project?->model}))
+        window.api?.onRemove(async item => await remove(item, register))
         register()
     }
 </script>

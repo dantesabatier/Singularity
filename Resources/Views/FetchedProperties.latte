@@ -24,10 +24,10 @@
             <tr>
                 <td>
                     <div class="d-inline-block">
-                        <button class="btn icon p-2" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity})">
+                        <button class="btn icon p-2" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, register)">
                             <span class="material-symbols-outlined small">add</span>
                         </button>
-                        <button class="btn icon p-2" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\FetchedProperty ? disabled}>
+                        <button class="btn icon p-2" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\FetchedProperty ? disabled}>
                             <span class="material-symbols-outlined small">remove</span>
                         </button>
                     </div>

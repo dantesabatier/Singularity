@@ -45,7 +45,7 @@ if (handleSquirrelEvent()) {
     return
 }
 
-Menu.setApplicationMenu(null)
+//Menu.setApplicationMenu(null)
 const options = {
     webPreferences: {
         webSecurity: false,
@@ -136,7 +136,21 @@ ipcMain.on("showWindow", (event, arg) => {
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
 ipcMain.on("showSourceListContextMenu", (event, arg) => Menu.buildFromTemplate([
     {
-        label: "Add"
+        label: "New",
+        submenu: [
+            {
+                label: "Entity",
+                click: () => event.sender.send("add", "Entity")
+            },
+            {
+                label: "Fetch Request",
+                click: () => event.sender.send("add", "FetchRequestTemplate")
+            },
+            {
+                label: "Configuration",
+                click: () => event.sender.send("add", "Configuration")
+            }
+        ]
     },
     {
         type: "separator"
