@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\Foundation\Dictionary;
 
 /**
@@ -10,6 +11,7 @@ use Sabatier\Foundation\Dictionary;
  */
 class FetchedProperty extends Property
 {
+    #[Override]
     public function dictionaryRepresentation(): Dictionary
     {
         /** @var Dictionary<mixed> $dictionary */

@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\Model;
 
 use Override;
@@ -102,6 +100,7 @@ class Relationship extends Property
         return true;
     }
 
+    #[Override]
     public function dictionaryRepresentation(): Dictionary
     {
         /** @var Dictionary<mixed> $dictionary */
