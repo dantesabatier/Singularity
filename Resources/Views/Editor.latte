@@ -14,7 +14,6 @@
                         <span class="material-symbols-outlined">menu</span>
                     </button>
                     <ul class="dropdown-menu">
-
                         <li>
                             <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model})">
                                 Add Entity
@@ -165,4 +164,53 @@
             </ol>
         </nav>
     </div>
+    <!--suppress JSUnresolvedReference -->
+    <script>
+        function layout() {
+            document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.style.height = document.documentElement.clientHeight - (40 + 28) + "px")
+        }
+
+        function reload() {
+            layout()
+            document.querySelectorAll(".btn-toggle").forEach(e => {
+                e.addEventListener("click", async event => {
+                    event.stopPropagation()
+                }, {
+                    once: true
+                })
+            })
+            document.querySelectorAll("div[data-href]").forEach(e => {
+                const location = window.location.origin + e.dataset.href
+                e.addEventListener("click", async () => {
+                    if (window.location.href !== location) {
+                        await push(location, reload)
+                    }
+                }, {
+                    once: true
+                })
+                e.addEventListener("contextmenu", async event => {
+                    event.preventDefault()
+                    showSourceListContextMenu({
+                        objectID: Number(new URL(location).searchParams.get("entity")),
+                        entityName: "Entity",
+                        name: e.querySelector("span:not(.space)")?.innerText
+                    })
+                }, {
+                    once: false
+                })
+            })
+            document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => {
+                const location = window.location.origin + e.dataset.href
+                if (window.location.href !== location) {
+                    await push(location, reload)
+                }
+            }, {
+                once: true
+            }))
+        }
+
+        window.addEventListener("resize", layout)
+        window.api?.onRemove(async item => await remove(item, reload))
+        reload()
+    </script>
 {/block}
