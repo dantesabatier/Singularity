@@ -33,17 +33,17 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selection}, register)" {!$selection instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 Add Attribute
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selection}, register)" {!$selection instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 Add Fetched Property
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selection}, register)" {!$selection instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 Add Relationship
                             </button>
                         </li>
@@ -51,7 +51,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selection}, register)" {!$selection instanceof App\Model\Entity || $selection->attributes->isEmpty ? disabled}>
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, register)" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                                 Add Fetch Index
                             </button>
                         </li>
