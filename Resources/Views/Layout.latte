@@ -41,6 +41,7 @@
         document.querySelectorAll(".btn-toggle").forEach(e => {
             e.addEventListener("click", async event => {
                 event.stopPropagation()
+                await submit(e.form, register)
             }, {
                 once: true
             })
@@ -120,7 +121,6 @@
         }, {
             once: true
         })
-
     }
 
     function init() {
