@@ -47,10 +47,10 @@
             <tr>
                 <td>
                     <div class="d-inline-block">
-                        <button class="btn icon p-2" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, register)">
+                        <button class="btn icon p-0" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, register)">
                             <i class="bi bi-plus"></i>
                         </button>
-                        <button class="btn icon p-2" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
+                        <button class="btn icon p-0" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
                             <i class="bi bi-dash"></i>
                         </button>
                     </div>

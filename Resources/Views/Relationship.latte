@@ -45,9 +45,7 @@
                     <!--suppress HtmlUnknownTag -->
                     <hr>
                     {var App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
-                {if $destinationEntity}
-                        <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
-                    {/if}
+                    <option n:if="$destinationEntity" n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
                 </select>
             </div>
         </div>
@@ -102,7 +100,6 @@
                 </div>
             </div>
         {/if}
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-        <input class="d-none" type="submit">
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
     </form>
 {/define}
