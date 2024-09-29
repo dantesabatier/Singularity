@@ -278,6 +278,8 @@ const remove = async (item, completion = undefined) => {
     }
 }
 
+const explorer = (path) => window.api?.openPath(path)
+
 /**
  * @param {string} messageText
  * @param {string} informativeText
