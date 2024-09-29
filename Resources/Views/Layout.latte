@@ -112,9 +112,16 @@
         }, {
             once: false
         }))
-        document.querySelectorAll(`[data-bs-toggle="tooltip"]`).forEach(e => new bootstrap.Tooltip(e), {
+        document.querySelectorAll(`[data-bs-toggle="tooltip"]`).forEach(e => {
+            const tooltip = new bootstrap.Tooltip(e, {
+                container: "body",
+                trigger: "hover"
+            })
+            e.addEventListener("click", () => tooltip.hide())
+        }, {
             once: true
         })
+
     }
 
     function init() {
