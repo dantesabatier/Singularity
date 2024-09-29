@@ -129,70 +129,78 @@
                     {var string $img = img($item)}
                     {if $item instanceof App\Model\Project}
                         <div class="nav-item" data-href="/Editor?project={$item->objectID->referenceObject}">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-2 pe-1">{$item->name}</span>
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span class="ps-{$img ? 2 : 0} pe-1">{$item->name}</span>
                         </div>
                     {elseif $item instanceof App\Model\Model}
                         <div class="nav-item">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
-                                <button type="button" class="btn icon ps-2 pe-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="btn icon ps-{$img ? 2 : 0} pe-1" data-bs-toggle="dropdown" aria-expanded="false">
                                     {$project?->name}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->entities as $entity">
-                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">{$entity->name}</a>
+                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                                            <img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="entity">
+                                            <span class="ps-1">{$entity->name}</span> </a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\Entity}
                         <div class="nav-item">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
-                                <button type="button" class="btn icon ps-2 pe-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="btn icon ps-{$img ? 2 : 0} pe-1" data-bs-toggle="dropdown" aria-expanded="false">
                                     {$item->name}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->properties as $property">
-                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">{$property->name}</a>
+                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">
+                                            {var string $icon = img($property)}
+                                            <img n:if="$icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="property">
+                                            <span class="ps-{$icon ? 1 : 0}">{$property->name}</span></a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\FetchRequestTemplate}
                         <div class="nav-item">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-2 pe-1 align-self-center">{$item->name}</span>
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->name}</span>
                         </div>
                     {elseif $item instanceof App\Model\UniquenessConstraint}
                         <div class="nav-item">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-2 pe-1 align-self-center">{$item->stringValue}</span>
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->stringValue}</span>
                         </div>
                     {elseif $item instanceof App\Model\Property}
                         <div class="nav-item">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-2 pe-1 align-self-center">{$item->name}</span>
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->name}</span>
                         </div>
                     {elseif $item instanceof App\Model\FetchIndex}
                         <div class="nav-item">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
-                                <button type="button" class="btn icon ps-2 pe-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="btn icon ps-{$img ? 2 : 0} pe-1" data-bs-toggle="dropdown" aria-expanded="false">
                                     {$item->name}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->elements as $element">
-                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">{$element->propertyName}</a>
+                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">
+                                            {var string $icon = img($element)}
+                                            <img n:if="$icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="property">
+                                            <span class="ps-1">{$element->propertyName}</span></a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\FetchIndexElement}
                         <div class="nav-item">
-                            <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-2 pe-1">{$item->propertyName}</span>
+                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span class="ps-{$img ? 2 : 0} pe-1">{$item->propertyName}</span>
                         </div>
                     {/if}
                 </li>
