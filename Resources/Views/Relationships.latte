@@ -48,10 +48,10 @@
                 <td>
                     <div class="d-inline-block">
                         <button class="btn icon p-2" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, register)">
-                            <span class="material-symbols-outlined small">add</span>
+                            <i class="bi bi-plus"></i>
                         </button>
                         <button class="btn icon p-2" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
-                            <span class="material-symbols-outlined small">remove</span>
+                            <i class="bi bi-dash"></i>
                         </button>
                     </div>
                 </td>
