@@ -87,7 +87,7 @@ class Editor extends ViewController
     #[Outlet]
     public ?Configuration $selectedConfiguration = null;
     #[Outlet]
-    public ManagedObject|null $selection = null;
+    public ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     public ArrayClass $breadcrumb;
