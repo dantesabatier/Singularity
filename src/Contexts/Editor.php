@@ -34,7 +34,7 @@ readonly class Editor
      * @param string|null $bundleName
      * @param ManagedObject|null $selection
      */
-    public function __construct(public string $title, public ArrayClass $projects, public ?Project $project, public ArrayClass $allEntities, public ArrayClass $rootEntities, public ArrayClass $fetchRequestTemplates, public ArrayClass $configurations, public ?Entity $selectedEntity, public ?Property $selectedProperty, public ?FetchIndex $selectedIndex, public ?FetchIndexElement $selectedIndexElement, public ?UniquenessConstraint $selectedUniquenessConstraint, public ?FetchRequestTemplate $selectedFetchRequestTemplate, public ?Configuration $selectedConfiguration, public ArrayClass $breadcrumb, public ?string $bundleName, public ManagedObject|null $selection)
+    public function __construct(public string $title, public ArrayClass $projects, public ?Project $project, public ArrayClass $allEntities, public ArrayClass $rootEntities, public ArrayClass $fetchRequestTemplates, public ArrayClass $configurations, public ?Entity $selectedEntity, public ?Property $selectedProperty, public ?FetchIndex $selectedIndex, public ?FetchIndexElement $selectedIndexElement, public ?UniquenessConstraint $selectedUniquenessConstraint, public ?FetchRequestTemplate $selectedFetchRequestTemplate, public ?Configuration $selectedConfiguration, public ArrayClass $breadcrumb, public ?string $bundleName, public ?ManagedObject $selection)
     {
     }
 }
