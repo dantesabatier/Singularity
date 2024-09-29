@@ -83,7 +83,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
     const response = await fetch(action, {
         method: method,
         headers: headers,
-        body: !!body ? JSON.stringify(body, null, 2) : undefined
+        body: !!body ? JSON.stringify(body) : undefined
     })
     if (!response.ok && response.status !== 204) {
         await showErrorBox((await response.json())?.error)
