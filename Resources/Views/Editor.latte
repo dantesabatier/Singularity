@@ -130,7 +130,7 @@
                     {if $item instanceof App\Model\Project}
                         <div class="nav-item" data-href="/Editor?project={$item->objectID->referenceObject}">
                             <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-2 pe-1 align-self-center">{$item->name}</span>
+                            <span class="ps-2 pe-1">{$item->name}</span>
                         </div>
                     {elseif $item instanceof App\Model\Model}
                         <div class="nav-item">
