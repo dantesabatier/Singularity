@@ -15,7 +15,7 @@
         <div class="container-fluid d-flex flex-column">
             <div class="row">
                 <div class="col-sm-7 overflow-auto" style="height: calc(100vh - 40px)">
-                    <div class="container-fluid">
+                    <div class="p-2">
                         <h2 class="text-wrap-word">Welcome to {$title}</h2>
                         <button class="text-primary text-truncate border-0 bg-transparent" onclick="create(register)">
                             Create a new project
@@ -23,45 +23,47 @@
                     </div>
                 </div>
                 <div class="col-sm-5 overflow-auto bg-dark-subtle" style="height: calc(100vh - 40px)">
-                    {if !$projects->isEmpty}
-                        <ol class="list-group bg-dark-subtle">
-                            <li n:foreach="$projects as $project" class="list-group-item list-group-item-action display-block border-0 rounded">
-                                <div class="row align-items-center">
-                                    <div class="col-sm-10 cursor-pointer" onclick="show({$project})">
-                                        <div class="d-flex">
-                                            <span class="d-inline-block rounded text-center fw-medium" style="width: 24px; height: 24px; background-color: {$project?->color|noescape};">{$project?->name|first}</span>
-                                            <span class="d-inline-block fw-bold ps-2">{$project->name}</span>
+                    <div class="py-2">
+                        {if !$projects->isEmpty}
+                            <ol class="list-group bg-dark-subtle">
+                                <li n:foreach="$projects as $project" class="list-group-item list-group-item-action display-block border-0 rounded">
+                                    <div class="row align-items-center">
+                                        <div class="col-sm-10 cursor-pointer" onclick="show({$project})">
+                                            <div class="d-flex">
+                                                <span class="d-inline-block rounded text-center fw-medium" style="width: 24px; height: 24px; background-color: {$project?->color|noescape};">{$project?->name|first}</span>
+                                                <span class="d-inline-block fw-bold ps-2">{$project->name}</span>
+                                            </div>
+                                            <small class="d-block text-truncate text-muted" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$project->url->path}">{$project->url->path}</small>
                                         </div>
-                                        <small class="d-block text-truncate text-muted" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$project->url->path}">{$project->url->path}</small>
-                                    </div>
-                                    <div class="col-sm-2 text-end">
-                                        <div class="dropdown">
-                                            <button class="btn icon p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <span class="material-symbols-outlined small">more_vert</span>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <button class="dropdown-item" onclick="rename({$project})">
-                                                        Rename
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item" onclick="remove({$project}, register)">
-                                                        Remove
-                                                    </button>
-                                                </li>
-                                            </ul>
+                                        <div class="col-sm-2 text-end">
+                                            <div class="dropdown">
+                                                <button class="btn icon p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="material-symbols-outlined small">more_vert</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <button class="dropdown-item" onclick="rename({$project})">
+                                                            Rename
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item" onclick="remove({$project}, register)">
+                                                            Remove
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </li>
-                        </ol>
-                    {else}
-                        No Recent Projects
-                    {/if}
+                                </li>
+                            </ol>
+                        {else}
+                            No Recent Projects
+                        {/if}
+                    </div>
                 </div>
             </div>
             <div class="row fixed-bottom" style="height: 40px;">
