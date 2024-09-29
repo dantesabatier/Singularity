@@ -15,17 +15,17 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model}, register)">
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project?->model}, register)">
                                 Add Entity
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model}, register)">
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project?->model}, register)">
                                 Add Fetch Request
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project->model}, register)">
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project?->model}, register)">
                                 Add Configuration
                             </button>
                         </li>
@@ -83,7 +83,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item" onclick="model({$project}, {$project->model?->url}, register)">
+                            <button class="dropdown-item" onclick="model({$project}, {$project?->model?->url}, register)">
                                 Import...
                             </button>
                         </li>
@@ -128,7 +128,7 @@
                 <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
                     {var string $img = img($item)}
                     {if $item instanceof App\Model\Project}
-                        <div class="nav-item" data-href="/Editor?project={$project?->objectID?->referenceObject}">
+                        <div class="nav-item" data-href="/Editor?project={$item->objectID->referenceObject}">
                             <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span class="ps-2 pe-1 align-self-center">{$item->name}</span>
                         </div>
@@ -137,11 +137,11 @@
                             <img class="ps-1" n:if="$img" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
                                 <button type="button" class="btn icon ps-2 pe-1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {$project->name}
+                                    {$project?->name}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->entities as $entity">
-                                        <a class="dropdown-item" href="/Editor?project={$project->objectID->referenceObject}&entity={$entity->objectID->referenceObject}">{$entity->name}</a>
+                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">{$entity->name}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -155,7 +155,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->properties as $property">
-                                        <a class="dropdown-item" href="/Editor?project={$project->objectID->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">{$property->name}</a>
+                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">{$property->name}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -184,7 +184,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->elements as $element">
-                                        <a class="dropdown-item" href="/Editor?project={$project->objectID->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">{$element->propertyName}</a>
+                                        <a class="dropdown-item" href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">{$element->propertyName}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -201,7 +201,9 @@
     </div>
     <script>
         async function load(project) {
-            await push(url("Editor", { project: project.objectID }), register)
+            await push(url("Editor", {
+                project: project.objectID
+            }), register)
         }
     </script>
 {/block}
