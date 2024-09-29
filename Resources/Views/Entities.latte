@@ -3,10 +3,14 @@
     <div class="flex-column w-100 ps-{$entities ? 2 : 0}">
         <div n:foreach="$entities ?? $rootEntities as $entity">
             <div class="nav-item{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'} text-truncate" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
-                <span n:if="$entity->isLeaf" class="space"></span>
-                <button n:else class="btn btn-toggle ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="true"></button>
-                <img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
-                <span class="ps-2">{$entity->name}</span>
+                <form action="/Entity" method="POST">
+                    <span n:if="$entity->isLeaf" class="space"></span>
+                    <button n:else class="btn btn-toggle ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="{$entity->isExpanded|json}" name="isExpanded" aria-label="isExpanded" value="{$entity->isExpanded}"></button>
+                    <img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
+                    <span class="ps-2">{$entity->name}</span>
+                    <input type="hidden" name="objectID" value="{$entity->objectID->referenceObject}">
+                    <input class="d-none" type="submit">
+                </form>
             </div>
             <div n:if="$entity->indexesCount" class="flex-column w-100 ps-2">
                 <div n:foreach="$entity->indexes as $index" class="nav-item{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'} text-truncate" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
@@ -15,7 +19,7 @@
                     <span class="ps-2">{$index->name}</span>
                 </div>
             </div>
-            <div n:if="!$entity->isLeaf" class="collapse show" id="{$entity->name}">
+            <div n:if="!$entity->isLeaf" class="collapse {$entity->isExpanded ? show}" id="{$entity->name}">
                 {include entities, $entity->subentities}
             </div>
         </div>
