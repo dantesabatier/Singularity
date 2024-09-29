@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld("api", {
     showWindow: (options) => ipcRenderer.send("showWindow", options),
     setProgressBar: (progress => ipcRenderer.send("setProgressBar", progress)),
     showSourceListContextMenu: (options) => ipcRenderer.send("showSourceListContextMenu", options),
+    openPath: (path) => ipcRenderer.send("openPath", path),
     onAdd: (callback) => ipcRenderer.on("add", (e, args) => callback(args)),
     onRemove: (callback) => ipcRenderer.on("remove", (e, args) => callback(args))
 })
