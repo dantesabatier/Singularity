@@ -87,7 +87,7 @@ class Editor extends ViewController
     #[Outlet]
     public ?Configuration $selectedConfiguration = null;
     #[Outlet]
-    public Entity|Property|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration|null $selection = null;
+    public ManagedObject|null $selection = null;
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     public ArrayClass $breadcrumb;
@@ -179,7 +179,9 @@ class Editor extends ViewController
             $this->$name = new ArrayClass();
             return $this->$name;
         } elseif ($name == "bundleName") {
-            $this->$name = Bundle::bundleWithURL($this->project->url)->object(kCFBundleNameKey);
+            /** @var URL $url */
+            $url = $this->project?->url;
+            $this->$name = Bundle::bundleWithURL($url)->object(kCFBundleNameKey);
             return $this->$name;
         } else {
             return parent::__get($name);
