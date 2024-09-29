@@ -25,6 +25,7 @@ use Sabatier\Foundation\Set;
  * @property Set<Property> $properties
  * @property Set<FetchIndex> $indexes
  * @property Set<UniquenessConstraint> $uniquenessConstraints
+ * @property bool $isExpanded
  * @method void addSubentitiesObject(Entity $object)
  * @method void removeSubentitiesObject(Entity $object)
  * @method void addSubentities(Set $objects)
