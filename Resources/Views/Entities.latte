@@ -15,7 +15,7 @@
                 </form>
             </div>
             <div n:if="$entity->indexesCount" class="flex-column w-100 ps-2">
-                <div n:foreach="$entity->indexes as $i => $index" class="nav-item{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'} text-truncate" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
+                <div n:foreach="$entity->indexes as $index" class="nav-item{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'} text-truncate" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
                     <span class="space"></span>
                     <img class="ps-2" src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="index">
                     <span class="ps-2">{$index->name}</span>
