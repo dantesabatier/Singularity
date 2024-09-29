@@ -1,7 +1,7 @@
 if (require("electron-squirrel-startup")) {
     return
 }
-const {app, ipcMain, dialog, BrowserWindow, Menu} = require("electron")
+const {app, ipcMain, dialog, shell, BrowserWindow, Menu} = require("electron")
 const ChildProcess = require("child_process")
 const path = require("path")
 
@@ -78,7 +78,7 @@ const createWindow = () => {
     }))
     window.on("ready-to-show", () => window.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
-    window.loadURL("http://localhost:8000")
+    window.loadURL("http://localhost:8001")
 }
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
@@ -155,3 +155,4 @@ ipcMain.on("showSourceListContextMenu", (event, arg) => Menu.buildFromTemplate([
 ]).popup({
     window: BrowserWindow.fromWebContents(event.sender)
 }))
+ipcMain.on("openPath", (event, arg) => shell.openPath(arg))
