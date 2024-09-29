@@ -185,7 +185,7 @@ const submit = async (form, completion = undefined) => {
 /**
  * @param {object} project
  */
-const load = async (project) => window.api.showWindow({
+const show = async (project) => window.api?.showWindow({
     url: `${window.location.origin}${url("Editor", {project: project.objectID})}`,
     overrideBrowserWindowOptions: {
         width: 1090,
