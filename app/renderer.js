@@ -156,30 +156,43 @@ const send = async (action, body = undefined, method = "POST", completion = unde
 }
 
 /**
- * @param  {HTMLFormElement} form
+ *
+ * @param {HTMLFormElement} form
+ * @returns {{method: string, body: object}}
+ */
+const parse = (form) => {
+    const elements = Array.from(form.elements)
+    return {
+        body: elements.filter(e => !!e.name && e.type !== "submit" && e.name !== "X-Http-Method-Override").reduce((result, e) => {
+            result[e.name] = (() => {
+                const value = e.type === "checkbox" ? e.checked : e.value
+                if (value === "true") {
+                    return true
+                } else if (value === "false") {
+                    return false
+                } else if (value === "" || value === "null") {
+                    return null
+                } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
+                    return parseFloat(value)
+                }
+                return value
+            })()
+            return result
+        }, {}),
+        method: elements.find(e => e.name === "X-Http-Method-Override")?.value ?? form.method ?? "POST"
+    }
+}
+
+/**
+ * @param {HTMLFormElement} form
  * @param {function|undefined} completion
  */
 const submit = async (form, completion = undefined) => {
     const headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     headers["Content-Type"] = "application/json; charset=utf-8"
-    const elements = Array.from(form.elements)
-    await send(form.action, elements.filter(e => !!e.name && e.type !== "submit" && e.name !== "X-Http-Method-Override").reduce((result, e) => {
-        result[e.name] = (() => {
-            const value = e.type === "checkbox" ? e.checked : e.value
-            if (value === "true") {
-                return true
-            } else if (value === "false") {
-                return false
-            } else if (value === "" || value === "null") {
-                return null
-            } else if (!isNaN(value) && !isNaN(parseFloat(value))) {
-                return parseFloat(value)
-            }
-            return value
-        })()
-        return result
-    }, {}), elements.find(e => e.name === "X-Http-Method-Override")?.value ?? form.method, completion)
+    const parsed = parse(form)
+    await send(form.action, parsed.body, parsed.method, completion)
 }
 
 /**
