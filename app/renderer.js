@@ -328,4 +328,3 @@ const showAboutPanel = () => window.api?.showWindow({
  * @param {number} progress
  */
 const setProgressBar = (progress) => window.api?.setProgressBar(progress)
-const showSourceListContextMenu = (options) => window.api?.showSourceListContextMenu(options)
