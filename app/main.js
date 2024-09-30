@@ -134,33 +134,4 @@ ipcMain.on("showWindow", (event, arg) => {
     window.loadURL(arg.url)
 })
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
-ipcMain.on("showSourceListContextMenu", (event, arg) => Menu.buildFromTemplate([
-    {
-        label: "New",
-        submenu: [
-            {
-                label: "Entity",
-                click: () => event.sender.send("add", Array(2).fill("Entity"))
-            },
-            {
-                label: "Fetch Request",
-                click: () => event.sender.send("add", ["FetchRequestTemplate", "fetchRequestTemplate"])
-            },
-            {
-                label: "Configuration",
-                click: () => event.sender.send("add", Array(2).fill("Configuration"))
-            }
-        ]
-    },
-    {
-        type: "separator"
-    },
-    {
-        label: "Remove",
-        enabled: !!arg,
-        click: () => event.sender.postMessage("remove", arg)
-    }
-]).popup({
-    window: BrowserWindow.fromWebContents(event.sender)
-}))
 ipcMain.on("openPath", (event, arg) => shell.openPath(arg))
