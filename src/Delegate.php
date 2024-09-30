@@ -6,6 +6,7 @@ namespace App;
 
 use App\Model\Project;
 use App\ViewControllers\Editor;
+use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\SQLCore;
@@ -28,6 +29,7 @@ use const Sabatier\CoreData\PersistentStoreRemoteChangeNotificationPostOptionKey
 
 class Delegate extends ObjectClass implements ApplicationDelegate
 {
+    #[Override]
     public static function initialize(): void
     {
         SQLCore::$debugDefault = 0;
@@ -42,6 +44,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
         ]));
     }
 
+    #[Override]
     public function applicationWillFinishLaunching(Application $application): void
     {
         $application->isProtectedContentAvailable = true;
@@ -69,15 +72,18 @@ class Delegate extends ObjectClass implements ApplicationDelegate
         });
     }
 
+    #[Override]
     public function applicationDidFinishLaunching(Application $application): void
     {
     }
 
+    #[Override]
     public function applicationWillPresentError(Application $application, Error $error): Error
     {
         return $error;
     }
 
+    #[Override]
     public function applicationWillTerminate(Application $application): void
     {
     }

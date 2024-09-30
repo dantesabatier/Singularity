@@ -108,6 +108,7 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
+    #[Override]
     public function __get(string $name)
     {
         if ($name == "projects") {
@@ -189,7 +190,6 @@ class Editor extends ViewController
     private function allEntities(): ArrayClass
     {
         $fetchRequest = Entity::fetchRequest();
-        /** @noinspection DuplicatedCode */
         $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
@@ -214,7 +214,6 @@ class Editor extends ViewController
     private function fetchRequestTemplates(): ArrayClass
     {
         $fetchRequest = FetchRequestTemplate::fetchRequest();
-        /** @noinspection DuplicatedCode */
         $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
@@ -230,7 +229,6 @@ class Editor extends ViewController
     private function configurations(): ArrayClass
     {
         $fetchRequest = Configuration::fetchRequest();
-        /** @noinspection DuplicatedCode */
         $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([

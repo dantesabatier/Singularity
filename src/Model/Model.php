@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Exception;
 use InvalidArgumentException;
+use Override;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
@@ -52,6 +53,7 @@ class Model extends ManagedObject
         unset($this->progress);
     }
 
+    #[Override]
     public function __get(string $name)
     {
         if ($name == "entitiesByName") {

@@ -38,6 +38,7 @@ class Relationship extends Property
         unset($this->inverseRelationship);
     }
 
+    #[Override]
     public function __get(string $name)
     {
         if ($name == "destinationEntity") {
@@ -51,6 +52,7 @@ class Relationship extends Property
         }
     }
 
+    #[Override]
     public function __set(string $name, mixed $value): void
     {
         if ($name == "destinationEntity" || $name == "inverseRelationship") {

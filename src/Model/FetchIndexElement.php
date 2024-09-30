@@ -36,6 +36,7 @@ class FetchIndexElement extends ManagedObject
         unset($this->property);
     }
 
+    #[Override]
     public function __get(string $name)
     {
         if ($name == "property") {
@@ -57,6 +58,7 @@ class FetchIndexElement extends ManagedObject
         }
     }
 
+    #[Override]
     public function __set(string $name, mixed $value): void
     {
         if ($name == "property") {

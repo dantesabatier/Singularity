@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Exception;
+use Override;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
@@ -80,6 +81,7 @@ class Entity extends ManagedObject
     /**
      * @throws Exception
      */
+    #[Override]
     public function __get(string $name)
     {
         if ($name == "isRootEntity") {
@@ -135,6 +137,7 @@ class Entity extends ManagedObject
         }
     }
 
+    #[Override]
     public function __set(string $name, mixed $value): void
     {
         if ($name == "isRootEntity" || $name == "rootEntity" || $name == "attributes" || $name == "relationships" || $name == "fetchedProperties" || $name == "allAttributeNames" || $name == "isLeaf") {
