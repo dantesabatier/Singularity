@@ -151,6 +151,14 @@ ipcMain.on("showSourceListContextMenu", (event, arg) => Menu.buildFromTemplate([
                 click: () => event.sender.send("add", Array(2).fill("Configuration"))
             }
         ]
+    },
+    {
+        type: "separator"
+    },
+    {
+        label: "Remove",
+        enabled: arg.hasOwnProperty("objectID"),
+        click: () => event.sender.postMessage("remove", arg)
     }
 ]).popup({
     window: BrowserWindow.fromWebContents(event.sender)
