@@ -9,6 +9,7 @@
                     <img class="ps-1" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="entity">
                     <span class="px-1">{$entity->name}</span>
                     <input type="hidden" name="objectID" value="{$entity->objectID->referenceObject}">
+                    <input type="hidden" name="entityName" value="{$entity->entityName}">
                     <input type="hidden" name="name" value="{$entity->name}">
                     <input type="hidden" name="isExpanded" value="{$entity->isExpanded ? 'false' : 'true'}">
                     <input type="hidden" name="X-Http-Method-Override" value="PATCH">
