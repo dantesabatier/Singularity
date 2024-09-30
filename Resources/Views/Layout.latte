@@ -23,7 +23,7 @@
 <script type="text/javascript" src="../../app/renderer.js" defer></script>
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
-    function register() {
+    const register = () => {
         document.querySelectorAll(".scroll-view").forEach(e => {
             e.addEventListener("contextmenu", async event => {
                 event.preventDefault()
@@ -122,8 +122,7 @@
             once: true
         })
     }
-
-    function init() {
+    const init = () => {
         window.addEventListener("popstate", async event => await replace(event.state?.url ?? window.location.origin, register))
         window.api?.onAdd(async arg => await add(...arg, {$project?->model}, register))
         window.api?.onRemove(async item => await remove(item, register))
