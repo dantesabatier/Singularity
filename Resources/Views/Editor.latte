@@ -208,10 +208,8 @@
         </nav>
     </div>
     <script>
-        async function load(project) {
-            await push(url("Editor", {
-                project: project.objectID
-            }), register)
-        }
+        const load = async (project) => await push(url("Editor", {
+            project: project.objectID
+        }), register)
     </script>
 {/block}
