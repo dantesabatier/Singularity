@@ -92,7 +92,7 @@ class Editor extends ViewController
     #[Outlet]
     public ArrayClass $breadcrumb;
     #[Outlet]
-    public ?string $bundleName;
+    public ?string $bundleName = null;
 
     public function __construct()
     {
@@ -103,8 +103,6 @@ class Editor extends ViewController
         unset($this->allEntities);
         unset($this->fetchRequestTemplates);
         unset($this->configurations);
-        unset($this->breadcrumb);
-        unset($this->bundleName);
     }
 
     /**
@@ -113,76 +111,22 @@ class Editor extends ViewController
     public function __get(string $name)
     {
         if ($name == "projects") {
-            $fetchRequest = Project::fetchRequest();
-            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string,
-                "color" => AttributeType::string
-            ]);
-            $projects = $this->managedObjectContext->fetch($fetchRequest);
-            if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
-                $projects->insertAt($projects->removeAt($index), 0);
-            }
-            $this->$name = $projects;
+            $this->$name = $this->projects();
             return $this->$name;
         } elseif ($name == "project") {
-            $project = null;
-            if ($referenceObject = $this->referenceObject("project")) {
-                $fetchRequest = Project::fetchRequest();
-                $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
-                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                    "name" => AttributeType::string,
-                    "url" => AttributeType::uri,
-                    "color" => AttributeType::string,
-                    "model" => [
-                        "url" => AttributeType::uri
-                    ]
-                ]);
-                $project = $this->managedObjectContext->fetch($fetchRequest)->first;
-            }
-            $this->$name = $project;
+            $this->$name = $this->project();
             return $this->$name;
         } elseif ($name == "allEntities") {
-            $fetchRequest = Entity::fetchRequest();
-            /** @noinspection DuplicatedCode */
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
-            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string,
-                "isExpanded" => AttributeType::boolean
-            ]);
-            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
+            $this->$name = $this->allEntities();
             return $this->$name;
         } elseif ($name == "rootEntities") {
-            $this->$name = $this->allEntities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
+            $this->$name = $this->rootEntities();
             return $this->$name;
         } elseif ($name == "fetchRequestTemplates") {
-            $fetchRequest = FetchRequestTemplate::fetchRequest();
-            /** @noinspection DuplicatedCode */
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
-            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string
-            ]);
-            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
+            $this->$name = $this->fetchRequestTemplates();
             return $this->$name;
         } elseif ($name == "configurations") {
-            $fetchRequest = Configuration::fetchRequest();
-            /** @noinspection DuplicatedCode */
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
-            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                "name" => AttributeType::string
-            ]);
-            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
-            return $this->$name;
-        } elseif ($name == "breadcrumb") {
-            $this->$name = new ArrayClass();
-            return $this->$name;
-        } elseif ($name == "bundleName") {
-            /** @var URL $url */
-            $url = $this->project?->url;
-            $this->$name = Bundle::bundleWithURL($url)->object(kCFBundleNameKey);
+            $this->$name = $this->configurations();
             return $this->$name;
         } else {
             return parent::__get($name);
@@ -196,6 +140,103 @@ class Editor extends ViewController
             return (int)$referenceObject;
         }
         return null;
+    }
+
+    /**
+     * @return ArrayClass<Project>
+     * @throws Exception
+     */
+    private function projects(): ArrayClass
+    {
+        $fetchRequest = Project::fetchRequest();
+        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string,
+            "color" => AttributeType::string
+        ]);
+        $projects = $this->managedObjectContext->fetch($fetchRequest);
+        if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
+            $projects->insertAt($projects->removeAt($index), 0);
+        }
+        return $projects;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function project(): ?Project
+    {
+        if (!($referenceObject = $this->referenceObject("project"))) {
+            return null;
+        }
+        $fetchRequest = Project::fetchRequest();
+        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string,
+            "url" => AttributeType::uri,
+            "color" => AttributeType::string,
+            "model" => [
+                "url" => AttributeType::uri
+            ]
+        ]);
+        return $this->managedObjectContext->fetch($fetchRequest)->first;
+    }
+
+    /**
+     * @return ArrayClass<Entity>
+     * @throws Exception
+     */
+    private function allEntities(): ArrayClass
+    {
+        $fetchRequest = Entity::fetchRequest();
+        /** @noinspection DuplicatedCode */
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string,
+            "isExpanded" => AttributeType::boolean
+        ]);
+        return $this->managedObjectContext->fetch($fetchRequest);
+    }
+
+    /**
+     * @return ArrayClass<Entity>
+     */
+    private function rootEntities(): ArrayClass
+    {
+        return $this->allEntities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
+    }
+
+    /**
+     * @return ArrayClass<FetchRequestTemplate>
+     * @throws Exception
+     */
+    private function fetchRequestTemplates(): ArrayClass
+    {
+        $fetchRequest = FetchRequestTemplate::fetchRequest();
+        /** @noinspection DuplicatedCode */
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string
+        ]);
+        return $this->managedObjectContext->fetch($fetchRequest);
+    }
+
+    /**
+     * @return ArrayClass<Configuration>
+     * @throws Exception
+     */
+    private function configurations(): ArrayClass
+    {
+        $fetchRequest = Configuration::fetchRequest();
+        /** @noinspection DuplicatedCode */
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string
+        ]);
+        return $this->managedObjectContext->fetch($fetchRequest);
     }
 
     private function className(Entity $entity, string $namespace): string
@@ -366,6 +407,7 @@ class Editor extends ViewController
     public function viewWillLoad(): void
     {
         $project = $this->project ?? throw new NotFoundException();
+        $this->breadcrumb = new ArrayClass();
         $this->breadcrumb[] = $project;
         $model = $project->model ?? throw new NotFoundException();
         $this->breadcrumb[] = $model;
@@ -407,6 +449,7 @@ class Editor extends ViewController
             $this->selection = $selection;
             $this->breadcrumb[] = $selection;
         }
+        $this->bundleName = $this->bundle->object(kCFBundleNameKey);
     }
 
     /**
