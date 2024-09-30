@@ -84,10 +84,10 @@ class Entity extends ManagedObject
     #[Override]
     public function __get(string $name)
     {
-        if ($name == "isRootEntity") {
+        if ($name === "isRootEntity") {
             $this->$name = $this->superentity === null;
             return $this->$name;
-        } elseif ($name == "rootEntity") {
+        } elseif ($name === "rootEntity") {
             $superentity = $this->superentity;
             $rootEntity = $superentity;
             while ($superentity) {
@@ -98,22 +98,22 @@ class Entity extends ManagedObject
             }
             $this->$name = $rootEntity;
             return $this->$name;
-        } elseif ($name == "attributes") {
+        } elseif ($name === "attributes") {
             $fetchRequest = Attribute::fetchRequest();
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
             return $this->$name;
-        } elseif ($name == "relationships") {
+        } elseif ($name === "relationships") {
             $fetchRequest = Relationship::fetchRequest();
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
             return $this->$name;
-        } elseif ($name == "fetchedProperties") {
+        } elseif ($name === "fetchedProperties") {
             $fetchRequest = FetchedProperty::fetchRequest();
             $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
             $this->$name = $this->managedObjectContext->fetch($fetchRequest);
             return $this->$name;
-        } elseif ($name == "allAttributeNames") {
+        } elseif ($name === "allAttributeNames") {
             /** @var ArrayClass<string> $allAttributeNames */
             $allAttributeNames = new ArrayClass();
             $transform = fn(Attribute $attribute): string => $attribute->name;
@@ -129,7 +129,7 @@ class Entity extends ManagedObject
             $allAttributeNames[] = "Expression";
             $this->$name = $allAttributeNames;
             return $this->$name;
-        } elseif ($name == "isLeaf") {
+        } elseif ($name === "isLeaf") {
             $this->$name = !$this->subentitiesCount;
             return $this->$name;
         } else {
@@ -140,7 +140,7 @@ class Entity extends ManagedObject
     #[Override]
     public function __set(string $name, mixed $value): void
     {
-        if ($name == "isRootEntity" || $name == "rootEntity" || $name == "attributes" || $name == "relationships" || $name == "fetchedProperties" || $name == "allAttributeNames" || $name == "isLeaf") {
+        if ($name === "isRootEntity" || $name === "rootEntity" || $name === "attributes" || $name === "relationships" || $name === "fetchedProperties" || $name === "allAttributeNames" || $name === "isLeaf") {
             $this->$name = $value;
         } else {
             parent::__set($name, $value);

@@ -41,10 +41,10 @@ class Relationship extends Property
     #[Override]
     public function __get(string $name)
     {
-        if ($name == "destinationEntity") {
+        if ($name === "destinationEntity") {
             $this->$name = $this->entityProperty->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);
             return $this->$name;
-        } elseif ($name == "inverseRelationship") {
+        } elseif ($name === "inverseRelationship") {
             $this->$name = $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
             return $this->$name;
         } else {
@@ -55,7 +55,7 @@ class Relationship extends Property
     #[Override]
     public function __set(string $name, mixed $value): void
     {
-        if ($name == "destinationEntity" || $name == "inverseRelationship") {
+        if ($name === "destinationEntity" || $name === "inverseRelationship") {
             $this->$name = $value;
         } else {
             parent::__set($name, $value);

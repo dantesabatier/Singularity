@@ -111,22 +111,22 @@ class Editor extends ViewController
     #[Override]
     public function __get(string $name)
     {
-        if ($name == "projects") {
+        if ($name === "projects") {
             $this->$name = $this->projects();
             return $this->$name;
-        } elseif ($name == "project") {
+        } elseif ($name === "project") {
             $this->$name = $this->project();
             return $this->$name;
-        } elseif ($name == "allEntities") {
+        } elseif ($name === "allEntities") {
             $this->$name = $this->allEntities();
             return $this->$name;
-        } elseif ($name == "rootEntities") {
+        } elseif ($name === "rootEntities") {
             $this->$name = $this->rootEntities();
             return $this->$name;
-        } elseif ($name == "fetchRequestTemplates") {
+        } elseif ($name === "fetchRequestTemplates") {
             $this->$name = $this->fetchRequestTemplates();
             return $this->$name;
-        } elseif ($name == "configurations") {
+        } elseif ($name === "configurations") {
             $this->$name = $this->configurations();
             return $this->$name;
         } else {

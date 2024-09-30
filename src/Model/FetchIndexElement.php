@@ -39,7 +39,7 @@ class FetchIndexElement extends ManagedObject
     #[Override]
     public function __get(string $name)
     {
-        if ($name == "property") {
+        if ($name === "property") {
             /** @var ArrayClass<Attribute> $attributes */
             $attributes = new ArrayClass();
             $entity = $this->index->entityProperty;
@@ -61,7 +61,7 @@ class FetchIndexElement extends ManagedObject
     #[Override]
     public function __set(string $name, mixed $value): void
     {
-        if ($name == "property") {
+        if ($name === "property") {
             $this->$name = $value;
         } else {
             parent::__set($name, $value);

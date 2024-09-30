@@ -56,10 +56,10 @@ class Model extends ManagedObject
     #[Override]
     public function __get(string $name)
     {
-        if ($name == "entitiesByName") {
+        if ($name === "entitiesByName") {
             $this->$name = new Dictionary();
             return $this->$name;
-        } elseif ($name == "progress") {
+        } elseif ($name === "progress") {
             $this->$name = new Progress();
             return $this->$name;
         } else {
