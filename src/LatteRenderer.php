@@ -63,6 +63,7 @@ class LatteRenderer extends Renderer
 
     private function image(Project|Model|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration $object): string
     {
+        /** @psalm-suppress ArgumentTypeCoercion */
         return match (true) {
             $object instanceof Project => "Project",
             $object instanceof Model => "Model",
