@@ -29,6 +29,12 @@
                 event.preventDefault()
                 switch (e.id) {
                     case "source":
+                        const target = event.target
+                        if (target instanceof HTMLFormElement) {
+                            const parsed = parse(target)
+                            showSourceListContextMenu(parsed.body)
+                            return
+                        }
                         showSourceListContextMenu()
                         break
                     default:
