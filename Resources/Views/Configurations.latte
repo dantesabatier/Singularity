@@ -1,4 +1,4 @@
-{templateType App\Contexts\Editor}
+{templateType App\ViewControllers\Editor}
 {define configurations}
     <div class="flex-column w-100">
         <div n:foreach="$configurations as $configuration" class="nav-item{$configuration->objectID->referenceObject === $selectedConfiguration?->objectID?->referenceObject && !$selectedIndex ? ' active'} text-truncate" id="fetchRequest-{$configuration->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&configuration={$configuration->objectID->referenceObject}">
