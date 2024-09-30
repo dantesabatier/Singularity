@@ -14,9 +14,6 @@ ul {
     margin: 0;
 }
 
-.alert {
-}
-
 .table {
     --bs-table-active-bg: rgba(13, 110, 253, 0.16);
     --bs-table-active-color: var(--bs-table-active-bg);
@@ -120,12 +117,6 @@ option:not(:checked) {
 
 .text-shadow {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.33);
-}
-
-.text-centered {
-    text-align: center;
-    align-self: center;
-    font-size: 17px;
 }
 
 .text-wrap-word {
