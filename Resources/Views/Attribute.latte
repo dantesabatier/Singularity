@@ -27,6 +27,10 @@
                     <label class="form-check-label" for="isDerived">Derived</label>
                     <input class="form-check-input" type="checkbox" name="isDerived" value="{$selectedProperty->isDerived}" id="isDerived" {$selectedProperty->isDerived ? checked}>
                 </div>
+                <div class="form-check form-check-inline form-control-sm">
+                    <label class="form-check-label" for="isSensitive">Sensitive</label>
+                    <input class="form-check-input" type="checkbox" name="isSensitive" value="{$selectedProperty->isSensitive}" id="isSensitive" {$selectedProperty->isSensitive ? checked}>
+                </div>
             </div>
         </div>
         <div n:if="$selectedProperty->isDerived" class="row mb-3 align-items-center">
@@ -192,16 +196,14 @@
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
                         <div class="form-check form-check-inline form-control-sm">
-                            <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External
-                                Storage</label>
+                            <label class="form-check-label" for="allowsExternalBinaryDataStorage">Allows External Storage</label>
                             <input class="form-check-input" type="checkbox" name="allowsExternalBinaryDataStorage" value="{$selectedProperty->allowsExternalBinaryDataStorage}" id="allowsExternalBinaryDataStorage" {$selectedProperty->allowsExternalBinaryDataStorage ? checked}>
                         </div>
                     </div>
                 </div>
             {case 1800}
                 <div class="row mb-3 align-items-center">
-                    <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom
-                        Class</label>
+                    <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom Class</label>
                     <div class="col-sm-9">
                         <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
                     </div>
@@ -219,16 +221,14 @@
                 <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Advanced</label>
                 <div class="col-sm-9">
                     <div class="form-check form-check-inline form-control-sm">
-                        <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After
-                            Deletion</label>
+                        <label class="form-check-label" for="preservesValueInHistoryOnDeletion">Preserves After Deletion</label>
                         <input class="form-check-input" type="checkbox" name="preservesValueInHistoryOnDeletion" value="{$selectedProperty->preservesValueInHistoryOnDeletion}" id="preservesValueInHistoryOnDeletion" {$selectedProperty->preservesValueInHistoryOnDeletion ? checked}>
                     </div>
                 </div>
             </div>
         {elseif ($type === 1800)}
             <div class="row mb-3 align-items-center">
-                <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom
-                    Class</label>
+                <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom Class</label>
                 <div class="col-sm-9">
                     <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="Class Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false">
                 </div>
@@ -256,7 +256,6 @@
                 <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control form-control-sm text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
             </div>
         </div>
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-        <input class="d-none" type="submit">
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
     </form>
 {/define}
