@@ -9,6 +9,7 @@ use Sabatier\Foundation\Dictionary;
  * @property string $name
  * @property bool $isOptional
  * @property bool $isTransient
+ * @property bool $isSensitive
  * @property string|null $renamingIdentifier
  * @property string|null $versionHashModifier
  * @property mixed $minValue
@@ -30,6 +31,9 @@ abstract class Property extends ManagedObject
         }
         if ($isTransient = $this->isTransient) {
             $dictionary["isTransient"] = $isTransient;
+        }
+        if ($isSensitive = $this->isSensitive) {
+            $dictionary["isSensitive"] = $isSensitive;
         }
         $dictionary["versionHashModifier"] = $this->versionHashModifier;
         $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
