@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <psalm errorLevel="3" findUnusedBaselineEntry="true" xmlns="https://getpsalm.org/schema/config">
     <projectFiles>
-        <directory name="src" />
+        <directory name="src"/>
         <ignoreFiles>
-            <directory name="vendor" />
+            <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
@@ -13,12 +13,12 @@
         <InaccessibleProperty errorLevel="suppress"/>
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
-                <file name="src/ViewControllers/Welcome.php" />
+                <file name="src/ViewControllers/Welcome.php"/>
             </errorLevel>
         </ArgumentTypeCoercion>
         <ReferenceConstraintViolation>
             <errorLevel type="suppress">
-                <file name="src/ViewControllers/Welcome.php" />
+                <file name="src/ViewControllers/Welcome.php"/>
             </errorLevel>
         </ReferenceConstraintViolation>
         <InternalClass errorLevel="suppress"/>
