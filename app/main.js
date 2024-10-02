@@ -59,7 +59,7 @@ const options = {
     backgroundColor: "#212529",
     titleBarStyle: "hidden",
     titleBarOverlay: {
-        color: "#212529",
+        color: "rgba(33,37,41,0.0)",
         symbolColor: "#ffffff"
     },
     show: false
