@@ -114,24 +114,28 @@ class Editor extends ViewController
         if ($name === "projects") {
             $this->$name = $this->projects();
             return $this->$name;
-        } elseif ($name === "project") {
+        }
+        if ($name === "project") {
             $this->$name = $this->project();
             return $this->$name;
-        } elseif ($name === "allEntities") {
+        }
+        if ($name === "allEntities") {
             $this->$name = $this->allEntities();
             return $this->$name;
-        } elseif ($name === "rootEntities") {
+        }
+        if ($name === "rootEntities") {
             $this->$name = $this->rootEntities();
             return $this->$name;
-        } elseif ($name === "fetchRequestTemplates") {
+        }
+        if ($name === "fetchRequestTemplates") {
             $this->$name = $this->fetchRequestTemplates();
             return $this->$name;
-        } elseif ($name === "configurations") {
+        }
+        if ($name === "configurations") {
             $this->$name = $this->configurations();
             return $this->$name;
-        } else {
-            return parent::__get($name);
         }
+        return parent::__get($name);
     }
 
     private function referenceObject(string $key): ?int
@@ -394,8 +398,7 @@ class Editor extends ViewController
         if ($entity->isAbstract) {
             $content .= "abstract ";
         }
-        $content .= $declaration;
-        return $content;
+        return $content . $declaration;
     }
 
     /**

@@ -53,9 +53,8 @@ class FetchIndexElement extends ManagedObject
             }
             $this->$name = $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
             return $this->$name;
-        } else {
-            return parent::__get($name);
         }
+        return parent::__get($name);
     }
 
     #[Override]

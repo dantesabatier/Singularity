@@ -105,8 +105,7 @@ class Welcome extends ViewController
         $content .= "\n";
         $content .= "use " . Application::class . ";\n";
         $content .= "\n";
-        $content .= "Application::shared()->run();\n";
-        return $content;
+        return $content . "Application::shared()->run();\n";
     }
 
     /**

@@ -59,12 +59,12 @@ class Model extends ManagedObject
         if ($name === "entitiesByName") {
             $this->$name = new Dictionary();
             return $this->$name;
-        } elseif ($name === "progress") {
+        }
+        if ($name === "progress") {
             $this->$name = new Progress();
             return $this->$name;
-        } else {
-            return parent::__get($name);
         }
+        return parent::__get($name);
     }
 
     private function newEntity(Dictionary $dictionary): Entity
