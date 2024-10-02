@@ -45,7 +45,7 @@ if (handleSquirrelEvent()) {
     return
 }
 
-//Menu.setApplicationMenu(null)
+Menu.setApplicationMenu(null)
 const options = {
     webPreferences: {
         webSecurity: false,
