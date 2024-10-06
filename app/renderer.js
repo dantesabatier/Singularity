@@ -20,6 +20,18 @@ const url = (endpoint, parameters) => {
 }
 
 /**
+ * @param {Response} response
+ * @returns {Promise<object|undefined>}
+ */
+const error = async (response) => {
+    const contentType = response.headers.get("content-type")
+    if (contentType?.includes("application/json")) {
+        return (await response.json())?.error
+    }
+    return undefined
+}
+
+/**
  * @param {string} url
  * @param {function|undefined} completion
  */
@@ -31,7 +43,7 @@ const replace = async (url, completion = undefined) => {
         headers: headers
     })
     if (!response.ok) {
-        showErrorBox((await response.json())?.error)
+        showErrorBox(await error(response))
         return
     }
     const data = await response.text()
@@ -86,12 +98,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         body: !!body ? JSON.stringify(body) : undefined
     })
     if (!response.ok) {
-        let error = undefined
-        const contentType = response.headers.get("content-type")
-        if (contentType?.includes("application/json")) {
-            error = (await response.json())?.error
-        }
-        await showErrorBox(error)
+        showErrorBox(await error(response))
         await replace(location.href, completion)
         setProgressBar(-1)
         return
