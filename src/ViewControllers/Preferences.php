@@ -2,6 +2,7 @@
 
 namespace App\ViewControllers;
 
+use Exception;
 use Override;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
@@ -30,6 +31,9 @@ class Preferences extends ViewController
         $this->automaticallySaveModel = UserDefaults::standard()->bool(AutomaticallySaveModel);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Action]
     public function synchronize(): void
     {
@@ -37,5 +41,7 @@ class Preferences extends ViewController
         foreach ($body as $key => $value) {
             UserDefaults::standard()->setObject($value, $key);
         }
+        $this->content = json_encode(UserDefaults::standard()->dictionaryRepresentation(), JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+        $this->contentType = "application/json";
     }
 }
