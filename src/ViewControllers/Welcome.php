@@ -225,7 +225,7 @@ class Welcome extends ViewController
         }
         $path = $url->appendingPathComponent(".env")->path;
         if (!$fileManager->fileExists($path)) {
-            /** @psalm-suppress ArgumentTypeCoercion */
+            /** @psalm-suppress ArgumentTypeCoercion, ReferenceConstraintViolation */
             $fileManager->createFile($path, (new Dictionary([
                 "SQL_SCHEMA_NAME" => $name,
                 "SQL_SCHEMA_HOST" => "localhost",
@@ -246,6 +246,8 @@ class Welcome extends ViewController
         $project->url = $url;
         $project->model = $model;
         $context->save();
+        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+        $this->contentType = "application/json";
     }
 
     /**
@@ -270,6 +272,8 @@ class Welcome extends ViewController
         $dictionary = $bundle->infoDictionary;
         $dictionary[kCFBundleNameKey] = $name;
         PropertyListSerialization::writePropertyList($dictionary, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
+        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+        $this->contentType = "application/json";
     }
 
     /**
