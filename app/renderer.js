@@ -20,18 +20,6 @@ const url = (endpoint, parameters) => {
 }
 
 /**
- * @param {Response} response
- * @returns {Promise<object|undefined>}
- */
-const error = async (response) => {
-    const contentType = response.headers.get("content-type")
-    if (contentType?.includes("application/json")) {
-        return (await response.json())?.error
-    }
-    return undefined
-}
-
-/**
  * @param {string} url
  * @param {function|undefined} completion
  */
@@ -43,7 +31,7 @@ const replace = async (url, completion = undefined) => {
         headers: headers
     })
     if (!response.ok) {
-        showErrorBox(await error(response))
+        await showErrorBox((await response.json())?.error)
         return
     }
     const data = await response.text()
@@ -98,13 +86,12 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         body: !!body ? JSON.stringify(body) : undefined
     })
     if (!response.ok) {
-        showErrorBox(await error(response))
+        await showErrorBox((await response.json())?.error)
         await replace(location.href, completion)
         setProgressBar(-1)
         return
     }
     const keys = []
-    const json = response.status !== 204 ? await response.json() : undefined
     const endpoint = URL.canParse(action) ? new URL(action).pathname.replace("/", "") : action.replace("/", "")
     const m = method.toUpperCase()
     switch (m) {
@@ -129,6 +116,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
             }
             const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
             if (m === "POST") {
+                const data = await response.text()
+                const json = !!data ? JSON.parse(data) : undefined
                 const objectID = json?.objectID
                 if (objectID) {
                     const entity = (() => {
@@ -150,7 +139,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                             case "FetchIndexElement":
                                 return "element"
                             default:
-                                return ""
+                                return undefined
                         }
                     })()
                     if (entity) {
