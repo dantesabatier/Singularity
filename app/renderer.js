@@ -116,9 +116,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
             }
             const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
             if (m === "POST") {
-                const data = await response.text()
-                const json = !!data ? JSON.parse(data) : undefined
-                const objectID = json?.objectID
+                const objectID = (await response.json())?.objectID
                 if (objectID) {
                     const entity = (() => {
                         switch (endpoint) {
