@@ -86,8 +86,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         body: !!body ? JSON.stringify(body) : undefined
     })
     if (!response.ok) {
-        const contentType = response.headers.get("content-type")
         let error = undefined
+        const contentType = response.headers.get("content-type")
         if (contentType?.includes("application/json")) {
             error = (await response.json())?.error
         }
