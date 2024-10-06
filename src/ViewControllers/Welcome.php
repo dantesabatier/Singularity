@@ -225,6 +225,7 @@ class Welcome extends ViewController
         }
         $path = $url->appendingPathComponent(".env")->path;
         if (!$fileManager->fileExists($path)) {
+            /** @psalm-suppress ArgumentTypeCoercion */
             $fileManager->createFile($path, (new Dictionary([
                 "SQL_SCHEMA_NAME" => $name,
                 "SQL_SCHEMA_HOST" => "localhost",
