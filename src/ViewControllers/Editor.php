@@ -478,6 +478,8 @@ class Editor extends ViewController
             $fileManager->removeItem($modelURL);
         }
         PropertyListSerialization::writePropertyList($model->dictionaryRepresentation(), $modelURL);
+        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+        $this->contentType = "application/json";
     }
 
     /**
@@ -493,6 +495,8 @@ class Editor extends ViewController
         /** @var Model $model */
         $model = $project->model;
         $model->load(URL::fileURL($path));
+        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+        $this->contentType = "application/json";
     }
 
     /**
