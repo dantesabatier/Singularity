@@ -85,8 +85,13 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         headers: headers,
         body: !!body ? JSON.stringify(body) : undefined
     })
-    if (!response.ok && response.status !== 204) {
-        await showErrorBox((await response.json())?.error)
+    if (!response.ok) {
+        const contentType = response.headers.get("content-type")
+        let error = undefined
+        if (contentType?.includes("application/json")) {
+            error = (await response.json())?.error
+        }
+        await showErrorBox(error)
         await replace(location.href, completion)
         setProgressBar(-1)
         return
@@ -301,7 +306,7 @@ const explorer = (path) => window.api?.openPath(path)
 const showMessageBox = (messageText, informativeText, buttons) => window.api?.showMessageBox(messageText, informativeText, buttons)
 
 /**
- * @param {object} error
+ * @param {object|undefined} error
  */
 const showErrorBox = (error) => window.api?.showErrorBox(error)
 
