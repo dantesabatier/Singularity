@@ -14,6 +14,10 @@ ul {
     margin: 0;
 }
 
+button {
+    -webkit-app-region: no-drag;
+}
+
 .table {
     --bs-table-active-bg: rgba(13, 110, 253, 0.16);
     --bs-table-active-color: var(--bs-table-active-bg);
@@ -50,10 +54,6 @@ option:not(:checked) {
     overflow: hidden;
     overflow-y: auto;
     max-height: calc(100vh - 100px);
-}
-
-[contenteditable]:focus {
-    background-color: var(--bs-body-bg) !important;
 }
 
 .scroll-view {
