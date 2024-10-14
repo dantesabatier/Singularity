@@ -247,7 +247,7 @@ class Welcome extends ViewController
         $project->model = $model;
         $context->save();
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->contentType = "application/json";
+        $this->headerFields["Content-Type"] = "application/json";
     }
 
     /**
@@ -273,7 +273,7 @@ class Welcome extends ViewController
         $dictionary[kCFBundleNameKey] = $name;
         PropertyListSerialization::writePropertyList($dictionary, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->contentType = "application/json";
+        $this->headerFields["Content-Type"] = "application/json";
     }
 
     /**
