@@ -42,6 +42,6 @@ class Preferences extends ViewController
             UserDefaults::standard()->setObject($value, $key);
         }
         $this->content = json_encode(UserDefaults::standard()->dictionaryRepresentation(), JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->contentType = "application/json";
+        $this->headerFields["Content-Type"] = "application/json";
     }
 }
