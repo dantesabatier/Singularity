@@ -479,7 +479,7 @@ class Editor extends ViewController
         }
         PropertyListSerialization::writePropertyList($model->dictionaryRepresentation(), $modelURL);
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->contentType = "application/json";
+        $this->headerFields["Content-Type"] = "application/json";
     }
 
     /**
@@ -496,7 +496,7 @@ class Editor extends ViewController
         $model = $project->model;
         $model->load(URL::fileURL($path));
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->contentType = "application/json";
+        $this->headerFields["Content-Type"] = "application/json";
     }
 
     /**
