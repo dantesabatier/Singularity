@@ -49,26 +49,27 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     {
         $application->isProtectedContentAvailable = true;
         NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (Notification $notification) use ($application): void {
-            if (UserDefaults::standard()->bool(AutomaticallySaveModel) && ($referer = $application->request->valueForHttpHeaderField("Referer"))) {
-                $components = new URLComponents($referer);
-                $referenceObject = $components->queryItems?->first(fn(URLQueryItem $item): bool => $item->name === "project")?->value;
-                if (is_numeric($referenceObject)) {
-                    /** @var ManagedObjectContext $context */
-                    $context = $notification->object;
-                    $fetchRequest = Project::fetchRequest();
-                    $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["objectID", $referenceObject]));
-                    $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                        "name" => AttributeType::string,
-                        "url" => AttributeType::uri,
-                        "model" => [
-                            "url" => AttributeType::uri
-                        ]
-                    ]);
-                    $editor = new Editor();
-                    $editor->project = $context->fetch($fetchRequest)->first;
-                    $editor->save();
-                }
+            if (!UserDefaults::standard()->bool(AutomaticallySaveModel) || !($referer = $application->request->valueForHttpHeaderField("Referer"))) {
+                return;
             }
+            $components = new URLComponents($referer);
+            if (!($referenceObject = $components->queryItems?->first(fn(URLQueryItem $item): bool => $item->name === "project")?->value)) {
+                return;
+            }
+            /** @var ManagedObjectContext $context */
+            $context = $notification->object;
+            $fetchRequest = Project::fetchRequest();
+            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["objectID", $referenceObject]));
+            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                "name" => AttributeType::string,
+                "url" => AttributeType::uri,
+                "model" => [
+                    "url" => AttributeType::uri
+                ]
+            ]);
+            $editor = new Editor();
+            $editor->project = $context->fetch($fetchRequest)->first;
+            $editor->save();
         });
     }
 
