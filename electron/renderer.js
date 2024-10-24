@@ -223,7 +223,7 @@ const subclass = async (project, completion = undefined) => await send(url("Subc
  * @param {function|undefined} completion
  */
 const model = async (project, path, completion = undefined) => {
-    const filePath = (await window.api.showOpenDialog("Import Model", "Select the model file", "Import", path, ["openFile"], [
+    const filePath = (await window.api?.showOpenDialog("Import Model", "Select the model file", "Import", path, ["openFile"], [
         {
             name: "Property list",
             extensions: ["plist"]
@@ -238,7 +238,7 @@ const model = async (project, path, completion = undefined) => {
  * @param {function|undefined} completion
  */
 const create = async (completion = undefined) => {
-    const filePath = (await window.api.showOpenDialog("New Project", "Select or create a folder", "Create", undefined, ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
+    const filePath = (await window.api?.showOpenDialog("New Project", "Select or create a folder", "Create", undefined, ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
     if (filePath) {
         await send(url("create"), {path: filePath}, "POST", completion)
     }

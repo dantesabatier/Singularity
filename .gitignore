@@ -5,6 +5,6 @@
 vendor
 Library
 composer.lock
-/app/node_modules/
-/app/package-lock.json
-/app/out/
+/electron/node_modules/
+/electron/package-lock.json
+/electron/out/
