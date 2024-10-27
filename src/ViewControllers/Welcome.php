@@ -108,6 +108,77 @@ class Welcome extends ViewController
         return $content . "Application::shared()->run();\n";
     }
 
+    private function generateInfo(string $name, string $lowerCaseName): string
+    {
+        return PropertyListSerialization::data(Dictionary::dictionaryWithArray([
+            kCFBundleDevelopmentRegionKey => "English",
+            kCFBundleExecutableKey => $name,
+            kCFBundleIdentifierKey => sprintf("com.%s.%s", strtolower(str_replace(" ", "", (string)UserDefaults::standard()->string(CompanyNameKey))), $lowerCaseName),
+            kCFBundleNameKey => $name,
+            kCFBundleVersionKey => "1",
+            kCFBundleShortVersionStringKey => "0.1",
+            kCFBundlePackageTypeKey => "APPL",
+            kCFBundlePrincipalClassKey => Delegate::class,
+            kCFBundleLocalizationsKey => [
+                "en"
+            ],
+            kCFBundleDocumentTypesKey => [
+                [
+                    kCFBundleTypeNameKey => SQLStoreType
+                ]
+            ]
+        ]));
+    }
+
+    private function generateJson(string $name): string
+    {
+        return json_encode([
+            "name" => "vendor/$name",
+            "description" => $name,
+            "license" => "MIT",
+            "keywords" => [
+                $name
+            ],
+            "require" => [
+                "php" => sprintf("^%s", PHP_VERSION),
+                "ext-curl" => "*",
+                "ext-dom" => "*",
+                "ext-gettext" => "*",
+                "ext-json" => "*",
+                "ext-mbstring" => "*",
+                "sabatier/foundation" => "dev-master",
+                "sabatier/coredata" => "dev-master",
+                "sabatier/service" => "dev-master"
+            ],
+            "config" => [
+                "platform" => [
+                    "ext-pcntl" => PHP_VERSION,
+                    "ext-posix" => PHP_VERSION,
+                    "ext-gd" => PHP_VERSION,
+                    "ext-intl" => PHP_VERSION,
+                    "ext-fileinfo" => PHP_VERSION
+                ]
+            ],
+            "autoload" => [
+                "psr-4" => [
+                    "App\\" => "src"
+                ]
+            ],
+            "repositories" => array_map(fn(string $name): array => ["type" => "path", "url" => "../Sabatier/$name"], ["Foundation", "CoreData", "Service"])
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
+    private function generateEnv(string $name): string
+    {
+        /** @psalm-suppress ArgumentTypeCoercion, ReferenceConstraintViolation */
+        return (new Dictionary([
+            "SQL_SCHEMA_NAME" => $name,
+            "SQL_SCHEMA_HOST" => "localhost",
+            "SQL_SCHEMA_CREDENTIAL_USER" => "root",
+            "SQL_SCHEMA_CREDENTIAL_PASSWORD" => ""
+        ]))->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n");
+    }
+
     /**
      * @throws Exception
      */
@@ -139,24 +210,7 @@ class Welcome extends ViewController
         $lowerCaseName = strtolower($name);
         $path = $url->appendingPathComponent("Info")->appendingPathExtension("plist")->path;
         if (!$fileManager->fileExists($path)) {
-            $fileManager->createFile($path, PropertyListSerialization::data(Dictionary::dictionaryWithArray([
-                kCFBundleDevelopmentRegionKey => "English",
-                kCFBundleExecutableKey => $name,
-                kCFBundleIdentifierKey => sprintf("com.%s.%s", strtolower(str_replace(" ", "", (string)UserDefaults::standard()->string(CompanyNameKey))), $lowerCaseName),
-                kCFBundleNameKey => $name,
-                kCFBundleVersionKey => "1",
-                kCFBundleShortVersionStringKey => "0.1",
-                kCFBundlePackageTypeKey => "APPL",
-                kCFBundlePrincipalClassKey => Delegate::class,
-                kCFBundleLocalizationsKey => [
-                    "en"
-                ],
-                kCFBundleDocumentTypesKey => [
-                    [
-                        kCFBundleTypeNameKey => SQLStoreType
-                    ]
-                ]
-            ])));
+            $fileManager->createFile($path, $this->generateInfo($name, $lowerCaseName));
         }
         $resourceURL = $url->appendingPathComponent("Resources");
         if (!$fileManager->fileExists($resourceURL->path)) {
@@ -188,50 +242,11 @@ class Welcome extends ViewController
         }
         $path = $url->appendingPathComponent("composer")->appendingPathExtension("json")->path;
         if (!$fileManager->fileExists($path)) {
-            $fileManager->createFile($path, json_encode([
-                "name" => "vendor/$lowerCaseName",
-                "description" => $lowerCaseName,
-                "license" => "MIT",
-                "keywords" => [
-                    $lowerCaseName
-                ],
-                "require" => [
-                    "php" => sprintf("^%s", PHP_VERSION),
-                    "ext-curl" => "*",
-                    "ext-dom" => "*",
-                    "ext-gettext" => "*",
-                    "ext-json" => "*",
-                    "ext-mbstring" => "*",
-                    "sabatier/foundation" => "dev-master",
-                    "sabatier/coredata" => "dev-master",
-                    "sabatier/service" => "dev-master"
-                ],
-                "config" => [
-                    "platform" => [
-                        "ext-pcntl" => PHP_VERSION,
-                        "ext-posix" => PHP_VERSION,
-                        "ext-gd" => PHP_VERSION,
-                        "ext-intl" => PHP_VERSION,
-                        "ext-fileinfo" => PHP_VERSION
-                    ]
-                ],
-                "autoload" => [
-                    "psr-4" => [
-                        "App\\" => "src"
-                    ]
-                ],
-                "repositories" => array_map(fn(string $name): array => ["type" => "path", "url" => "../Sabatier/$name"], ["Foundation", "CoreData", "Service"])
-            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            $fileManager->createFile($path, $this->generateJson($lowerCaseName));
         }
         $path = $url->appendingPathComponent(".env")->path;
         if (!$fileManager->fileExists($path)) {
-            /** @psalm-suppress ArgumentTypeCoercion, ReferenceConstraintViolation */
-            $fileManager->createFile($path, (new Dictionary([
-                "SQL_SCHEMA_NAME" => $name,
-                "SQL_SCHEMA_HOST" => "localhost",
-                "SQL_SCHEMA_CREDENTIAL_USER" => "root",
-                "SQL_SCHEMA_CREDENTIAL_PASSWORD" => ""
-            ]))->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n"));
+            $fileManager->createFile($path, $this->generateEnv($name));
         }
         $path = $url->appendingPathComponent("index")->appendingPathExtension("php")->path;
         if (!$fileManager->fileExists($path)) {
