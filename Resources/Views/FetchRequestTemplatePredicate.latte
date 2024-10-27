@@ -6,7 +6,7 @@
         </div>
         <div class="mb-3">
             <label for="predicateString" class="form-label">Predicate</label>
-            <input type="text" name="predicateString" id="predicateString" placeholder="Predicate" class="form-control form-control-sm text-truncate" value="{$selectedFetchRequestTemplate->predicateString}" autocomplete="off" spellcheck="false">
+            <textarea name="predicateString" id="predicateString" placeholder="Predicate" class="form-control form-control-sm" rows="3">{$selectedFetchRequestTemplate->predicateString}</textarea>
         </div>
         <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID->referenceObject}">
         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
