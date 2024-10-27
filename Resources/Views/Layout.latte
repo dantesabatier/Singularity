@@ -70,6 +70,14 @@
                 once: true
             })
         })
+        document.querySelectorAll("textarea").forEach(e => {
+            e.addEventListener("change", async event => {
+                event.stopPropagation()
+                await submit(e.form, register)
+            }, {
+                once: true
+            })
+        })
         document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", async event => {
             if (e.checkValidity()) {
                 event.preventDefault()
