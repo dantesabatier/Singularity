@@ -2,17 +2,22 @@
 
 namespace App\Model;
 
+use Exception;
+use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\CoreData\ManagedObjectContext;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\Number;
+use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\Value;
 
 /**
  * @property string $name
- * @property string|null $fetchEntityName
  * @property string|null $predicateString
+ * @property string|null $fetchEntityName
  * @property FetchRequestResultType $fetchResultType
  * @property int $fetchLimit
  * @property int $fetchBatchSize
@@ -25,6 +30,27 @@ use Sabatier\Foundation\Value;
  */
 class FetchRequestTemplate extends ManagedObject
 {
+    public readonly ?Entity $fetchEntity;
+
+    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
+    {
+        parent::__construct($managedObjectContext, $entity);
+        unset($this->fetchEntity);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function __get(string $name)
+    {
+        if ($name === "fetchEntity") {
+            $fetchRequest = Entity::fetchRequest();
+            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["name", $this->fetchEntityName]));
+            return $this->managedObjectContext->fetch($fetchRequest)->first;
+        }
+        return parent::__get($name);
+    }
+
     public function validateFetchResultType(FetchRequestResultType|Number|Nil|int|null &$resultType): bool
     {
         if ($resultType instanceof Value) {
