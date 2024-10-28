@@ -34,7 +34,7 @@ button {
     font-size: .875rem;
 }
 
-.form-select {
+.form-select.transparent {
     background-color: transparent;
 }
 
