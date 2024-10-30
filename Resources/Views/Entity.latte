@@ -62,7 +62,7 @@
                                     <button type="button" class="btn icon p-0" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint" data-bs-action-name="Uniqueness Constraint">
                                         <i class="bi bi-plus"></i>
                                     </button>
-                                    <button type="button" class="btn icon p-0" onclick="remove({$selectedUniquenessConstraint})" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
+                                    <button type="button" class="btn icon p-0" onclick="remove({$selectedUniquenessConstraint}, register)" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
                                         <i class="bi bi-dash"></i>
                                     </button>
                                 </div>
@@ -88,20 +88,19 @@
                     <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control form-control-sm text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
         <div class="modal fade" id="addUniquenessConstraint" tabindex="-1" aria-labelledby="addUniquenessConstraintLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form id="addUniquenessConstraint" action="/UniquenessConstraint" method="POST" class="needs-validation" novalidate>
+                    <form id="addUniquenessConstraint" action="/UniquenessConstraint" method="POST">
                         <div class="modal-body">
                             <div class="mb-3">
                                 <h5 class="modal-title" id="addUniquenessConstraintLabel">Add Constraint</h5>
                             </div>
                             <div class="mb-3">
                                 <label for="stringValue" class="form-label">Attribute</label>
-                                <select name="stringValue" id="stringValue" class="form-select form-select-sm" data-autosave="true" {$selectedEntity->attributes->isEmpty ? disabled} required>
+                                <select name="stringValue" id="stringValue" class="form-select form-select-sm" {$selectedEntity->attributes->isEmpty ? disabled} required>
                                     {var $attributeNames = $selectedEntity->allAttributeNames->dropLast(1)}
                                     <option n:foreach="$attributeNames as $attributeName" value="{$attributeName}" {$selectedEntity->uniquenessConstraints->contains(fn(App\Model\UniquenessConstraint $uniquenessConstraint): bool => $uniquenessConstraint->stringValue === $attributeName) ? disabled}>
                                         {$attributeName}
