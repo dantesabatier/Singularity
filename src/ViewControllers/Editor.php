@@ -315,6 +315,7 @@ class Editor extends ViewController
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
+                AttributeType::compositeAttributeType => Dictionary::class,
                 default => null,
             };
             if ($attributeValueClassName !== null && class_exists($attributeValueClassName)) {

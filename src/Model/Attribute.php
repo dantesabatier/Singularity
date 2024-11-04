@@ -33,6 +33,7 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
  * @property string|null $derivationExpressionFormat
  * @property bool $isDerived
  * @property bool $isDefaultValueBounded
+ * @property CompositeAttribute|null $compositeAttribute
  */
 class Attribute extends Property
 {
