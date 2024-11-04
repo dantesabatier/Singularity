@@ -9,8 +9,8 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use function Sabatier\Foundation\random_color;
 use const App\AutomaticallyDeleteProjectFolders;
+use function Sabatier\Foundation\random_color;
 
 /**
  * @property string $name
