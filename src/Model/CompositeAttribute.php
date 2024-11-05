@@ -3,6 +3,9 @@
 namespace App\Model;
 
 use Override;
+use Sabatier\CoreData\AttributeType;
+use Sabatier\CoreData\EntityDescription;
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 
@@ -18,6 +21,12 @@ use Sabatier\Foundation\Set;
  */
 class CompositeAttribute extends Attribute
 {
+    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
+    {
+        parent::__construct($managedObjectContext, $entity);
+        $this->type = AttributeType::compositeAttributeType;
+    }
+
     #[Override]
     public function dictionaryRepresentation(): Dictionary
     {

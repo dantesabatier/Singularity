@@ -41,7 +41,7 @@
         </div>
         <hr>
         <div class="row mt-3 mb-3 align-items-center">
-            {var array $types = [(object)["name" => "Undefined", "value" => 0], (object)["name" => "Integer 16", "value" => 100], (object)["name" => "Integer 32", "value" => 200], (object)["name" => "Integer 64", "value" => 300], (object)["name" => "Decimal", "value" => 400], (object)["name" => "Double", "value" => 500], (object)["name" => "Float", "value" => 600], ["name" => "String", "value" => 700], (object)["name" => "Boolean", "value" => 800], (object)["name" => "Date", "value" => 900], (object)["name" => "Binary Data", "value" => 1000], (object)["name" => "UUID", "value" => 1100], (object)["name" => "URI", "value" => 1200], (object)["name" => "Transformable", "value" => 1800]]}
+            {var array $types = [(object)["name" => "Undefined", "value" => 0], (object)["name" => "Integer 16", "value" => 100], (object)["name" => "Integer 32", "value" => 200], (object)["name" => "Integer 64", "value" => 300], (object)["name" => "Decimal", "value" => 400], (object)["name" => "Double", "value" => 500], (object)["name" => "Float", "value" => 600], (object)["name" => "String", "value" => 700], (object)["name" => "Boolean", "value" => 800], (object)["name" => "Date", "value" => 900], (object)["name" => "Binary Data", "value" => 1000], (object)["name" => "UUID", "value" => 1100], (object)["name" => "URI", "value" => 1200], (object)["name" => "Transformable", "value" => 1800]]}
             <label for="type" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
             <div class="col-sm-9">
                 <select name="type" id="type" class="form-select form-select-sm" data-autosave="true">
@@ -55,9 +55,9 @@
             </div>
         </div>
         {if !$selectedProperty->isDerived}
-            {switch $type}
+            {switch $selectedProperty->type->value}
                 {case 100, 200, 300, 400, 500, 600, 700, 800, 900, 1100, 1200}
-                {switch $type}
+                {switch $selectedProperty->type->value}
                     {case 100, 200, 300}
                     <div class="row mb-3 align-items-center">
                         <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
