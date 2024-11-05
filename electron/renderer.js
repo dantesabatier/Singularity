@@ -92,7 +92,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         return
     }
     const keys = []
-    const endpoint = URL.canParse(action) ? new URL(action).pathname.replace("/", "") : action.replace("/", "")
+    const url = URL.canParse(action) ? new URL(action) : undefined
+    const endpoint = url?.pathname.replace("/", "") ?? action.replace("/", "")
     const m = method.toUpperCase()
     switch (m) {
         case "POST":
@@ -106,9 +107,9 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                     break
                 case "Attribute":
                     keys.push("project")
-                    if (body.entityProperty) {
+                    if (location.searchParams.get("entity")) {
                         keys.push("entity")
-                    } else if (body.compositeAttribute) {
+                    } else if (location.searchParams.get("composite")) {
                         keys.push("composite")
                     }
                     break
