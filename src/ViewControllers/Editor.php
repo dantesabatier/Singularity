@@ -262,7 +262,8 @@ class Editor extends ViewController
         $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string
+            "name" => AttributeType::string,
+            "type" => AttributeType::integer16
         ]);
         return $this->managedObjectContext->fetch($fetchRequest);
     }
