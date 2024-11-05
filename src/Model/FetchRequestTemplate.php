@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Exception;
+use Override;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
@@ -41,6 +42,7 @@ class FetchRequestTemplate extends ManagedObject
     /**
      * @throws Exception
      */
+    #[Override]
     public function __get(string $name)
     {
         if ($name === "fetchEntity") {
