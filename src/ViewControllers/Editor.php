@@ -348,7 +348,7 @@ class Editor extends ViewController
             if ($attributeValueClassName !== null && class_exists($attributeValueClassName)) {
                 $attributeValueClassName = class_name($attributeValueClassName);
                 if ($attribute->type === AttributeType::compositeAttributeType) {
-                    $attributeValueClassName = "$attributeValueClassName<mixed>";
+                    $attributeValueClassName .= "<mixed>";
                 }
             }
             if (!($type = match ($attribute->type) {
