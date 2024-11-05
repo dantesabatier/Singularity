@@ -12,6 +12,8 @@
         {include fetchIndex from "FetchIndex.latte"}
     {elseif $selectedEntity instanceof App\Model\Entity}
         {include entity from "Entity.latte"}
+    {elseif $selectedCompositeAttribute}
+        {include compositeAttribute from "CompositeAttribute.latte"}
     {elseif $selectedFetchRequestTemplate instanceof App\Model\FetchRequestTemplate}
         {include fetchRequestTemplate from "FetchRequestTemplate.latte"}
     {elseif $selectedConfiguration instanceof App\Model\Configuration}

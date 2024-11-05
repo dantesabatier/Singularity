@@ -21,6 +21,7 @@ use Sabatier\Foundation\URL;
  * @property Set<Entity> $entities
  * @property Set<FetchRequestTemplate> $fetchRequestTemplates
  * @property Set<Configuration> $configurations
+ * @property Set<CompositeAttribute> $compositeAttributes
  * @method void addEntitiesObject(Entity $object)
  * @method void removeEntitiesObject(Entity $object)
  * @method void addEntities(Set $objects)
@@ -39,6 +40,12 @@ use Sabatier\Foundation\URL;
  * @method void removeConfigurations(Set $objects)
  * @method Set<Configuration> intersectConfigurations(Set $objects)
  * @method void setConfigurations(Set $objects)
+ * @method void addCompositeAttributesObject(CompositeAttribute $object)
+ * @method void removeCompositeAttributesObject(CompositeAttribute $object)
+ * @method void addCompositeAttributes(Set $objects)
+ * @method void removeCompositeAttributes(Set $objects)
+ * @method Set<CompositeAttribute> intersectCompositeAttributes(Set $objects)
+ * @method void setCompositeAttributes(Set $objects)
  */
 class Model extends ManagedObject
 {

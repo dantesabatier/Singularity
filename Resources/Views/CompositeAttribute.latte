@@ -1,0 +1,16 @@
+{templateType App\ViewControllers\Editor}
+{define compositeAttribute}
+    <form action="/CompositeAttribute" method="POST">
+        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
+            Composite Attribute
+        </div>
+        <input type="hidden" name="objectID" value="{$selectedCompositeAttribute->objectID->referenceObject}">
+        <div class="row mb-3 align-items-center">
+            <label for="name" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Name</label>
+            <div class="col-sm-9">
+                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control form-control-sm text-truncate" value="{$selectedCompositeAttribute->name}" autocomplete="off" spellcheck="false" required>
+            </div>
+        </div>
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+    </form>
+{/define}

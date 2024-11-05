@@ -1,3 +1,4 @@
+{templateType App\ViewControllers\Editor}
 {varType App\Model\Attribute $selectedProperty}
 {define attribute}
     {var int $type = $selectedProperty->type->value}
@@ -47,6 +48,9 @@
                 <select name="type" id="type" class="form-select form-select-sm" data-autosave="true">
                     <option n:foreach="$types as $key => $value" value="{$key}" {$key === $type ? selected}>
                         {$value}
+                    </option>
+                    <option n:foreach="$compositeAttributes as $key => $value" value="{2100 + $key}" {2100 + $key === $type ? selected}>
+                        {$value->name}
                     </option>
                 </select>
             </div>

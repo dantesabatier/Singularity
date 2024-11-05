@@ -46,12 +46,13 @@ class Attribute extends Property
                 return;
             }
             $observation->invalidate();
+            $parent = $attribute->entityProperty ?? $attribute->compositeAttribute;
             $attribute->attributeValueClassName = match ($change->newValue) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
-                AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, ManagedObjectValidationError, new Dictionary([LocalizedDescriptionKey => "{$attribute->entityProperty->name}.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "{$attribute->entityProperty->name}.$attribute->name cannot use an attribute type of \"Undefined\""]))),
+                AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, ManagedObjectValidationError, new Dictionary([LocalizedDescriptionKey => "$parent?->name.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "$parent?->name.$attribute->name cannot use an attribute type of \"Undefined\""]))),
                 default => null,
             };
             $attribute->isDefaultValueBounded = false;

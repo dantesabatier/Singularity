@@ -101,9 +101,17 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                 case "Entity":
                 case "FetchRequestTemplate":
                 case "Configuration":
+                case "CompositeAttribute":
                     keys.push("project")
                     break
                 case "Attribute":
+                    keys.push("project")
+                    if (body.entityProperty) {
+                        keys.push("entity")
+                    } else if (body.compositeAttribute) {
+                        keys.push("composite")
+                    }
+                    break
                 case "Relationship":
                 case "FetchedProperty":
                 case "FetchIndex":
@@ -126,6 +134,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                                 return "fetchRequest"
                             case "Configuration":
                                 return "configuration"
+                            case "CompositeAttribute":
+                                return "composite"
                             case "Attribute":
                             case "Relationship":
                             case "FetchedProperty":
@@ -255,24 +265,35 @@ const add = async (entity, name, parent, completion = undefined) => {
         case "Entity":
         case "FetchRequestTemplate":
         case "Configuration":
+        case "CompositeAttribute":
             await send(url(entity), {
                 name: name,
-                modelID: parent.objectID
+                model: parent
             }, "POST", completion)
             break
         case "Attribute":
+            const obj = {
+                name: name
+            }
+            if (parent.entityName === "Entity") {
+                obj.entityProperty = parent
+            } else if (parent.entityName === "CompositeAttribute") {
+                obj.compositeAttribute = parent
+            }
+            await send(url(entity), obj, "POST", completion)
+            break
         case "Relationship":
         case "FetchedProperty":
         case "FetchIndex":
             await send(url(entity), {
                 name: name,
-                entityPropertyID: parent.objectID
+                entityProperty: parent
             }, "POST", completion)
             break
         case "FetchIndexElement":
             await send(url(entity), {
                 propertyName: name,
-                indexID: parent.objectID
+                index: parent
             }, "POST", completion)
             break
         default:

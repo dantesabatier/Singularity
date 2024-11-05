@@ -56,6 +56,11 @@
                             </button>
                         </li>
                         <li>
+                            <button class="dropdown-item" type="button" onclick="add({App\Model\CompositeAttribute::entity()->name}, {App\Model\CompositeAttribute::entity()->name|firstLower}, {$project?->model}, register)" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                                Add Composite Attribute
+                            </button>
+                        </li>
+                        <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>

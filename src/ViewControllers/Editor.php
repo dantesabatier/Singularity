@@ -5,6 +5,7 @@
 namespace App\ViewControllers;
 
 use App\Model\Attribute;
+use App\Model\CompositeAttribute;
 use App\Model\Configuration;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
@@ -72,6 +73,9 @@ class Editor extends ViewController
     /** @var ArrayClass<Configuration> */
     #[Outlet]
     public ArrayClass $configurations;
+    /** @var ArrayClass<CompositeAttribute> */
+    #[Outlet]
+    public ArrayClass $compositeAttributes;
     #[Outlet]
     public ?Entity $selectedEntity = null;
     #[Outlet]
@@ -86,6 +90,8 @@ class Editor extends ViewController
     public ?FetchRequestTemplate $selectedFetchRequestTemplate = null;
     #[Outlet]
     public ?Configuration $selectedConfiguration = null;
+    #[Outlet]
+    public ?CompositeAttribute $selectedCompositeAttribute = null;
     #[Outlet]
     public ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
@@ -103,6 +109,7 @@ class Editor extends ViewController
         unset($this->allEntities);
         unset($this->fetchRequestTemplates);
         unset($this->configurations);
+        unset($this->compositeAttributes);
     }
 
     /**
@@ -133,6 +140,10 @@ class Editor extends ViewController
         }
         if ($name === "configurations") {
             $this->$name = $this->configurations();
+            return $this->$name;
+        }
+        if ($name === "compositeAttributes") {
+            $this->$name = $this->compositeAttributes();
             return $this->$name;
         }
         return parent::__get($name);
@@ -241,6 +252,21 @@ class Editor extends ViewController
         return $this->managedObjectContext->fetch($fetchRequest);
     }
 
+    /**
+     * @return ArrayClass<CompositeAttribute>
+     * @throws Exception
+     */
+    private function compositeAttributes(): ArrayClass
+    {
+        $fetchRequest = CompositeAttribute::fetchRequest();
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string
+        ]);
+        return $this->managedObjectContext->fetch($fetchRequest);
+    }
+
     private function className(Entity $entity, string $namespace): string
     {
         /** @var class-string $class */
@@ -275,6 +301,7 @@ class Editor extends ViewController
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
+                AttributeType::compositeAttributeType => Dictionary::class,
                 default => null,
             };
             if ($attributeValueClassName !== null && class_exists($attributeValueClassName)) {
@@ -320,6 +347,9 @@ class Editor extends ViewController
             };
             if ($attributeValueClassName !== null && class_exists($attributeValueClassName)) {
                 $attributeValueClassName = class_name($attributeValueClassName);
+                if ($attribute->type === AttributeType::compositeAttributeType) {
+                    $attributeValueClassName = "$attributeValueClassName<mixed>";
+                }
             }
             if (!($type = match ($attribute->type) {
                 AttributeType::transformable => "mixed",
@@ -413,7 +443,7 @@ class Editor extends ViewController
         $this->breadcrumb[] = $project;
         $model = $project->model ?? throw new NotFoundException();
         $this->breadcrumb[] = $model;
-        $keys = ["entity", "fetchRequest", "configuration", "constraint", "property", "index", "element"];
+        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
                 continue;
@@ -423,6 +453,7 @@ class Editor extends ViewController
                 "entity" => Entity::class,
                 "fetchRequest" => FetchRequestTemplate::class,
                 "configuration" => Configuration::class,
+                "composite" => CompositeAttribute::class,
                 "constraint" => UniquenessConstraint::class,
                 "property" => Property::class,
                 "index" => FetchIndex::class,
@@ -439,6 +470,8 @@ class Editor extends ViewController
                 $this->selectedFetchRequestTemplate = $selection;
             } elseif ($selection instanceof Configuration) {
                 $this->selectedConfiguration = $selection;
+            } elseif ($selection instanceof CompositeAttribute) {
+                $this->selectedCompositeAttribute = $selection;
             } elseif ($selection instanceof UniquenessConstraint) {
                 $this->selectedUniquenessConstraint = $selection;
             } elseif ($selection instanceof Property) {

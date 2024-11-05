@@ -8,6 +8,7 @@ use Sabatier\Foundation\Set;
 
 /**
  * @property Set<Attribute> $elements
+ * @property Model|null $model
  * @method void addElementsObject(Attribute $object)
  * @method void removeElementsObject(Attribute $object)
  * @method void addElements(Set $objects)
