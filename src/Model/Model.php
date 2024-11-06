@@ -171,6 +171,13 @@ class Model extends ManagedObject
         return $fetchRequest;
     }
 
+    private function newCompositeAttribute(Dictionary $dictionary): CompositeAttribute
+    {
+        $compositeAttribute = new CompositeAttribute($this->managedObjectContext);
+        $compositeAttribute->setValuesForKeys($dictionary);
+        return $compositeAttribute;
+    }
+
     /**
      * @throws Exception
      */
@@ -215,6 +222,11 @@ class Model extends ManagedObject
             $representations = $propertyList["fetchRequests"];
             if ($representations) {
                 $this->fetchRequestTemplates = new Set($representations->map(fn(Dictionary $representation): FetchRequestTemplate => $this->newFetchRequest($representation)));
+            }
+            /** @var ArrayClass<Dictionary>|null $representations */
+            $representations = $propertyList["compositeAttributes"];
+            if ($representations) {
+                $this->compositeAttributes = new Set($representations->map(fn(Dictionary $representation): CompositeAttribute => $this->newCompositeAttribute($representation)));
             }
             $context->save();
         }
