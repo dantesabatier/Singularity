@@ -28,8 +28,8 @@
                             <option n:foreach="$types as $type" value="{$type->value}" {$type->value === $attribute->type->value ? selected}>
                                 {$type->name}
                             </option>
-                            <option n:foreach="$compositeTypes as $compositeAttribute" value="{$compositeAttribute->type->value}" {$compositeAttribute->name === $attribute->attributeValueClassName ? selected}>
-                                {$compositeAttribute->name}
+                            <option n:foreach="$compositeTypes as $compositeType" value="{$compositeType->type->value}" {$compositeType->name === $attribute->attributeValueClassName ? selected}>
+                                {$compositeType->name}
                             </option>
                         </select>
                     </form>
