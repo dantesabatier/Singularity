@@ -213,8 +213,27 @@
         </nav>
     </div>
     <script>
-        const load = async (project) => await push(url("Editor", {
+        /**
+         * @param { object } project
+         */
+        const load = project => push(url("Editor", {
             project: project.objectID
         }), register)
+
+        /**
+         * @param { HTMLSelectElement } sender
+         */
+        const changed = (sender) => {
+            /**
+             * @type { HTMLFormElement }
+             */
+            const form = sender.form
+            /**
+             * @type { HTMLInputElement }
+             */
+            const element = form.querySelector("input[name=attributeValueClassName]")
+            element.value = sender.value === "2100" ? sender.options[sender.selectedIndex].text : "";
+            submit(form, register)
+        }
     </script>
 {/block}
