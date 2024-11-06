@@ -173,9 +173,9 @@ class Model extends ManagedObject
 
     private function newCompositeType(Dictionary $dictionary): CompositeType
     {
-        $compositeAttribute = new CompositeType($this->managedObjectContext);
-        $compositeAttribute->setValuesForKeys($dictionary);
-        return $compositeAttribute;
+        $compositeType = new CompositeType($this->managedObjectContext);
+        $compositeType->setValuesForKeys($dictionary);
+        return $compositeType;
     }
 
     /**
