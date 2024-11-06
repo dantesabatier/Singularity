@@ -42,12 +42,11 @@
         </div>
         <hr>
         <div class="row mt-3 mb-3 align-items-center">
-            {var array $types = [(object)["name" => "Undefined", "value" => 0], (object)["name" => "Integer 16", "value" => 100], (object)["name" => "Integer 32", "value" => 200], (object)["name" => "Integer 64", "value" => 300], (object)["name" => "Decimal", "value" => 400], (object)["name" => "Double", "value" => 500], (object)["name" => "Float", "value" => 600], (object)["name" => "String", "value" => 700], (object)["name" => "Boolean", "value" => 800], (object)["name" => "Date", "value" => 900], (object)["name" => "Binary Data", "value" => 1000], (object)["name" => "UUID", "value" => 1100], (object)["name" => "URI", "value" => 1200], (object)["name" => "Transformable", "value" => 1800]]}
             <label for="type" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
             <div class="col-sm-9">
                 <select name="type" id="type" class="form-select form-select-sm" onchange="setType(this)">
-                    <option n:foreach="$types as $type" value="{$type->value}" {$type->value === $selectedProperty->type->value ? selected}>
-                        {$type->name}
+                    <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $selectedProperty->type->value ? selected}>
+                        {$attributeType->name}
                     </option>
                     <option n:foreach="$compositeTypes as $compositeType" value="{$compositeType->type->value}" {$compositeType->name === $selectedProperty->attributeValueClassName ? selected}>
                         {$compositeType->name}
@@ -230,7 +229,7 @@
                     </div>
                 </div>
             </div>
-        {elseif ($type === 1800)}
+        {elseif ($selectedProperty->type->value === 1800)}
             <div class="row mb-3 align-items-center">
                 <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom Class</label>
                 <div class="col-sm-9">
