@@ -53,7 +53,7 @@ class Attribute extends Property
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
                 AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, ManagedObjectValidationError, new Dictionary([LocalizedDescriptionKey => "$parent?->name.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "$parent?->name.$attribute->name cannot use an attribute type of \"Undefined\""]))),
-                default => null,
+                default => $attribute->attributeValueClassName,
             };
             $attribute->isDefaultValueBounded = false;
             $attribute->defaultValue = null;
