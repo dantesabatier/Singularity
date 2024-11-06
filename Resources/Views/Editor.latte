@@ -219,5 +219,21 @@
         const load = project => push(url("Editor", {
             project: project.objectID
         }), register)
+
+        /**
+         * @param { HTMLSelectElement } sender
+         */
+        const setType = (sender) => {
+            /**
+             * @type { HTMLFormElement }
+             */
+            const form = sender.form
+            /**
+             * @type { HTMLInputElement }
+             */
+            const element = form.querySelector("input[name=attributeValueClassName]")
+            element.value = sender.value === "2100" ? sender.options[sender.selectedIndex].text : "";
+            submit(form, register)
+        }
     </script>
 {/block}
