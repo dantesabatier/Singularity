@@ -219,14 +219,14 @@ class Model extends ManagedObject
                 $this->entities = $entities;
             }
             /** @var ArrayClass<Dictionary>|null $representations */
+            $representations = $propertyList["compositeTypes"];
+            if ($representations) {
+                $this->compositeAttributes = new Set($representations->map(fn(Dictionary $representation): CompositeAttribute => $this->newCompositeAttribute($representation)));
+            }
+            /** @var ArrayClass<Dictionary>|null $representations */
             $representations = $propertyList["fetchRequests"];
             if ($representations) {
                 $this->fetchRequestTemplates = new Set($representations->map(fn(Dictionary $representation): FetchRequestTemplate => $this->newFetchRequest($representation)));
-            }
-            /** @var ArrayClass<Dictionary>|null $representations */
-            $representations = $propertyList["compositeAttributes"];
-            if ($representations) {
-                $this->compositeAttributes = new Set($representations->map(fn(Dictionary $representation): CompositeAttribute => $this->newCompositeAttribute($representation)));
             }
             $context->save();
         }
@@ -237,8 +237,8 @@ class Model extends ManagedObject
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = new Dictionary();
         $dictionary["entities"] = $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name)->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation());
+        $dictionary["compositeTypes"] = $this->compositeAttributes->map(fn(CompositeAttribute $compositeAttribute): Dictionary => $compositeAttribute->dictionaryRepresentation());
         $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation());
-        $dictionary["compositeAttributes"] = $this->compositeAttributes->map(fn(CompositeAttribute $compositeAttribute): Dictionary => $compositeAttribute->dictionaryRepresentation());
         return $dictionary;
     }
 }
