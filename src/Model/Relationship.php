@@ -42,7 +42,7 @@ class Relationship extends Property
     public function __get(string $name)
     {
         if ($name === "destinationEntity") {
-            $this->$name = $this->entityProperty->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);
+            $this->$name = $this->entityProperty?->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);
             return $this->$name;
         }
         if ($name === "inverseRelationship") {
