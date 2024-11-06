@@ -59,6 +59,9 @@ class Editor extends ViewController
     /** @var ArrayClass<Project> */
     #[Outlet]
     public ArrayClass $projects;
+    /** @var array<object{name: string, value: int}> */
+    #[Outlet]
+    public array $attributeTypes = [];
     #[Outlet]
     public ?Project $project = null;
     /** @var ArrayClass<Entity> */
@@ -485,6 +488,7 @@ class Editor extends ViewController
             $this->breadcrumb[] = $selection;
         }
         $this->bundleName = $this->bundle->object(kCFBundleNameKey);
+        $this->attributeTypes = [(object)["name" => "Undefined", "value" => 0], (object)["name" => "Integer 16", "value" => 100], (object)["name" => "Integer 32", "value" => 200], (object)["name" => "Integer 64", "value" => 300], (object)["name" => "Decimal", "value" => 400], (object)["name" => "Double", "value" => 500], (object)["name" => "Float", "value" => 600], (object)["name" => "String", "value" => 700], (object)["name" => "Boolean", "value" => 800], (object)["name" => "Date", "value" => 900], (object)["name" => "Binary Data", "value" => 1000], (object)["name" => "UUID", "value" => 1100], (object)["name" => "URI", "value" => 1200], (object)["name" => "Transformable", "value" => 1800]];
     }
 
     /**
