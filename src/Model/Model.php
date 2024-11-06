@@ -171,7 +171,7 @@ class Model extends ManagedObject
         return $fetchRequest;
     }
 
-    private function newCompositeAttribute(Dictionary $dictionary): CompositeType
+    private function newCompositeType(Dictionary $dictionary): CompositeType
     {
         $compositeAttribute = new CompositeType($this->managedObjectContext);
         $compositeAttribute->setValuesForKeys($dictionary);
@@ -221,7 +221,7 @@ class Model extends ManagedObject
             /** @var ArrayClass<Dictionary>|null $representations */
             $representations = $propertyList["compositeTypes"];
             if ($representations) {
-                $this->compositeTypes = new Set($representations->map(fn(Dictionary $representation): CompositeType => $this->newCompositeAttribute($representation)));
+                $this->compositeTypes = new Set($representations->map(fn(Dictionary $representation): CompositeType => $this->newCompositeType($representation)));
             }
             /** @var ArrayClass<Dictionary>|null $representations */
             $representations = $propertyList["fetchRequests"];
@@ -237,7 +237,7 @@ class Model extends ManagedObject
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = new Dictionary();
         $dictionary["entities"] = $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name)->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation());
-        $dictionary["compositeTypes"] = $this->compositeTypes->map(fn(CompositeType $compositeAttribute): Dictionary => $compositeAttribute->dictionaryRepresentation());
+        $dictionary["compositeTypes"] = $this->compositeTypes->map(fn(CompositeType $compositeType): Dictionary => $compositeType->dictionaryRepresentation());
         $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation());
         return $dictionary;
     }
