@@ -6,8 +6,8 @@
         {include attributes from "Attributes.latte", $selectedEntity->attributes}
         {include relationships from "Relationships.latte", $selectedEntity->relationships}
         {include fetchedProperties from "FetchedProperties.latte", $selectedEntity->fetchedProperties}
-    {elseif $selectedCompositeAttribute}
-        {include compositeAttributeElements from "CompositeAttributeElements.latte", $selectedCompositeAttribute->elements}
+    {elseif $selectedCompositeType}
+        {include compositeTypeElements from "CompositeTypeElements.latte", $selectedCompositeType->elements}
     {elseif $selectedFetchRequestTemplate}
         {include fetchRequestTemplatePredicate from "FetchRequestTemplatePredicate.latte"}
     {/if}

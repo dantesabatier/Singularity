@@ -5,7 +5,7 @@
 namespace App\ViewControllers;
 
 use App\Model\Attribute;
-use App\Model\CompositeAttribute;
+use App\Model\CompositeType;
 use App\Model\Configuration;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
@@ -73,9 +73,9 @@ class Editor extends ViewController
     /** @var ArrayClass<Configuration> */
     #[Outlet]
     public ArrayClass $configurations;
-    /** @var ArrayClass<CompositeAttribute> */
+    /** @var ArrayClass<CompositeType> */
     #[Outlet]
-    public ArrayClass $compositeAttributes;
+    public ArrayClass $compositeTypes;
     #[Outlet]
     public ?Entity $selectedEntity = null;
     #[Outlet]
@@ -91,7 +91,7 @@ class Editor extends ViewController
     #[Outlet]
     public ?Configuration $selectedConfiguration = null;
     #[Outlet]
-    public ?CompositeAttribute $selectedCompositeAttribute = null;
+    public ?CompositeType $selectedCompositeType = null;
     #[Outlet]
     public ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
@@ -109,7 +109,7 @@ class Editor extends ViewController
         unset($this->allEntities);
         unset($this->fetchRequestTemplates);
         unset($this->configurations);
-        unset($this->compositeAttributes);
+        unset($this->compositeTypes);
     }
 
     /**
@@ -142,8 +142,8 @@ class Editor extends ViewController
             $this->$name = $this->configurations();
             return $this->$name;
         }
-        if ($name === "compositeAttributes") {
-            $this->$name = $this->compositeAttributes();
+        if ($name === "compositeTypes") {
+            $this->$name = $this->compositeTypes();
             return $this->$name;
         }
         return parent::__get($name);
@@ -223,6 +223,21 @@ class Editor extends ViewController
     }
 
     /**
+     * @return ArrayClass<CompositeType>
+     * @throws Exception
+     */
+    private function compositeTypes(): ArrayClass
+    {
+        $fetchRequest = CompositeType::fetchRequest();
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string
+        ]);
+        return $this->managedObjectContext->fetch($fetchRequest);
+    }
+
+    /**
      * @return ArrayClass<FetchRequestTemplate>
      * @throws Exception
      */
@@ -248,22 +263,6 @@ class Editor extends ViewController
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
             "name" => AttributeType::string
-        ]);
-        return $this->managedObjectContext->fetch($fetchRequest);
-    }
-
-    /**
-     * @return ArrayClass<CompositeAttribute>
-     * @throws Exception
-     */
-    private function compositeAttributes(): ArrayClass
-    {
-        $fetchRequest = CompositeAttribute::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
-        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string,
-            "type" => AttributeType::integer16
         ]);
         return $this->managedObjectContext->fetch($fetchRequest);
     }
@@ -454,7 +453,7 @@ class Editor extends ViewController
                 "entity" => Entity::class,
                 "fetchRequest" => FetchRequestTemplate::class,
                 "configuration" => Configuration::class,
-                "composite" => CompositeAttribute::class,
+                "composite" => CompositeType::class,
                 "constraint" => UniquenessConstraint::class,
                 "property" => Property::class,
                 "index" => FetchIndex::class,
@@ -471,8 +470,8 @@ class Editor extends ViewController
                 $this->selectedFetchRequestTemplate = $selection;
             } elseif ($selection instanceof Configuration) {
                 $this->selectedConfiguration = $selection;
-            } elseif ($selection instanceof CompositeAttribute) {
-                $this->selectedCompositeAttribute = $selection;
+            } elseif ($selection instanceof CompositeType) {
+                $this->selectedCompositeType = $selection;
             } elseif ($selection instanceof UniquenessConstraint) {
                 $this->selectedUniquenessConstraint = $selection;
             } elseif ($selection instanceof Property) {

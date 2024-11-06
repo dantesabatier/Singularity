@@ -2,14 +2,13 @@
 
 namespace App\Model;
 
-use Override;
 use Sabatier\CoreData\AttributeType;
-use Sabatier\CoreData\EntityDescription;
-use Sabatier\CoreData\ManagedObjectContext;
+use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 
 /**
+ * @property string $name
  * @property Set<Attribute> $elements
  * @property Model|null $model
  * @method void addElementsObject(Attribute $object)
@@ -19,19 +18,15 @@ use Sabatier\Foundation\Set;
  * @method Set<Attribute> intersectElements(Set $objects)
  * @method void setElements(Set $objects)
  */
-class CompositeAttribute extends Attribute
+class CompositeType extends ManagedObject
 {
-    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
-    {
-        parent::__construct($managedObjectContext, $entity);
-        $this->type = AttributeType::compositeAttributeType;
-    }
+    public AttributeType $type = AttributeType::compositeAttributeType;
 
-    #[Override]
     public function dictionaryRepresentation(): Dictionary
     {
         /** @var Dictionary<mixed> $dictionary */
-        $dictionary = parent::dictionaryRepresentation();
+        $dictionary = new Dictionary();
+        $dictionary["name"] = $this->name;
         $elements = $this->elements;
         if (!$elements->isEmpty) {
             $dictionary["elements"] = $elements->map(fn(Attribute $element) => $element->dictionaryRepresentation());

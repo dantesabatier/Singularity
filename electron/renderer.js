@@ -102,7 +102,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                 case "Entity":
                 case "FetchRequestTemplate":
                 case "Configuration":
-                case "CompositeAttribute":
+                case "CompositeType":
                     keys.push("project")
                     break
                 case "Attribute":
@@ -135,7 +135,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                                 return "fetchRequest"
                             case "Configuration":
                                 return "configuration"
-                            case "CompositeAttribute":
+                            case "CompositeType":
                                 return "composite"
                             case "Attribute":
                             case "Relationship":
@@ -266,7 +266,7 @@ const add = async (entity, name, parent, completion = undefined) => {
         case "Entity":
         case "FetchRequestTemplate":
         case "Configuration":
-        case "CompositeAttribute":
+        case "CompositeType":
             await send(url(entity), {
                 name: name,
                 model: parent
@@ -278,8 +278,8 @@ const add = async (entity, name, parent, completion = undefined) => {
             }
             if (parent.entityName === "Entity") {
                 obj.entityProperty = parent
-            } else if (parent.entityName === "CompositeAttribute") {
-                obj.compositeAttribute = parent
+            } else if (parent.entityName === "CompositeType") {
+                obj.compositeType = parent
             }
             await send(url(entity), obj, "POST", completion)
             break

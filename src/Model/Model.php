@@ -21,7 +21,7 @@ use Sabatier\Foundation\URL;
  * @property Set<Entity> $entities
  * @property Set<FetchRequestTemplate> $fetchRequestTemplates
  * @property Set<Configuration> $configurations
- * @property Set<CompositeAttribute> $compositeAttributes
+ * @property Set<CompositeType> $compositeTypes
  * @method void addEntitiesObject(Entity $object)
  * @method void removeEntitiesObject(Entity $object)
  * @method void addEntities(Set $objects)
@@ -40,12 +40,12 @@ use Sabatier\Foundation\URL;
  * @method void removeConfigurations(Set $objects)
  * @method Set<Configuration> intersectConfigurations(Set $objects)
  * @method void setConfigurations(Set $objects)
- * @method void addCompositeAttributesObject(CompositeAttribute $object)
- * @method void removeCompositeAttributesObject(CompositeAttribute $object)
- * @method void addCompositeAttributes(Set $objects)
- * @method void removeCompositeAttributes(Set $objects)
- * @method Set<CompositeAttribute> intersectCompositeAttributes(Set $objects)
- * @method void setCompositeAttributes(Set $objects)
+ * @method void addCompositeTypeObject(CompositeType $object)
+ * @method void removeCompositeTypeObject(CompositeType $object)
+ * @method void addCompositeTypes(Set $objects)
+ * @method void removeCompositeTypes(Set $objects)
+ * @method Set<CompositeType> intersectCompositeTypes(Set $objects)
+ * @method void setCompositeTypes(Set $objects)
  */
 class Model extends ManagedObject
 {
@@ -171,9 +171,9 @@ class Model extends ManagedObject
         return $fetchRequest;
     }
 
-    private function newCompositeAttribute(Dictionary $dictionary): CompositeAttribute
+    private function newCompositeAttribute(Dictionary $dictionary): CompositeType
     {
-        $compositeAttribute = new CompositeAttribute($this->managedObjectContext);
+        $compositeAttribute = new CompositeType($this->managedObjectContext);
         $compositeAttribute->setValuesForKeys($dictionary);
         return $compositeAttribute;
     }
@@ -221,7 +221,7 @@ class Model extends ManagedObject
             /** @var ArrayClass<Dictionary>|null $representations */
             $representations = $propertyList["compositeTypes"];
             if ($representations) {
-                $this->compositeAttributes = new Set($representations->map(fn(Dictionary $representation): CompositeAttribute => $this->newCompositeAttribute($representation)));
+                $this->compositeTypes = new Set($representations->map(fn(Dictionary $representation): CompositeType => $this->newCompositeAttribute($representation)));
             }
             /** @var ArrayClass<Dictionary>|null $representations */
             $representations = $propertyList["fetchRequests"];
@@ -237,7 +237,7 @@ class Model extends ManagedObject
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = new Dictionary();
         $dictionary["entities"] = $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name)->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation());
-        $dictionary["compositeTypes"] = $this->compositeAttributes->map(fn(CompositeAttribute $compositeAttribute): Dictionary => $compositeAttribute->dictionaryRepresentation());
+        $dictionary["compositeTypes"] = $this->compositeTypes->map(fn(CompositeType $compositeAttribute): Dictionary => $compositeAttribute->dictionaryRepresentation());
         $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation());
         return $dictionary;
     }

@@ -5,6 +5,7 @@
 namespace App;
 
 use App\Model\Attribute;
+use App\Model\CompositeType;
 use App\Model\Configuration;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
@@ -61,7 +62,7 @@ class LatteRenderer extends Renderer
         };
     }
 
-    private function image(Project|Model|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration $object): string
+    private function image(Project|Model|CompositeType|FetchRequestTemplate|Configuration|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint $object): string
     {
         /** @psalm-suppress ArgumentTypeCoercion */
         return match (true) {
@@ -74,7 +75,6 @@ class LatteRenderer extends Renderer
             $object instanceof FetchIndex => "I",
             $object instanceof FetchIndexElement => ($property = $object->property) ? $this->image($property) : $this->name(AttributeType::undefined),
             $object instanceof UniquenessConstraint => "U",
-            $object instanceof Configuration => "C",
             default => substring_to_index($object->entity->name, 1)
         };
     }
@@ -94,7 +94,7 @@ class LatteRenderer extends Renderer
         $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
         $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
         $engine->addFilter("json", fn(mixed $value): string => json_encode($value));
-        $engine->addFunction("img", fn(Project|Model|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint|FetchRequestTemplate|Configuration $object): string => $this->image($object));
+        $engine->addFunction("img", fn(Project|Model|CompositeType|FetchRequestTemplate|Configuration|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint $object): string => $this->image($object));
         $engine->addFunction("localized", fn(string $value): string => localized_string($value));
         $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
         $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));

@@ -33,7 +33,7 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
  * @property string|null $derivationExpressionFormat
  * @property bool $isDerived
  * @property bool $isDefaultValueBounded
- * @property CompositeAttribute|null $compositeAttribute
+ * @property CompositeType|null $compositeType
  */
 class Attribute extends Property
 {
@@ -46,7 +46,7 @@ class Attribute extends Property
                 return;
             }
             $observation->invalidate();
-            $parent = $attribute->entityProperty ?? $attribute->compositeAttribute;
+            $parent = $attribute->entityProperty ?? $attribute->compositeType;
             $attribute->attributeValueClassName = match ($change->newValue) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,

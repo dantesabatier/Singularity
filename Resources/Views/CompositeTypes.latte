@@ -1,0 +1,10 @@
+{templateType App\ViewControllers\Editor}
+{define compositeTypes}
+    <div class="flex-column w-100">
+        <div n:foreach="$compositeTypes as $compositeAttribute" class="nav-item{$compositeAttribute->objectID->referenceObject === $selectedCompositeType?->objectID?->referenceObject && !$selectedIndex ? ' active'} d-block text-truncate w-100" id="fetchRequest-{$compositeAttribute->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$compositeAttribute->objectID->referenceObject}">
+            <span class="space"></span>
+            <img src="/Resources/Images/C@1x.png" srcset="/Resources/Images/C@2x.png 2x, /Resources/Images/C@3x.png 3x" alt="">
+            <span class="ps-2">{$compositeAttribute->name}</span>
+        </div>
+    </div>
+{/define}
