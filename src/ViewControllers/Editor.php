@@ -61,7 +61,9 @@ class Editor extends ViewController
     public ArrayClass $projects;
     /** @var array<object{name: string, value: int}> */
     #[Outlet]
-    public array $attributeTypes = [];
+    public array $attributeTypes {
+        get => [(object)["name" => "Undefined", "value" => 0], (object)["name" => "Integer 16", "value" => 100], (object)["name" => "Integer 32", "value" => 200], (object)["name" => "Integer 64", "value" => 300], (object)["name" => "Decimal", "value" => 400], (object)["name" => "Double", "value" => 500], (object)["name" => "Float", "value" => 600], (object)["name" => "String", "value" => 700], (object)["name" => "Boolean", "value" => 800], (object)["name" => "Date", "value" => 900], (object)["name" => "Binary Data", "value" => 1000], (object)["name" => "UUID", "value" => 1100], (object)["name" => "URI", "value" => 1200], (object)["name" => "Transformable", "value" => 1800]];
+    }
     #[Outlet]
     public ?Project $project = null;
     /** @var ArrayClass<Entity> */
@@ -101,7 +103,9 @@ class Editor extends ViewController
     #[Outlet]
     public ArrayClass $breadcrumb;
     #[Outlet]
-    public ?string $bundleName = null;
+    public ?string $bundleName {
+        get => $this->bundle->object(kCFBundleNameKey);
+    }
 
     public function __construct()
     {
@@ -154,7 +158,8 @@ class Editor extends ViewController
 
     private function referenceObject(string $key): ?int
     {
-        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get ? (new URLComponents($this->request->url->absoluteString))->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $this->request->getParsedBody()[$key] ?? null;
+        $request = $this->request;
+        $referenceObject = $request->httpMethod === HTTPRequestMethod::get ? new URLComponents($request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $request->getParsedBody()[$key] ?? null;
         if (is_numeric($referenceObject)) {
             return (int)$referenceObject;
         }
@@ -407,14 +412,14 @@ class Editor extends ViewController
             }
             $relationshipName = ucfirst($relationship->name);
             $entityClassName = $this->className($destinationEntity, $namespace);
-            return (new ArrayClass([
+            return new ArrayClass([
                 " * @method void add{$relationshipName}Object($entityClassName \$object)",
                 " * @method void remove{$relationshipName}Object($entityClassName \$object)",
                 " * @method void add$relationshipName($setClassName \$objects)",
                 " * @method void remove$relationshipName($setClassName \$objects)",
                 " * @method $setClassName<$entityClassName> intersect$relationshipName($setClassName \$objects)",
                 " * @method void set$relationshipName($setClassName \$objects)"
-            ]))->join("\n");
+            ])->join("\n");
         });
         if (!$uses->isEmpty) {
             $content .= "\n";
@@ -487,8 +492,6 @@ class Editor extends ViewController
             $this->selection = $selection;
             $this->breadcrumb[] = $selection;
         }
-        $this->bundleName = $this->bundle->object(kCFBundleNameKey);
-        $this->attributeTypes = [(object)["name" => "Undefined", "value" => 0], (object)["name" => "Integer 16", "value" => 100], (object)["name" => "Integer 32", "value" => 200], (object)["name" => "Integer 64", "value" => 300], (object)["name" => "Decimal", "value" => 400], (object)["name" => "Double", "value" => 500], (object)["name" => "Float", "value" => 600], (object)["name" => "String", "value" => 700], (object)["name" => "Boolean", "value" => 800], (object)["name" => "Date", "value" => 900], (object)["name" => "Binary Data", "value" => 1000], (object)["name" => "UUID", "value" => 1100], (object)["name" => "URI", "value" => 1200], (object)["name" => "Transformable", "value" => 1800]];
     }
 
     /**
@@ -515,7 +518,7 @@ class Editor extends ViewController
         if ($fileManager->fileExists($modelURL->path)) {
             $fileManager->removeItem($modelURL);
         }
-        PropertyListSerialization::writePropertyList($model->dictionaryRepresentation(), $modelURL);
+        PropertyListSerialization::writePropertyList($model->dictionaryRepresentation, $modelURL);
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
         $this->headerFields["Content-Type"] = "application/json";
     }

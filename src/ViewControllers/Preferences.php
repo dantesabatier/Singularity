@@ -3,7 +3,6 @@
 namespace App\ViewControllers;
 
 use Exception;
-use Override;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
@@ -17,18 +16,16 @@ use const App\CompanyNameKey;
 class Preferences extends ViewController
 {
     #[Outlet]
-    public ?string $companyName = null;
+    public ?string $companyName {
+        get => UserDefaults::standard()->string(CompanyNameKey);
+    }
     #[Outlet]
-    public bool $automaticallyDeleteProjectFolders = false;
+    public bool $automaticallyDeleteProjectFolders {
+        get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFolders);
+    }
     #[Outlet]
-    public bool $automaticallySaveModel = false;
-
-    #[Override]
-    public function viewWillLoad(): void
-    {
-        $this->companyName = UserDefaults::standard()->string(CompanyNameKey);
-        $this->automaticallyDeleteProjectFolders = UserDefaults::standard()->bool(AutomaticallyDeleteProjectFolders);
-        $this->automaticallySaveModel = UserDefaults::standard()->bool(AutomaticallySaveModel);
+    public bool $automaticallySaveModel {
+        get => UserDefaults::standard()->bool(AutomaticallySaveModel);
     }
 
     /**

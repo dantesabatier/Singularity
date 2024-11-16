@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use Override;
 use Sabatier\Foundation\Dictionary;
 
 /**
@@ -11,13 +10,13 @@ use Sabatier\Foundation\Dictionary;
  */
 class FetchedProperty extends Property
 {
-    #[Override]
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = parent::dictionaryRepresentation();
-        $dictionary["fetchRequestEntityName"] = $this->fetchRequestEntityName;
-        $dictionary["fetchRequestPredicateFormat"] = $this->fetchRequestPredicateFormat;
-        return $dictionary;
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = parent::$dictionaryRepresentation->get();
+            $dictionary["fetchRequestEntityName"] = $this->fetchRequestEntityName;
+            $dictionary["fetchRequestPredicateFormat"] = $this->fetchRequestPredicateFormat;
+            return $dictionary;
+        }
     }
 }

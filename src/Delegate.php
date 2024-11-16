@@ -12,7 +12,6 @@ use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\SQLCore;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\Error;
 use Sabatier\Foundation\Notification;
 use Sabatier\Foundation\NotificationCenter;
 use Sabatier\Foundation\ObjectClass;
@@ -76,12 +75,6 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public function applicationDidFinishLaunching(Application $application): void
     {
-    }
-
-    #[Override]
-    public function applicationWillPresentError(Application $application, Error $error): Error
-    {
-        return $error;
     }
 
     #[Override]

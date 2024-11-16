@@ -171,12 +171,12 @@ class Welcome extends ViewController
     private function generateEnv(string $name): string
     {
         /** @psalm-suppress ArgumentTypeCoercion, ReferenceConstraintViolation */
-        return (new Dictionary([
+        return new Dictionary([
             "SQL_SCHEMA_NAME" => $name,
             "SQL_SCHEMA_HOST" => "localhost",
             "SQL_SCHEMA_CREDENTIAL_USER" => "root",
             "SQL_SCHEMA_CREDENTIAL_PASSWORD" => ""
-        ]))->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n");
+        ])->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n");
     }
 
     /**

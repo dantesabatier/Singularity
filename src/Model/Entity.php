@@ -66,6 +66,45 @@ class Entity extends ManagedObject
     public readonly ArrayClass $allAttributeNames;
     public readonly bool $isLeaf;
 
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["name"] = $this->name;
+            $dictionary["managedObjectClassName"] = $this->managedObjectClassName;
+            if ($this->isAbstract) {
+                $dictionary["isAbstract"] = $this->isAbstract;
+            }
+            $dictionary["versionHashModifier"] = $this->versionHashModifier;
+            $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
+            $attributes = $this->attributes->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation);
+            if (!$attributes->isEmpty) {
+                $dictionary["attributes"] = $attributes;
+            }
+            $relationships = $this->relationships->map(fn(Relationship $relationship): Dictionary => $relationship->dictionaryRepresentation);
+            if (!$relationships->isEmpty) {
+                $dictionary["relationships"] = $relationships;
+            }
+            $fetchedProperties = $this->fetchedProperties->map(fn(FetchedProperty $property): Dictionary => $property->dictionaryRepresentation);
+            if (!$fetchedProperties->isEmpty) {
+                $dictionary["fetchedProperties"] = $fetchedProperties;
+            }
+            $uniquenessConstraints = $this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => new ArrayClass(explode(",", $uniquenessConstraint->stringValue))->map(fn(string $e): string => trim($e)));
+            if (!$uniquenessConstraints->isEmpty) {
+                $dictionary["uniquenessConstraints"] = $uniquenessConstraints;
+            }
+            $indexes = $this->indexes->map(fn(FetchIndex $index): Dictionary => $index->dictionaryRepresentation);
+            if (!$indexes->isEmpty) {
+                $dictionary["indexes"] = $indexes;
+            }
+            $subentities = $this->subentities->map(fn(Entity $subentity): Dictionary => $subentity->dictionaryRepresentation);
+            if (!$subentities->isEmpty) {
+                $dictionary["subentities"] = $subentities;
+            }
+            return $dictionary;
+        }
+    }
+
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
@@ -150,43 +189,5 @@ class Entity extends ManagedObject
         } else {
             parent::__set($name, $value);
         }
-    }
-
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = new Dictionary();
-        $dictionary["name"] = $this->name;
-        $dictionary["managedObjectClassName"] = $this->managedObjectClassName;
-        if ($this->isAbstract) {
-            $dictionary["isAbstract"] = $this->isAbstract;
-        }
-        $dictionary["versionHashModifier"] = $this->versionHashModifier;
-        $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
-        $attributes = $this->attributes->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation());
-        if (!$attributes->isEmpty) {
-            $dictionary["attributes"] = $attributes;
-        }
-        $relationships = $this->relationships->map(fn(Relationship $relationship): Dictionary => $relationship->dictionaryRepresentation());
-        if (!$relationships->isEmpty) {
-            $dictionary["relationships"] = $relationships;
-        }
-        $fetchedProperties = $this->fetchedProperties->map(fn(FetchedProperty $property): Dictionary => $property->dictionaryRepresentation());
-        if (!$fetchedProperties->isEmpty) {
-            $dictionary["fetchedProperties"] = $fetchedProperties;
-        }
-        $uniquenessConstraints = $this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => (new ArrayClass(explode(",", $uniquenessConstraint->stringValue)))->map(fn(string $e): string => trim($e)));
-        if (!$uniquenessConstraints->isEmpty) {
-            $dictionary["uniquenessConstraints"] = $uniquenessConstraints;
-        }
-        $indexes = $this->indexes->map(fn(FetchIndex $index): Dictionary => $index->dictionaryRepresentation());
-        if (!$indexes->isEmpty) {
-            $dictionary["indexes"] = $indexes;
-        }
-        $subentities = $this->subentities->map(fn(Entity $subentity): Dictionary => $subentity->dictionaryRepresentation());
-        if (!$subentities->isEmpty) {
-            $dictionary["subentities"] = $subentities;
-        }
-        return $dictionary;
     }
 }

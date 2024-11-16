@@ -32,6 +32,41 @@ use Sabatier\Foundation\Value;
 class FetchRequestTemplate extends ManagedObject
 {
     public readonly ?Entity $fetchEntity;
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["name"] = $this->name;
+            $dictionary["fetchEntityName"] = $this->fetchEntityName;
+            $dictionary["predicateString"] = $this->predicateString;
+            $fetchResultType = $this->fetchResultType;
+            if ($fetchResultType !== FetchRequestResultType::managedObjectResultType) {
+                $dictionary["fetchResultType"] = $fetchResultType;
+            }
+            if ($fetchLimit = $this->fetchLimit) {
+                $dictionary["fetchLimit"] = $fetchLimit;
+            }
+            if ($fetchBatchSize = $this->fetchBatchSize) {
+                $dictionary["fetchBatchSize"] = $fetchBatchSize;
+            }
+            if ($includesSubentities = $this->includesSubentities) {
+                $dictionary["includesSubentities"] = $includesSubentities;
+            }
+            if ($includesPropertyValues = $this->includesPropertyValues) {
+                $dictionary["includesPropertyValues"] = $includesPropertyValues;
+            }
+            if ($returnsObjectsAsFaults = $this->returnsObjectsAsFaults) {
+                $dictionary["returnsObjectsAsFaults"] = $returnsObjectsAsFaults;
+            }
+            if ($includesPendingChanges = $this->includesPendingChanges) {
+                $dictionary["includesPendingChanges"] = $includesPendingChanges;
+            }
+            if ($returnsDistinctResults = $this->returnsDistinctResults) {
+                $dictionary["returnsDistinctResults"] = $returnsDistinctResults;
+            }
+            return $dictionary;
+        }
+    }
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
@@ -62,40 +97,5 @@ class FetchRequestTemplate extends ManagedObject
             $resultType = FetchRequestResultType::from($resultType);
         }
         return true;
-    }
-
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = new Dictionary();
-        $dictionary["name"] = $this->name;
-        $dictionary["fetchEntityName"] = $this->fetchEntityName;
-        $dictionary["predicateString"] = $this->predicateString;
-        $fetchResultType = $this->fetchResultType;
-        if ($fetchResultType !== FetchRequestResultType::managedObjectResultType) {
-            $dictionary["fetchResultType"] = $fetchResultType;
-        }
-        if ($fetchLimit = $this->fetchLimit) {
-            $dictionary["fetchLimit"] = $fetchLimit;
-        }
-        if ($fetchBatchSize = $this->fetchBatchSize) {
-            $dictionary["fetchBatchSize"] = $fetchBatchSize;
-        }
-        if ($includesSubentities = $this->includesSubentities) {
-            $dictionary["includesSubentities"] = $includesSubentities;
-        }
-        if ($includesPropertyValues = $this->includesPropertyValues) {
-            $dictionary["includesPropertyValues"] = $includesPropertyValues;
-        }
-        if ($returnsObjectsAsFaults = $this->returnsObjectsAsFaults) {
-            $dictionary["returnsObjectsAsFaults"] = $returnsObjectsAsFaults;
-        }
-        if ($includesPendingChanges = $this->includesPendingChanges) {
-            $dictionary["includesPendingChanges"] = $includesPendingChanges;
-        }
-        if ($returnsDistinctResults = $this->returnsDistinctResults) {
-            $dictionary["returnsDistinctResults"] = $returnsDistinctResults;
-        }
-        return $dictionary;
     }
 }

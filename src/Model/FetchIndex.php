@@ -30,6 +30,17 @@ use Sabatier\Foundation\Value;
  */
 class FetchIndex extends ManagedObject
 {
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["name"] = $this->name;
+            $dictionary["partialIndexPredicateFormat"] = $this->partialIndexPredicateFormat;
+            $dictionary["elements"] = $this->elements->map(fn(FetchIndexElement $element): Dictionary => $element->dictionaryRepresentation);
+            return $dictionary;
+        }
+    }
+
     #[Override]
     public function awakeFromFetch(): void
     {
@@ -52,15 +63,5 @@ class FetchIndex extends ManagedObject
             $collationType = FetchIndexElementType::from($collationType);
         }
         return true;
-    }
-
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = new Dictionary();
-        $dictionary["name"] = $this->name;
-        $dictionary["partialIndexPredicateFormat"] = $this->partialIndexPredicateFormat;
-        $dictionary["elements"] = $this->elements->map(fn(FetchIndexElement $element): Dictionary => $element->dictionaryRepresentation());
-        return $dictionary;
     }
 }

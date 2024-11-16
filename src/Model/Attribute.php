@@ -37,6 +37,60 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
  */
 class Attribute extends Property
 {
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = parent::$dictionaryRepresentation->get();
+            $type = $this->type;
+            if ($type !== AttributeType::undefined) {
+                $dictionary["type"] = $type;
+            }
+            $isDefaultValueBounded = $this->isDefaultValueBounded;
+            if ($isDefaultValueBounded) {
+                $dictionary["isDefaultValueBounded"] = $isDefaultValueBounded;
+            }
+            if ($this->isDerived) {
+                $dictionary["derivationExpressionFormat"] = $this->derivationExpressionFormat;
+            } else {
+                $dictionary["defaultValue"] = match ($type) {
+                    AttributeType::string, AttributeType::date => $isDefaultValueBounded ? $this->defaultValue : null,
+                    default => $this->defaultValue
+                };
+                $isMinValueBounded = $this->isMinValueBounded;
+                if ($isMinValueBounded) {
+                    $dictionary["isMinValueBounded"] = $isMinValueBounded;
+                }
+                $isMaxValueBounded = $this->isMaxValueBounded;
+                if ($isMaxValueBounded) {
+                    $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
+                }
+                $dictionary["minValue"] = match ($type) {
+                    AttributeType::date => $isMinValueBounded ? $this->minValue : null,
+                    default => $this->minValue
+                };
+                $dictionary["maxValue"] = match ($type) {
+                    AttributeType::date => $isMaxValueBounded ? $this->maxValue : null,
+                    default => $this->maxValue
+                };
+            }
+            $attributeValueClassName = $this->attributeValueClassName;
+            $dictionary["attributeValueClassName"] = match ($attributeValueClassName) {
+                Date::class, UUID::class, URL::class, ManagedObjectID::class => null,
+                default => $attributeValueClassName
+            };
+            if ($valueTransformerName = $this->valueTransformerName) {
+                $dictionary["valueTransformerName"] = $valueTransformerName;
+            }
+            if ($allowsExternalBinaryDataStorage = $this->allowsExternalBinaryDataStorage) {
+                $dictionary["allowsExternalBinaryDataStorage"] = $allowsExternalBinaryDataStorage;
+            }
+            if ($preservesValueInHistoryOnDeletion = $this->preservesValueInHistoryOnDeletion) {
+                $dictionary["preservesValueInHistoryOnDeletion"] = $preservesValueInHistoryOnDeletion;
+            }
+            return $dictionary;
+        }
+    }
+
     #[Override]
     public function awakeFromFetch(): void
     {
@@ -118,59 +172,5 @@ class Attribute extends Property
             $type = AttributeType::from($type);
         }
         return true;
-    }
-
-    #[Override]
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = parent::dictionaryRepresentation();
-        $type = $this->type;
-        if ($type !== AttributeType::undefined) {
-            $dictionary["type"] = $type;
-        }
-        $isDefaultValueBounded = $this->isDefaultValueBounded;
-        if ($isDefaultValueBounded) {
-            $dictionary["isDefaultValueBounded"] = $isDefaultValueBounded;
-        }
-        if ($this->isDerived) {
-            $dictionary["derivationExpressionFormat"] = $this->derivationExpressionFormat;
-        } else {
-            $dictionary["defaultValue"] = match ($type) {
-                AttributeType::string, AttributeType::date => $isDefaultValueBounded ? $this->defaultValue : null,
-                default => $this->defaultValue
-            };
-            $isMinValueBounded = $this->isMinValueBounded;
-            if ($isMinValueBounded) {
-                $dictionary["isMinValueBounded"] = $isMinValueBounded;
-            }
-            $isMaxValueBounded = $this->isMaxValueBounded;
-            if ($isMaxValueBounded) {
-                $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
-            }
-            $dictionary["minValue"] = match ($type) {
-                AttributeType::date => $isMinValueBounded ? $this->minValue : null,
-                default => $this->minValue
-            };
-            $dictionary["maxValue"] = match ($type) {
-                AttributeType::date => $isMaxValueBounded ? $this->maxValue : null,
-                default => $this->maxValue
-            };
-        }
-        $attributeValueClassName = $this->attributeValueClassName;
-        $dictionary["attributeValueClassName"] = match ($attributeValueClassName) {
-            Date::class, UUID::class, URL::class, ManagedObjectID::class => null,
-            default => $attributeValueClassName
-        };
-        if ($valueTransformerName = $this->valueTransformerName) {
-            $dictionary["valueTransformerName"] = $valueTransformerName;
-        }
-        if ($allowsExternalBinaryDataStorage = $this->allowsExternalBinaryDataStorage) {
-            $dictionary["allowsExternalBinaryDataStorage"] = $allowsExternalBinaryDataStorage;
-        }
-        if ($preservesValueInHistoryOnDeletion = $this->preservesValueInHistoryOnDeletion) {
-            $dictionary["preservesValueInHistoryOnDeletion"] = $preservesValueInHistoryOnDeletion;
-        }
-        return $dictionary;
     }
 }

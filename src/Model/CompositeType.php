@@ -21,16 +21,16 @@ use Sabatier\Foundation\Set;
 class CompositeType extends ManagedObject
 {
     public AttributeType $type = AttributeType::compositeAttributeType;
-
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = new Dictionary();
-        $dictionary["name"] = $this->name;
-        $elements = $this->elements;
-        if (!$elements->isEmpty) {
-            $dictionary["elements"] = $elements->map(fn(Attribute $element) => $element->dictionaryRepresentation());
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["name"] = $this->name;
+            $elements = $this->elements;
+            if (!$elements->isEmpty) {
+                $dictionary["elements"] = $elements->map(fn(Attribute $element) => $element->dictionaryRepresentation);
+            }
+            return $dictionary;
         }
-        return $dictionary;
     }
 }

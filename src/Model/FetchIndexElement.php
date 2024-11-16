@@ -29,6 +29,26 @@ use Sabatier\Foundation\Value;
 class FetchIndexElement extends ManagedObject
 {
     public readonly ?Property $property;
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["propertyName"] = $this->propertyName;
+            $collationType = $this->collationType;
+            if ($collationType !== FetchIndexElementType::bTree) {
+                $dictionary["collationType"] = $collationType;
+            }
+            if (!($isAscending = $this->isAscending)) {
+                $dictionary["isAscending"] = $isAscending;
+            }
+            $expressionResultType = $this->expressionResultType;
+            if ($expressionResultType !== AttributeType::undefined) {
+                $dictionary["expressionResultType"] = $expressionResultType;
+            }
+            $dictionary["expressionFormat"] = $this->expressionFormat;
+            return $dictionary;
+        }
+    }
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
@@ -103,25 +123,5 @@ class FetchIndexElement extends ManagedObject
             $expressionResultType = AttributeType::from($expressionResultType);
         }
         return true;
-    }
-
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = new Dictionary();
-        $dictionary["propertyName"] = $this->propertyName;
-        $collationType = $this->collationType;
-        if ($collationType !== FetchIndexElementType::bTree) {
-            $dictionary["collationType"] = $collationType;
-        }
-        if (!($isAscending = $this->isAscending)) {
-            $dictionary["isAscending"] = $isAscending;
-        }
-        $expressionResultType = $this->expressionResultType;
-        if ($expressionResultType !== AttributeType::undefined) {
-            $dictionary["expressionResultType"] = $expressionResultType;
-        }
-        $dictionary["expressionFormat"] = $this->expressionFormat;
-        return $dictionary;
     }
 }

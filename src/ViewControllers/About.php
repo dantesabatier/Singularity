@@ -2,7 +2,6 @@
 
 namespace App\ViewControllers;
 
-use Override;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
@@ -15,20 +14,19 @@ use const Sabatier\Foundation\kCFBundleVersionKey;
 class About extends ViewController
 {
     #[Outlet]
-    public ?string $bundleName = null;
+    public ?string $bundleName {
+        get => $this->bundle->object(kCFBundleNameKey);
+    }
     #[Outlet]
-    public ?string $bundleVersion = null;
+    public ?string $bundleVersion {
+        get => $this->bundle->object(kCFBundleVersionKey);
+    }
     #[Outlet]
-    public ?string $bundleHumanReadableCopyright = null;
+    public ?string $bundleHumanReadableCopyright {
+        get => $this->bundle->object(kCFBundleHumanReadableCopyright);
+    }
     #[Outlet]
-    public ?string $bundleShortVersion = null;
-
-    #[Override]
-    public function viewWillLoad(): void
-    {
-        $this->bundleName = $this->bundle->object(kCFBundleNameKey);
-        $this->bundleVersion = $this->bundle->object(kCFBundleVersionKey);
-        $this->bundleHumanReadableCopyright = $this->bundle->object(kCFBundleHumanReadableCopyright);
-        $this->bundleShortVersion = $this->bundle->object(kCFBundleShortVersionStringKey);
+    public ?string $bundleShortVersion {
+        get => $this->bundle->object(kCFBundleShortVersionStringKey);
     }
 }

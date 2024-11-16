@@ -21,35 +21,36 @@ use Sabatier\Foundation\Dictionary;
  */
 abstract class Property extends ManagedObject
 {
-    public function dictionaryRepresentation(): Dictionary
-    {
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = new Dictionary();
-        $dictionary["name"] = $this->name;
-        if (!($isOptional = $this->isOptional)) {
-            $dictionary["isOptional"] = $isOptional;
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["name"] = $this->name;
+            if (!($isOptional = $this->isOptional)) {
+                $dictionary["isOptional"] = $isOptional;
+            }
+            if ($isTransient = $this->isTransient) {
+                $dictionary["isTransient"] = $isTransient;
+            }
+            if ($isSensitive = $this->isSensitive) {
+                $dictionary["isSensitive"] = $isSensitive;
+            }
+            $dictionary["versionHashModifier"] = $this->versionHashModifier;
+            $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
+            if ($regex = $this->regex) {
+                $dictionary["regex"] = $regex;
+            }
+            $isMinValueBounded = $this->isMinValueBounded;
+            if ($isMinValueBounded) {
+                $dictionary["isMinValueBounded"] = $isMinValueBounded;
+            }
+            $isMaxValueBounded = $this->isMaxValueBounded;
+            if ($isMaxValueBounded) {
+                $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
+            }
+            $dictionary["minValue"] = $isMinValueBounded ? $this->minValue : null;
+            $dictionary["maxValue"] = $isMaxValueBounded ? $this->maxValue : null;
+            return $dictionary;
         }
-        if ($isTransient = $this->isTransient) {
-            $dictionary["isTransient"] = $isTransient;
-        }
-        if ($isSensitive = $this->isSensitive) {
-            $dictionary["isSensitive"] = $isSensitive;
-        }
-        $dictionary["versionHashModifier"] = $this->versionHashModifier;
-        $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
-        if ($regex = $this->regex) {
-            $dictionary["regex"] = $regex;
-        }
-        $isMinValueBounded = $this->isMinValueBounded;
-        if ($isMinValueBounded) {
-            $dictionary["isMinValueBounded"] = $isMinValueBounded;
-        }
-        $isMaxValueBounded = $this->isMaxValueBounded;
-        if ($isMaxValueBounded) {
-            $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
-        }
-        $dictionary["minValue"] = $isMinValueBounded ? $this->minValue : null;
-        $dictionary["maxValue"] = $isMaxValueBounded ? $this->maxValue : null;
-        return $dictionary;
     }
 }
