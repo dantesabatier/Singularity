@@ -56,31 +56,45 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 #[Endpoint]
 class Editor extends ViewController
 {
-    /** @var ArrayClass<Project> */
-    #[Outlet]
-    public ArrayClass $projects;
     /** @var array<object{name: string, value: int}> */
     #[Outlet]
     public array $attributeTypes {
         get => [(object)["name" => "Undefined", "value" => 0], (object)["name" => "Integer 16", "value" => 100], (object)["name" => "Integer 32", "value" => 200], (object)["name" => "Integer 64", "value" => 300], (object)["name" => "Decimal", "value" => 400], (object)["name" => "Double", "value" => 500], (object)["name" => "Float", "value" => 600], (object)["name" => "String", "value" => 700], (object)["name" => "Boolean", "value" => 800], (object)["name" => "Date", "value" => 900], (object)["name" => "Binary Data", "value" => 1000], (object)["name" => "UUID", "value" => 1100], (object)["name" => "URI", "value" => 1200], (object)["name" => "Transformable", "value" => 1800]];
     }
+    /** @var ArrayClass<Project> */
     #[Outlet]
-    public ?Project $project = null;
+    public ArrayClass $projects {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->projects();
+    }
+    #[Outlet]
+    public ?Project $project {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->project();
+    }
     /** @var ArrayClass<Entity> */
     #[Outlet]
-    public ArrayClass $allEntities;
+    public ArrayClass $allEntities {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->allEntities();
+    }
     /** @var ArrayClass<Entity> */
     #[Outlet]
-    public ArrayClass $rootEntities;
+    public ArrayClass $rootEntities {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->rootEntities();
+    }
     /** @var ArrayClass<FetchRequestTemplate> */
     #[Outlet]
-    public ArrayClass $fetchRequestTemplates;
+    public ArrayClass $fetchRequestTemplates {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->fetchRequestTemplates();
+    }
     /** @var ArrayClass<Configuration> */
     #[Outlet]
-    public ArrayClass $configurations;
+    public ArrayClass $configurations {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->configurations();
+    }
     /** @var ArrayClass<CompositeType> */
     #[Outlet]
-    public ArrayClass $compositeTypes;
+    public ArrayClass $compositeTypes {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->compositeTypes();
+    }
     #[Outlet]
     public ?Entity $selectedEntity = null;
     #[Outlet]
@@ -105,55 +119,6 @@ class Editor extends ViewController
     #[Outlet]
     public ?string $bundleName {
         get => $this->bundle->object(kCFBundleNameKey);
-    }
-
-    public function __construct()
-    {
-        parent::__construct();
-        unset($this->projects);
-        unset($this->project);
-        unset($this->rootEntities);
-        unset($this->allEntities);
-        unset($this->fetchRequestTemplates);
-        unset($this->configurations);
-        unset($this->compositeTypes);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Override]
-    public function __get(string $name)
-    {
-        if ($name === "projects") {
-            $this->$name = $this->projects();
-            return $this->$name;
-        }
-        if ($name === "project") {
-            $this->$name = $this->project();
-            return $this->$name;
-        }
-        if ($name === "allEntities") {
-            $this->$name = $this->allEntities();
-            return $this->$name;
-        }
-        if ($name === "rootEntities") {
-            $this->$name = $this->rootEntities();
-            return $this->$name;
-        }
-        if ($name === "fetchRequestTemplates") {
-            $this->$name = $this->fetchRequestTemplates();
-            return $this->$name;
-        }
-        if ($name === "configurations") {
-            $this->$name = $this->configurations();
-            return $this->$name;
-        }
-        if ($name === "compositeTypes") {
-            $this->$name = $this->compositeTypes();
-            return $this->$name;
-        }
-        return parent::__get($name);
     }
 
     private function referenceObject(string $key): ?int
