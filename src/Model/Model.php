@@ -4,7 +4,6 @@ namespace App\Model;
 
 use Exception;
 use InvalidArgumentException;
-use Override;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
@@ -66,22 +65,8 @@ class Model extends ManagedObject
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        unset($this->entitiesByName);
-        unset($this->progress);
-    }
-
-    #[Override]
-    public function __get(string $name)
-    {
-        if ($name === "entitiesByName") {
-            $this->$name = new Dictionary();
-            return $this->$name;
-        }
-        if ($name === "progress") {
-            $this->$name = new Progress();
-            return $this->$name;
-        }
-        return parent::__get($name);
+        $this->entitiesByName = new Dictionary();
+        $this->progress = new Progress();
     }
 
     private function newEntity(Dictionary $dictionary): Entity

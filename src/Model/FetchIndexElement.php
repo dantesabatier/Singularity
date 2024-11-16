@@ -6,10 +6,8 @@ namespace App\Model;
 
 use Override;
 use Sabatier\CoreData\AttributeType;
-use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
@@ -28,7 +26,9 @@ use Sabatier\Foundation\Value;
  */
 class FetchIndexElement extends ManagedObject
 {
-    public readonly ?Property $property;
+    public ?Property $property {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->property();
+    }
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
@@ -47,43 +47,6 @@ class FetchIndexElement extends ManagedObject
             }
             $dictionary["expressionFormat"] = $this->expressionFormat;
             return $dictionary;
-        }
-    }
-
-    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
-    {
-        parent::__construct($managedObjectContext, $entity);
-        unset($this->property);
-    }
-
-    #[Override]
-    public function __get(string $name)
-    {
-        if ($name === "property") {
-            /** @var ArrayClass<Attribute> $attributes */
-            $attributes = new ArrayClass();
-            $entity = $this->index->entityProperty;
-            if ($entity) {
-                $attributes->appendContentsOf($entity->attributes);
-                $superentity = $entity->superentity;
-                while ($superentity) {
-                    $attributes->appendContentsOf($superentity->attributes);
-                    $superentity = $superentity->superentity;
-                }
-            }
-            $this->$name = $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
-            return $this->$name;
-        }
-        return parent::__get($name);
-    }
-
-    #[Override]
-    public function __set(string $name, mixed $value): void
-    {
-        if ($name === "property") {
-            $this->$name = $value;
-        } else {
-            parent::__set($name, $value);
         }
     }
 
@@ -123,5 +86,21 @@ class FetchIndexElement extends ManagedObject
             $expressionResultType = AttributeType::from($expressionResultType);
         }
         return true;
+    }
+
+    private function property(): Attribute
+    {
+        /** @var ArrayClass<Attribute> $attributes */
+        $attributes = new ArrayClass();
+        $entity = $this->index->entityProperty;
+        if ($entity) {
+            $attributes->appendContentsOf($entity->attributes);
+            $superentity = $entity->superentity;
+            while ($superentity) {
+                $attributes->appendContentsOf($superentity->attributes);
+                $superentity = $superentity->superentity;
+            }
+        }
+        return $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
     }
 }

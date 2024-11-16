@@ -2,11 +2,7 @@
 
 namespace App\Model;
 
-use Exception;
-use Override;
-use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Predicates\Predicate;
@@ -54,18 +50,31 @@ use Sabatier\Foundation\Set;
  */
 class Entity extends ManagedObject
 {
-    public readonly ?Entity $rootEntity;
-    public readonly bool $isRootEntity;
+    public ?Entity $rootEntity {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->rootEntity();
+    }
+    public bool $isRootEntity {
+        get => $this->superentity === null;
+    }
     /** @var ArrayClass<Attribute> */
-    public readonly ArrayClass $attributes;
+    public ArrayClass $attributes {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->attributes();
+    }
     /** @var ArrayClass<Relationship> */
-    public readonly ArrayClass $relationships;
+    public ArrayClass $relationships {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->relationships();
+    }
     /** @var ArrayClass<FetchedProperty> */
-    public readonly ArrayClass $fetchedProperties;
+    public ArrayClass $fetchedProperties {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->fetchedProperties();
+    }
     /** @var ArrayClass<string> */
-    public readonly ArrayClass $allAttributeNames;
-    public readonly bool $isLeaf;
-
+    public ArrayClass $allAttributeNames {
+        get => $this->associatedValues[__PROPERTY__] ??= $this->allAttributeNames();
+    }
+    public bool $isLeaf {
+        get => !$this->subentitiesCount;
+    }
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
@@ -105,89 +114,58 @@ class Entity extends ManagedObject
         }
     }
 
-    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
+    private function rootEntity(): ?Entity
     {
-        parent::__construct($managedObjectContext, $entity);
-        unset($this->rootEntity);
-        unset($this->isRootEntity);
-        unset($this->attributes);
-        unset($this->relationships);
-        unset($this->fetchedProperties);
-        unset($this->allAttributeNames);
-        unset($this->isLeaf);
+        $superentity = $this->superentity;
+        $rootEntity = $superentity;
+        while ($superentity) {
+            $superentity = $superentity->superentity;
+            if ($superentity) {
+                $rootEntity = $superentity;
+            }
+        }
+        return $rootEntity;
     }
 
-    /**
-     * @throws Exception
-     */
-    #[Override]
-    public function __get(string $name)
+    private function attributes(): ArrayClass
     {
-        if ($name === "isRootEntity") {
-            $this->$name = $this->superentity === null;
-            return $this->$name;
-        }
-        if ($name === "rootEntity") {
-            $superentity = $this->superentity;
-            $rootEntity = $superentity;
-            while ($superentity) {
-                $superentity = $superentity->superentity;
-                if ($superentity) {
-                    $rootEntity = $superentity;
-                }
-            }
-            $this->$name = $rootEntity;
-            return $this->$name;
-        }
-        if ($name === "attributes") {
-            $fetchRequest = Attribute::fetchRequest();
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
-            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
-            return $this->$name;
-        }
-        if ($name === "relationships") {
-            $fetchRequest = Relationship::fetchRequest();
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
-            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
-            return $this->$name;
-        }
-        if ($name === "fetchedProperties") {
-            $fetchRequest = FetchedProperty::fetchRequest();
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
-            $this->$name = $this->managedObjectContext->fetch($fetchRequest);
-            return $this->$name;
-        }
-        if ($name === "allAttributeNames") {
-            /** @var ArrayClass<string> $allAttributeNames */
-            $allAttributeNames = new ArrayClass();
-            $transform = fn(Attribute $attribute): string => $attribute->name;
-            $superentity = $this->superentity;
-            while ($superentity) {
-                $allAttributeNames->appendContentsOf($superentity->attributes->map($transform));
-                $superentity = $superentity->superentity;
-            }
-            $allAttributeNames->appendContentsOf($this->attributes->map($transform));
-            foreach ($this->subentities as $subentity) {
-                $allAttributeNames->appendContentsOf($subentity->attributes->map($transform));
-            }
-            $allAttributeNames[] = "Expression";
-            $this->$name = $allAttributeNames;
-            return $this->$name;
-        }
-        if ($name === "isLeaf") {
-            $this->$name = !$this->subentitiesCount;
-            return $this->$name;
-        }
-        return parent::__get($name);
+        $fetchRequest = Attribute::fetchRequest();
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return $this->managedObjectContext->fetch($fetchRequest);
     }
 
-    #[Override]
-    public function __set(string $name, mixed $value): void
+    private function relationships(): ArrayClass
     {
-        if ($name === "isRootEntity" || $name === "rootEntity" || $name === "attributes" || $name === "relationships" || $name === "fetchedProperties" || $name === "allAttributeNames" || $name === "isLeaf") {
-            $this->$name = $value;
-        } else {
-            parent::__set($name, $value);
+        $fetchRequest = Relationship::fetchRequest();
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return $this->managedObjectContext->fetch($fetchRequest);
+    }
+
+    private function fetchedProperties(): ArrayClass
+    {
+        $fetchRequest = FetchedProperty::fetchRequest();
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return $this->managedObjectContext->fetch($fetchRequest);
+    }
+
+    private function allAttributeNames(): ArrayClass
+    {
+        /** @var ArrayClass<string> $allAttributeNames */
+        $allAttributeNames = new ArrayClass();
+        $transform = fn(Attribute $attribute): string => $attribute->name;
+        $superentity = $this->superentity;
+        while ($superentity) {
+            $allAttributeNames->appendContentsOf($superentity->attributes->map($transform));
+            $superentity = $superentity->superentity;
         }
+        $allAttributeNames->appendContentsOf($this->attributes->map($transform));
+        foreach ($this->subentities as $subentity) {
+            $allAttributeNames->appendContentsOf($subentity->attributes->map($transform));
+        }
+        $allAttributeNames[] = "Expression";
+        return $allAttributeNames;
     }
 }

@@ -2,12 +2,8 @@
 
 namespace App\Model;
 
-use Exception;
-use Override;
-use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Nil;
@@ -31,7 +27,13 @@ use Sabatier\Foundation\Value;
  */
 class FetchRequestTemplate extends ManagedObject
 {
-    public readonly ?Entity $fetchEntity;
+    public ?Entity $fetchEntity {
+        get {
+            $fetchRequest = Entity::fetchRequest();
+            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["name", $this->fetchEntityName]));
+            return $this->managedObjectContext->fetch($fetchRequest)->first;
+        }
+    }
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
@@ -66,26 +68,6 @@ class FetchRequestTemplate extends ManagedObject
             }
             return $dictionary;
         }
-    }
-
-    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
-    {
-        parent::__construct($managedObjectContext, $entity);
-        unset($this->fetchEntity);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Override]
-    public function __get(string $name)
-    {
-        if ($name === "fetchEntity") {
-            $fetchRequest = Entity::fetchRequest();
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["name", $this->fetchEntityName]));
-            return $this->managedObjectContext->fetch($fetchRequest)->first;
-        }
-        return parent::__get($name);
     }
 
     public function validateFetchResultType(FetchRequestResultType|Number|Nil|int|null &$resultType): bool
