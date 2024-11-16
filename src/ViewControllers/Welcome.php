@@ -108,12 +108,12 @@ class Welcome extends ViewController
         return $content . "Application::shared()->run();\n";
     }
 
-    private function generateInfo(string $name, string $lowerCaseName): string
+    private function generateInfo(string $name): string
     {
         return PropertyListSerialization::data(Dictionary::dictionaryWithArray([
             kCFBundleDevelopmentRegionKey => "English",
             kCFBundleExecutableKey => $name,
-            kCFBundleIdentifierKey => sprintf("com.%s.%s", strtolower(str_replace(" ", "", (string)UserDefaults::standard()->string(CompanyNameKey))), $lowerCaseName),
+            kCFBundleIdentifierKey => sprintf("com.%s.%s", strtolower(str_replace(" ", "", (string)UserDefaults::standard()->string(CompanyNameKey))), strtolower($name)),
             kCFBundleNameKey => $name,
             kCFBundleVersionKey => "1",
             kCFBundleShortVersionStringKey => "0.1",
@@ -207,10 +207,9 @@ class Welcome extends ViewController
             $fileManager->createDirectory($url, attributes: $attributes);
         }
         $name = $url->lastPathComponent;
-        $lowerCaseName = strtolower($name);
         $path = $url->appendingPathComponent("Info")->appendingPathExtension("plist")->path;
         if (!$fileManager->fileExists($path)) {
-            $fileManager->createFile($path, $this->generateInfo($name, $lowerCaseName));
+            $fileManager->createFile($path, $this->generateInfo($name));
         }
         $resourceURL = $url->appendingPathComponent("Resources");
         if (!$fileManager->fileExists($resourceURL->path)) {
@@ -242,7 +241,7 @@ class Welcome extends ViewController
         }
         $path = $url->appendingPathComponent("composer")->appendingPathExtension("json")->path;
         if (!$fileManager->fileExists($path)) {
-            $fileManager->createFile($path, $this->generateJson($lowerCaseName));
+            $fileManager->createFile($path, $this->generateJson(strtolower($name)));
         }
         $path = $url->appendingPathComponent(".env")->path;
         if (!$fileManager->fileExists($path)) {
