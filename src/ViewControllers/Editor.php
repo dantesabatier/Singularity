@@ -67,6 +67,7 @@ class Editor extends ViewController
     #[Outlet]
     public ?Project $project {
         get => $this->associatedValues[__PROPERTY__] ??= $this->project();
+        set => $this->associatedValues[__PROPERTY__] = $value;
     }
     /** @var ArrayClass<Entity> */
     #[Outlet]
