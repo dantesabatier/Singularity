@@ -54,7 +54,7 @@ class Entity extends ManagedObject
         get => $this->associatedValues[__PROPERTY__] ??= $this->rootEntity();
     }
     public bool $isRootEntity {
-        get => $this->superentity === null;
+        get => $this->associatedValues[__PROPERTY__] ??= $this->superentity === null;
     }
     /** @var ArrayClass<Attribute> */
     public ArrayClass $attributes {
