@@ -22,7 +22,6 @@ use Latte\Loaders\FileLoader;
 use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\SearchPathDirectory;
 use Sabatier\Foundation\SearchPathDomainMask;
@@ -34,23 +33,8 @@ use function Sabatier\Foundation\substring_to_index;
 
 class LatteRenderer extends Renderer
 {
-    public readonly Engine $engine;
-
-    public function __construct(Bundle $bundle)
-    {
-        parent::__construct($bundle);
-        unset($this->engine);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function __get(string $name)
-    {
-        return $this->$name = match ($name) {
-            "engine" => $this->engine(),
-            default => throw new Exception("Unknown property $name")
-        };
+    public Engine $engine {
+        get => $this->engine ??= $this->engine();
     }
 
     private function name(AttributeType $type): string
