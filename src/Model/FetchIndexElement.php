@@ -27,7 +27,7 @@ use Sabatier\Foundation\Value;
 class FetchIndexElement extends ManagedObject
 {
     public ?Property $property {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->property();
+        get => $this->property ??= $this->property();
     }
     public Dictionary $dictionaryRepresentation {
         get {

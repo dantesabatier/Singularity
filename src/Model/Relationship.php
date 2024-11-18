@@ -27,10 +27,10 @@ use Sabatier\Foundation\Value;
 class Relationship extends Property
 {
     public ?Entity $destinationEntity {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->entityProperty?->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);
+        get => $this->destinationEntity ??= $this->entityProperty?->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);
     }
     public ?Relationship $inverseRelationship {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
+        get => $this->inverseRelationship ??= $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
     }
     public Dictionary $dictionaryRepresentation {
         get {

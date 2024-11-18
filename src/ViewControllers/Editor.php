@@ -62,37 +62,36 @@ class Editor extends ViewController
     /** @var ArrayClass<Project> */
     #[Outlet]
     public ArrayClass $projects {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->projects();
+        get => $this->projects ??= $this->projects();
     }
     #[Outlet]
     public ?Project $project {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->project();
-        set => $this->associatedValues[__PROPERTY__] = $value;
+        get => $this->project ??= $this->project();
     }
     /** @var ArrayClass<Entity> */
     #[Outlet]
     public ArrayClass $allEntities {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->allEntities();
+        get => $this->allEntities ??= $this->allEntities();
     }
     /** @var ArrayClass<Entity> */
     #[Outlet]
     public ArrayClass $rootEntities {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->rootEntities();
+        get => $this->rootEntities ??= $this->rootEntities();
     }
     /** @var ArrayClass<FetchRequestTemplate> */
     #[Outlet]
     public ArrayClass $fetchRequestTemplates {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->fetchRequestTemplates();
+        get => $this->fetchRequestTemplates ??= $this->fetchRequestTemplates();
     }
     /** @var ArrayClass<Configuration> */
     #[Outlet]
     public ArrayClass $configurations {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->configurations();
+        get => $this->configurations ??= $this->configurations();
     }
     /** @var ArrayClass<CompositeType> */
     #[Outlet]
     public ArrayClass $compositeTypes {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->compositeTypes();
+        get => $this->compositeTypes ??= $this->compositeTypes();
     }
     #[Outlet]
     public ?Entity $selectedEntity = null;

@@ -8,7 +8,6 @@ use App\Delegate;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
-use Override;
 use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
@@ -53,7 +52,20 @@ class Welcome extends ViewController
 {
     /** @var ArrayClass<Project> */
     #[Outlet]
-    public readonly ArrayClass $projects;
+    public ArrayClass $projects {
+        get => $this->projects ??= $this->projects();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function projects(): ArrayClass
+    {
+        $fetchRequest = Project::fetchRequest();
+        $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
+        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
+        return $this->managedObjectContext->fetch($fetchRequest);
+    }
 
     private function generateDelegateClass(string $class, string $namespace): string
     {
@@ -177,19 +189,6 @@ class Welcome extends ViewController
             "SQL_SCHEMA_CREDENTIAL_USER" => "root",
             "SQL_SCHEMA_CREDENTIAL_PASSWORD" => ""
         ])->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n");
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Override]
-    public function viewWillLoad(): void
-    {
-        $fetchRequest = Project::fetchRequest();
-        $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
-        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-        $this->projects = $this->managedObjectContext->fetch($fetchRequest);
-        $this->title = $this->bundle->object(kCFBundleNameKey);
     }
 
     /**

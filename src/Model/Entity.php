@@ -51,29 +51,29 @@ use Sabatier\Foundation\Set;
 class Entity extends ManagedObject
 {
     public ?Entity $rootEntity {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->rootEntity();
+        get => $this->rootEntity ??= $this->rootEntity();
     }
     public bool $isRootEntity {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->superentity === null;
+        get => $this->isRootEntity ??= $this->superentity === null;
     }
     /** @var ArrayClass<Attribute> */
     public ArrayClass $attributes {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->attributes();
+        get => $this->attributes ??= $this->attributes();
     }
     /** @var ArrayClass<Relationship> */
     public ArrayClass $relationships {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->relationships();
+        get => $this->relationships ??= $this->relationships();
     }
     /** @var ArrayClass<FetchedProperty> */
     public ArrayClass $fetchedProperties {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->fetchedProperties();
+        get => $this->fetchedProperties ??= $this->fetchedProperties();
     }
     /** @var ArrayClass<string> */
     public ArrayClass $allAttributeNames {
-        get => $this->associatedValues[__PROPERTY__] ??= $this->allAttributeNames();
+        get => $this->allAttributeNames ??= $this->allAttributeNames();
     }
     public bool $isLeaf {
-        get => !$this->subentitiesCount;
+        get => $this->isLeaf ??= !$this->subentitiesCount;
     }
     public Dictionary $dictionaryRepresentation {
         get {
