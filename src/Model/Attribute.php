@@ -40,7 +40,7 @@ class Attribute extends Property
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
-            $dictionary = parent::$dictionaryRepresentation->get();
+            $dictionary = parent::$dictionaryRepresentation::get();
             $type = $this->type;
             if ($type !== AttributeType::undefined) {
                 $dictionary["type"] = $type;
