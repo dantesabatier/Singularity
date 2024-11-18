@@ -115,10 +115,6 @@ class Editor extends ViewController
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     public ArrayClass $breadcrumb;
-    #[Outlet]
-    public ?string $bundleName {
-        get => $this->bundle->object(kCFBundleNameKey);
-    }
 
     private function referenceObject(string $key): ?int
     {
