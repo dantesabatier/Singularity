@@ -35,7 +35,7 @@ class Relationship extends Property
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
-            $dictionary = parent::$dictionaryRepresentation->get();
+            $dictionary = parent::$dictionaryRepresentation::get();
             if ($isToMany = $this->isToMany) {
                 $dictionary["isToMany"] = $isToMany;
                 if ($isOrdered = $this->isOrdered) {
