@@ -13,7 +13,7 @@ class FetchedProperty extends Property
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
-            $dictionary = parent::$dictionaryRepresentation->get();
+            $dictionary = parent::$dictionaryRepresentation::get();
             $dictionary["fetchRequestEntityName"] = $this->fetchRequestEntityName;
             $dictionary["fetchRequestPredicateFormat"] = $this->fetchRequestPredicateFormat;
             return $dictionary;
