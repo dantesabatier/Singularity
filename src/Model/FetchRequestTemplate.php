@@ -4,11 +4,9 @@ namespace App\Model;
 
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\Number;
-use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\Value;
 
 /**
@@ -27,13 +25,6 @@ use Sabatier\Foundation\Value;
  */
 class FetchRequestTemplate extends ManagedObject
 {
-    public ?Entity $fetchEntity {
-        get {
-            $fetchRequest = Entity::fetchRequest();
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["name", $this->fetchEntityName]));
-            return $this->managedObjectContext->fetch($fetchRequest)->first;
-        }
-    }
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
