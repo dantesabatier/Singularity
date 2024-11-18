@@ -65,7 +65,7 @@ class Editor extends ViewController
         get => $this->projects ??= $this->projects();
     }
     #[Outlet]
-    public ?Project $project {
+    public Project $project {
         get => $this->project ??= $this->project();
     }
     /** @var ArrayClass<Entity> */
@@ -147,10 +147,10 @@ class Editor extends ViewController
     /**
      * @throws Exception
      */
-    private function project(): ?Project
+    private function project(): Project
     {
         if (!($referenceObject = $this->referenceObject("project"))) {
-            return null;
+            throw new NotFoundException();
         }
         $fetchRequest = Project::fetchRequest();
         $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
@@ -162,7 +162,7 @@ class Editor extends ViewController
                 "url" => AttributeType::uri
             ]
         ]);
-        return $this->managedObjectContext->fetch($fetchRequest)->first;
+        return $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
     }
 
     /**
@@ -172,7 +172,7 @@ class Editor extends ViewController
     private function allEntities(): ArrayClass
     {
         $fetchRequest = Entity::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
             "name" => AttributeType::string,
@@ -196,7 +196,7 @@ class Editor extends ViewController
     private function compositeTypes(): ArrayClass
     {
         $fetchRequest = CompositeType::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
             "name" => AttributeType::string
@@ -211,7 +211,7 @@ class Editor extends ViewController
     private function fetchRequestTemplates(): ArrayClass
     {
         $fetchRequest = FetchRequestTemplate::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
             "name" => AttributeType::string
@@ -226,7 +226,7 @@ class Editor extends ViewController
     private function configurations(): ArrayClass
     {
         $fetchRequest = Configuration::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project?->model]));
+        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
         $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
         $fetchRequest->serialization = Dictionary::dictionaryWithArray([
             "name" => AttributeType::string
@@ -405,7 +405,7 @@ class Editor extends ViewController
     #[Override]
     public function viewWillLoad(): void
     {
-        $project = $this->project ?? throw new NotFoundException();
+        $project = $this->project;
         $this->breadcrumb = new ArrayClass();
         $this->breadcrumb[] = $project;
         $model = $project->model ?? throw new NotFoundException();
