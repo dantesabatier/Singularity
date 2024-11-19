@@ -49,8 +49,8 @@ use Sabatier\Foundation\URL;
 class Model extends ManagedObject
 {
     /** @var Dictionary<Entity> */
-    public Dictionary $entitiesByName;
-    public Progress $progress;
+    private(set) Dictionary $entitiesByName;
+    private(set) Progress $progress;
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
