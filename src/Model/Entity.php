@@ -5,7 +5,6 @@ namespace App\Model;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\Set;
 
 /**
@@ -23,6 +22,9 @@ use Sabatier\Foundation\Set;
  * @property Set<FetchIndex> $indexes
  * @property Set<UniquenessConstraint> $uniquenessConstraints
  * @property bool $isExpanded
+ * @property-read ArrayClass<Attribute> $attributes
+ * @property-read ArrayClass<Relationship> $relationships
+ * @property-read ArrayClass<FetchedProperty> $fetchedProperties
  * @method void addSubentitiesObject(Entity $object)
  * @method void removeSubentitiesObject(Entity $object)
  * @method void addSubentities(Set $objects)
@@ -55,18 +57,6 @@ class Entity extends ManagedObject
     }
     private(set) bool $isRootEntity {
         get => $this->isRootEntity ??= $this->superentity === null;
-    }
-    /** @var ArrayClass<Attribute> */
-    private(set) ArrayClass $attributes {
-        get => $this->attributes ??= $this->attributes();
-    }
-    /** @var ArrayClass<Relationship> */
-    private(set) ArrayClass $relationships {
-        get => $this->relationships ??= $this->relationships();
-    }
-    /** @var ArrayClass<FetchedProperty> */
-    private(set) ArrayClass $fetchedProperties {
-        get => $this->fetchedProperties ??= $this->fetchedProperties();
     }
     /** @var ArrayClass<string> */
     private(set) ArrayClass $allAttributeNames {
@@ -125,30 +115,6 @@ class Entity extends ManagedObject
             }
         }
         return $rootEntity;
-    }
-
-    private function attributes(): ArrayClass
-    {
-        $fetchRequest = Attribute::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
-        /** @noinspection PhpUnhandledExceptionInspection */
-        return $this->managedObjectContext->fetch($fetchRequest);
-    }
-
-    private function relationships(): ArrayClass
-    {
-        $fetchRequest = Relationship::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
-        /** @noinspection PhpUnhandledExceptionInspection */
-        return $this->managedObjectContext->fetch($fetchRequest);
-    }
-
-    private function fetchedProperties(): ArrayClass
-    {
-        $fetchRequest = FetchedProperty::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["entityProperty", $this]));
-        /** @noinspection PhpUnhandledExceptionInspection */
-        return $this->managedObjectContext->fetch($fetchRequest);
     }
 
     private function allAttributeNames(): ArrayClass
