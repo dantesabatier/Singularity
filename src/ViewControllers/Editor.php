@@ -263,13 +263,13 @@ class Editor extends ViewController
         $attributes = new Set($entity->attributes);
         /** @var Set<string> $uses */
         $uses = $attributes->compactMap(function (Attribute $attribute): ?string {
-            $attributeValueClassName = $attribute->attributeValueClassName ?? match ($attribute->type) {
+            $attributeValueClassName = match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
                 AttributeType::compositeAttributeType => Dictionary::class,
-                default => null,
+                default => $attribute->attributeValueClassName
             };
             if ($attributeValueClassName !== null && class_exists($attributeValueClassName)) {
                 return "use $attributeValueClassName;";
@@ -304,13 +304,13 @@ class Editor extends ViewController
             if ($properties->contains(fn(string $e): bool => str_ends_with($e, $attribute->name))) {
                 return null;
             }
-            $attributeValueClassName = $attribute->attributeValueClassName ?? match ($attribute->type) {
+            $attributeValueClassName = match ($attribute->type) {
                 AttributeType::date => Date::class,
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
                 AttributeType::compositeAttributeType => Dictionary::class,
-                default => null,
+                default => $attribute->attributeValueClassName
             };
             if ($attributeValueClassName !== null && class_exists($attributeValueClassName)) {
                 $attributeValueClassName = class_name($attributeValueClassName);
