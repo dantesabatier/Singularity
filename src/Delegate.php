@@ -66,8 +66,11 @@ class Delegate extends ObjectClass implements ApplicationDelegate
                     "url" => AttributeType::uri
                 ]
             ]);
+            if (!($project = $context->fetch($fetchRequest)->first)) {
+                return;
+            }
             $editor = new Editor();
-            $editor->project = $context->fetch($fetchRequest)->first;
+            $editor->project = $project;
             $editor->save();
         });
     }
