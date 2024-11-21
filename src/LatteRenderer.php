@@ -33,7 +33,7 @@ use function Sabatier\Foundation\substring_to_index;
 
 class LatteRenderer extends Renderer
 {
-    public Engine $engine {
+    private(set) Engine $engine {
         get => $this->engine ??= $this->engine();
     }
 
