@@ -52,7 +52,7 @@ class Welcome extends ViewController
 {
     /** @var ArrayClass<Project> */
     #[Outlet]
-    public ArrayClass $projects {
+    private(set) ArrayClass $projects {
         get => $this->projects ??= $this->projects();
     }
 
