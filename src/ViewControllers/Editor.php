@@ -58,10 +58,10 @@ class Editor extends ViewController
 {
     /** @var array<object{name: string, value: int}> */
     #[Outlet]
-    public array $attributeTypes = [];
+    private(set) array $attributeTypes = [];
     /** @var ArrayClass<Project> */
     #[Outlet]
-    public ArrayClass $projects {
+    private(set) ArrayClass $projects {
         get => $this->projects ??= $this->projects();
     }
     #[Outlet]
@@ -70,50 +70,50 @@ class Editor extends ViewController
     }
     /** @var ArrayClass<Entity> */
     #[Outlet]
-    public ArrayClass $allEntities {
+    private(set) ArrayClass $allEntities {
         get => $this->allEntities ??= $this->allEntities();
     }
     /** @var ArrayClass<Entity> */
     #[Outlet]
-    public ArrayClass $rootEntities {
+    private(set) ArrayClass $rootEntities {
         get => $this->rootEntities ??= $this->rootEntities();
     }
     /** @var ArrayClass<FetchRequestTemplate> */
     #[Outlet]
-    public ArrayClass $fetchRequestTemplates {
+    private(set) ArrayClass $fetchRequestTemplates {
         get => $this->fetchRequestTemplates ??= $this->fetchRequestTemplates();
     }
     /** @var ArrayClass<Configuration> */
     #[Outlet]
-    public ArrayClass $configurations {
+    private(set) ArrayClass $configurations {
         get => $this->configurations ??= $this->configurations();
     }
     /** @var ArrayClass<CompositeType> */
     #[Outlet]
-    public ArrayClass $compositeTypes {
+    private(set) ArrayClass $compositeTypes {
         get => $this->compositeTypes ??= $this->compositeTypes();
     }
     #[Outlet]
-    public ?Entity $selectedEntity = null;
+    private(set) ?Entity $selectedEntity = null;
     #[Outlet]
-    public ?Property $selectedProperty = null;
+    private(set) ?Property $selectedProperty = null;
     #[Outlet]
-    public ?FetchIndex $selectedIndex = null;
+    private(set) ?FetchIndex $selectedIndex = null;
     #[Outlet]
-    public ?FetchIndexElement $selectedIndexElement = null;
+    private(set) ?FetchIndexElement $selectedIndexElement = null;
     #[Outlet]
-    public ?UniquenessConstraint $selectedUniquenessConstraint = null;
+    private(set) ?UniquenessConstraint $selectedUniquenessConstraint = null;
     #[Outlet]
-    public ?FetchRequestTemplate $selectedFetchRequestTemplate = null;
+    private(set) ?FetchRequestTemplate $selectedFetchRequestTemplate = null;
     #[Outlet]
-    public ?Configuration $selectedConfiguration = null;
+    private(set) ?Configuration $selectedConfiguration = null;
     #[Outlet]
-    public ?CompositeType $selectedCompositeType = null;
+    private(set) ?CompositeType $selectedCompositeType = null;
     #[Outlet]
-    public ?ManagedObject $selection = null;
+    private(set) ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
-    public ArrayClass $breadcrumb;
+    private(set) ArrayClass $breadcrumb;
 
     private function referenceObject(string $key): ?int
     {
