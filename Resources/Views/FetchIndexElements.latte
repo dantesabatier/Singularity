@@ -1,5 +1,5 @@
 {templateType App\ViewControllers\Editor}
-{define fetchIndexElements}
+{define fetchIndexElements, $elements}
     <div class="table-responsive">
         <table class="table table-hover table-sm">
             <thead>
@@ -12,7 +12,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
+            <tr n:foreach="$elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
                 <td>
                     <form action="/FetchIndexElement" method="POST">
                         <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
@@ -51,7 +51,7 @@
             <tr>
                 <td>
                     <div class="d-inline-block">
-                        {var App\Model\Attribute $attribute = $selectedEntity->attributes->filter(fn(App\Model\Attribute $attribute): bool => !$attribute->isDerived)->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex->elements->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))}
+                        {var App\Model\Attribute $attribute = $selectedEntity?->attributes?->filter(fn(App\Model\Attribute $attribute): bool => !$attribute->isDerived)?->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex?->elements?->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))}
                         <button class="btn icon p-0" onclick="add({App\Model\FetchIndexElement::entity()->name}, {$attribute->name}, {$selectedIndex}, register)" {!$attribute instanceof App\Model\Attribute ? disabled}>
                             <i class="bi bi-plus"></i>
                         </button>
