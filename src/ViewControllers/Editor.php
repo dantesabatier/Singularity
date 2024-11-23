@@ -301,7 +301,7 @@ class Editor extends ViewController
         }
         /** @psalm-suppress InvalidArgument */
         $properties->appendContentsOf($attributes->compactMap(function (Attribute $attribute) use ($properties): ?string {
-            if ($properties->contains(fn(string $e): bool => str_ends_with($e, $attribute->name))) {
+            if ($properties->contains(fn(string $e): bool => str_ends_with($e, "\$$attribute->name"))) {
                 return null;
             }
             $attributeValueClassName = match ($attribute->type) {
