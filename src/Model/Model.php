@@ -104,7 +104,7 @@ class Model extends ManagedObject
                     $attribute->entityProperty = $entity;
                     $attribute->isDerived = !empty($description["derivationExpressionFormat"]);
                     if ($description["elements"]) {
-                        if (($attributeValueClassName = $description["attributeValueClassName"]) && !$this->compositeTypesByName->offsetExists($attributeValueClassName)) {
+                        if (($attributeValueClassName = $description["attributeValueClassName"]) && !$this->compositeTypesByName[$attributeValueClassName]) {
                             /** @var ArrayClass<Dictionary<mixed>> $elements */
                             $elements = $description["elements"];
                             $compositeType = new CompositeType($context);
