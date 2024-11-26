@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use Exception;
-use InvalidArgumentException;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
@@ -13,6 +12,7 @@ use Sabatier\Foundation\Progress;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
+use function Sabatier\Foundation\fatal_error;
 
 /**
  * @property URL|null $url
@@ -49,14 +49,25 @@ use Sabatier\Foundation\URL;
 class Model extends ManagedObject
 {
     /** @var Dictionary<Entity> */
-    private(set) Dictionary $entitiesByName;
+    private(set) Dictionary $entitiesByName {
+        get => $this->entitiesByName ??= $this->entities->reduce(new Dictionary(), function (Dictionary $result, Entity $entity): Dictionary {
+            $result[$entity->name] = $entity;
+            return $result;
+        });
+    }
+    /** @var Dictionary<CompositeType> */
+    private(set) Dictionary $compositeTypesByName {
+        get => $this->compositeTypesByName ??= $this->compositeTypes->reduce(new Dictionary(), function (Dictionary $result, CompositeType $compositeType): Dictionary {
+            $result[$compositeType->name] = $compositeType;
+            return $result;
+        });
+    }
     private(set) Progress $progress;
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
             $dictionary = new Dictionary();
             $dictionary["entities"] = $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name)->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation);
-            $dictionary["compositeTypes"] = $this->compositeTypes->map(fn(CompositeType $compositeType): Dictionary => $compositeType->dictionaryRepresentation);
             $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation);
             return $dictionary;
         }
@@ -73,7 +84,7 @@ class Model extends ManagedObject
     {
         $context = $this->managedObjectContext;
         /** @var string $name */
-        $name = $dictionary["name"] ?? throw new InvalidArgumentException("Invalid argument, entity name cannot be null");
+        $name = $dictionary["name"] ?? fatal_error("Invalid argument, entity name cannot be null");
         $entity = $this->entitiesByName[$name];
         if (!$entity instanceof Entity) {
             $entity = new Entity($context);
@@ -89,31 +100,46 @@ class Model extends ManagedObject
             $attributes = $dictionary["attributes"];
             if ($attributes) {
                 $properties->appendContentsOf($attributes->map(function (Dictionary $description) use ($context, $entity): Attribute {
-                    $instance = new Attribute($context);
-                    $instance->entityProperty = $entity;
-                    $instance->isDerived = !empty($description["derivationExpressionFormat"]);
-                    $instance->setValuesForKeys($description);
-                    return $instance;
+                    $attribute = new Attribute($context);
+                    $attribute->entityProperty = $entity;
+                    $attribute->isDerived = !empty($description["derivationExpressionFormat"]);
+                    if ($description["elements"]) {
+                        if (($attributeValueClassName = $description["attributeValueClassName"]) && !$this->compositeTypesByName->offsetExists($attributeValueClassName)) {
+                            /** @var ArrayClass<Dictionary<mixed>> $elements */
+                            $elements = $description["elements"];
+                            $compositeType = new CompositeType($context);
+                            $compositeType->name = $attributeValueClassName;
+                            $compositeType->elements = $elements->map(function (Dictionary $element): Attribute {
+                                $attribute = new Attribute($this->managedObjectContext);
+                                $attribute->setValuesForKeys($element);
+                                return $attribute;
+                            });
+                            $this->compositeTypesByName[$attributeValueClassName] = $compositeType;
+                        }
+                        $description->removeValueForKey("elements");
+                    }
+                    $attribute->setValuesForKeys($description);
+                    return $attribute;
                 }));
             }
             /** @var ArrayClass<Dictionary>|null $relationships */
             $relationships = $dictionary["relationships"];
             if ($relationships) {
                 $properties->appendContentsOf($relationships->map(function (Dictionary $description) use ($context, $entity): Relationship {
-                    $instance = new Relationship($context);
-                    $instance->entityProperty = $entity;
-                    $instance->setValuesForKeys($description);
-                    return $instance;
+                    $relationship = new Relationship($context);
+                    $relationship->entityProperty = $entity;
+                    $relationship->setValuesForKeys($description);
+                    return $relationship;
                 }));
             }
             /** @var ArrayClass<Dictionary>|null $fetchedProperties */
             $fetchedProperties = $dictionary["fetchedProperties"];
             if ($fetchedProperties) {
                 $properties->appendContentsOf($fetchedProperties->map(function (Dictionary $description) use ($context, $entity): FetchedProperty {
-                    $instance = new FetchedProperty($context);
-                    $instance->entityProperty = $entity;
-                    $instance->setValuesForKeys($description);
-                    return $instance;
+                    $fetchedProperty = new FetchedProperty($context);
+                    $fetchedProperty->entityProperty = $entity;
+                    $fetchedProperty->setValuesForKeys($description);
+                    return $fetchedProperty;
                 }));
             }
             $entity->properties = $properties;
@@ -143,15 +169,15 @@ class Model extends ManagedObject
             $entity->indexes = new Set($indexes->map(function (Dictionary $description) use ($context, $entity): FetchIndex {
                 /** @var ArrayClass<Dictionary> $elements */
                 $elements = $description["elements"] ?? new ArrayClass();
-                $index = new FetchIndex($context);
-                $index->name = $description["name"];
-                $index->entityProperty = $entity;
-                $index->elements = new Set($elements->map(function (Dictionary $description) use ($context): FetchIndexElement {
-                    $element = new FetchIndexElement($context);
-                    $element->setValuesForKeys($description);
-                    return $element;
+                $fetchIndex = new FetchIndex($context);
+                $fetchIndex->name = $description["name"];
+                $fetchIndex->entityProperty = $entity;
+                $fetchIndex->elements = new Set($elements->map(function (Dictionary $description) use ($context): FetchIndexElement {
+                    $fetchIndexElement = new FetchIndexElement($context);
+                    $fetchIndexElement->setValuesForKeys($description);
+                    return $fetchIndexElement;
                 }));
-                return $index;
+                return $fetchIndex;
             }));
             $entity->model = $this;
             $this->entitiesByName[$name] = $entity;
@@ -164,13 +190,6 @@ class Model extends ManagedObject
         $fetchRequest = new FetchRequestTemplate($this->managedObjectContext);
         $fetchRequest->setValuesForKeys($dictionary);
         return $fetchRequest;
-    }
-
-    private function newCompositeType(Dictionary $dictionary): CompositeType
-    {
-        $compositeType = new CompositeType($this->managedObjectContext);
-        $compositeType->setValuesForKeys($dictionary);
-        return $compositeType;
     }
 
     /**
@@ -213,11 +232,7 @@ class Model extends ManagedObject
                 }
                 $this->entities = $entities;
             }
-            /** @var ArrayClass<Dictionary>|null $representations */
-            $representations = $propertyList["compositeTypes"];
-            if ($representations) {
-                $this->compositeTypes = new Set($representations->map(fn(Dictionary $representation): CompositeType => $this->newCompositeType($representation)));
-            }
+            $this->compositeTypes = new Set($this->compositeTypesByName->values);
             /** @var ArrayClass<Dictionary>|null $representations */
             $representations = $propertyList["fetchRequests"];
             if ($representations) {
