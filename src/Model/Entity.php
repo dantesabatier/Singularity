@@ -58,6 +58,20 @@ class Entity extends ManagedObject
     private(set) bool $isRootEntity {
         get => $this->isRootEntity ??= $this->superentity === null;
     }
+    /** @var Dictionary<Attribute> */
+    private(set) Dictionary $attributesByName {
+        get => $this->attributesByName ??= $this->attributes->reduce(new Dictionary(), function (Dictionary $result, Attribute $attribute): Dictionary {
+            $result[$attribute->name] = $attribute;
+            return $result;
+        });
+    }
+    /** @var Dictionary<Relationship> */
+    private(set) Dictionary $relationshipsByName {
+        get => $this->relationshipsByName ??= $this->relationships->reduce(new Dictionary(), function (Dictionary $result, Relationship $relationship): Dictionary {
+            $result[$relationship->name] = $relationship;
+            return $result;
+        });
+    }
     /** @var ArrayClass<string> */
     private(set) ArrayClass $allAttributeNames {
         get => $this->allAttributeNames ??= $this->allAttributeNames();
