@@ -87,6 +87,9 @@ class Attribute extends Property
             if ($preservesValueInHistoryOnDeletion = $this->preservesValueInHistoryOnDeletion) {
                 $dictionary["preservesValueInHistoryOnDeletion"] = $preservesValueInHistoryOnDeletion;
             }
+            if ($attributeValueClassName && $this->entityProperty?->model->compositeTypesByName->offsetExists($attributeValueClassName)) {
+                $dictionary["elements"] = $this->entityProperty->model->compositeTypesByName->valueForKey($attributeValueClassName)->elements->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation);
+            }
             return $dictionary;
         }
     }
