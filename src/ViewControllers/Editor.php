@@ -489,7 +489,7 @@ class Editor extends ViewController
     #[Action]
     public function import(): void
     {
-        $body = $this->request->getParsedBody();
+        $body = $this->request->parsedBody;
         $path = $body["path"] ?? throw new BadRequestException("path cannot be null");
         $project = $this->project ?? throw new BadRequestException("project cannot be null");
         $project->lastModifiedDate = new Date();
