@@ -197,7 +197,7 @@ class Welcome extends ViewController
     #[Action]
     public function create(): void
     {
-        $body = $this->request->getParsedBody();
+        $body = $this->request->parsedBody;
         $path = $body["path"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
         $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
@@ -269,7 +269,7 @@ class Welcome extends ViewController
     #[Action(HTTPRequestMethod::patch)]
     public function rename(): void
     {
-        $body = $this->request->getParsedBody();
+        $body = $this->request->parsedBody;
         $name = $body["name"] ?? throw new BadRequestException("path cannot be null");
         $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
         $context = $this->managedObjectContext;
@@ -295,7 +295,7 @@ class Welcome extends ViewController
     #[Action(HTTPRequestMethod::delete)]
     public function remove(): void
     {
-        $body = $this->request->getParsedBody();
+        $body = $this->request->parsedBody;
         $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
         $context = $this->managedObjectContext;
         $fetchRequest = Project::fetchRequest();
