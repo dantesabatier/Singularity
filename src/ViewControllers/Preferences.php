@@ -34,7 +34,7 @@ class Preferences extends ViewController
     #[Action]
     public function synchronize(): void
     {
-        $body = $this->request->getParsedBody();
+        $body = $this->request->parsedBody;
         foreach ($body as $key => $value) {
             UserDefaults::standard()->setObject($value, $key);
         }
