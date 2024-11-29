@@ -15,7 +15,7 @@
             <label for="fetchEntityName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Entity</label>
             <div class="col-sm-9">
                 <select name="fetchEntityName" id="fetchEntityName" class="form-select form-select-sm" data-autosave="true">
-                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedFetchRequestTemplate->fetchEntityName ? selected}>
+                    <option n:foreach="$project->model->entities as $entity" value="{$entity->name}" {$entity->name === $selectedFetchRequestTemplate->fetchEntityName ? selected}>
                         {$entity->name}
                     </option>
                 </select>

@@ -62,6 +62,9 @@ class Model extends ManagedObject
             return $result;
         });
     }
+    private(set) Set $rootEntities {
+        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
+    }
     private(set) Progress $progress;
     public Dictionary $dictionaryRepresentation {
         get {

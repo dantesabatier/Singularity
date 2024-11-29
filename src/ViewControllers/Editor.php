@@ -68,31 +68,6 @@ class Editor extends ViewController
     public Project $project {
         get => $this->project ??= $this->project();
     }
-    /** @var ArrayClass<Entity> */
-    #[Outlet]
-    private(set) ArrayClass $allEntities {
-        get => $this->allEntities ??= $this->allEntities();
-    }
-    /** @var ArrayClass<Entity> */
-    #[Outlet]
-    private(set) ArrayClass $rootEntities {
-        get => $this->rootEntities ??= $this->rootEntities();
-    }
-    /** @var ArrayClass<FetchRequestTemplate> */
-    #[Outlet]
-    private(set) ArrayClass $fetchRequestTemplates {
-        get => $this->fetchRequestTemplates ??= $this->fetchRequestTemplates();
-    }
-    /** @var ArrayClass<Configuration> */
-    #[Outlet]
-    private(set) ArrayClass $configurations {
-        get => $this->configurations ??= $this->configurations();
-    }
-    /** @var ArrayClass<CompositeType> */
-    #[Outlet]
-    private(set) ArrayClass $compositeTypes {
-        get => $this->compositeTypes ??= $this->compositeTypes();
-    }
     #[Outlet]
     private(set) ?Entity $selectedEntity = null;
     #[Outlet]
@@ -163,75 +138,6 @@ class Editor extends ViewController
             ]
         ]);
         return $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
-    }
-
-    /**
-     * @return ArrayClass<Entity>
-     * @throws Exception
-     */
-    private function allEntities(): ArrayClass
-    {
-        $fetchRequest = Entity::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
-        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string,
-            "isExpanded" => AttributeType::boolean
-        ]);
-        return $this->managedObjectContext->fetch($fetchRequest);
-    }
-
-    /**
-     * @return ArrayClass<Entity>
-     */
-    private function rootEntities(): ArrayClass
-    {
-        return $this->allEntities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
-    }
-
-    /**
-     * @return ArrayClass<CompositeType>
-     * @throws Exception
-     */
-    private function compositeTypes(): ArrayClass
-    {
-        $fetchRequest = CompositeType::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
-        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string
-        ]);
-        return $this->managedObjectContext->fetch($fetchRequest);
-    }
-
-    /**
-     * @return ArrayClass<FetchRequestTemplate>
-     * @throws Exception
-     */
-    private function fetchRequestTemplates(): ArrayClass
-    {
-        $fetchRequest = FetchRequestTemplate::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
-        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string
-        ]);
-        return $this->managedObjectContext->fetch($fetchRequest);
-    }
-
-    /**
-     * @return ArrayClass<Configuration>
-     * @throws Exception
-     */
-    private function configurations(): ArrayClass
-    {
-        $fetchRequest = Configuration::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["model", $this->project->model]));
-        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("name")]);
-        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string
-        ]);
-        return $this->managedObjectContext->fetch($fetchRequest);
     }
 
     private function className(Entity $entity, string $namespace): string

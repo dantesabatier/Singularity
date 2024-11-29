@@ -1,4 +1,4 @@
-{varType Sabatier\Foundation\ArrayClass $allEntities}
+{templateType App\ViewControllers\Editor}
 {varType App\Model\FetchedProperty $selectedProperty}
 {define fetchedProperty}
     <form action="/FetchedProperty" method="POST">
@@ -17,7 +17,7 @@
             <div class="col-sm-9">
                 <select name="fetchRequestEntityName" id="fetchRequestEntityName" class="form-select form-select-sm" data-autosave="true">
                     <option value="">No Destination Entity</option>
-                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->fetchRequestEntityName ? selected}>{$entity->name}</option>
+                    <option n:foreach="$project->model->entities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->fetchRequestEntityName ? selected}>{$entity->name}</option>
                 </select>
             </div>
         </div>

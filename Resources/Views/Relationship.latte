@@ -1,4 +1,4 @@
-{varType Sabatier\Foundation\ArrayClass $allEntities}
+{templateType App\ViewControllers\Editor}
 {varType App\Model\Relationship $selectedProperty}
 {define relationship}
     <form action="/Relationship" method="POST">
@@ -33,7 +33,7 @@
                     <option value="">No Destination Entity</option>
                     <!--suppress HtmlUnknownTag -->
                     <hr>
-                    <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->lazyDestinationEntityName ? selected}>{$entity->name}</option>
+                    <option n:foreach="$project->model->entities as $entity" value="{$entity->name}" {$entity->name === $selectedProperty->lazyDestinationEntityName ? selected}>{$entity->name}</option>
                 </select>
             </div>
         </div>

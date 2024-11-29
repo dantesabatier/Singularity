@@ -27,7 +27,7 @@
                             <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $attribute->type->value ? selected}>
                                 {$attributeType->name}
                             </option>
-                            <option n:foreach="$compositeTypes as $compositeType" value="{$compositeType->type->value}" {$compositeType->name === $attribute->attributeValueClassName ? selected}>
+                            <option n:foreach="$project->model->compositeTypes as $compositeType" value="{$compositeType->type->value}" {$compositeType->name === $attribute->attributeValueClassName ? selected}>
                                 {$compositeType->name}
                             </option>
                         </select>

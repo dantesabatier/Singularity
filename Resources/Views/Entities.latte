@@ -1,7 +1,7 @@
 {templateType App\ViewControllers\Editor}
 {define entities, $entities}
     <div class="ps-{$entities ? 2 : 0}">
-        <div n:foreach="$entities ?? $rootEntities as $entity">
+        <div n:foreach="$entities ?? $project->model->rootEntities as $entity">
             <div class="nav-item{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'} d-block text-truncate w-100" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
                 <form action="/Entity" method="POST">
                     <span n:if="$entity->isLeaf" class="space"></span>

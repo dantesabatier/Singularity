@@ -25,7 +25,7 @@
                         <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
                         <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" class="form-select form-select-sm transparent border-0 py-0 w-auto" aria-label="Destination" data-autosave="true">
                             <option value="">No Value</option>
-                            <option n:foreach="$allEntities as $entity" value="{$entity->name}" {$entity->name === $relationship->lazyDestinationEntityName ? selected}>{$entity->name}</option>
+                            <option n:foreach="$project->model->entities as $entity" value="{$entity->name}" {$entity->name === $relationship->lazyDestinationEntityName ? selected}>{$entity->name}</option>
                         </select>
                     </form>
                 </td>
