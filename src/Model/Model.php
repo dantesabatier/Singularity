@@ -3,9 +3,7 @@
 namespace App\Model;
 
 use Exception;
-use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Progress;
@@ -65,7 +63,9 @@ class Model extends ManagedObject
     private(set) Set $rootEntities {
         get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
     }
-    private(set) Progress $progress;
+    private(set) Progress $progress {
+        get => $this->progress ??= new Progress();
+    }
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
@@ -74,13 +74,6 @@ class Model extends ManagedObject
             $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation);
             return $dictionary;
         }
-    }
-
-    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
-    {
-        parent::__construct($managedObjectContext, $entity);
-        $this->entitiesByName = new Dictionary();
-        $this->progress = new Progress();
     }
 
     private function newEntity(Dictionary $dictionary): Entity
