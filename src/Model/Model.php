@@ -61,7 +61,7 @@ class Model extends ManagedObject
         });
     }
     private(set) Set $rootEntities {
-        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
+        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
     }
     private(set) Progress $progress {
         get => $this->progress ??= new Progress();
@@ -70,7 +70,7 @@ class Model extends ManagedObject
         get {
             /** @var Dictionary<mixed> $dictionary */
             $dictionary = new Dictionary();
-            $dictionary["entities"] = $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name)->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation);
+            $dictionary["entities"] = $this->rootEntities->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation);
             $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation);
             return $dictionary;
         }
