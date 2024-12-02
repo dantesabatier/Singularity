@@ -226,7 +226,7 @@ class Model extends ManagedObject
                     $entities->append($this->newEntity($representation));
                     $progress->completedUnitCount = $index + 1;
                 }
-                $this->entities = $entities;
+                $this->entities = $entities->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
             }
             $this->compositeTypes = new Set($this->compositeTypesByName->values);
             /** @var ArrayClass<Dictionary>|null $representations */

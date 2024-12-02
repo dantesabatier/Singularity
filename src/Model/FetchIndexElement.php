@@ -12,9 +12,6 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
-use Sabatier\Foundation\Nil;
-use Sabatier\Foundation\Number;
-use Sabatier\Foundation\Value;
 
 /**
  * @property string $propertyName
@@ -66,22 +63,16 @@ class FetchIndexElement extends ManagedObject
         });
     }
 
-    public function validateCollationType(FetchIndexElementType|Number|Nil|int|null &$collationType): bool
+    public function validateCollationType(FetchIndexElementType|int &$collationType): bool
     {
-        if ($collationType instanceof Value) {
-            $collationType = $collationType->value;
-        }
         if (is_int($collationType)) {
             $collationType = FetchIndexElementType::from($collationType);
         }
         return true;
     }
 
-    public function validateExpressionResultType(AttributeType|Number|Nil|int|null &$expressionResultType): bool
+    public function validateExpressionResultType(AttributeType|int &$expressionResultType): bool
     {
-        if ($expressionResultType instanceof Value) {
-            $expressionResultType = $expressionResultType->value;
-        }
         if (is_int($expressionResultType)) {
             $expressionResultType = AttributeType::from($expressionResultType);
         }

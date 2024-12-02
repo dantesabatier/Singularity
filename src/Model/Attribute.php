@@ -13,11 +13,8 @@ use Sabatier\Foundation\Error;
 use Sabatier\Foundation\InternalInconsistencyException;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
-use Sabatier\Foundation\Nil;
-use Sabatier\Foundation\Number;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
-use Sabatier\Foundation\Value;
 use const Sabatier\CoreData\ManagedObjectValidationError;
 use const Sabatier\Foundation\CocoaErrorDomain;
 use const Sabatier\Foundation\LocalizedDescriptionKey;
@@ -166,11 +163,8 @@ class Attribute extends Property
         });
     }
 
-    public function validateType(AttributeType|Number|Nil|int|null &$type): bool
+    public function validateType(AttributeType|int &$type): bool
     {
-        if ($type instanceof Value) {
-            $type = $type->value;
-        }
         if (is_int($type)) {
             $type = AttributeType::from($type);
         }

@@ -10,10 +10,7 @@ use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
-use Sabatier\Foundation\Nil;
-use Sabatier\Foundation\Number;
 use Sabatier\Foundation\Set;
-use Sabatier\Foundation\Value;
 
 /**
  * @property string $name
@@ -54,11 +51,8 @@ class FetchIndex extends ManagedObject
         });
     }
 
-    public function validateCollationType(FetchIndexElementType|Number|Nil|int|null &$collationType): bool
+    public function validateCollationType(FetchIndexElementType|int &$collationType): bool
     {
-        if ($collationType instanceof Value) {
-            $collationType = $collationType->value;
-        }
         if (is_int($collationType)) {
             $collationType = FetchIndexElementType::from($collationType);
         }
