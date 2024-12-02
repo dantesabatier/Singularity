@@ -61,7 +61,7 @@ class Model extends ManagedObject
         });
     }
     private(set) Set $rootEntities {
-        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
+        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
     }
     private(set) Progress $progress {
         get => $this->progress ??= new Progress();
