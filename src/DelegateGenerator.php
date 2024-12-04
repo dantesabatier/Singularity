@@ -25,7 +25,7 @@ class DelegateGenerator extends Generator
             $content .= $uses->sort()->join("\n");
             $content .= "\n";
             $content .= "\n";
-            $content .= "class Delegate extends ObjectClass implements ApplicationDelegate\n";
+            $content .= "class $this->name extends ObjectClass implements ApplicationDelegate\n";
             $content .= "{\n";
             $content .= "    public static function initialize(): void\n";
             $content .= "    {\n";
