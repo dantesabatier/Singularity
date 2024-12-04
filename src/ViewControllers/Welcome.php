@@ -4,11 +4,11 @@
 
 namespace App\ViewControllers;
 
-use App\DelegateGenerator;
-use App\EnvGenerator;
-use App\IndexGenerator;
-use App\InfoGenerator;
-use App\JSONGenerator;
+use App\Generator\DelegateGenerator;
+use App\Generator\EnvGenerator;
+use App\Generator\IndexGenerator;
+use App\Generator\InfoGenerator;
+use App\Generator\JSONGenerator;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;

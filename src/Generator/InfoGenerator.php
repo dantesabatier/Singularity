@@ -1,10 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Generator;
 
+use App\Delegate;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\UserDefaults;
+use const App\CompanyNameKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDevelopmentRegionKey;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;

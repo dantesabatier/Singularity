@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Generator;
 
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Error;

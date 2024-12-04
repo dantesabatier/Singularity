@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Generator;
 
 use Sabatier\Service\Application;
 
