@@ -59,6 +59,11 @@ class Welcome extends ViewController
         $body = $this->request->parsedBody;
         $path = $body["path"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
+        $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
+        $fileManager = FileManager::default();
+        if (!$fileManager->fileExists($url->path)) {
+            $fileManager->createDirectory($url, attributes: $attributes);
+        }
         $generator = new InfoGenerator($url->appendingPathComponent("Info")->appendingPathExtension("plist"));
         $generator->save();
         $generator = new JSONGenerator($url->appendingPathComponent("composer")->appendingPathExtension("json"));
@@ -67,11 +72,6 @@ class Welcome extends ViewController
         $generator->save();
         $generator = new IndexGenerator($url->appendingPathComponent("index")->appendingPathExtension("php"));
         $generator->save();
-        $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
-        $fileManager = FileManager::default();
-        if (!$fileManager->fileExists($url->path)) {
-            $fileManager->createDirectory($url, attributes: $attributes);
-        }
         $name = $url->lastPathComponent;
         $resourceURL = $url->appendingPathComponent("Resources");
         if (!$fileManager->fileExists($resourceURL->path)) {
