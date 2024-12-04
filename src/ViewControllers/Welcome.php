@@ -9,6 +9,7 @@ use App\Generators\EnvGenerator;
 use App\Generators\IndexGenerator;
 use App\Generators\InfoGenerator;
 use App\Generators\JSONGenerator;
+use App\Generators\ModelGenerator;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
@@ -59,11 +60,22 @@ class Welcome extends ViewController
         $body = $this->request->parsedBody;
         $path = $body["path"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
-        $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
+        /** @var ArrayClass<URL> $directoryURLs */
+        $directoryURLs = new ArrayClass([$url]);
+        $resourceURL = $url->appendingPathComponent("Resources");
+        $directoryURLs[] = $resourceURL;
+        $directoryURLs[] = $resourceURL->appendingPathComponent("en");
+        $sourcesURL = $url->appendingPathComponent("src");
+        $directoryURLs[] = $sourcesURL;
         $fileManager = FileManager::default();
-        if (!$fileManager->fileExists($url->path)) {
-            $fileManager->createDirectory($url, attributes: $attributes);
+        $attributes = new Dictionary([FileAttributeKey::posixPermissions => 0777]);
+        foreach ($directoryURLs as $directoryURL) {
+            $directory = $directoryURL->path;
+            if (!$fileManager->fileExists($directory)) {
+                $fileManager->createDirectory($directoryURL, true, $attributes);
+            }
         }
+        $name = $url->lastPathComponent;
         $generator = new InfoGenerator($url->appendingPathComponent("Info")->appendingPathExtension("plist"));
         $generator->save();
         $generator = new JSONGenerator($url->appendingPathComponent("composer")->appendingPathExtension("json"));
@@ -72,31 +84,13 @@ class Welcome extends ViewController
         $generator->save();
         $generator = new IndexGenerator($url->appendingPathComponent("index")->appendingPathExtension("php"));
         $generator->save();
-        $name = $url->lastPathComponent;
-        $resourceURL = $url->appendingPathComponent("Resources");
-        if (!$fileManager->fileExists($resourceURL->path)) {
-            $fileManager->createDirectory($resourceURL, attributes: $attributes);
-        }
-        $bundle = Bundle::bundleWithURL($url);
-        foreach ($bundle->localizations as $localization) {
-            $directoryURL = $resourceURL->appendingPathComponent($localization);
-            if (!$fileManager->fileExists($directoryURL->path)) {
-                $fileManager->createDirectory($directoryURL, attributes: $attributes);
-            }
-        }
-        $sourcesURL = $url->appendingPathComponent("src");
-        if (!$fileManager->fileExists($sourcesURL->path)) {
-            $fileManager->createDirectory($sourcesURL, attributes: $attributes);
-        }
         $generator = new DelegateGenerator($sourcesURL->appendingPathComponent("Delegate")->appendingPathExtension("php"));
         $generator->save();
-        $storeURL = $resourceURL->appendingPathComponent($name)->appendingPathExtension("plist");
-        if (!$fileManager->fileExists($storeURL->path)) {
-            PropertyListSerialization::writePropertyList(Dictionary::dictionaryWithArray(["entities" => []]), $storeURL);
-        }
+        $generator = new ModelGenerator($resourceURL->appendingPathComponent($name)->appendingPathExtension("plist"));
+        $generator->save();
         $context = $this->managedObjectContext;
         $model = new Model($context);
-        $model->url = $bundle->url($name, "plist");
+        $model->url = $generator->url;
         $project = new Project($context);
         $project->creationDate = new Date();
         $project->name = $name;
