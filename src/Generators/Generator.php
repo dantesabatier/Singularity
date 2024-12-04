@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generator;
+namespace App\Generators;
 
 use Exception;
 use Sabatier\Foundation\Dictionary;

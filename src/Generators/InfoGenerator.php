@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generator;
+namespace App\Generators;
 
 use App\Delegate;
 use Sabatier\Foundation\Dictionary;
