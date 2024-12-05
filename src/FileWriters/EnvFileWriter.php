@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use Sabatier\Foundation\Dictionary;
 
-class EnvGenerator extends Generator
+class EnvFileWriter extends FileWriter
 {
     public string $contents {
         get => new Dictionary([

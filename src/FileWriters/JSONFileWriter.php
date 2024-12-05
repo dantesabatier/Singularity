@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
-class JSONGenerator extends Generator
+class JSONFileWriter extends FileWriter
 {
     public string $contents {
         get {

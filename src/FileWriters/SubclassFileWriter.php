@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use App\Model\Attribute;
 use App\Model\Entity;
@@ -24,7 +24,7 @@ use function Sabatier\Foundation\substring_to_index;
 /**
  * @psalm-type SubclassNameGenerator = Closure(Entity, string): string
  */
-class SubclassGenerator extends Generator
+class SubclassFileWriter extends FileWriter
 {
     private readonly Entity $entity;
     private readonly string $class;

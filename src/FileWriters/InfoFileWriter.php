@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use App\Delegate;
 use Sabatier\Foundation\Dictionary;
@@ -20,7 +20,7 @@ use const Sabatier\Foundation\kCFBundleShortVersionStringKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
 use const Sabatier\Foundation\kCFBundleVersionKey;
 
-class InfoGenerator extends Generator
+class InfoFileWriter extends FileWriter
 {
     public string $contents {
         get {

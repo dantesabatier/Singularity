@@ -4,7 +4,7 @@
 
 namespace App\ViewControllers;
 
-use App\Generators\SubclassGenerator;
+use App\FileWriters\SubclassFileWriter;
 use App\Model\CompositeType;
 use App\Model\Configuration;
 use App\Model\Entity;
@@ -274,8 +274,8 @@ class Editor extends ViewController
         foreach ($model->entities as $entity) {
             $class = $this->className($entity, $namespace);
             $fileURL = $directoryURL->appendingPathComponent($class)->appendPathExtension("php");
-            $generator = new SubclassGenerator($fileURL, $entity, $class, $namespace, fn(Entity $entity, string $namespace): string => $this->className($entity, $namespace));
-            $generator->save();
+            $fileWriter = new SubclassFileWriter($fileURL, $entity, $class, $namespace, fn(Entity $entity, string $namespace): string => $this->className($entity, $namespace));
+            $fileWriter->save();
             $entity->managedObjectClassName = "$namespace\\$class";
         }
         $this->save();

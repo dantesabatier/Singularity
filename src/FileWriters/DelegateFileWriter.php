@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Error;
@@ -8,7 +8,7 @@ use Sabatier\Foundation\ObjectClass;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 
-class DelegateGenerator extends Generator
+class DelegateFileWriter extends FileWriter
 {
     public string $contents {
         get {

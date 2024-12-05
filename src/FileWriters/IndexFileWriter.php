@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use Sabatier\Service\Application;
 
-class IndexGenerator extends Generator
+class IndexFileWriter extends FileWriter
 {
     public string $contents {
         get {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use Exception;
 use Sabatier\Foundation\Dictionary;
@@ -9,7 +9,7 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\request_concrete_implementation;
 
-abstract class Generator
+abstract class FileWriter
 {
     public string $name {
         get => $this->url->deletingLastPathComponent()->lastPathComponent;

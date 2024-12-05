@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
@@ -8,7 +8,7 @@ use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 
-class ProjectGenerator extends Generator
+class ProjectFileWriter extends FileWriter
 {
     public function save(): void
     {
@@ -29,17 +29,17 @@ class ProjectGenerator extends Generator
             }
         }
         $name = $url->lastPathComponent;
-        $generator = new InfoGenerator($url->appendingPathComponent("Info")->appendingPathExtension("plist"));
-        $generator->save();
-        $generator = new JSONGenerator($url->appendingPathComponent("composer")->appendingPathExtension("json"));
-        $generator->save();
-        $generator = new EnvGenerator($url->appendingPathComponent(".env"));
-        $generator->save();
-        $generator = new IndexGenerator($url->appendingPathComponent("index")->appendingPathExtension("php"));
-        $generator->save();
-        $generator = new DelegateGenerator($sourcesURL->appendingPathComponent("Delegate")->appendingPathExtension("php"));
-        $generator->save();
-        $generator = new ModelGenerator($resourceURL->appendingPathComponent($name)->appendingPathExtension("plist"));
-        $generator->save();
+        $fileWriter = new InfoFileWriter($url->appendingPathComponent("Info")->appendingPathExtension("plist"));
+        $fileWriter->save();
+        $fileWriter = new JSONFileWriter($url->appendingPathComponent("composer")->appendingPathExtension("json"));
+        $fileWriter->save();
+        $fileWriter = new EnvFileWriter($url->appendingPathComponent(".env"));
+        $fileWriter->save();
+        $fileWriter = new IndexFileWriter($url->appendingPathComponent("index")->appendingPathExtension("php"));
+        $fileWriter->save();
+        $fileWriter = new DelegateFileWriter($sourcesURL->appendingPathComponent("Delegate")->appendingPathExtension("php"));
+        $fileWriter->save();
+        $fileWriter = new ModelFileWriter($resourceURL->appendingPathComponent($name)->appendingPathExtension("plist"));
+        $fileWriter->save();
     }
 }

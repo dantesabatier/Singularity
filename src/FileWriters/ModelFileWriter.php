@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Generators;
+namespace App\FileWriters;
 
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\PropertyListSerialization;
 
-class ModelGenerator extends Generator
+class ModelFileWriter extends FileWriter
 {
     public function save(): void
     {

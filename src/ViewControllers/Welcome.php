@@ -4,7 +4,7 @@
 
 namespace App\ViewControllers;
 
-use App\Generators\ProjectGenerator;
+use App\FileWriters\ProjectFileWriter;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
@@ -53,8 +53,8 @@ class Welcome extends ViewController
         $body = $this->request->parsedBody;
         $path = $body["path"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
-        $generator = new ProjectGenerator($url);
-        $generator->save();
+        $fileWriter = new ProjectFileWriter($url);
+        $fileWriter->save();
         $name = $url->lastPathComponent;
         $context = $this->managedObjectContext;
         $model = new Model($context);
