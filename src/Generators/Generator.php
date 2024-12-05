@@ -18,7 +18,7 @@ abstract class Generator
         get => request_concrete_implementation($this, __PROPERTY__);
     }
 
-    public function __construct(public URL $url)
+    public function __construct(public readonly URL $url)
     {
     }
 
