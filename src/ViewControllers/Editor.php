@@ -61,12 +61,48 @@ class Editor extends ViewController
     private(set) array $attributeTypes = [];
     /** @var ArrayClass<Project> */
     #[Outlet]
-    private(set) ArrayClass $projects {
-        get => $this->projects ??= $this->projects();
+    public ArrayClass $projects {
+        get {
+            if (!isset($this->associatedValues[__PROPERTY__])) {
+                $fetchRequest = Project::fetchRequest();
+                $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
+                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                    "name" => AttributeType::string,
+                    "color" => AttributeType::string
+                ]);
+                $projects = $this->managedObjectContext->fetch($fetchRequest);
+                if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
+                    $projects->insertAt($projects->removeAt($index), 0);
+                }
+                $this->associatedValues[__PROPERTY__] = $projects;
+            }
+            return $this->associatedValues[__PROPERTY__];
+        }
     }
     #[Outlet]
     public Project $project {
-        get => $this->project ??= $this->project();
+        get {
+            if (!isset($this->associatedValues[__PROPERTY__])) {
+                if (!($referenceObject = $this->referenceObject("project"))) {
+                    throw new NotFoundException();
+                }
+                $fetchRequest = Project::fetchRequest();
+                $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
+                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                    "name" => AttributeType::string,
+                    "url" => AttributeType::uri,
+                    "color" => AttributeType::string,
+                    "model" => [
+                        "url" => AttributeType::uri
+                    ]
+                ]);
+                $this->associatedValues[__PROPERTY__] = $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
+            }
+            return $this->associatedValues[__PROPERTY__];
+        }
+        set {
+            $this->associatedValues[__PROPERTY__] = $value;
+        }
     }
     #[Outlet]
     private(set) ?Entity $selectedEntity = null;
@@ -98,46 +134,6 @@ class Editor extends ViewController
             return (int)$referenceObject;
         }
         return null;
-    }
-
-    /**
-     * @return ArrayClass<Project>
-     * @throws Exception
-     */
-    private function projects(): ArrayClass
-    {
-        $fetchRequest = Project::fetchRequest();
-        $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string,
-            "color" => AttributeType::string
-        ]);
-        $projects = $this->managedObjectContext->fetch($fetchRequest);
-        if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
-            $projects->insertAt($projects->removeAt($index), 0);
-        }
-        return $projects;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function project(): Project
-    {
-        if (!($referenceObject = $this->referenceObject("project"))) {
-            throw new NotFoundException();
-        }
-        $fetchRequest = Project::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
-        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-            "name" => AttributeType::string,
-            "url" => AttributeType::uri,
-            "color" => AttributeType::string,
-            "model" => [
-                "url" => AttributeType::uri
-            ]
-        ]);
-        return $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
     }
 
     private function className(Entity $entity, string $namespace): string
