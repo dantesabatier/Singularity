@@ -34,13 +34,13 @@ class Welcome extends ViewController
     #[Outlet]
     public ArrayClass $projects {
         get {
-            if (!isset($this->associatedValues[__PROPERTY__])) {
+            if (!isset($this->projects)) {
                 $fetchRequest = Project::fetchRequest();
                 $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
                 $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-                $this->associatedValues[__PROPERTY__] = $this->managedObjectContext->fetch($fetchRequest);
+                $this->projects = $this->managedObjectContext->fetch($fetchRequest);
             }
-            return $this->associatedValues[__PROPERTY__];
+            return $this->projects;
         }
     }
 
