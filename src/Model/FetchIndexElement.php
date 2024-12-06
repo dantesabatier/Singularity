@@ -24,7 +24,23 @@ use Sabatier\Foundation\KeyValueObservingOptions;
 class FetchIndexElement extends ManagedObject
 {
     private(set) ?Property $property {
-        get => $this->property ??= $this->property();
+        get {
+            if (!isset($this->property)) {
+                /** @var ArrayClass<Attribute> $attributes */
+                $attributes = new ArrayClass();
+                $entity = $this->index->entityProperty;
+                if ($entity) {
+                    $attributes->appendContentsOf($entity->attributes);
+                    $superentity = $entity->superentity;
+                    while ($superentity) {
+                        $attributes->appendContentsOf($superentity->attributes);
+                        $superentity = $superentity->superentity;
+                    }
+                }
+                $this->property = $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
+            }
+            return $this->property;
+        }
     }
     public Dictionary $dictionaryRepresentation {
         get {
@@ -77,21 +93,5 @@ class FetchIndexElement extends ManagedObject
             $expressionResultType = AttributeType::from($expressionResultType);
         }
         return true;
-    }
-
-    private function property(): Attribute
-    {
-        /** @var ArrayClass<Attribute> $attributes */
-        $attributes = new ArrayClass();
-        $entity = $this->index->entityProperty;
-        if ($entity) {
-            $attributes->appendContentsOf($entity->attributes);
-            $superentity = $entity->superentity;
-            while ($superentity) {
-                $attributes->appendContentsOf($superentity->attributes);
-                $superentity = $superentity->superentity;
-            }
-        }
-        return $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
     }
 }
