@@ -56,7 +56,7 @@ class Editor extends ViewController
     #[Outlet]
     public ArrayClass $projects {
         get {
-            if (!isset($this->associatedValues[__PROPERTY__])) {
+            if (!isset($this->projects)) {
                 $fetchRequest = Project::fetchRequest();
                 $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
                 $fetchRequest->serialization = Dictionary::dictionaryWithArray([
@@ -67,15 +67,15 @@ class Editor extends ViewController
                 if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
                     $projects->insertAt($projects->removeAt($index), 0);
                 }
-                $this->associatedValues[__PROPERTY__] = $projects;
+                $this->projects = $projects;
             }
-            return $this->associatedValues[__PROPERTY__];
+            return $this->projects;
         }
     }
     #[Outlet]
     public Project $project {
         get {
-            if (!isset($this->associatedValues[__PROPERTY__])) {
+            if (!isset($this->project)) {
                 if (!($referenceObject = $this->referenceObject("project"))) {
                     throw new NotFoundException();
                 }
@@ -89,12 +89,9 @@ class Editor extends ViewController
                         "url" => AttributeType::uri
                     ]
                 ]);
-                $this->associatedValues[__PROPERTY__] = $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
+                $this->project = $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
             }
-            return $this->associatedValues[__PROPERTY__];
-        }
-        set {
-            $this->associatedValues[__PROPERTY__] = $value;
+            return $this->project;
         }
     }
     #[Outlet]
