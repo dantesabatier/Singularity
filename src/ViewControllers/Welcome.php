@@ -32,7 +32,7 @@ class Welcome extends ViewController
 {
     /** @var ArrayClass<Project> */
     #[Outlet]
-    public ArrayClass $projects {
+    private(set) ArrayClass $projects {
         get {
             if (!isset($this->projects)) {
                 $fetchRequest = Project::fetchRequest();
