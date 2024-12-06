@@ -49,29 +49,6 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 #[Endpoint]
 class Editor extends ViewController
 {
-    /** @var array<object{name: string, value: int}> */
-    #[Outlet]
-    private(set) array $attributeTypes = [];
-    /** @var ArrayClass<Project> */
-    #[Outlet]
-    public ArrayClass $projects {
-        get {
-            if (!isset($this->projects)) {
-                $fetchRequest = Project::fetchRequest();
-                $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                    "name" => AttributeType::string,
-                    "color" => AttributeType::string
-                ]);
-                $projects = $this->managedObjectContext->fetch($fetchRequest);
-                if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
-                    $projects->insertAt($projects->removeAt($index), 0);
-                }
-                $this->projects = $projects;
-            }
-            return $this->projects;
-        }
-    }
     #[Outlet]
     public Project $project {
         get {
@@ -92,6 +69,26 @@ class Editor extends ViewController
                 $this->project = $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
             }
             return $this->project;
+        }
+    }
+    /** @var ArrayClass<Project> */
+    #[Outlet]
+    private(set) ArrayClass $projects {
+        get {
+            if (!isset($this->projects)) {
+                $fetchRequest = Project::fetchRequest();
+                $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
+                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                    "name" => AttributeType::string,
+                    "color" => AttributeType::string
+                ]);
+                $projects = $this->managedObjectContext->fetch($fetchRequest);
+                if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
+                    $projects->insertAt($projects->removeAt($index), 0);
+                }
+                $this->projects = $projects;
+            }
+            return $this->projects;
         }
     }
     #[Outlet]
@@ -115,6 +112,9 @@ class Editor extends ViewController
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     private(set) ArrayClass $breadcrumb;
+    /** @var array<object{name: string, value: int}> */
+    #[Outlet]
+    private(set) array $attributeTypes = [];
 
     private function referenceObject(string $key): ?int
     {
