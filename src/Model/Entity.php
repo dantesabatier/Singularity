@@ -53,7 +53,20 @@ use Sabatier\Foundation\Set;
 class Entity extends ManagedObject
 {
     private(set) ?Entity $rootEntity {
-        get => $this->rootEntity ??= $this->rootEntity();
+        get {
+            if (!isset($this->rootEntity)) {
+                $superentity = $this->superentity;
+                $rootEntity = $superentity;
+                while ($superentity) {
+                    $superentity = $superentity->superentity;
+                    if ($superentity) {
+                        $rootEntity = $superentity;
+                    }
+                }
+                $this->rootEntity = $rootEntity;
+            }
+            return $this->rootEntity;
+        }
     }
     private(set) bool $isRootEntity {
         get => $this->isRootEntity ??= $this->superentity === null;
@@ -74,7 +87,25 @@ class Entity extends ManagedObject
     }
     /** @var ArrayClass<string> */
     private(set) ArrayClass $allAttributeNames {
-        get => $this->allAttributeNames ??= $this->allAttributeNames();
+        get {
+            if (!isset($this->allAttributeNames)) {
+                /** @var ArrayClass<string> $allAttributeNames */
+                $allAttributeNames = new ArrayClass();
+                $transform = fn(Attribute $attribute): string => $attribute->name;
+                $superentity = $this->superentity;
+                while ($superentity) {
+                    $allAttributeNames->appendContentsOf($superentity->attributes->map($transform));
+                    $superentity = $superentity->superentity;
+                }
+                $allAttributeNames->appendContentsOf($this->attributes->map($transform));
+                foreach ($this->subentities as $subentity) {
+                    $allAttributeNames->appendContentsOf($subentity->attributes->map($transform));
+                }
+                $allAttributeNames[] = "Expression";
+                $this->allAttributeNames = $allAttributeNames;
+            }
+            return $this->allAttributeNames;
+        }
     }
     private(set) bool $isLeaf {
         get => $this->isLeaf ??= !$this->subentitiesCount;
@@ -116,36 +147,5 @@ class Entity extends ManagedObject
             }
             return $dictionary;
         }
-    }
-
-    private function rootEntity(): ?Entity
-    {
-        $superentity = $this->superentity;
-        $rootEntity = $superentity;
-        while ($superentity) {
-            $superentity = $superentity->superentity;
-            if ($superentity) {
-                $rootEntity = $superentity;
-            }
-        }
-        return $rootEntity;
-    }
-
-    private function allAttributeNames(): ArrayClass
-    {
-        /** @var ArrayClass<string> $allAttributeNames */
-        $allAttributeNames = new ArrayClass();
-        $transform = fn(Attribute $attribute): string => $attribute->name;
-        $superentity = $this->superentity;
-        while ($superentity) {
-            $allAttributeNames->appendContentsOf($superentity->attributes->map($transform));
-            $superentity = $superentity->superentity;
-        }
-        $allAttributeNames->appendContentsOf($this->attributes->map($transform));
-        foreach ($this->subentities as $subentity) {
-            $allAttributeNames->appendContentsOf($subentity->attributes->map($transform));
-        }
-        $allAttributeNames[] = "Expression";
-        return $allAttributeNames;
     }
 }
