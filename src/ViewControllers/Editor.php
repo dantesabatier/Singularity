@@ -111,7 +111,9 @@ class Editor extends ViewController
     private(set) ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
-    private(set) ArrayClass $breadcrumb;
+    private(set) ArrayClass $breadcrumb {
+        get => $this->breadcrumb ??= new ArrayClass();
+    }
     /** @var array<object{name: string, value: int}> */
     #[Outlet]
     private(set) array $attributeTypes = [];
@@ -144,7 +146,6 @@ class Editor extends ViewController
     public function viewWillLoad(): void
     {
         $project = $this->project;
-        $this->breadcrumb = new ArrayClass();
         $this->breadcrumb[] = $project;
         $model = $project->model ?? throw new NotFoundException();
         $this->breadcrumb[] = $model;
