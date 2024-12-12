@@ -58,7 +58,7 @@ class FetchRequestTemplate extends ManagedObject
         }
     }
 
-    public function validateFetchResultType(FetchRequestResultType|int &$resultType): bool
+    public function validateFetchResultType(FetchRequestResultType|int|null &$resultType): bool
     {
         if (is_int(value: $resultType)) {
             $resultType = FetchRequestResultType::from($resultType);

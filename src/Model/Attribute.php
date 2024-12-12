@@ -163,7 +163,7 @@ class Attribute extends Property
         });
     }
 
-    public function validateType(AttributeType|int &$type): bool
+    public function validateType(AttributeType|int|null &$type): bool
     {
         if (is_int($type)) {
             $type = AttributeType::from($type);

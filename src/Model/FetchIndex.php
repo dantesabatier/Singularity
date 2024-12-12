@@ -51,7 +51,7 @@ class FetchIndex extends ManagedObject
         });
     }
 
-    public function validateCollationType(FetchIndexElementType|int &$collationType): bool
+    public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool
     {
         if (is_int($collationType)) {
             $collationType = FetchIndexElementType::from($collationType);

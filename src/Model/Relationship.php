@@ -90,7 +90,7 @@ class Relationship extends Property
         });
     }
 
-    public function validateDeleteRule(DeleteRule|int &$deleteRule): bool
+    public function validateDeleteRule(DeleteRule|int|null &$deleteRule): bool
     {
         if (is_int($deleteRule)) {
             $deleteRule = DeleteRule::from($deleteRule);

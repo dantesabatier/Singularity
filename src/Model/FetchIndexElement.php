@@ -79,7 +79,7 @@ class FetchIndexElement extends ManagedObject
         });
     }
 
-    public function validateCollationType(FetchIndexElementType|int &$collationType): bool
+    public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool
     {
         if (is_int($collationType)) {
             $collationType = FetchIndexElementType::from($collationType);
@@ -87,7 +87,7 @@ class FetchIndexElement extends ManagedObject
         return true;
     }
 
-    public function validateExpressionResultType(AttributeType|int &$expressionResultType): bool
+    public function validateExpressionResultType(AttributeType|int|null &$expressionResultType): bool
     {
         if (is_int($expressionResultType)) {
             $expressionResultType = AttributeType::from($expressionResultType);
