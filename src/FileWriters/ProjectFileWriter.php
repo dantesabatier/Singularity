@@ -2,6 +2,7 @@
 
 namespace App\FileWriters;
 
+use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
@@ -10,6 +11,7 @@ use Sabatier\Foundation\URL;
 
 class ProjectFileWriter extends FileWriter
 {
+    #[Override]
     public function save(): void
     {
         $url = $this->url;
