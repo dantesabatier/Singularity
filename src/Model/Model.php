@@ -105,11 +105,11 @@ class Model extends ManagedObject
                             $elements = $description["elements"];
                             $compositeType = new CompositeType($context);
                             $compositeType->name = $attributeValueClassName;
-                            $compositeType->elements = $elements->map(function (Dictionary $element): Attribute {
+                            $compositeType->elements = new Set($elements->map(function (Dictionary $element): Attribute {
                                 $attribute = new Attribute($this->managedObjectContext);
                                 $attribute->setValuesForKeys($element);
                                 return $attribute;
-                            });
+                            }));
                             $this->compositeTypesByName[$attributeValueClassName] = $compositeType;
                         }
                         $description->removeValueForKey("elements");
