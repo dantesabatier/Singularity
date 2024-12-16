@@ -37,9 +37,9 @@ class Delegate extends ObjectClass implements ApplicationDelegate
         UserDefaults::standard()->register(new Dictionary([
             PersistentHistoryTrackingKey => false,
             PersistentStoreRemoteChangeNotificationPostOptionKey => false,
-            AutomaticallyDeleteProjectFolders => false,
-            AutomaticallySaveModel => false,
-            CompanyNameKey => full_user_name()
+            AutomaticallyDeleteProjectFoldersPreferencesKey => false,
+            AutomaticallySaveModelPreferencesKey => false,
+            CompanyNamePreferencesKey => full_user_name()
         ]));
     }
 
@@ -48,7 +48,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     {
         $application->accessManager->isProtectedContentAvailable = true;
         NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (Notification $notification) use ($application): void {
-            if (!UserDefaults::standard()->bool(AutomaticallySaveModel) || !($referer = $application->request->valueForHttpHeaderField("Referer"))) {
+            if (!UserDefaults::standard()->bool(AutomaticallySaveModelPreferencesKey) || !($referer = $application->request->valueForHttpHeaderField("Referer"))) {
                 return;
             }
             $components = new URLComponents($referer);

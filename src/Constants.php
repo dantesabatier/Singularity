@@ -2,6 +2,7 @@
 
 namespace App;
 
-const CompanyNameKey = "CompanyName";
-const AutomaticallyDeleteProjectFolders = "AutomaticallyDeleteProjectFolders";
-const AutomaticallySaveModel = "AutomaticallySaveModel";
+const CompanyNamePreferencesKey = "CompanyName";
+const AutomaticallyDeleteProjectFoldersPreferencesKey = "AutomaticallyDeleteProjectFolders";
+const AutomaticallySaveModelPreferencesKey = "AutomaticallySaveModel";
+const NeedsReloadKey = "NeedsReload";

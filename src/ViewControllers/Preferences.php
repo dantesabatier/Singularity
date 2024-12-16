@@ -8,24 +8,24 @@ use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
-use const App\AutomaticallyDeleteProjectFolders;
-use const App\AutomaticallySaveModel;
-use const App\CompanyNameKey;
+use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
+use const App\AutomaticallySaveModelPreferencesKey;
+use const App\CompanyNamePreferencesKey;
 
 #[Endpoint]
 class Preferences extends ViewController
 {
     #[Outlet]
     public ?string $companyName {
-        get => UserDefaults::standard()->string(CompanyNameKey);
+        get => UserDefaults::standard()->string(CompanyNamePreferencesKey);
     }
     #[Outlet]
     public bool $automaticallyDeleteProjectFolders {
-        get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFolders);
+        get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFoldersPreferencesKey);
     }
     #[Outlet]
     public bool $automaticallySaveModel {
-        get => UserDefaults::standard()->bool(AutomaticallySaveModel);
+        get => UserDefaults::standard()->bool(AutomaticallySaveModelPreferencesKey);
     }
 
     /**

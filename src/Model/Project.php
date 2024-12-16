@@ -9,7 +9,7 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use const App\AutomaticallyDeleteProjectFolders;
+use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use function Sabatier\Foundation\random_color;
 
 /**
@@ -40,7 +40,7 @@ class Project extends ManagedObject
     #[Override]
     public function prepareForDeletion(): void
     {
-        if (UserDefaults::standard()->bool(AutomaticallyDeleteProjectFolders) && ($url = $this->url) && FileManager::default()->fileExists($url->path, $isDirectory) && $isDirectory) {
+        if (UserDefaults::standard()->bool(AutomaticallyDeleteProjectFoldersPreferencesKey) && ($url = $this->url) && FileManager::default()->fileExists($url->path, $isDirectory) && $isDirectory) {
             FileManager::default()->removeItem($url);
         }
     }

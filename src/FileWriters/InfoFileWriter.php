@@ -6,7 +6,7 @@ use App\Delegate;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\UserDefaults;
-use const App\CompanyNameKey;
+use const App\CompanyNamePreferencesKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDevelopmentRegionKey;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
@@ -28,7 +28,7 @@ class InfoFileWriter extends FileWriter
             return PropertyListSerialization::data(Dictionary::dictionaryWithArray([
                 kCFBundleDevelopmentRegionKey => "English",
                 kCFBundleExecutableKey => $name,
-                kCFBundleIdentifierKey => sprintf("com.%s.%s", strtolower(str_replace(" ", "", (string)UserDefaults::standard()->string(CompanyNameKey))), strtolower($name)),
+                kCFBundleIdentifierKey => sprintf("com.%s.%s", strtolower(str_replace(" ", "", (string)UserDefaults::standard()->string(CompanyNamePreferencesKey))), strtolower($name)),
                 kCFBundleNameKey => $name,
                 kCFBundleVersionKey => "1",
                 kCFBundleShortVersionStringKey => "0.1",
