@@ -76,7 +76,7 @@ class Welcome extends ViewController
     public function rename(): void
     {
         $body = $this->request->parsedBody;
-        $name = $body["name"] ?? throw new BadRequestException("path cannot be null");
+        $name = $body["name"] ?? throw new BadRequestException("name cannot be null");
         $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
         $context = $this->managedObjectContext;
         $fetchRequest = Project::fetchRequest();
