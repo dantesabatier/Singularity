@@ -10,6 +10,9 @@ use Sabatier\Service\ApplicationDelegate;
 
 class DelegateFileWriter extends FileWriter
 {
+    public string $name {
+        get => $this->url->deletingPathExtension()->lastPathComponent;
+    }
     public string $contents {
         get {
             $uses = new ArrayClass([
