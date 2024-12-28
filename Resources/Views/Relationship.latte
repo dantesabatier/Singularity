@@ -44,8 +44,10 @@
                     <option value="">No Inverse Relationship</option>
                     <!--suppress HtmlUnknownTag -->
                     <hr>
-                    {var App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
-                    <option n:if="$destinationEntity" n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
+                    {var ?App\Model\Entity $destinationEntity = $selectedProperty->destinationEntity}
+                    {if $destinationEntity}
+                        <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
+                    {/if}
                 </select>
             </div>
         </div>
