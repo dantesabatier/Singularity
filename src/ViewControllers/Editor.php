@@ -4,6 +4,7 @@
 
 namespace App\ViewControllers;
 
+use App\FileWriters\ProjectFileWriter;
 use App\FileWriters\SubclassFileWriter;
 use App\Model\CompositeType;
 use App\Model\Configuration;
@@ -209,12 +210,16 @@ class Editor extends ViewController
     {
         $project = $this->project ?? throw new BadRequestException("project cannot be null");
         $project->lastModifiedDate = new Date();
+        $fileManager = FileManager::default();
         /** @var URL $url */
         $url = $project->url;
+        if (!$fileManager->fileExists($url->path)) {
+            $fileWriter = new ProjectFileWriter($url);
+            $fileWriter->save();
+        }
         /** @var Model $model */
         $model = $project->model;
         $this->managedObjectContext->save();
-        $fileManager = FileManager::default();
         $bundle = Bundle::bundleWithURL($url);
         /** @var URL $resourceURL */
         $resourceURL = $bundle->resourceURL;
