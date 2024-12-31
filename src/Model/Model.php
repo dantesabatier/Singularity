@@ -46,18 +46,18 @@ use function Sabatier\Foundation\fatal_error;
  */
 class Model extends ManagedObject
 {
-    /** @var Set<Entity> $rootEntities */
+    /** @var Set<Entity> */
     private(set) Set $rootEntities {
         get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
     }
-    /** @var Dictionary<Entity> $entitiesByName */
+    /** @var Dictionary<Entity> */
     private(set) Dictionary $entitiesByName {
         get => $this->entitiesByName ??= $this->entities->reduce(new Dictionary(), function (Dictionary $result, Entity $entity): Dictionary {
             $result[$entity->name] = $entity;
             return $result;
         });
     }
-    /** @var Dictionary<CompositeType> $compositeTypesByName */
+    /** @var Dictionary<CompositeType> */
     private(set) Dictionary $compositeTypesByName {
         get => $this->compositeTypesByName ??= $this->compositeTypes->reduce(new Dictionary(), function (Dictionary $result, CompositeType $compositeType): Dictionary {
             $result[$compositeType->name] = $compositeType;
@@ -67,7 +67,7 @@ class Model extends ManagedObject
     private(set) Progress $progress {
         get => $this->progress ??= new Progress();
     }
-    /** @var Dictionary<mixed> $dictionaryRepresentation */
+    /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */

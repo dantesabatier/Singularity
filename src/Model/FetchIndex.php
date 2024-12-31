@@ -27,7 +27,7 @@ use Sabatier\Foundation\Set;
  */
 class FetchIndex extends ManagedObject
 {
-    /** @var Dictionary<mixed> $dictionaryRepresentation */
+    /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */

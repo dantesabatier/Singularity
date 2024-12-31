@@ -71,21 +71,21 @@ class Entity extends ManagedObject
     private(set) bool $isRootEntity {
         get => $this->isRootEntity ??= $this->superentity === null;
     }
-    /** @var Dictionary<Attribute> $attributesByName */
+    /** @var Dictionary<Attribute> */
     private(set) Dictionary $attributesByName {
         get => $this->attributesByName ??= $this->attributes->reduce(new Dictionary(), function (Dictionary $result, Attribute $attribute): Dictionary {
             $result[$attribute->name] = $attribute;
             return $result;
         });
     }
-    /** @var Dictionary<Relationship> $relationshipsByName */
+    /** @var Dictionary<Relationship> */
     private(set) Dictionary $relationshipsByName {
         get => $this->relationshipsByName ??= $this->relationships->reduce(new Dictionary(), function (Dictionary $result, Relationship $relationship): Dictionary {
             $result[$relationship->name] = $relationship;
             return $result;
         });
     }
-    /** @var ArrayClass<string> $attributeNames */
+    /** @var ArrayClass<string> */
     private(set) ArrayClass $attributeNames {
         get {
             if (!isset($this->attributeNames)) {
@@ -110,7 +110,7 @@ class Entity extends ManagedObject
     private(set) bool $isLeaf {
         get => $this->isLeaf ??= !$this->subentitiesCount;
     }
-    /** @var Dictionary<mixed> $dictionaryRepresentation */
+    /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */

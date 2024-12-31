@@ -29,7 +29,7 @@ class Relationship extends Property
     private(set) ?Relationship $inverseRelationship {
         get => $this->inverseRelationship ??= $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
     }
-    /** @var Dictionary<mixed> $dictionaryRepresentation */
+    /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */

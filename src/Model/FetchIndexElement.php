@@ -42,7 +42,7 @@ class FetchIndexElement extends ManagedObject
             return $this->property;
         }
     }
-    /** @var Dictionary<mixed> $dictionaryRepresentation */
+    /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
