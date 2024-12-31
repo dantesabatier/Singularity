@@ -34,6 +34,7 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
  */
 class Attribute extends Property
 {
+    /** @var Dictionary<mixed> $dictionaryRepresentation */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */

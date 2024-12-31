@@ -71,45 +71,46 @@ class Entity extends ManagedObject
     private(set) bool $isRootEntity {
         get => $this->isRootEntity ??= $this->superentity === null;
     }
-    /** @var Dictionary<Attribute> */
+    /** @var Dictionary<Attribute> $attributesByName */
     private(set) Dictionary $attributesByName {
         get => $this->attributesByName ??= $this->attributes->reduce(new Dictionary(), function (Dictionary $result, Attribute $attribute): Dictionary {
             $result[$attribute->name] = $attribute;
             return $result;
         });
     }
-    /** @var Dictionary<Relationship> */
+    /** @var Dictionary<Relationship> $relationshipsByName */
     private(set) Dictionary $relationshipsByName {
         get => $this->relationshipsByName ??= $this->relationships->reduce(new Dictionary(), function (Dictionary $result, Relationship $relationship): Dictionary {
             $result[$relationship->name] = $relationship;
             return $result;
         });
     }
-    /** @var ArrayClass<string> */
-    private(set) ArrayClass $allAttributeNames {
+    /** @var ArrayClass<string> $attributeNames */
+    private(set) ArrayClass $attributeNames {
         get {
-            if (!isset($this->allAttributeNames)) {
-                /** @var ArrayClass<string> $allAttributeNames */
-                $allAttributeNames = new ArrayClass();
+            if (!isset($this->attributeNames)) {
+                /** @var ArrayClass<string> $attributeNames */
+                $attributeNames = new ArrayClass();
                 $transform = fn(Attribute $attribute): string => $attribute->name;
                 $superentity = $this->superentity;
                 while ($superentity) {
-                    $allAttributeNames->appendContentsOf($superentity->attributes->map($transform));
+                    $attributeNames->appendContentsOf($superentity->attributes->map($transform));
                     $superentity = $superentity->superentity;
                 }
-                $allAttributeNames->appendContentsOf($this->attributes->map($transform));
+                $attributeNames->appendContentsOf($this->attributes->map($transform));
                 foreach ($this->subentities as $subentity) {
-                    $allAttributeNames->appendContentsOf($subentity->attributes->map($transform));
+                    $attributeNames->appendContentsOf($subentity->attributes->map($transform));
                 }
-                $allAttributeNames[] = "Expression";
-                $this->allAttributeNames = $allAttributeNames;
+                $attributeNames[] = "Expression";
+                $this->attributeNames = $attributeNames;
             }
-            return $this->allAttributeNames;
+            return $this->attributeNames;
         }
     }
     private(set) bool $isLeaf {
         get => $this->isLeaf ??= !$this->subentitiesCount;
     }
+    /** @var Dictionary<mixed> $dictionaryRepresentation */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */

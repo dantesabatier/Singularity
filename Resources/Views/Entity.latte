@@ -101,7 +101,7 @@
                             <div class="mb-3">
                                 <label for="stringValue" class="form-label">Attribute</label>
                                 <select name="stringValue" id="stringValue" class="form-select form-select-sm" {$selectedEntity->attributes->isEmpty ? disabled} required>
-                                    {var $attributeNames = $selectedEntity->allAttributeNames->dropLast(1)}
+                                    {var $attributeNames = $selectedEntity->attributeNames->dropLast(1)}
                                     <option n:foreach="$attributeNames as $attributeName" value="{$attributeName}" {$selectedEntity->uniquenessConstraints->contains(fn(App\Model\UniquenessConstraint $uniquenessConstraint): bool => $uniquenessConstraint->stringValue === $attributeName) ? disabled}>
                                         {$attributeName}
                                     </option>

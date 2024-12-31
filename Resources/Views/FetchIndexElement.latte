@@ -9,7 +9,7 @@
             <label for="propertyName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Property</label>
             <div class="col-sm-9">
                 <select name="propertyName" id="propertyName" class="form-select form-select-sm" data-autosave="true" required>
-                    <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $selectedIndexElement->propertyName ? selected}>{$attributeName}</option>
+                    <option n:foreach="$selectedEntity->attributeNames as $attributeName" value="{$attributeName}" {$attributeName === $selectedIndexElement->propertyName ? selected}>{$attributeName}</option>
                 </select>
             </div>
         </div>

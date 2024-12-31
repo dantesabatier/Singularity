@@ -10,6 +10,7 @@ use Sabatier\Foundation\Dictionary;
  */
 class FetchedProperty extends Property
 {
+    /** @var Dictionary<mixed> $dictionaryRepresentation */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */

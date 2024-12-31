@@ -17,7 +17,7 @@
                     <form action="/FetchIndexElement" method="POST">
                         <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
                         <select name="propertyName" id="propertyName" class="form-select form-select-sm transparent border-0 py-0 w-auto" aria-label="Property" data-autosave="true">
-                            <option n:foreach="$selectedEntity->allAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
+                            <option n:foreach="$selectedEntity->attributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
                         </select> <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                     </form>
                 </td>

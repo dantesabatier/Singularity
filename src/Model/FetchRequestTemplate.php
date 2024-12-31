@@ -22,6 +22,7 @@ use Sabatier\Foundation\Dictionary;
  */
 class FetchRequestTemplate extends ManagedObject
 {
+    /** @var Dictionary<mixed> $dictionaryRepresentation */
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
