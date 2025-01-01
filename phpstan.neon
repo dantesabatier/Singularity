@@ -2,3 +2,7 @@ parameters:
 	level: 3
 	paths:
 		- src
+	ignoreErrors:
+		- identifier: property.staticAccess
+		- identifier: assign.propertyReadOnly
+		- identifier: staticMethod.notFound

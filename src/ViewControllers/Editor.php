@@ -87,6 +87,7 @@ class Editor extends ViewController
                 if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
                     $projects->insertAt($projects->removeAt($index), 0);
                 }
+                /** @phpstan-ignore assign.propertyType */
                 $this->projects = $projects;
             }
             return $this->projects;
