@@ -4,5 +4,4 @@ parameters:
 		- src
 	ignoreErrors:
 		- identifier: property.staticAccess
-		- identifier: assign.propertyReadOnly
 		- identifier: staticMethod.notFound
