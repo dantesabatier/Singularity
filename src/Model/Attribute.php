@@ -4,8 +4,9 @@
 
 namespace App\Model;
 
-use Override;
 use Sabatier\CoreData\AttributeType;
+use Sabatier\CoreData\EntityDescription;
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\ManagedObjectID;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
@@ -92,9 +93,9 @@ class Attribute extends Property
         }
     }
 
-    #[Override]
-    public function awakeFromFetch(): void
+    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
+        parent::__construct($managedObjectContext, $entity);
         /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
             if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {
