@@ -4,10 +4,11 @@
 
 namespace App\Model;
 
-use Override;
 use Sabatier\CoreData\AttributeType;
+use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
@@ -64,9 +65,9 @@ class FetchIndexElement extends ManagedObject
         }
     }
 
-    #[Override]
-    public function awakeFromFetch(): void
+    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
+        parent::__construct($managedObjectContext, $entity);
         /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use (&$observation): void {
             if ($element->isSuppressingKVO || $element->isSuppressingChangeNotifications) {
