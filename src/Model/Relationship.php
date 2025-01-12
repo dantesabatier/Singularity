@@ -4,8 +4,9 @@
 
 namespace App\Model;
 
-use Override;
 use Sabatier\CoreData\DeleteRule;
+use Sabatier\CoreData\EntityDescription;
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
@@ -60,9 +61,9 @@ class Relationship extends Property
         }
     }
 
-    #[Override]
-    public function awakeFromFetch(): void
+    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
+        parent::__construct($managedObjectContext, $entity);
         /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("isToMany", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
             if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
