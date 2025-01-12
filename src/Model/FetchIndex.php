@@ -4,9 +4,10 @@
 
 namespace App\Model;
 
-use Override;
+use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
@@ -39,9 +40,9 @@ class FetchIndex extends ManagedObject
         }
     }
 
-    #[Override]
-    public function awakeFromFetch(): void
+    public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
+        parent::__construct($managedObjectContext, $entity);
         /** @psalm-suppress UndefinedVariable */
         $observation = $this->observe("collationType", KeyValueObservingOptions::new, function (FetchIndex $index, KeyValueObservedChange $change) use (&$observation): void {
             if ($index->isSuppressingKVO || $index->isSuppressingChangeNotifications) {
