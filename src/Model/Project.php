@@ -10,7 +10,6 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
-use function Sabatier\Foundation\random_color;
 
 /**
  * @property string $name
@@ -22,19 +21,6 @@ use function Sabatier\Foundation\random_color;
  */
 class Project extends ManagedObject
 {
-    #[Override]
-    public function awakeFromInsert(): void
-    {
-        parent::awakeFromInsert();
-        $this->color = random_color();
-    }
-
-    #[Override]
-    public function awakeFromFetch(): void
-    {
-        $this->color ??= random_color();
-    }
-
     /**
      * @throws Exception
      */
