@@ -25,6 +25,7 @@ class Project extends ManagedObject
     #[Override]
     public function awakeFromInsert(): void
     {
+        parent::awakeFromInsert();
         $this->color = random_color();
     }
 
