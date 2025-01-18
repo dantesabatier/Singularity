@@ -25,6 +25,7 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
+use function Sabatier\Foundation\random_color;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint("/")]
@@ -64,6 +65,7 @@ class Welcome extends ViewController
         $project->creationDate = new Date();
         $project->name = $name;
         $project->url = $url;
+        $project->color = random_color();
         $project->model = $model;
         $context->save();
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
