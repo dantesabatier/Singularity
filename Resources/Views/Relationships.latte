@@ -1,6 +1,5 @@
 {templateType App\ViewControllers\Editor}
-{varType Sabatier\Foundation\Set $relationships}
-{define relationships, $relationships}
+{define relationships}
     <div class="table-responsive">
         <table class="table table-hover table-sm caption-top">
             <caption class="fw-bold text-shadow">Relationships</caption>
@@ -13,7 +12,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr n:foreach="$relationships as $relationship" id="property-{$relationship->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$relationship->objectID->referenceObject}" n:class="$relationship->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
+            <tr n:foreach="$selectedEntity->relationships as $relationship" id="property-{$relationship->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$relationship->objectID->referenceObject}" n:class="$relationship->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
                 {var string $img = img($relationship)}
                 <td class="text-truncate">
                     <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
@@ -37,7 +36,7 @@
                             <option value="">No Inverse</option>
                             {var ?App\Model\Entity $destinationEntity = $relationship->destinationEntity}
                             {if $destinationEntity}
-                                <option n:foreach="$destinationEntity->relationships as $e" value="{$e->name}" {$e->name === $relationship->lazyInverseRelationshipName ? selected}>{$e->name}</option>
+                                <option n:foreach="$destinationEntity->relationships->filter(fn(App\Model\Relationship $e): bool => !$e->isEqual($relationship)) as $e" value="{$e->name}" {$e->name === $relationship->lazyInverseRelationshipName ? selected}>{$e->name}</option>
                             {/if}
                         </select>
                     </form>

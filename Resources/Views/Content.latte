@@ -1,13 +1,13 @@
 {templateType App\ViewControllers\Editor}
 {define content}
     {if $selectedIndex}
-        {include fetchIndexElements from "FetchIndexElements.latte", $selectedIndex?->elements ?? []}
+        {include fetchIndexElements from "FetchIndexElements.latte"}
     {elseif $selectedEntity}
-        {include attributes from "Attributes.latte", $selectedEntity?->attributes ?? []}
-        {include relationships from "Relationships.latte", $selectedEntity?->relationships ?? []}
-        {include fetchedProperties from "FetchedProperties.latte", $selectedEntity?->fetchedProperties ?? []}
+        {include attributes from "Attributes.latte"}
+        {include relationships from "Relationships.latte"}
+        {include fetchedProperties from "FetchedProperties.latte"}
     {elseif $selectedCompositeType}
-        {include compositeTypeElements from "CompositeTypeElements.latte", $selectedCompositeType?->elements ?? []}
+        {include compositeTypeElements from "CompositeTypeElements.latte"}
     {elseif $selectedFetchRequestTemplate}
         {include fetchRequestTemplatePredicate from "FetchRequestTemplatePredicate.latte"}
     {/if}

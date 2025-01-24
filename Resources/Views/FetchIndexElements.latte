@@ -1,5 +1,5 @@
 {templateType App\ViewControllers\Editor}
-{define fetchIndexElements, $elements}
+{define fetchIndexElements}
     <div class="table-responsive">
         <table class="table table-hover table-sm">
             <thead>
@@ -12,7 +12,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr n:foreach="$elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
+            <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
                 <td>
                     <form action="/FetchIndexElement" method="POST">
                         <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
