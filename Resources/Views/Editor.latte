@@ -145,9 +145,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->entities as $entity">
-                                        <a class="dropdown-item" href="/Editor?project={$project->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
-                                            <img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="entity">
-                                            <span class="ps-1">{$entity->name}</span> </a>
+                                        <a class="dropdown-item" href="/Editor?project={$project->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}"><img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="entity"><span class="ps-1">{$entity->name}</span></a>
                                     </li>
                                 </ul>
                             </div>
