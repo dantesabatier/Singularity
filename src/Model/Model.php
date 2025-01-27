@@ -214,29 +214,30 @@ class Model extends ManagedObject
             $context->save();
         }
         $propertyList = PropertyListSerialization::propertyListWithURL($url);
-        if ($propertyList instanceof Dictionary) {
-            /** @var ArrayClass<Dictionary>|null $representations */
-            $representations = $propertyList["entities"];
-            if ($representations) {
-                /** @var Set<Entity> $entities */
-                $entities = new Set();
-                $progress->totalUnitCount = $representations->count;
-                foreach ($representations as $index => $representation) {
-                    if ($progress->isCancelled) {
-                        break;
-                    }
-                    $entities->append($this->newEntity($representation));
-                    $progress->completedUnitCount = $index + 1;
-                }
-                $this->entities = $entities->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
-            }
-            $this->compositeTypes = new Set($this->compositeTypesByName->values);
-            /** @var ArrayClass<Dictionary>|null $representations */
-            $representations = $propertyList["fetchRequests"];
-            if ($representations) {
-                $this->fetchRequestTemplates = new Set($representations->map(fn(Dictionary $representation): FetchRequestTemplate => $this->newFetchRequest($representation)));
-            }
-            $context->save();
+        if (!$propertyList instanceof Dictionary) {
+            return;
         }
+        /** @var ArrayClass<Dictionary>|null $representations */
+        $representations = $propertyList["entities"];
+        if ($representations) {
+            /** @var Set<Entity> $entities */
+            $entities = new Set();
+            $progress->totalUnitCount = $representations->count;
+            foreach ($representations as $index => $representation) {
+                if ($progress->isCancelled) {
+                    break;
+                }
+                $entities->append($this->newEntity($representation));
+                $progress->completedUnitCount = $index + 1;
+            }
+            $this->entities = $entities->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
+        }
+        $this->compositeTypes = new Set($this->compositeTypesByName->values);
+        /** @var ArrayClass<Dictionary>|null $representations */
+        $representations = $propertyList["fetchRequests"];
+        if ($representations) {
+            $this->fetchRequestTemplates = new Set($representations->map(fn(Dictionary $representation): FetchRequestTemplate => $this->newFetchRequest($representation)));
+        }
+        $context->save();
     }
 }
