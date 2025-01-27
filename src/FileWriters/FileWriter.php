@@ -28,7 +28,7 @@ abstract class FileWriter
     public function save(): void
     {
         $path = $this->url->path;
-        if (!FileManager::default()->fileExists($path)) {
+        if (FileManager::default()->fileExists($path)) {
             return;
         }
         FileManager::default()->createFile($path, $this->contents, new Dictionary([FileAttributeKey::posixPermissions => 0777]));
