@@ -12,7 +12,7 @@ class ModelFileWriter extends FileWriter
     #[Override]
     public function save(): void
     {
-        if (!FileManager::default()->fileExists($this->url->path)) {
+        if (FileManager::default()->fileExists($this->url->path)) {
             return;
         }
         PropertyListSerialization::writePropertyList(Dictionary::dictionaryWithArray(["entities" => []]), $this->url);
