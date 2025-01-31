@@ -31,17 +31,35 @@ class ProjectFileWriter extends FileWriter
             }
         }
         $name = $url->lastPathComponent;
-        $fileWriter = new InfoFileWriter($url->appendingPathComponent("Info")->appendingPathExtension("plist"));
-        $fileWriter->save();
-        $fileWriter = new JSONFileWriter($url->appendingPathComponent("composer")->appendingPathExtension("json"));
-        $fileWriter->save();
-        $fileWriter = new EnvFileWriter($url->appendingPathComponent(".env"));
-        $fileWriter->save();
-        $fileWriter = new IndexFileWriter($url->appendingPathComponent("index")->appendingPathExtension("php"));
-        $fileWriter->save();
-        $fileWriter = new DelegateFileWriter($sourcesURL->appendingPathComponent("Delegate")->appendingPathExtension("php"));
-        $fileWriter->save();
-        $fileWriter = new ModelFileWriter($resourceURL->appendingPathComponent($name)->appendingPathExtension("plist"));
-        $fileWriter->save();
+        $fileURL = $url->appendingPathComponent("Info")->appendingPathExtension("plist");
+        if (!$fileManager->fileExists($fileURL->path)) {
+            $fileWriter = new InfoFileWriter($fileURL);
+            $fileWriter->save();
+        }
+        $fileURL = $url->appendingPathComponent("composer")->appendingPathExtension("json");
+        if (!$fileManager->fileExists($fileURL->path)) {
+            $fileWriter = new JSONFileWriter($fileURL);
+            $fileWriter->save();
+        }
+        $fileURL = $url->appendingPathComponent(".env");
+        if (!$fileManager->fileExists($fileURL->path)) {
+            $fileWriter = new EnvFileWriter($fileURL);
+            $fileWriter->save();
+        }
+        $fileURL = $url->appendingPathComponent("index")->appendingPathExtension("php");
+        if (!$fileManager->fileExists($fileURL->path)) {
+            $fileWriter = new IndexFileWriter($fileURL);
+            $fileWriter->save();
+        }
+        $fileURL = $sourcesURL->appendingPathComponent("Delegate")->appendingPathExtension("php");
+        if (!$fileManager->fileExists($fileURL->path)) {
+            $fileWriter = new DelegateFileWriter($fileURL);
+            $fileWriter->save();
+        }
+        $fileURL = $resourceURL->appendingPathComponent($name)->appendingPathExtension("plist");
+        if (!$fileManager->fileExists($fileURL->path)) {
+            $fileWriter = new ModelFileWriter($fileURL);
+            $fileWriter->save();
+        }
     }
 }
