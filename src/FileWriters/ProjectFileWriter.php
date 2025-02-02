@@ -70,10 +70,9 @@ class ProjectFileWriter extends FileWriter
             $fileWriter->save();
         }
         $fileURL = $resourceURL->appendingPathComponent($name)->appendingPathExtension("plist");
-        if (!$fileManager->fileExists($fileURL->path) && ($model = $this->project->model)) {
+        if ($model = $this->project->model) {
             $fileWriter = new ModelFileWriter($fileURL, $model);
             $fileWriter->save();
         }
-        $this->context->save();
     }
 }
