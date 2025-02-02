@@ -21,5 +21,7 @@ class ModelFileWriter extends FileWriter
     public function save(): void
     {
         PropertyListSerialization::writePropertyList($this->model->dictionaryRepresentation, $this->url);
+        $this->model->url = $this->url;
+        $this->model->managedObjectContext->save();
     }
 }
