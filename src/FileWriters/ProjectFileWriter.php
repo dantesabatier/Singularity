@@ -4,7 +4,6 @@ namespace App\FileWriters;
 
 use App\Model\Project;
 use Override;
-use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
@@ -14,9 +13,6 @@ use Sabatier\Foundation\URL;
 class ProjectFileWriter extends FileWriter
 {
     private(set) Project $project;
-    public ManagedObjectContext $context {
-        get => $this->project->managedObjectContext;
-    }
 
     public function __construct(URL $url, Project $project)
     {
@@ -74,5 +70,6 @@ class ProjectFileWriter extends FileWriter
             $fileWriter = new ModelFileWriter($fileURL, $model);
             $fileWriter->save();
         }
+        $this->project->managedObjectContext->save();
     }
 }
