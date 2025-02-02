@@ -253,7 +253,7 @@ class Editor extends ViewController
         $sourcesURL = $bundle->bundleURL->appendingPathComponent("src");
         $directoryURL = $sourcesURL->appendingPathComponent($directory);
         if (!$fileManager->fileExists($directoryURL->path)) {
-            $fileManager->createDirectory($directoryURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
+            $fileManager->createDirectory($directoryURL, true, new Dictionary([FileAttributeKey::posixPermissions => 0777]));
         }
         foreach ($model->entities as $entity) {
             $class = $this->className($entity, $namespace);
