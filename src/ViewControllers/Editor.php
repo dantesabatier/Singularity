@@ -32,7 +32,6 @@ use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Predicates\Predicate;
-use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\URLComponents;
@@ -45,7 +44,6 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
-use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint]
 class Editor extends ViewController
@@ -211,27 +209,9 @@ class Editor extends ViewController
     {
         $project = $this->project ?? throw new BadRequestException("project cannot be null");
         $project->lastModifiedDate = new Date();
-        $fileManager = FileManager::default();
-        /** @var URL $url */
-        $url = $project->url;
-        if (!$fileManager->fileExists($url->path)) {
-            $fileWriter = new ProjectFileWriter($url);
-            $fileWriter->save();
-        }
-        /** @var Model $model */
-        $model = $project->model;
-        $this->managedObjectContext->save();
-        $bundle = Bundle::bundleWithURL($url);
-        /** @var URL $resourceURL */
-        $resourceURL = $bundle->resourceURL;
-        if (!$fileManager->fileExists($resourceURL->path)) {
-            $fileManager->createDirectory($resourceURL, attributes: new Dictionary([FileAttributeKey::posixPermissions => 0777]));
-        }
-        $modelURL = $resourceURL->appendingPathComponent($bundle->object(kCFBundleNameKey))->appendingPathExtension("plist");
-        if ($fileManager->fileExists($modelURL->path)) {
-            $fileManager->removeItem($modelURL);
-        }
-        PropertyListSerialization::writePropertyList($model->dictionaryRepresentation, $modelURL);
+        $url = $project->url ?? throw new BadRequestException("url cannot be null");
+        $fileWriter = new ProjectFileWriter($url, $project);
+        $fileWriter->save();
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
         $this->headerFields["Content-Type"] = "application/json";
     }

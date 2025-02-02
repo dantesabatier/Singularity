@@ -55,19 +55,17 @@ class Welcome extends ViewController
         $body = $this->request->parsedBody;
         $path = $body["path"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
-        $fileWriter = new ProjectFileWriter($url);
-        $fileWriter->save();
         $name = $url->lastPathComponent;
-        $context = $this->managedObjectContext;
-        $model = new Model($context);
+        $model = new Model($this->managedObjectContext);
         $model->url = $url->appendingPathComponent("Resources")->appendingPathComponent($name)->appendingPathExtension("plist");
-        $project = new Project($context);
+        $project = new Project($this->managedObjectContext);
         $project->creationDate = new Date();
         $project->name = $name;
         $project->url = $url;
         $project->color = random_color();
         $project->model = $model;
-        $context->save();
+        $fileWriter = new ProjectFileWriter($url, $project);
+        $fileWriter->save();
         $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
         $this->headerFields["Content-Type"] = "application/json";
     }

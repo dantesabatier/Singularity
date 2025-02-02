@@ -2,7 +2,9 @@
 
 namespace App\FileWriters;
 
+use App\Model\Project;
 use Override;
+use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
@@ -11,6 +13,17 @@ use Sabatier\Foundation\URL;
 
 class ProjectFileWriter extends FileWriter
 {
+    private(set) Project $project;
+    public ManagedObjectContext $context {
+        get => $this->project->managedObjectContext;
+    }
+
+    public function __construct(URL $url, Project $project)
+    {
+        parent::__construct($url);
+        $this->project = $project;
+    }
+
     #[Override]
     public function save(): void
     {
@@ -57,9 +70,10 @@ class ProjectFileWriter extends FileWriter
             $fileWriter->save();
         }
         $fileURL = $resourceURL->appendingPathComponent($name)->appendingPathExtension("plist");
-        if (!$fileManager->fileExists($fileURL->path)) {
-            $fileWriter = new ModelFileWriter($fileURL);
+        if (!$fileManager->fileExists($fileURL->path) && ($model = $this->project->model)) {
+            $fileWriter = new ModelFileWriter($fileURL, $model);
             $fileWriter->save();
         }
+        $this->context->save();
     }
 }
