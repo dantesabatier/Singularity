@@ -14,6 +14,7 @@ use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
+use Sabatier\Foundation\Networking\HTTPStatusCode;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\PropertyListSerialization;
@@ -110,5 +111,6 @@ class Welcome extends ViewController
         $project = $context->fetch($fetchRequest)->first ?? throw new NotFoundException();
         $context->delete($project);
         $context->save();
+        $this->statusCode = HTTPStatusCode::noContent;
     }
 }
