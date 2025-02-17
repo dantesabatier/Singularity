@@ -66,8 +66,8 @@ class ProjectFileWriter extends FileWriter
             $fileWriter->save();
         }
         $fileURL = $resourceURL->appendingPathComponent($name)->appendingPathExtension("plist");
-        if ($model = $this->project->model) {
-            $fileWriter = new ModelFileWriter($fileURL, $model);
+        if ($this->project->model?->isInserted) {
+            $fileWriter = new ModelFileWriter($fileURL, $this->project->model);
             $fileWriter->save();
         }
         $this->project->managedObjectContext->save();
