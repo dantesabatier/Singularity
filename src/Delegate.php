@@ -46,7 +46,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public function applicationWillFinishLaunching(Application $application): void
     {
-        $application->accessManager->isProtectedContentAvailable = true;
+        $application->isProtectedContentAvailable = true;
         NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (Notification $notification) use ($application): void {
             if (!UserDefaults::standard()->bool(AutomaticallySaveModelPreferencesKey) || !($referer = $application->request->valueForHttpHeaderField("Referer"))) {
                 return;
