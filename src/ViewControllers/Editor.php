@@ -120,8 +120,7 @@ class Editor extends ViewController
 
     private function referenceObject(string $key): ?int
     {
-        $request = $this->request;
-        $referenceObject = $request->httpMethod === HTTPRequestMethod::get ? new URLComponents($request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $request->getParsedBody()[$key] ?? null;
+        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get ? new URLComponents($this->request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $this->request->getParsedBody()[$key] ?? null;
         if (is_numeric($referenceObject)) {
             return (int)$referenceObject;
         }

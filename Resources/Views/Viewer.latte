@@ -1,0 +1,12 @@
+{layout "Layout.latte"}
+{templateType App\ViewControllers\Viewer}
+{block title}{$title}{/block}
+{define content}
+    <div>
+        <db-viewer></db-viewer>
+    </div>
+    <script>
+        const viewer = document.querySelector("db-viewer")
+        viewer.addEventListener("ready", () => viewer.schema = {$schema})
+    </script>
+{/define}

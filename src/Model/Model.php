@@ -1,16 +1,26 @@
-<?php
+<?php /** @noinspection PhpInternalEntityUsedInspection */
 
 namespace App\Model;
 
 use Exception;
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\CoreData\ManagedObjectModel;
+use Sabatier\CoreData\SQLColumn;
+use Sabatier\CoreData\SQLEntity;
+use Sabatier\CoreData\SQLForeignKey;
+use Sabatier\CoreData\SQLModel;
+use Sabatier\CoreData\SQLPrimaryKey;
 use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Progress;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
+use Sabatier\Service\NotFoundException;
 use function Sabatier\Foundation\fatal_error;
+use const Sabatier\Foundation\kCFBundleNameKey;
 
 /**
  * @property URL|null $url
@@ -74,6 +84,34 @@ class Model extends ManagedObject
             $dictionary = new Dictionary();
             $dictionary["entities"] = $this->rootEntities->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation);
             $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation);
+            return $dictionary;
+        }
+    }
+
+    public Dictionary $schema {
+        get {
+            $url = $this->project->url ?? throw new NotFoundException();
+            $bundle = Bundle::bundleWithURL($url);
+            $autoloadPath = $bundle->bundleURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php")->path;
+            if (FileManager::default()->fileExists($autoloadPath)) {
+                require_once $autoloadPath;
+            }
+            /** @var string $name */
+            $name = $bundle->object(kCFBundleNameKey);
+            $managedObjectModel = new ManagedObjectModel($bundle->url($name));
+            $model = new SQLModel($managedObjectModel, $name);
+            $entities = $model->entities->filter(fn(SQLEntity $entity): bool => $entity->isRootEntity && !$entity->isPersistentHistoryEntity);
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["tables"] = $entities->map(fn(SQLEntity $entity): Dictionary => new Dictionary(["name" => $entity->tableName, "columns" => $entity->columnsToCreate->map(function (SQLColumn $column): Dictionary {
+                $dictionary = new Dictionary(["name" => $column->columnName, "type" => $column->sqlType->name]);
+                if ($column instanceof SQLPrimaryKey) {
+                    $dictionary["pk"] = true;
+                } elseif ($column instanceof SQLForeignKey) {
+                    $dictionary["fk"] = new Dictionary(["table" => $column->toOneRelationship->destinationEntity->tableName, "column" => $column->toOneRelationship->destinationEntity->primaryKey->columnName]);
+                }
+                return $dictionary;
+            })]));
             return $dictionary;
         }
     }

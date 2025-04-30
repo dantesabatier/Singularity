@@ -216,6 +216,14 @@ const show = async (project) => window.api?.showWindow({
     }
 })
 
+const view = async (project) => window.api?.showWindow({
+    url: `${window.location.origin}${url("Viewer", {project: project.objectID})}`,
+    overrideBrowserWindowOptions: {
+        width: 1090,
+        height: 600
+    }
+})
+
 /**
  * @param {object} project
  * @param {function|undefined} completion
