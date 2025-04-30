@@ -8,6 +8,7 @@ use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\SQLColumn;
 use Sabatier\CoreData\SQLEntity;
 use Sabatier\CoreData\SQLForeignKey;
+use Sabatier\CoreData\SQLManyToMany;
 use Sabatier\CoreData\SQLModel;
 use Sabatier\CoreData\SQLPrimaryKey;
 use Sabatier\Foundation\ArrayClass;
@@ -100,9 +101,7 @@ class Model extends ManagedObject
             $managedObjectModel = new ManagedObjectModel($bundle->url($name));
             $model = new SQLModel($managedObjectModel, $name);
             $entities = $model->entities->filter(fn(SQLEntity $entity): bool => $entity->isRootEntity && !$entity->isPersistentHistoryEntity);
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["tables"] = $entities->map(fn(SQLEntity $entity): Dictionary => new Dictionary(["name" => $entity->tableName, "columns" => $entity->columnsToCreate->map(function (SQLColumn $column): Dictionary {
+            $tables = $entities->map(fn(SQLEntity $entity): Dictionary => new Dictionary(["name" => $entity->tableName, "columns" => $entity->columnsToCreate->map(function (SQLColumn $column): Dictionary {
                 $dictionary = new Dictionary(["name" => $column->columnName, "type" => $column->sqlType->name]);
                 if ($column instanceof SQLPrimaryKey) {
                     $dictionary["pk"] = true;
@@ -111,6 +110,10 @@ class Model extends ManagedObject
                 }
                 return $dictionary;
             })]));
+            $tables->appendContentsOf(new Set($entities)->flatMap(fn(SQLEntity $entity): ArrayClass => $entity->manyToManyRelationships)->map(fn(SQLManyToMany $manyToMany): Dictionary => new Dictionary(["name" => $manyToMany->correlationTableName, "columns" => new ArrayClass([new Dictionary(["name" => $manyToMany->orderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[0]->tableName, "column" => $manyToMany->entities[0]->primaryKey->columnName])]), new Dictionary(["name" => $manyToMany->inverseOrderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[1]->tableName, "column" => $manyToMany->entities[1]->primaryKey->columnName])])])])));
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["tables"] = $tables;
             return $dictionary;
         }
     }
