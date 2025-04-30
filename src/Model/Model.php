@@ -87,7 +87,6 @@ class Model extends ManagedObject
             return $dictionary;
         }
     }
-
     public Dictionary $schema {
         get {
             $url = $this->project->url ?? throw new NotFoundException();
