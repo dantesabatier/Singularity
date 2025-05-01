@@ -8,5 +8,9 @@
     <script>
         const viewer = document.querySelector("db-viewer")
         viewer.addEventListener("ready", () => viewer.schema = {$schema})
+        viewer.addEventListener("tableMoveEnd", e => moved({
+            ...e.detail,
+            project: {$project->objectID}
+        }, register))
     </script>
 {/define}
