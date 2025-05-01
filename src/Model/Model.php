@@ -5,6 +5,7 @@ namespace App\Model;
 use Exception;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
+use Sabatier\CoreData\SQLAttribute;
 use Sabatier\CoreData\SQLColumn;
 use Sabatier\CoreData\SQLEntity;
 use Sabatier\CoreData\SQLForeignKey;
@@ -19,8 +20,9 @@ use Sabatier\Foundation\Progress;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
-use Sabatier\Service\NotFoundException;
+use Sabatier\Foundation\UserDefaults;
 use function Sabatier\Foundation\fatal_error;
+use const App\SQLByEntityPositionsMappingTablePreferencesKey;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 /**
@@ -90,16 +92,20 @@ class Model extends ManagedObject
     }
     public Dictionary $schema {
         get {
-            $url = $this->project->url ?? throw new NotFoundException();
+            /** @var Project $project */
+            $project = $this->project;
+            /** @var URL $url */
+            $url = $project->url;
+            $name = $project->name;
             $bundle = Bundle::bundleWithURL($url);
             $autoloadPath = $bundle->bundleURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php")->path;
             if (FileManager::default()->fileExists($autoloadPath)) {
                 require_once $autoloadPath;
             }
-            /** @var string $name */
-            $name = $bundle->object(kCFBundleNameKey);
-            $managedObjectModel = new ManagedObjectModel($bundle->url($name));
-            $model = new SQLModel($managedObjectModel, $name);
+            /** @var string $configurationName */
+            $configurationName = $bundle->object(kCFBundleNameKey);
+            $managedObjectModel = new ManagedObjectModel($bundle->url($configurationName));
+            $model = new SQLModel($managedObjectModel, $configurationName);
             $entities = $model->entities->filter(fn(SQLEntity $entity): bool => $entity->isRootEntity && !$entity->isPersistentHistoryEntity);
             $tables = $entities->map(fn(SQLEntity $entity): Dictionary => new Dictionary(["name" => $entity->tableName, "columns" => $entity->columnsToCreate->map(function (SQLColumn $column): Dictionary {
                 /** @var Dictionary<mixed> $dictionary */
@@ -108,10 +114,13 @@ class Model extends ManagedObject
                     $dictionary["pk"] = true;
                 } elseif ($column instanceof SQLForeignKey) {
                     $dictionary["fk"] = new Dictionary(["table" => $column->toOneRelationship->destinationEntity->tableName, "column" => $column->toOneRelationship->destinationEntity->primaryKey->columnName]);
+                } elseif ($column instanceof SQLAttribute) {
+                    $dictionary["nn"] = !$column->isOptional;
+                    $dictionary["uq"] = $column->isUnique;
                 }
                 return $dictionary;
-            })]));
-            $tables->appendContentsOf(new Set($entities)->flatMap(fn(SQLEntity $entity): ArrayClass => $entity->manyToManyRelationships)->map(fn(SQLManyToMany $manyToMany): Dictionary => new Dictionary(["name" => $manyToMany->correlationTableName, "columns" => new ArrayClass([new Dictionary(["name" => $manyToMany->orderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[0]->tableName, "column" => $manyToMany->entities[0]->primaryKey->columnName])]), new Dictionary(["name" => $manyToMany->inverseOrderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[1]->tableName, "column" => $manyToMany->entities[1]->primaryKey->columnName])])])])));
+            }), "pos" => UserDefaults::standard()->dictionary(SQLByEntityPositionsMappingTablePreferencesKey)?->valueForKey($name)?->valueForKey($entity->tableName)]));
+            $tables->appendContentsOf(new Set($entities)->flatMap(fn(SQLEntity $entity): ArrayClass => $entity->manyToManyRelationships)->map(fn(SQLManyToMany $manyToMany): Dictionary => new Dictionary(["name" => $manyToMany->correlationTableName, "columns" => new ArrayClass([new Dictionary(["name" => $manyToMany->orderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[0]->tableName, "column" => $manyToMany->entities[0]->primaryKey->columnName])]), new Dictionary(["name" => $manyToMany->inverseOrderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[1]->tableName, "column" => $manyToMany->entities[1]->primaryKey->columnName])])]), "pos" => UserDefaults::standard()->dictionary(SQLByEntityPositionsMappingTablePreferencesKey)?->valueForKey($name)?->valueForKey($manyToMany->correlationTableName)])));
             /** @var Dictionary<mixed> $dictionary */
             $dictionary = new Dictionary();
             $dictionary["tables"] = $tables;
