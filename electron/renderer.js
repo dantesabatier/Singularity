@@ -45,7 +45,9 @@ const replace = async (url, completion = undefined) => {
         return obj
     }, {})
     const e1 = document.getElementById("main")
-    e1.innerHTML = e2.innerHTML
+    if (e1 && e2) {
+        e1.innerHTML = e2.innerHTML
+    }
     document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
     const body = document.body
     body.removeAttribute("class")
@@ -159,6 +161,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
             if (!!values.length) {
                 location.search = values.join("&")
             }
+            break
+        default:
             break
     }
     await push(location.href, completion)
@@ -319,6 +323,8 @@ const remove = async (item, completion = undefined) => {
         await send(url(item.entityName), {objectID: item.objectID}, "DELETE", completion)
     }
 }
+
+const moved = async (item, completion = undefined) => await send(url("Moved"), item, "POST", completion)
 
 const explorer = (path) => window.api?.openPath(path)
 
