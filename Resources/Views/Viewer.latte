@@ -1,9 +1,11 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\Viewer}
 {block title}{$title}{/block}
-{define content}
+{block content}
     <div>
-        <db-viewer></db-viewer>
+        <div class="container-fluid">
+            <db-viewer></db-viewer>
+        </div>
     </div>
     <script>
         const viewer = document.querySelector("db-viewer")
@@ -13,4 +15,4 @@
             project: {$project->objectID}
         }, register))
     </script>
-{/define}
+{/block}
