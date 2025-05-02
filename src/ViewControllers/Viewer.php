@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpInternalEntityUsedInspection */
+<?php
+
+/** @noinspection PhpInternalEntityUsedInspection */
 
 namespace App\ViewControllers;
 
@@ -40,6 +42,10 @@ class Viewer extends ViewController
             return $this->project;
         }
     }
+    #[Outlet]
+    public Dictionary $schema {
+        get => $this->project->model?->schema;
+    }
 
     private function referenceObject(string $key): ?int
     {
@@ -48,11 +54,6 @@ class Viewer extends ViewController
             return (int)$referenceObject;
         }
         return null;
-    }
-
-    #[Outlet]
-    public Dictionary $schema {
-        get => $this->project->model?->schema;
     }
 
     #[Action]
