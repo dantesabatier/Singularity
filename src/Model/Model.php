@@ -1,11 +1,12 @@
-<?php /** @noinspection PhpInternalEntityUsedInspection */
+<?php
+
+/** @noinspection PhpInternalEntityUsedInspection */
 
 namespace App\Model;
 
 use Exception;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
-use Sabatier\CoreData\SQLAttribute;
 use Sabatier\CoreData\SQLColumn;
 use Sabatier\CoreData\SQLEntity;
 use Sabatier\CoreData\SQLForeignKey;
@@ -114,7 +115,7 @@ class Model extends ManagedObject
                     $dictionary["pk"] = true;
                 } elseif ($column instanceof SQLForeignKey) {
                     $dictionary["fk"] = new Dictionary(["table" => $column->toOneRelationship->destinationEntity->tableName, "column" => $column->toOneRelationship->destinationEntity->primaryKey->columnName]);
-                } elseif ($column instanceof SQLAttribute) {
+                } else {
                     $dictionary["nn"] = !$column->isOptional;
                     $dictionary["uq"] = $column->isUnique;
                 }
