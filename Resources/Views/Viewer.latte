@@ -9,18 +9,13 @@
     </div>
     <script>
         const viewer = document.querySelector("db-viewer")
-        viewer.addEventListener("ready", () => viewer.schema = {$schema}, {
-            once: true
-        })
+        viewer.addEventListener("ready", () => viewer.schema = {$schema})
         viewer.addEventListener("tableMoveEnd", async event => {
-            console.log("OK")
             event.stopPropagation()
             await send(url("Moved"), {
                 ...event.detail,
                 project: {$project->objectID}
             }, "POST", register)
-        }, {
-            once: true
         })
     </script>
 {/block}
