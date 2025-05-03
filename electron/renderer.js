@@ -124,6 +124,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                 case "FetchIndexElement":
                     keys.push(...["project", "entity", "index"])
                     break
+                default:
+                    break
             }
             const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
             if (m === "POST") {
@@ -323,8 +325,6 @@ const remove = async (item, completion = undefined) => {
         await send(url(item.entityName), {objectID: item.objectID}, "DELETE", completion)
     }
 }
-
-const moved = async (item, completion = undefined) => await send(url("Moved"), item, "POST", completion)
 
 const explorer = (path) => window.api?.openPath(path)
 
