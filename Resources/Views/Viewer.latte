@@ -13,6 +13,7 @@
             once: true
         })
         viewer.addEventListener("tableMoveEnd", async event => {
+            console.log("OK")
             event.stopPropagation()
             await send(url("Moved"), {
                 ...event.detail,
