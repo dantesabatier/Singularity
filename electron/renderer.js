@@ -24,6 +24,10 @@ const url = (endpoint, parameters) => {
  * @param {function|undefined} completion
  */
 const replace = async (url, completion = undefined) => {
+    const e1 = document.getElementById("main")
+    if (!e1) {
+        return
+    }
     const headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     const response = await fetch(url, {
@@ -40,14 +44,14 @@ const replace = async (url, completion = undefined) => {
     doc.write(data)
     doc.close()
     const e2 = doc.getElementById("main")
+    if (!e2) {
+        return
+    }
     const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
         obj[e.id] = e.scrollTop
         return obj
     }, {})
-    const e1 = document.getElementById("main")
-    if (e1 && e2) {
-        e1.innerHTML = e2.innerHTML
-    }
+    e1.innerHTML = e2.innerHTML
     document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
     const body = document.body
     body.removeAttribute("class")
