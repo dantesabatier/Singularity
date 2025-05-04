@@ -7,9 +7,13 @@
             <db-viewer></db-viewer>
         </div>
     </div>
+    <!--suppress JSUnresolvedReference -->
     <script>
         const viewer = document.querySelector("db-viewer")
-        viewer.addEventListener("ready", () => viewer.schema = {$schema})
+        viewer.addEventListener("ready", event => {
+            event.target.viewer.setZoom(0)
+            viewer.schema = {$schema}
+        })
         viewer.addEventListener("tableMoveEnd", async event => {
             await send(url("Moved"), {
                 ...event.detail,
