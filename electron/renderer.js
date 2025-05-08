@@ -51,7 +51,9 @@ const replace = async (url, completion = undefined) => {
         obj[e.id] = e.scrollTop
         return obj
     }, {})
-    e1.innerHTML = e2.innerHTML
+    if (e1.innerHTML !== e2.innerHTML) {
+        e1.innerHTML = e2.innerHTML
+    }
     document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
     const body = document.body
     body.removeAttribute("class")
@@ -133,7 +135,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
             }
             const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
             if (m === "POST") {
-                const objectID = (await response.json())?.objectID
+                const objectID = response.statusCode === 200 ? (await response.json())?.objectID : false
                 if (objectID) {
                     const entity = (() => {
                         switch (endpoint) {
