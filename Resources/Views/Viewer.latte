@@ -2,23 +2,34 @@
 {templateType App\ViewControllers\Viewer}
 {block title}{$title}{/block}
 {block content}
-    <div>
+    <div id="main">
         <div class="container-fluid">
             <db-viewer></db-viewer>
         </div>
     </div>
     <!--suppress JSUnresolvedReference -->
     <script>
-        const viewer = document.querySelector("db-viewer")
-        viewer.addEventListener("ready", event => {
-            event.target.viewer.setZoom(0.25)
-            viewer.schema = {$schema}
-        })
-        viewer.addEventListener("tableMoveEnd", async event => {
-            await send(url("Moved"), {
-                ...event.detail,
-                project: {$project->objectID}
-            }, "POST", register)
+        document.addEventListener("DOMContentLoaded", () => {
+            const loaded = () => {
+                const viewer = document.querySelector("db-viewer")
+                viewer.addEventListener("ready", event => {
+                    event.target.viewer.setZoom(0.25)
+                    viewer.schema = {$schema}
+                }, {
+                    once: true
+                })
+                viewer.addEventListener("tableMoveEnd", async event => {
+                    await send(url("Moved"), {
+                        ...event.detail,
+                        project: {$project->objectID}
+                    }, "POST", loaded)
+                }, {
+                    once: true
+                })
+            }
+            loaded()
+        }, {
+            once: true
         })
     </script>
 {/block}
