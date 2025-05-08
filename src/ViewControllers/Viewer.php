@@ -5,12 +5,10 @@
 namespace App\ViewControllers;
 
 use App\Model\Project;
-use Exception;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
-use Sabatier\Foundation\Networking\HTTPStatusCode;
 use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\URLComponents;
 use Sabatier\Foundation\URLQueryItem;
@@ -58,9 +56,6 @@ class Viewer extends ViewController
         return null;
     }
 
-    /**
-     * @throws Exception
-     */
     #[Action]
     public function moved(): void
     {
@@ -73,6 +68,7 @@ class Viewer extends ViewController
         $project[$body["name"]] = $body["pos"];
         $dictionary[$name] = $project;
         UserDefaults::standard()->setObject($dictionary, SQLByEntityPositionsMappingTablePreferencesKey);
-        $this->statusCode = HTTPStatusCode::noContent;
+        $this->content = json_encode([]);
+        $this->headerFields["Content-Type"] = "application/json";
     }
 }
