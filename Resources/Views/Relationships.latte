@@ -34,7 +34,7 @@
                         <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
                         <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" class="form-select form-select-sm transparent border-0 py-0 w-auto" aria-label="Inverse" data-autosave="true">
                             <option value="">No Inverse</option>
-                            {var ?App\Model\Entity $destinationEntity = $relationship->destinationEntity}
+                            {var App\Model\Entity $destinationEntity = $relationship->destinationEntity}
                             {if $destinationEntity}
                                 <option n:foreach="$destinationEntity->relationships->filter(fn(App\Model\Relationship $e): bool => !$e->isEqual($relationship)) as $e" value="{$e->name}" {$e->name === $relationship->lazyInverseRelationshipName ? selected}>{$e->name}</option>
                             {/if}
