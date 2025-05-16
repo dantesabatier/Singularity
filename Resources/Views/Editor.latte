@@ -140,11 +140,13 @@
                 <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
                     {var string $img = img($item)}
                     {if $item instanceof App\Model\Project}
+                        {varType App\Model\Project $item}
                         <div class="nav-item" data-href="/Editor?project={$item->objectID->referenceObject}">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span class="ps-{$img ? 2 : 0} pe-1">{$item->name}</span>
                         </div>
                     {elseif $item instanceof App\Model\Model}
+                    {varType App\Model\Model $item}
                         <div class="nav-item">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
@@ -159,6 +161,7 @@
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\Entity}
+                    {varType App\Model\Entity $item}
                         <div class="nav-item">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
@@ -176,21 +179,25 @@
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\FetchRequestTemplate}
+                    {varType App\Model\FetchRequestTemplate $item}
                         <div class="nav-item">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->name}</span>
                         </div>
                     {elseif $item instanceof App\Model\UniquenessConstraint}
+                    {varType App\Model\UniquenessConstraint $item}
                         <div class="nav-item">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->stringValue}</span>
                         </div>
                     {elseif $item instanceof App\Model\Property}
+                    {varType App\Model\Property $item}
                         <div class="nav-item">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->name}</span>
                         </div>
                     {elseif $item instanceof App\Model\FetchIndex}
+                    {varType App\Model\FetchIndex $item}
                         <div class="nav-item">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
@@ -208,6 +215,7 @@
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\FetchIndexElement}
+                    {varType App\Model\FetchIndexElement $item}
                         <div class="nav-item">
                             <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span class="ps-{$img ? 2 : 0} pe-1">{$item->propertyName}</span>
