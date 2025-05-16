@@ -14,7 +14,7 @@
                 const viewer = document.querySelector("db-viewer")
                 viewer.addEventListener("ready", event => {
                     event.target.viewer.setZoom(0.25)
-                    viewer.schema = {$schema}
+                    viewer.schema = {$project->model?->schema ?? []}
                 }, {
                     once: true
                 })
