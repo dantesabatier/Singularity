@@ -6,17 +6,11 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
-use Sabatier\Service\Outlet;
 use const App\SQLByEntityPositionsMappingTablePreferencesKey;
 
 #[Endpoint]
 class Viewer extends ProjectViewController
 {
-    #[Outlet]
-    public Dictionary $schema {
-        get => $this->project->model?->schema;
-    }
-
     #[Action]
     public function moved(): void
     {
