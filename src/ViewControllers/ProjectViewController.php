@@ -38,15 +38,7 @@ abstract class ProjectViewController extends ViewController
 
     protected function referenceObject(string $key): ?int
     {
-        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get
-            ? new URLComponents($this->request->url->absoluteString)->queryItems?->first(
-                fn(URLQueryItem $queryItem): bool => $queryItem->name === $key
-            )?->value
-            : $this->request->parsedBody[$key] ?? null;
-
-        if (is_numeric($referenceObject)) {
-            return (int)$referenceObject;
-        }
-        return null;
+        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get ? new URLComponents($this->request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $this->request->parsedBody[$key] ?? null;
+        return is_numeric($referenceObject) ? (int)$referenceObject : null;
     }
 }
