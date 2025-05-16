@@ -28,48 +28,21 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
-use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
-use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
-use Sabatier\Foundation\URLComponents;
-use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
-use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 
 #[Endpoint]
-class Editor extends ViewController
+class Editor extends ProjectViewController
 {
-    #[Outlet]
-    public Project $project {
-        get {
-            if (!isset($this->project)) {
-                if (!($referenceObject = $this->referenceObject("project"))) {
-                    throw new NotFoundException();
-                }
-                $fetchRequest = Project::fetchRequest();
-                $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
-                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                    "name" => AttributeType::string,
-                    "url" => AttributeType::uri,
-                    "color" => AttributeType::string,
-                    "model" => [
-                        "url" => AttributeType::uri
-                    ]
-                ]);
-                $this->project = $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
-            }
-            return $this->project;
-        }
-    }
     /** @var ArrayClass<Project> */
     #[Outlet]
     private(set) ArrayClass $projects {
@@ -117,15 +90,6 @@ class Editor extends ViewController
     /** @var array<object{name: string, value: int}> */
     #[Outlet]
     private(set) array $attributeTypes = [];
-
-    private function referenceObject(string $key): ?int
-    {
-        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get ? new URLComponents($this->request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $this->request->getParsedBody()[$key] ?? null;
-        if (is_numeric($referenceObject)) {
-            return (int)$referenceObject;
-        }
-        return null;
-    }
 
     private function className(Entity $entity, string $namespace): string
     {
