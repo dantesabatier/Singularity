@@ -5,8 +5,6 @@
 namespace App;
 
 use App\Model\Attribute;
-use App\Model\CompositeType;
-use App\Model\Configuration;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
 use App\Model\FetchIndex;
@@ -54,7 +52,7 @@ class LatteRenderer extends Renderer
         $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
         $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
         $engine->addFilter("json", fn(mixed $value): string => json_encode($value));
-        $engine->addFunction("img", fn(Project|Model|CompositeType|FetchRequestTemplate|Configuration|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint $object): string => $this->image($object));
+        $engine->addFunction("img", fn(ManagedObject $object): string => $this->image($object));
         $engine->addFunction("localized", fn(string $value): string => localized_string($value));
         $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
         $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
@@ -70,9 +68,8 @@ class LatteRenderer extends Renderer
         };
     }
 
-    private function image(Project|Model|CompositeType|FetchRequestTemplate|Configuration|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint $object): string
+    private function image(ManagedObject $object): string
     {
-        /** @psalm-suppress ArgumentTypeCoercion */
         return match (true) {
             $object instanceof Project => "Project",
             $object instanceof Model => "Model",
