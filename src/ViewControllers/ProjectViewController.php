@@ -22,12 +22,18 @@ abstract class ProjectViewController extends ViewController
         get => $this->project ??= $this->loadProject();
     }
 
+    private function referenceObject(): ?int
+    {
+        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get ? new URLComponents($this->request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === "project")?->value : $this->request->parsedBody["project"] ?? null;
+        return is_numeric($referenceObject) ? (int)$referenceObject : null;
+    }
+
     /**
      * @throws Exception
      */
     private function loadProject(): Project
     {
-        if (!($referenceObject = $this->referenceObject("project"))) {
+        if (!($referenceObject = $this->referenceObject())) {
             throw new NotFoundException();
         }
         return $this->fetchProjectByReference($referenceObject) ?? throw new NotFoundException();
@@ -46,11 +52,5 @@ abstract class ProjectViewController extends ViewController
             "color" => AttributeType::string
         ]);
         return $this->managedObjectContext->fetch($fetchRequest)->first ?? null;
-    }
-
-    protected function referenceObject(string $key): ?int
-    {
-        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get ? new URLComponents($this->request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $this->request->parsedBody[$key] ?? null;
-        return is_numeric($referenceObject) ? (int)$referenceObject : null;
     }
 }
