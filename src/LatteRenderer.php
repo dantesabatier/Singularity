@@ -16,6 +16,7 @@ use App\Model\Model;
 use App\Model\Project;
 use App\Model\Relationship;
 use App\Model\UniquenessConstraint;
+use Exception;
 use Latte\Engine;
 use Latte\Loaders\FileLoader;
 use Override;
@@ -33,26 +34,31 @@ use function Sabatier\Foundation\substring_to_index;
 class LatteRenderer extends Renderer
 {
     private(set) Engine $engine {
-        get {
-            if (!isset($this->engine)) {
-                $engine = new Engine();
-                $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
-                /** @psalm-suppress ArgumentTypeCoercion */
-                $engine->addFilter("className", fn(string $value): string => class_name($value));
-                $engine->addFilter("camelCase", fn(string $value): string => preg_replace_callback("/\s(.)/", fn(array $matches) => strtoupper($matches[1]), $value));
-                $engine->addFilter("firstLower", fn(string $value): string => lcfirst($value));
-                /** @psalm-suppress InternalMethod */
-                $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
-                $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
-                $engine->addFilter("json", fn(mixed $value): string => json_encode($value));
-                $engine->addFunction("img", fn(Project|Model|CompositeType|FetchRequestTemplate|Configuration|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint $object): string => $this->image($object));
-                $engine->addFunction("localized", fn(string $value): string => localized_string($value));
-                $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
-                $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
-                $this->engine = $engine;
-            }
-            return $this->engine;
-        }
+        get => $this->engine ??= $this->initializeEngine();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function initializeEngine(): Engine
+    {
+        $engine = new Engine();
+        $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
+        $engine->addFilter("className", fn(string $value): string => class_name($value));
+        $engine->addFilter("camelCase", fn(string $value): string => preg_replace_callback(
+            "/\s(.)/",
+            fn(array $matches) => strtoupper($matches[1]),
+            $value
+        ));
+        $engine->addFilter("firstLower", fn(string $value): string => lcfirst($value));
+        $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
+        $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
+        $engine->addFilter("json", fn(mixed $value): string => json_encode($value));
+        $engine->addFunction("img", fn(Project|Model|CompositeType|FetchRequestTemplate|Configuration|Entity|Attribute|Relationship|FetchedProperty|FetchIndex|FetchIndexElement|UniquenessConstraint $object): string => $this->image($object));
+        $engine->addFunction("localized", fn(string $value): string => localized_string($value));
+        $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
+        $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
+        return $engine;
     }
 
     private function name(AttributeType $type): string
