@@ -3,6 +3,7 @@
 namespace App\ViewControllers;
 
 use App\Model\Project;
+use Exception;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
@@ -18,22 +19,33 @@ abstract class ProjectViewController extends ViewController
 {
     #[Outlet]
     public Project $project {
-        get {
-            if (!isset($this->project)) {
-                if (!($referenceObject = $this->referenceObject("project"))) {
-                    throw new NotFoundException();
-                }
-                $fetchRequest = Project::fetchRequest();
-                $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
-                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                    "name" => AttributeType::string,
-                    "url" => AttributeType::uri,
-                    "color" => AttributeType::string
-                ]);
-                $this->project = $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
-            }
-            return $this->project;
+        get => $this->project ??= $this->loadProject();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function loadProject(): Project
+    {
+        if (!($referenceObject = $this->referenceObject("project"))) {
+            throw new NotFoundException();
         }
+        return $this->fetchProjectByReference($referenceObject) ?? throw new NotFoundException();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function fetchProjectByReference(int $referenceObject): ?Project
+    {
+        $fetchRequest = Project::fetchRequest();
+        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
+        $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+            "name" => AttributeType::string,
+            "url" => AttributeType::uri,
+            "color" => AttributeType::string
+        ]);
+        return $this->managedObjectContext->fetch($fetchRequest)->first ?? null;
     }
 
     protected function referenceObject(string $key): ?int
