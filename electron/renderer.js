@@ -45,7 +45,7 @@ const replace = async (url, completion = undefined) => {
         return obj
     }, {})
     const e1 = document.getElementById("main")
-    if (e1?.innerHTML !== e2?.innerHTML) {
+    if (e1 && e2) {
         e1.innerHTML = e2.innerHTML
     }
     document.querySelectorAll(`[class*="scroll-view"]`).forEach(e => e.scroll(0, info[e.id]))
