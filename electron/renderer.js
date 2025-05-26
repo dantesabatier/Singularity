@@ -97,7 +97,6 @@ const send = async (action, body = undefined, method = "POST", completion = unde
     const url = URL.canParse(action) ? new URL(action) : undefined
     const endpoint = url?.pathname.replace("/", "") ?? action.replace("/", "")
     const m = method.toUpperCase()
-    console.log(`${m}: ${endpoint}`)
     switch (m) {
         case "POST":
         case "DELETE":
