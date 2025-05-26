@@ -34,16 +34,16 @@ const replace = async (url, completion = undefined) => {
         await showErrorBox((await response.json())?.error)
         return
     }
+    const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
+        obj[e.id] = e.scrollTop
+        return obj
+    }, {})
     const data = await response.text()
     const doc = document.implementation.createHTMLDocument()
     doc.open()
     doc.write(data)
     doc.close()
     const e2 = doc.getElementById("main")
-    const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
-        obj[e.id] = e.scrollTop
-        return obj
-    }, {})
     const e1 = document.getElementById("main")
     if (e1 && e2) {
         e1.innerHTML = e2.innerHTML
@@ -97,6 +97,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
     const url = URL.canParse(action) ? new URL(action) : undefined
     const endpoint = url?.pathname.replace("/", "") ?? action.replace("/", "")
     const m = method.toUpperCase()
+    console.log(`${m}: ${endpoint}`)
     switch (m) {
         case "POST":
         case "DELETE":
@@ -129,7 +130,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
             }
             const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
             if (m === "POST") {
-                const objectID = response.statusCode === 200 ? (await response.json())?.objectID : false
+                const objectID = response.status === 200 ? (await response.json())?.objectID : false
                 if (objectID) {
                     const entity = (() => {
                         switch (endpoint) {
