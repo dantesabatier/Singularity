@@ -169,7 +169,7 @@ class Editor extends ProjectViewController
     #[Action]
     public function save(): void
     {
-        $project = $this->project ?? throw new BadRequestException("project cannot be null");
+        $project = $this->project;
         $project->lastModifiedDate = new Date();
         $url = $project->url ?? throw new BadRequestException("url cannot be null");
         $fileWriter = new ProjectFileWriter($url, $project);
@@ -185,6 +185,7 @@ class Editor extends ProjectViewController
     public function import(): void
     {
         $body = $this->request->parsedBody;
+        /** @var string $path */
         $path = $body["path"] ?? throw new BadRequestException("path cannot be null");
         $project = $this->project ?? throw new BadRequestException("project cannot be null");
         $project->lastModifiedDate = new Date();
@@ -201,7 +202,7 @@ class Editor extends ProjectViewController
     #[Action]
     public function subclass(): void
     {
-        $project = $this->project ?? throw new BadRequestException("project cannot be null");
+        $project = $this->project;
         /** @var URL $url */
         $url = $project->url;
         /** @var Model $model */
