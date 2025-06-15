@@ -116,12 +116,14 @@
             e.addEventListener("click", () => tooltip.hide())
         })
         document.querySelectorAll("table").forEach(e => {
-            if (e.id) {
+            if (e.dataset.key) {
                 const body = e.querySelector("tbody")
                 Sortable.create(body, {
                     onUpdate: event => {
                         send("Reorder", {
-                            key: e.id,
+                            project: e.dataset.project ?? "",
+                            entity: e.dataset.entity ?? "",
+                            key: e.dataset.key ?? "",
                             fromIndex: event.oldIndex,
                             toIndex: event.newIndex,
                         }, "POST", register)
