@@ -250,14 +250,17 @@ class Editor extends ProjectViewController
         $entity = $model->entitiesByName[$name] ?? throw new BadRequestException("entity cannot be null");
         /** @var ArrayClass<Property> $relationship */
         $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
-        $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property));
-        $fromIndex = $properties->indexOf($value[$fromIndex]) ?? throw new BadRequestException("fromIndex cannot be null");
-        $toIndex = $properties->indexOf($value[$toIndex]) ?? throw new BadRequestException("toIndex cannot be null");
+        $fromProperty = $value[$fromIndex];
+        $toProperty = $value[$toIndex];
+        $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $fromIndex = $properties->indexOf($fromProperty) ?? throw new BadRequestException("fromIndex cannot be null");
+        $toIndex = $properties->indexOf($toProperty) ?? throw new BadRequestException("toIndex cannot be null");
         $properties->swapAt($fromIndex, $toIndex);
-        $entity->properties = new Set($properties->map(function (Property $property, int $index): Property {
+        $properties = $properties->map(function (Property $property, int $index): Property {
             $property->position = $index + 1;
             return $property;
-        }));
+        });
+        $entity->properties = new Set($properties);
         $this->managedObjectContext->save();
         $this->content = json_encode($entity, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
         $this->headerFields["Content-Type"] = "application/json";
