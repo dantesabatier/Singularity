@@ -27,18 +27,20 @@
                 <input type="text" name="fetchRequestPredicateFormat" id="fetchRequestPredicateFormat" placeholder="Predicate" class="form-control form-control-sm text-truncate" value="{$selectedProperty->fetchRequestPredicateFormat}" autocomplete="off" spellcheck="false" required>
             </div>
         </div>
-        <div class="row align-items-center">
-            <label for="fetchRequestSortDescriptorKey" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Sort By</label>
+        <div class="row mb-3 align-items-center">
+            <label for="fetchRequestSortDescriptorKey" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Property</label>
             <div class="col-sm-9">
-                <input type="text" name="fetchRequestSortDescriptorKey" id="fetchRequestSortDescriptorKey" placeholder="Property Name" class="form-control form-control-sm text-truncate" value="{$selectedProperty->fetchRequestSortDescriptorKey}" autocomplete="off" spellcheck="false" required>
+                <select name="fetchRequestSortDescriptorKey" id="fetchRequestSortDescriptorKey" class="form-select form-select-sm" data-autosave="true" required>
+                    <option n:foreach="$selectedProperty->entity->attributesByName as $attribute" value="{$attribute->name}" {$attribute->name === $selectedProperty->fetchRequestSortDescriptorKey ? selected}>{$attribute->name}</option>
+                </select>
             </div>
         </div>
-        <div class="row align-items-center">
+        <div class="row mb-3 align-items-center">
             <div class="col-sm-3"></div>
             <div class="col-sm-9">
                 <div class="form-check form-check-inline form-control-sm">
-                    <input class="form-check-input" type="checkbox" name="fetchRequestSortDescriptorIsAscending" value="{$selectedProperty->fetchRequestSortDescriptorIsAscending}" id="fetchRequestSortDescriptorIsAscending" {$selectedProperty->fetchRequestSortDescriptorIsAscending ? checked}>
                     <label class="form-check-label" for="fetchRequestSortDescriptorIsAscending">Ascending</label>
+                    <input class="form-check-input" type="checkbox" name="fetchRequestSortDescriptorIsAscending" value="{$selectedProperty->fetchRequestSortDescriptorIsAscending}" id="fetchRequestSortDescriptorIsAscending" {$selectedProperty->fetchRequestSortDescriptorIsAscending ? checked}>
                 </div>
             </div>
         </div>
