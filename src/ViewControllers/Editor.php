@@ -250,7 +250,9 @@ class Editor extends ProjectViewController
         $entity = $model->entitiesByName[$name] ?? throw new BadRequestException("entity cannot be null");
         /** @var ArrayClass<Property> $relationship */
         $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
+        /** @var Property $fromProperty */
         $fromProperty = $value[$fromIndex];
+        /** @var Property $toProperty */
         $toProperty = $value[$toIndex];
         $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
         $fromIndex = $properties->indexOf($fromProperty) ?? throw new BadRequestException("fromIndex cannot be null");
