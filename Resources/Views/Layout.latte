@@ -27,64 +27,64 @@
 <script>
     const register = () => {
         document.querySelectorAll(".btn-toggle").forEach(e => {
-            e.addEventListener("click", async event => {
+            e.addEventListener("click", event => {
                 event.stopPropagation()
-                await submit(e.form, register)
+                submit(e.form, register)
             }, {
                 once: true
             })
         })
         document.querySelectorAll("div[data-href]").forEach(e => {
             const location = window.location.origin + e.dataset.href
-            e.addEventListener("click", async () => {
+            e.addEventListener("click", () => {
                 if (window.location.href !== location) {
-                    await push(location, register)
+                    push(location, register)
                 }
             }, {
                 once: true
             })
         })
-        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", async () => {
+        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", () => {
             const location = window.location.origin + e.dataset.href
             if (window.location.href !== location) {
-                await push(location, register)
+                push(location, register)
             }
         }, {
             once: true
         }))
         document.querySelectorAll("select[data-autosave=true]").forEach(e => {
-            e.addEventListener("click", async event => {
+            e.addEventListener("click", event => {
                 event.stopPropagation()
             }, {
                 once: true
             })
-            e.addEventListener("change", async event => {
+            e.addEventListener("change", event => {
                 event.stopPropagation()
-                await submit(e.form, register)
+                submit(e.form, register)
             }, {
                 once: true
             })
         })
         document.querySelectorAll("input[type=checkbox]").forEach(e => {
-            e.addEventListener("click", async event => {
+            e.addEventListener("click", event => {
                 event.stopPropagation()
-                await submit(e.form, register)
+                submit(e.form, register)
             }, {
                 once: true
             })
         })
         document.querySelectorAll("textarea").forEach(e => {
-            e.addEventListener("change", async event => {
+            e.addEventListener("change", event => {
                 event.stopPropagation()
-                await submit(e.form, register)
+                submit(e.form, register)
             }, {
                 once: true
             })
         })
-        document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", async event => {
+        document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", event => {
             if (e.checkValidity()) {
                 event.preventDefault()
-                await submit(e, register)
+                submit(e, register)
                 return
             }
             event.preventDefault()
@@ -93,9 +93,9 @@
         }, {
             once: false
         }))
-        document.querySelectorAll("form:not(.needs-validation)").forEach(e => e.addEventListener("submit", async event => {
+        document.querySelectorAll("form:not(.needs-validation)").forEach(e => e.addEventListener("submit", event => {
             event.preventDefault()
-            await submit(e, register)
+            submit(e, register)
         }, {
             once: true
         }))
@@ -120,14 +120,18 @@
                 const body = e.querySelector("tbody")
                 Sortable.create(body, {
                     onUpdate: event => {
-                        console.log(event)
+                        send("Reorder", {
+                            key: e.id,
+                            fromIndex: event.oldIndex,
+                            toIndex: event.newIndex,
+                        }, "POST", register)
                     }
                 })
             }
         })
     }
     const init = () => {
-        window.addEventListener("popstate", async event => await replace(event.state?.url ?? window.location.origin, register))
+        window.addEventListener("popstate", event => replace(event.state?.url ?? window.location.origin, register))
         register()
     }
 </script>
