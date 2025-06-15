@@ -7,6 +7,8 @@ use Sabatier\Foundation\Dictionary;
 /**
  * @property string|null $fetchRequestEntityName
  * @property string|null $fetchRequestPredicateFormat
+ * @property string|null $fetchRequestSortDescriptorKey
+ * @property bool $fetchRequestSortDescriptorIsAscending
  */
 class FetchedProperty extends Property
 {
