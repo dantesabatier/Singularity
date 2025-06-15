@@ -14,9 +14,10 @@ use Sabatier\Foundation\Dictionary;
  * @property string|null $versionHashModifier
  * @property mixed $minValue
  * @property mixed $maxValue
- * @property string|null $regex
  * @property bool $isMinValueBounded
  * @property bool $isMaxValueBounded
+ * @property string|null $regex
+ * @property int<0, max> $position
  * @property Entity|null $entityProperty
  */
 abstract class Property extends ManagedObject
