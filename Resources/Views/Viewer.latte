@@ -18,8 +18,8 @@
                 }, {
                     once: true
                 })
-                viewer.addEventListener("tableMoveEnd", async event => {
-                    await send(url("Moved"), {
+                viewer.addEventListener("tableMoveEnd", event => {
+                    send(url("Moved"), {
                         ...event.detail,
                         project: {$project->objectID}
                     }, "POST", loaded)
