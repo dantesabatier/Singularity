@@ -30,6 +30,7 @@ use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
+use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
@@ -226,5 +227,38 @@ class Editor extends ProjectViewController
             $entity->managedObjectClassName = "$namespace\\$class";
         }
         $this->save();
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Action]
+    public function reorder(): void
+    {
+        $body = $this->request->parsedBody;
+        /** @var int $fromIndex */
+        $fromIndex = $body["fromIndex"] ?? throw new BadRequestException("fromIndex cannot be null");
+        /** @var int $toIndex */
+        $toIndex = $body["toIndex"] ?? throw new BadRequestException("toIndex cannot be null");
+        /** @var string $key */
+        $key = $body["key"] ?? throw new BadRequestException("key cannot be null");
+        $name = $body["entity"] ?? throw new BadRequestException("name cannot be null");
+        /** @var Model $model */
+        $model = $this->project->model;
+        /** @var Entity $entity */
+        $entity = $model->entitiesByName[$name] ?? throw new BadRequestException("entity cannot be null");
+        /** @var ArrayClass<Property> $relationship */
+        $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
+        $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property));
+        $fromIndex = $properties->indexOf($value[$fromIndex]) ?? throw new BadRequestException("fromIndex cannot be null");
+        $toIndex = $properties->indexOf($value[$toIndex]) ?? throw new BadRequestException("toIndex cannot be null");
+        $properties->swapAt($fromIndex, $toIndex);
+        $entity->properties = new Set($properties->map(function (Property $property, int $index): Property {
+            $property->position = $index + 1;
+            return $property;
+        }));
+        $this->managedObjectContext->save();
+        $this->content = json_encode($entity, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
+        $this->headerFields["Content-Type"] = "application/json";
     }
 }
