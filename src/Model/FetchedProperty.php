@@ -19,6 +19,11 @@ class FetchedProperty extends Property
             $dictionary = parent::$dictionaryRepresentation::get();
             $dictionary["fetchRequestEntityName"] = $this->fetchRequestEntityName;
             $dictionary["fetchRequestPredicateFormat"] = $this->fetchRequestPredicateFormat;
+            $dictionary["fetchRequestSortDescriptorKey"] = $this->fetchRequestSortDescriptorKey;
+            $fetchRequestSortDescriptorIsAscending = $this->fetchRequestSortDescriptorIsAscending;
+            if (!$fetchRequestSortDescriptorIsAscending) {
+                $dictionary["fetchRequestSortDescriptorIsAscending"] = $fetchRequestSortDescriptorIsAscending;
+            }
             return $dictionary;
         }
     }
