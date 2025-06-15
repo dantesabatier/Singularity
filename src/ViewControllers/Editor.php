@@ -242,6 +242,7 @@ class Editor extends ProjectViewController
         $toIndex = $body["toIndex"] ?? throw new BadRequestException("toIndex cannot be null");
         /** @var string $key */
         $key = $body["key"] ?? throw new BadRequestException("key cannot be null");
+        /** @var string $name */
         $name = $body["entity"] ?? throw new BadRequestException("name cannot be null");
         /** @var Model $model */
         $model = $this->project->model;
