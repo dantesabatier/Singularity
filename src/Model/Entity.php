@@ -15,13 +15,13 @@ use Sabatier\Foundation\Set;
  * @property string|null $versionHashModifier
  * @property-read int $subentitiesCount
  * @property-read int $indexesCount
+ * @property bool $isExpanded
  * @property Model|null $model
  * @property Entity|null $superentity
  * @property Set<Entity> $subentities
  * @property Set<Property> $properties
  * @property Set<FetchIndex> $indexes
  * @property Set<UniquenessConstraint> $uniquenessConstraints
- * @property bool $isExpanded
  * @property-read ArrayClass<Attribute> $attributes
  * @property-read ArrayClass<Relationship> $relationships
  * @property-read ArrayClass<FetchedProperty> $fetchedProperties
