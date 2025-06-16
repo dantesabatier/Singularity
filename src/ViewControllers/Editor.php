@@ -248,7 +248,7 @@ class Editor extends ProjectViewController
         $model = $this->project->model;
         /** @var Entity $entity */
         $entity = $model->entitiesByName[$name] ?? throw new BadRequestException("entity cannot be null");
-        /** @var ArrayClass<Property> $relationship */
+        /** @var ArrayClass<Property> $value */
         $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
         /** @var Property $fromProperty */
         $fromProperty = $value[$fromIndex];
