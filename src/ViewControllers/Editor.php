@@ -248,22 +248,24 @@ class Editor extends ProjectViewController
         $model = $this->project->model;
         /** @var Entity $entity */
         $entity = $model->entitiesByName[$name] ?? throw new BadRequestException("entity cannot be null");
-        /** @var ArrayClass<Property> $value */
-        $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
-        /** @var Property $fromProperty */
-        $fromProperty = $value[$fromIndex];
-        /** @var Property $toProperty */
-        $toProperty = $value[$toIndex];
-        $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
-        $fromIndex = $properties->indexOf($fromProperty) ?? throw new BadRequestException("fromIndex cannot be null");
-        $toIndex = $properties->indexOf($toProperty) ?? throw new BadRequestException("toIndex cannot be null");
-        $properties->swapAt($fromIndex, $toIndex);
-        $properties = $properties->map(function (Property $property, int $index): Property {
-            $property->position = $index + 1;
-            return $property;
-        });
-        $entity->properties = new Set($properties);
-        $this->managedObjectContext->save();
+        if ($fromIndex !== $toIndex) {
+            /** @var ArrayClass<Property> $value */
+            $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
+            /** @var Property $fromProperty */
+            $fromProperty = $value[$fromIndex];
+            /** @var Property $toProperty */
+            $toProperty = $value[$toIndex];
+            $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+            $fromIndex = $properties->indexOf($fromProperty) ?? throw new BadRequestException("fromIndex cannot be null");
+            $toIndex = $properties->indexOf($toProperty) ?? throw new BadRequestException("toIndex cannot be null");
+            $properties->swapAt($fromIndex, $toIndex);
+            $properties = $properties->map(function (Property $property, int $index): Property {
+                $property->position = $index + 1;
+                return $property;
+            });
+            $entity->properties = new Set($properties);
+            $this->managedObjectContext->save();
+        }
         $this->content = json_encode($entity, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
         $this->headerFields["Content-Type"] = "application/json";
     }
