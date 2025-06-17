@@ -1,7 +1,7 @@
 {templateType App\ViewControllers\Editor}
 {define relationships}
     <div class="table-responsive">
-        <table class="table table-hover table-sm caption-top">
+        <table class="table table-hover table-sm caption-top" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="relationships">
             <caption class="fw-bold text-shadow">Relationships</caption>
             <thead>
             <tr>
