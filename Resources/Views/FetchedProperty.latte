@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="row mb-3 align-items-center">
-            <label for="fetchRequestSortDescriptorKey" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Property</label>
+            <label for="fetchRequestSortDescriptorKey" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Sort By</label>
             <div class="col-sm-9">
                 <select name="fetchRequestSortDescriptorKey" id="fetchRequestSortDescriptorKey" class="form-select form-select-sm" data-autosave="true" required>
                     <option n:foreach="$selectedProperty->entity->attributesByName as $attribute" value="{$attribute->name}" {$attribute->name === $selectedProperty->fetchRequestSortDescriptorKey ? selected}>{$attribute->name}</option>
