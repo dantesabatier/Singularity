@@ -23,7 +23,7 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
 use function Sabatier\Foundation\fatal_error;
-use const App\SQLByEntityPositionsMappingTablePreferencesKey;
+use const App\EntityPositionsMappingPreferencesKey;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 /**
@@ -120,8 +120,8 @@ class Model extends ManagedObject
                     $dictionary["uq"] = $column->isUnique;
                 }
                 return $dictionary;
-            }), "pos" => UserDefaults::standard()->dictionary(SQLByEntityPositionsMappingTablePreferencesKey)?->valueForKey($name)?->valueForKey($entity->tableName)]));
-            $tables->appendContentsOf(new Set($entities)->flatMap(fn(SQLEntity $entity): ArrayClass => $entity->manyToManyRelationships)->map(fn(SQLManyToMany $manyToMany): Dictionary => new Dictionary(["name" => $manyToMany->correlationTableName, "columns" => new ArrayClass([new Dictionary(["name" => $manyToMany->orderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[0]->tableName, "column" => $manyToMany->entities[0]->primaryKey->columnName])]), new Dictionary(["name" => $manyToMany->inverseOrderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[1]->tableName, "column" => $manyToMany->entities[1]->primaryKey->columnName])])]), "pos" => UserDefaults::standard()->dictionary(SQLByEntityPositionsMappingTablePreferencesKey)?->valueForKey($name)?->valueForKey($manyToMany->correlationTableName)])));
+            }), "pos" => UserDefaults::standard()->dictionary(EntityPositionsMappingPreferencesKey)?->valueForKey($name)?->valueForKey($entity->tableName)]));
+            $tables->appendContentsOf(new Set($entities)->flatMap(fn(SQLEntity $entity): ArrayClass => $entity->manyToManyRelationships)->map(fn(SQLManyToMany $manyToMany): Dictionary => new Dictionary(["name" => $manyToMany->correlationTableName, "columns" => new ArrayClass([new Dictionary(["name" => $manyToMany->orderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[0]->tableName, "column" => $manyToMany->entities[0]->primaryKey->columnName])]), new Dictionary(["name" => $manyToMany->inverseOrderColumnName, "type" => $manyToMany->columnSQLType->name, "pk" => true, "fk" => new Dictionary(["table" => $manyToMany->entities[1]->tableName, "column" => $manyToMany->entities[1]->primaryKey->columnName])])]), "pos" => UserDefaults::standard()->dictionary(EntityPositionsMappingPreferencesKey)?->valueForKey($name)?->valueForKey($manyToMany->correlationTableName)])));
             /** @var Dictionary<mixed> $dictionary */
             $dictionary = new Dictionary();
             $dictionary["tables"] = $tables;

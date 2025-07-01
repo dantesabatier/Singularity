@@ -5,5 +5,5 @@ namespace App;
 const CompanyNamePreferencesKey = "CompanyName";
 const AutomaticallyDeleteProjectFoldersPreferencesKey = "AutomaticallyDeleteProjectFolders";
 const AutomaticallySaveModelPreferencesKey = "AutomaticallySaveModel";
-const SQLByEntityPositionsMappingTablePreferencesKey = "SQLByEntityPositionsMapping";
+const EntityPositionsMappingPreferencesKey = "EntityPositionsMapping";
 const NeedsReloadKey = "NeedsReload";
