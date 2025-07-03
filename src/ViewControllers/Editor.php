@@ -251,14 +251,16 @@ class Editor extends ProjectViewController
         if ($fromIndex !== $toIndex) {
             /** @var ArrayClass<Property> $value */
             $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
-            /** @var Property $fromProperty */
-            $fromProperty = $value[$fromIndex];
-            /** @var Property $toProperty */
-            $toProperty = $value[$toIndex];
+            $moved = $value[$fromIndex];
+            /** @var Property $target */
+            $target = $value[$toIndex];
             $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
-            $fromIndex = $properties->indexOf($fromProperty) ?? throw new BadRequestException("fromIndex cannot be null");
-            $toIndex = $properties->indexOf($toProperty) ?? throw new BadRequestException("toIndex cannot be null");
-            $properties->swapAt($fromIndex, $toIndex);
+            $properties->remove($moved);
+            $toIndex = $properties->indexOf($target) ?? throw new BadRequestException("toIndex cannot be null");
+            $second = $properties->filter(fn(Property $property, int $index): bool => ($index + 1) > $toIndex);
+            $second->insertAt($moved, 0);
+            $properties->removeAll(fn(Property $property, int $index): bool => ($index + 1) > $toIndex);
+            $properties->appendContentsOf($second);
             $properties = $properties->map(function (Property $property, int $index): Property {
                 $property->position = $index + 1;
                 return $property;
