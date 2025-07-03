@@ -116,19 +116,28 @@
             e.addEventListener("click", () => tooltip.hide())
         })
         document.querySelectorAll("table").forEach(e => {
-            if (e.dataset.key) {
+            const project = e.dataset.project
+            const entity = e.dataset.entity
+            const key = e.dataset.key
+            if (project && entity && key) {
                 const body = e.querySelector("tbody")
-                Sortable.create(body, {
-                    onUpdate: event => {
-                        send("Reorder", {
-                            project: e.dataset.project ?? "",
-                            entity: e.dataset.entity ?? "",
-                            key: e.dataset.key ?? "",
-                            fromIndex: event.oldIndex,
-                            toIndex: event.newIndex,
-                        }, "POST", register)
-                    }
-                })
+                if (body) {
+                    Sortable.create(body, {
+                        onUpdate: event => {
+                            const fromIndex = event.oldIndex
+                            const toIndex = event.newIndex
+                            if (fromIndex !== toIndex) {
+                                send("Reorder", {
+                                    project: project,
+                                    entity: entity,
+                                    key: key,
+                                    fromIndex: fromIndex,
+                                    toIndex: toIndex,
+                                }, "POST", register)
+                            }
+                        }
+                    })
+                }
             }
         })
     }
