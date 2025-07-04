@@ -6,6 +6,7 @@ use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
+use Sabatier\Foundation\SortDescriptor;
 
 /**
  * @property string $name
@@ -122,15 +123,15 @@ class Entity extends ManagedObject
             }
             $dictionary["versionHashModifier"] = $this->versionHashModifier;
             $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
-            $attributes = $this->attributes->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation);
+            $attributes = $this->attributes->sorted([new SortDescriptor("position")])->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation);
             if (!$attributes->isEmpty) {
                 $dictionary["attributes"] = $attributes;
             }
-            $relationships = $this->relationships->map(fn(Relationship $relationship): Dictionary => $relationship->dictionaryRepresentation);
+            $relationships = $this->relationships->sorted([new SortDescriptor("position")])->map(fn(Relationship $relationship): Dictionary => $relationship->dictionaryRepresentation);
             if (!$relationships->isEmpty) {
                 $dictionary["relationships"] = $relationships;
             }
-            $fetchedProperties = $this->fetchedProperties->map(fn(FetchedProperty $property): Dictionary => $property->dictionaryRepresentation);
+            $fetchedProperties = $this->fetchedProperties->sorted([new SortDescriptor("position")])->map(fn(FetchedProperty $property): Dictionary => $property->dictionaryRepresentation);
             if (!$fetchedProperties->isEmpty) {
                 $dictionary["fetchedProperties"] = $fetchedProperties;
             }
