@@ -15,6 +15,7 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Set;
+use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
 use function Sabatier\Foundation\class_name;
@@ -47,7 +48,7 @@ class SubclassFileWriter extends FileWriter
                 $content .= "\n";
             }
             /** @var Set<Attribute> $attributes */
-            $attributes = new Set($entity->attributes);
+            $attributes = new Set($entity->attributes->sorted([new SortDescriptor("position")]));
             /** @var Set<string> $uses */
             $uses = $attributes->compactMap(function (Attribute $attribute): ?string {
                 $attributeValueClassName = match ($attribute->type) {
@@ -63,11 +64,11 @@ class SubclassFileWriter extends FileWriter
                 }
                 return null;
             });
-            $relationships = $entity->relationships;
+            $relationships = $entity->relationships->sorted([new SortDescriptor("position")]);
             if ($relationships->contains(fn(Relationship $relationship): bool => $relationship->isToMany)) {
                 $uses->append("use " . Set::class . ";");
             }
-            $fetchedProperties = $entity->fetchedProperties;
+            $fetchedProperties = $entity->fetchedProperties->sorted([new SortDescriptor("position")]);
             if (!$fetchedProperties->isEmpty) {
                 $uses->append("use " . ArrayClass::class . ";");
             }
