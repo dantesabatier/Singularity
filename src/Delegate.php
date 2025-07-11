@@ -21,6 +21,8 @@ use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
+use Sabatier\Service\Authorizable;
+use Sabatier\Service\AuthorizationType;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\full_user_name;
 use const Sabatier\CoreData\PersistentHistoryTrackingKey;
@@ -41,6 +43,11 @@ class Delegate extends ObjectClass implements ApplicationDelegate
             AutomaticallySaveModelPreferencesKey => false,
             CompanyNamePreferencesKey => full_user_name()
         ]));
+    }
+
+    #[Override]
+    public function authorize(Authorizable $entity, string $resource, AuthorizationType $action, ManagedObjectContext $context): void
+    {
     }
 
     #[Override]
