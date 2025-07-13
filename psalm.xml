@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--suppress XmlDefaultAttributeValue -->
-<psalm errorLevel="3" findUnusedCode="false" findUnusedBaselineEntry="true" xmlns="https://getpsalm.org/schema/config">
+<psalm errorLevel="4" findUnusedCode="false" findUnusedBaselineEntry="true" xmlns="https://getpsalm.org/schema/config">
     <projectFiles>
         <directory name="src"/>
         <ignoreFiles>
@@ -19,8 +19,8 @@
         </UndefinedClass>
         <UndefinedDocblockClass>
             <errorLevel type="suppress">
-                <file name="src/ViewControllers/Welcome.php"/>
                 <file name="src/Delegate.php"/>
+                <file name="src/ViewControllers/Welcome.php"/>
             </errorLevel>
         </UndefinedDocblockClass>
         <InternalClass errorLevel="suppress"/>
