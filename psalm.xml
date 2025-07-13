@@ -12,18 +12,20 @@
         <MissingConstructor errorLevel="suppress"/>
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
         <InaccessibleProperty errorLevel="suppress"/>
-        <ArgumentTypeCoercion>
+        <UndefinedClass>
             <errorLevel type="suppress">
                 <file name="src/ViewControllers/Welcome.php"/>
             </errorLevel>
-        </ArgumentTypeCoercion>
-        <ReferenceConstraintViolation>
+        </UndefinedClass>
+        <UndefinedDocblockClass>
             <errorLevel type="suppress">
                 <file name="src/ViewControllers/Welcome.php"/>
+                <file name="src/Delegate.php"/>
             </errorLevel>
-        </ReferenceConstraintViolation>
+        </UndefinedDocblockClass>
         <InternalClass errorLevel="suppress"/>
         <InternalProperty errorLevel="suppress"/>
         <RiskyTruthyFalsyComparison errorLevel="suppress"/>
+        <ClassMustBeFinal errorLevel="suppress"/>
     </issueHandlers>
 </psalm>
