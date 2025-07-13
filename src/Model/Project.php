@@ -16,8 +16,9 @@ use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
  * @property Date $creationDate
  * @property Date|null $lastModifiedDate
  * @property URL|null $url
- * @property Model|null $model
  * @property string|null $color
+ * @property int<0, max> $position
+ * @property Model|null $model
  */
 class Project extends ManagedObject
 {
