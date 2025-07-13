@@ -44,7 +44,7 @@ use function Sabatier\Foundation\fatal_error;
 #[Endpoint]
 class Editor extends ProjectViewController
 {
-    /** @var ArrayClass<covariant Project> */
+    /** @var ArrayClass<Project> */
     #[Outlet]
     private(set) ArrayClass $projects {
         get {
@@ -87,9 +87,9 @@ class Editor extends ProjectViewController
     private(set) ArrayClass $breadcrumb {
         get => $this->breadcrumb ??= new ArrayClass();
     }
-    /** @var array<object{name: string, value: int}> */
+    /** @var ArrayClass<object{name: string, value: int}> */
     #[Outlet]
-    private(set) array $attributeTypes = [];
+    private(set) ArrayClass $attributeTypes;
 
     private function className(Entity $entity, string $namespace): string
     {
@@ -153,7 +153,8 @@ class Editor extends ProjectViewController
             $this->selection = $selection;
             $this->breadcrumb[] = $selection;
         }
-        $this->attributeTypes = new ArrayClass(AttributeType::cases())->compactMap(fn(AttributeType $type): ?object => match ($type) {
+        /** @var ArrayClass<object{name: string, value: int}> $attributeTypes */
+        $attributeTypes = new ArrayClass(AttributeType::cases())->compactMap(fn(AttributeType $type): ?object => match ($type) {
             AttributeType::undefined, AttributeType::decimal, AttributeType::double, AttributeType::float, AttributeType::string, AttributeType::boolean, AttributeType::date, AttributeType::transformable => (object)["name" => ucfirst($type->name), "value" => $type->value],
             AttributeType::uuid, AttributeType::uri => (object)["name" => strtoupper($type->name), "value" => $type->value],
             AttributeType::integer16 => (object)["name" => "Integer 16", "value" => $type->value],
@@ -161,7 +162,8 @@ class Editor extends ProjectViewController
             AttributeType::integer64 => (object)["name" => "Integer 64", "value" => $type->value],
             AttributeType::binaryData => (object)["name" => "Binary Data", "value" => $type->value],
             default => null
-        })->array;
+        });
+        $this->attributeTypes = $attributeTypes;
     }
 
     /**

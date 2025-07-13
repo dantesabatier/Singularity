@@ -24,7 +24,6 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\SearchPathDirectory;
 use Sabatier\Foundation\SearchPathDomainMask;
 use Sabatier\Service\Renderer;
-use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\human_readable_value;
 use function Sabatier\Foundation\localized_string;
 use function Sabatier\Foundation\substring_to_index;
@@ -42,8 +41,7 @@ class LatteRenderer extends Renderer
     {
         $engine = new Engine();
         $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
-        $engine->addFilter("className", fn(string $value): string => class_name($value));
-        $engine->addFilter("camelCase", fn(string $value): string => preg_replace_callback("/\s(.)/", fn(array $matches) => strtoupper($matches[1]), $value));
+        $engine->addFilter("camelCase", fn(string $value): string => (string)preg_replace_callback("/\s(.)/", fn(array $matches) => strtoupper($matches[1]), $value));
         $engine->addFilter("firstLower", fn(string $value): string => lcfirst($value));
         $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
         $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);

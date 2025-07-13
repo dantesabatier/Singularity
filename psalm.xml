@@ -12,18 +12,8 @@
         <MissingConstructor errorLevel="suppress"/>
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
         <InaccessibleProperty errorLevel="suppress"/>
-        <UndefinedClass>
-            <errorLevel type="suppress">
-                <file name="src/ViewControllers/Welcome.php"/>
-            </errorLevel>
-        </UndefinedClass>
-        <UndefinedDocblockClass>
-            <errorLevel type="suppress">
-                <file name="src/Delegate.php"/>
-                <file name="src/ViewControllers/Welcome.php"/>
-            </errorLevel>
-        </UndefinedDocblockClass>
         <InternalClass errorLevel="suppress"/>
+        <InternalMethod errorLevel="suppress"/>
         <InternalProperty errorLevel="suppress"/>
         <RiskyTruthyFalsyComparison errorLevel="suppress"/>
         <ClassMustBeFinal errorLevel="suppress"/>
