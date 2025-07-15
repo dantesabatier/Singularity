@@ -10,6 +10,7 @@ use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\SQLCore;
+use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Notification;
@@ -58,11 +59,11 @@ class Delegate extends ObjectClass implements ApplicationDelegate
             /** @var ManagedObjectContext $context */
             $context = $notification->object;
             $fetchRequest = Project::fetchRequest();
-            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass(["objectID", $referenceObject]));
+            $fetchRequest->predicate = Predicate::format("%K = %s", new ArrayClass([SQLEntity::primaryKeyName, $referenceObject]));
             $fetchRequest->serialization = Dictionary::dictionaryWithArray([
                 "name" => AttributeType::string,
                 "url" => AttributeType::uri,
-                "model" => [
+                "model" => [ 
                     "url" => AttributeType::uri
                 ]
             ]);
