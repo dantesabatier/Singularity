@@ -90,10 +90,22 @@ class Editor extends ProjectViewController
     }
     /** @var ArrayClass<object{name: string, value: int}> */
     #[Outlet]
-    private(set) ArrayClass $attributeTypes;
+    private(set) ArrayClass $attributeTypes {
+        get => $this->attributeTypes ??= new ArrayClass(AttributeType::cases())->compactMap(fn(AttributeType $type): ?object => match ($type) {
+            AttributeType::undefined, AttributeType::decimal, AttributeType::double, AttributeType::float, AttributeType::string, AttributeType::boolean, AttributeType::date, AttributeType::transformable => (object)["name" => ucfirst($type->name), "value" => $type->value],
+            AttributeType::uuid, AttributeType::uri => (object)["name" => strtoupper($type->name), "value" => $type->value],
+            AttributeType::integer16 => (object)["name" => "Integer 16", "value" => $type->value],
+            AttributeType::integer32 => (object)["name" => "Integer 32", "value" => $type->value],
+            AttributeType::integer64 => (object)["name" => "Integer 64", "value" => $type->value],
+            AttributeType::binaryData => (object)["name" => "Binary Data", "value" => $type->value],
+            default => null
+        });
+    }
     /** @var ArrayClass<object{name: string, value: int}> */
     #[Outlet]
-    private(set) ArrayClass $fetchRequestResultTypes;
+    private(set) ArrayClass $fetchRequestResultTypes {
+        get => $this->fetchRequestResultTypes ??= new ArrayClass([(object)["name" => "Objects", "value" => FetchRequestResultType::managedObjectResultType->value], (object)["name" => "Object IDs", "value" => FetchRequestResultType::managedObjectIDResultType->value], (object)["name" => "Dictionaries", "value" => FetchRequestResultType::dictionaryResultType->value]]);
+    }
 
     private function className(Entity $entity, string $namespace): string
     {
@@ -157,20 +169,6 @@ class Editor extends ProjectViewController
             $this->selection = $selection;
             $this->breadcrumb[] = $selection;
         }
-        /** @var ArrayClass<object{name: string, value: int}> $attributeTypes */
-        $attributeTypes = new ArrayClass(AttributeType::cases())->compactMap(fn(AttributeType $type): ?object => match ($type) {
-            AttributeType::undefined, AttributeType::decimal, AttributeType::double, AttributeType::float, AttributeType::string, AttributeType::boolean, AttributeType::date, AttributeType::transformable => (object)["name" => ucfirst($type->name), "value" => $type->value],
-            AttributeType::uuid, AttributeType::uri => (object)["name" => strtoupper($type->name), "value" => $type->value],
-            AttributeType::integer16 => (object)["name" => "Integer 16", "value" => $type->value],
-            AttributeType::integer32 => (object)["name" => "Integer 32", "value" => $type->value],
-            AttributeType::integer64 => (object)["name" => "Integer 64", "value" => $type->value],
-            AttributeType::binaryData => (object)["name" => "Binary Data", "value" => $type->value],
-            default => null
-        });
-        $this->attributeTypes = $attributeTypes;
-        /** @var ArrayClass<object{name: string, value: int}> $fetchRequestResultTypes */
-        $fetchRequestResultTypes = new ArrayClass([(object)["name" => "Objects", "value" => FetchRequestResultType::managedObjectResultType->value], (object)["name" => "Object IDs", "value" => FetchRequestResultType::managedObjectIDResultType->value], (object)["name" => "Dictionaries", "value" => FetchRequestResultType::dictionaryResultType->value]]);
-        $this->fetchRequestResultTypes = $fetchRequestResultTypes;
     }
 
     /**
