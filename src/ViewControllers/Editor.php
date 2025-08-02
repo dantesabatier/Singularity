@@ -20,6 +20,7 @@ use Exception;
 use Override;
 use ReflectionClass;
 use Sabatier\CoreData\AttributeType;
+use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\SQLEntity;
@@ -104,7 +105,22 @@ class Editor extends ProjectViewController
     /** @var ArrayClass<object{name: string, value: int}> */
     #[Outlet]
     private(set) ArrayClass $fetchRequestResultTypes {
-        get => $this->fetchRequestResultTypes ??= new ArrayClass([(object)["name" => "Objects", "value" => FetchRequestResultType::managedObjectResultType->value], (object)["name" => "Object IDs", "value" => FetchRequestResultType::managedObjectIDResultType->value], (object)["name" => "Dictionaries", "value" => FetchRequestResultType::dictionaryResultType->value]]);
+        get => $this->fetchRequestResultTypes ??= new ArrayClass(FetchRequestResultType::cases())->compactMap(fn(FetchRequestResultType $type): object => (object)["name" => match ($type) {
+            FetchRequestResultType::managedObjectResultType => "Objects",
+            FetchRequestResultType::managedObjectIDResultType => "Object IDs",
+            FetchRequestResultType::dictionaryResultType => "Dictionaries",
+            default => null
+        }, "value" => $type->value]);
+    }
+    /** @var ArrayClass<object{name: string, value: int}> */
+    #[Outlet]
+    private(set) ArrayClass $deleteRules {
+        get => $this->deleteRules ??= new ArrayClass(DeleteRule::cases())->map(fn(DeleteRule $rule): object => (object)["name" => match ($rule) {
+            DeleteRule::noActionDeleteRule => "No Action",
+            DeleteRule::nullifyDeleteRule => "Nullify",
+            DeleteRule::cascadeDeleteRule => "Cascade",
+            DeleteRule::denyDeleteRule => "Deny"
+        }, "value" => $rule->value]);
     }
 
     private function className(Entity $entity, string $namespace): string
