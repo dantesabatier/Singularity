@@ -56,144 +56,141 @@
         </div>
         {if !$selectedProperty->isDerived}
             {switch $selectedProperty->type}
-                {case Sabatier\CoreData\AttributeType::integer16, Sabatier\CoreData\AttributeType::integer32, Sabatier\CoreData\AttributeType::integer64, Sabatier\CoreData\AttributeType::decimal, Sabatier\CoreData\AttributeType::double, Sabatier\CoreData\AttributeType::float, Sabatier\CoreData\AttributeType::string, Sabatier\CoreData\AttributeType::boolean, Sabatier\CoreData\AttributeType::date, Sabatier\CoreData\AttributeType::uuid, Sabatier\CoreData\AttributeType::uri}
-                {switch $selectedProperty->type}
-                    {case Sabatier\CoreData\AttributeType::integer16, Sabatier\CoreData\AttributeType::integer32, Sabatier\CoreData\AttributeType::integer64}
-                    <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
-                        <div class="col-sm-9">
-                            <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                        </div>
+                {case Sabatier\CoreData\AttributeType::integer16, Sabatier\CoreData\AttributeType::integer32, Sabatier\CoreData\AttributeType::integer64}
+                <div class="row mb-3 align-items-center">
+                    <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
+                    <div class="col-sm-9">
+                        <input type="number" name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     </div>
-                    <div class="row mb-3 align-items-start">
-                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
-                        <div class="col-sm-9">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <input type="number" class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
-                                    <label class="form-label" for="minValue">Minimum</label>
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
-                                    <label class="col-sm col-form-label col-form-label-sm" for="maxValue">Maximum</label>
-                                </div>
+                </div>
+                <div class="row mb-3 align-items-start">
+                    <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
+                    <div class="col-sm-9">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                <label class="form-label" for="minValue">Minimum</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                <label class="col-sm col-form-label col-form-label-sm" for="maxValue">Maximum</label>
                             </div>
                         </div>
                     </div>
-                {case Sabatier\CoreData\AttributeType::decimal, Sabatier\CoreData\AttributeType::double, Sabatier\CoreData\AttributeType::float}
-                    <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
-                        <div class="col-sm-9">
-                            <input name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                        </div>
+                </div>
+            {case Sabatier\CoreData\AttributeType::decimal, Sabatier\CoreData\AttributeType::double, Sabatier\CoreData\AttributeType::float}
+                <div class="row mb-3 align-items-center">
+                    <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
+                    <div class="col-sm-9">
+                        <input name="defaultValue" id="defaultValue" placeholder="Default Value" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     </div>
-                    <div class="row mb-3 align-items-start">
-                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
-                        <div class="col-sm-9">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <input class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
-                                    <label class="col-sm col-form-label col-form-label-sm" for="minValue">Minimum</label>
-                                </div>
-                                <div class="col">
-                                    <input class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
-                                    <label class="col-sm col-form-label col-form-label-sm" for="maxValue">Maximum</label>
-                                </div>
+                </div>
+                <div class="row mb-3 align-items-start">
+                    <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
+                    <div class="col-sm-9">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <input class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                <label class="col-sm col-form-label col-form-label-sm" for="minValue">Minimum</label>
+                            </div>
+                            <div class="col">
+                                <input class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                <label class="col-sm col-form-label col-form-label-sm" for="maxValue">Maximum</label>
                             </div>
                         </div>
                     </div>
-                {case Sabatier\CoreData\AttributeType::string}
-                    <div class="row align-items-center">
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9">
-                            <div class="form-check form-check-inline form-control-sm">
-                                <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
-                                <label class="form-check-label" for="isDefaultValueBounded">Default String</label>
+                </div>
+            {case Sabatier\CoreData\AttributeType::string}
+                <div class="row align-items-center">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <div class="form-check form-check-inline form-control-sm">
+                            <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
+                            <label class="form-check-label" for="isDefaultValueBounded">Default String</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3 align-items-center">
+                    <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null String'}" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
+                    </div>
+                </div>
+                <div class="row mb-3 align-items-start">
+                    <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
+                    <div class="col-sm-9">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
+                                <label class="col-sm col-form-label col-form-label-sm" for="minValue">Min Length</label>
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
+                                <label class="col-sm col-form-label col-form-label-sm" for="maxValue">Max Length</label>
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null String'}" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
+                </div>
+                <div class="row mb-3 align-items-center">
+                    <label for="regex" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Reg. Ex.</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control form-control-sm text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
+                    </div>
+                </div>
+            {case Sabatier\CoreData\AttributeType::boolean}
+                <div class="row mb-3 align-items-center">
+                    <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
+                    <div class="col-sm-9">
+                        <select name="defaultValue" id="defaultValue" class="form-select form-select-sm" data-autosave="true">
+                            {var array $values = ["" => "None", "true" => "True", "false" => "False"]}
+                            <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
+                        </select>
+                    </div>
+                </div>
+            {case Sabatier\CoreData\AttributeType::date}
+                <div class="row align-items-center">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-9">
+                        <div class="form-check form-check-inline form-control-sm">
+                            <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
+                            <label class="form-check-label" for="isDefaultValueBounded">Default Date</label>
                         </div>
                     </div>
-                    <div class="row mb-3 align-items-start">
-                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
-                        <div class="col-sm-9">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <input type="number" class="form-control form-control-sm" name="minValue" id="minValue" placeholder="No Value" value="{$selectedProperty->minValue}">
-                                    <label class="col-sm col-form-label col-form-label-sm" for="minValue">Min Length</label>
+                </div>
+                <div class="row mb-3 align-items-center">
+                    <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
+                    <div class="col-sm-9">
+                        <input type="datetime-local" name="defaultValue" id="defaultValue" class="form-control form-control-sm" value="{$selectedProperty->defaultValue}" {!$selectedProperty->isDefaultValueBounded ? disabled}>
+                    </div>
+                </div>
+                <div class="row mb-3 align-items-end">
+                    <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
+                    <div class="col-sm-9">
+                        <div class="row align-items-center">
+                            <div class="col-sm-6">
+                                <div class="form-check form-check-inline form-control-sm">
+                                    <label class="form-check-label" for="isMinValueBounded">Minimum Date</label>
+                                    <input class="form-check-input" type="checkbox" name="isMinValueBounded" value="{$selectedProperty->isMinValueBounded}" id="isMinValueBounded" {$selectedProperty->isMinValueBounded ? checked}>
                                 </div>
-                                <div class="col">
-                                    <input type="number" class="form-control form-control-sm" name="maxValue" id="maxValue" placeholder="No Value" value="{$selectedProperty->maxValue}">
-                                    <label class="col-sm col-form-label col-form-label-sm" for="maxValue">Max Length</label>
+                                <input type="datetime-local" name="minValue" id="minValue" class="form-control form-control-sm" value="{$selectedProperty->minValue}" {!$selectedProperty->isMinValueBounded ? disabled}>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check form-check-inline form-control-sm">
+                                    <label class="form-check-label" for="isMaxValueBounded">Maximum Date</label>
+                                    <input class="form-check-input" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded}" id="isMaxValueBounded" {$selectedProperty->isMaxValueBounded ? checked}>
                                 </div>
+                                <input type="datetime-local" name="maxValue" id="maxValue" class="form-control form-control-sm" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3 align-items-center">
-                        <label for="regex" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Reg. Ex.</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control form-control-sm text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
-                        </div>
+                </div>
+            {case Sabatier\CoreData\AttributeType::uuid, Sabatier\CoreData\AttributeType::uri}
+                <div class="row mb-3 align-items-center">
+                    <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="defaultValue" id="defaultValue" class="form-control form-control-sm text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                     </div>
-                {case Sabatier\CoreData\AttributeType::boolean}
-                    <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
-                        <div class="col-sm-9">
-                            <select name="defaultValue" id="defaultValue" class="form-select form-select-sm" data-autosave="true">
-                                {var array $values = ["" => "None", "true" => "True", "false" => "False"]}
-                                <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
-                            </select>
-                        </div>
-                    </div>
-                {case Sabatier\CoreData\AttributeType::date}
-                    <div class="row align-items-center">
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9">
-                            <div class="form-check form-check-inline form-control-sm">
-                                <input class="form-check-input" type="checkbox" name="isDefaultValueBounded" value="{$selectedProperty->isDefaultValueBounded}" id="isDefaultValueBounded" {$selectedProperty->isDefaultValueBounded ? checked}>
-                                <label class="form-check-label" for="isDefaultValueBounded">Default Date</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
-                        <div class="col-sm-9">
-                            <input type="datetime-local" name="defaultValue" id="defaultValue" class="form-control form-control-sm" value="{$selectedProperty->defaultValue}" {!$selectedProperty->isDefaultValueBounded ? disabled}>
-                        </div>
-                    </div>
-                    <div class="row mb-3 align-items-end">
-                        <label class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Validation</label>
-                        <div class="col-sm-9">
-                            <div class="row align-items-center">
-                                <div class="col-sm-6">
-                                    <div class="form-check form-check-inline form-control-sm">
-                                        <label class="form-check-label" for="isMinValueBounded">Minimum Date</label>
-                                        <input class="form-check-input" type="checkbox" name="isMinValueBounded" value="{$selectedProperty->isMinValueBounded}" id="isMinValueBounded" {$selectedProperty->isMinValueBounded ? checked}>
-                                    </div>
-                                    <input type="datetime-local" name="minValue" id="minValue" class="form-control form-control-sm" value="{$selectedProperty->minValue}" {!$selectedProperty->isMinValueBounded ? disabled}>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-check form-check-inline form-control-sm">
-                                        <label class="form-check-label" for="isMaxValueBounded">Maximum Date</label>
-                                        <input class="form-check-input" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded}" id="isMaxValueBounded" {$selectedProperty->isMaxValueBounded ? checked}>
-                                    </div>
-                                    <input type="datetime-local" name="maxValue" id="maxValue" class="form-control form-control-sm" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled}>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {case Sabatier\CoreData\AttributeType::uuid, Sabatier\CoreData\AttributeType::uri}
-                    <div class="row mb-3 align-items-center">
-                        <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
-                        <div class="col-sm-9">
-                            <input type="text" name="defaultValue" id="defaultValue" class="form-control form-control-sm text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
-                        </div>
-                    </div>
-                {/switch}
+                </div>
             {case Sabatier\CoreData\AttributeType::binaryData}
                 <div class="row">
                     <div class="col-sm-3"></div>
