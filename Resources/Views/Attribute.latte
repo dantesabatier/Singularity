@@ -55,10 +55,10 @@
             </div>
         </div>
         {if !$selectedProperty->isDerived}
-            {switch $selectedProperty->type->value}
-                {case 100, 200, 300, 400, 500, 600, 700, 800, 900, 1100, 1200}
-                {switch $selectedProperty->type->value}
-                    {case 100, 200, 300}
+            {switch $selectedProperty->type}
+                {case Sabatier\CoreData\AttributeType::integer16, Sabatier\CoreData\AttributeType::integer32, Sabatier\CoreData\AttributeType::integer64, Sabatier\CoreData\AttributeType::decimal, Sabatier\CoreData\AttributeType::double, Sabatier\CoreData\AttributeType::float, Sabatier\CoreData\AttributeType::string, Sabatier\CoreData\AttributeType::boolean, Sabatier\CoreData\AttributeType::date, Sabatier\CoreData\AttributeType::uuid, Sabatier\CoreData\AttributeType::uri}
+                {switch $selectedProperty->type}
+                    {case case Sabatier\CoreData\AttributeType::integer16, Sabatier\CoreData\AttributeType::integer32, Sabatier\CoreData\AttributeType::integer64}
                     <div class="row mb-3 align-items-center">
                         <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                {case 400, 500, 600}
+                {case Sabatier\CoreData\AttributeType::decimal, Sabatier\CoreData\AttributeType::double, Sabatier\CoreData\AttributeType::float}
                     <div class="row mb-3 align-items-center">
                         <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
@@ -102,7 +102,7 @@
                             </div>
                         </div>
                     </div>
-                {case 700}
+                {case Sabatier\CoreData\AttributeType::string}
                     <div class="row align-items-center">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
@@ -139,7 +139,7 @@
                             <input type="text" name="regex" id="regex" placeholder="Regular Expression" class="form-control form-control-sm text-truncate" value="{$selectedProperty->regex}" autocomplete="off">
                         </div>
                     </div>
-                {case 800}
+                {case Sabatier\CoreData\AttributeType::boolean}
                     <div class="row mb-3 align-items-center">
                         <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
@@ -149,7 +149,7 @@
                             </select>
                         </div>
                     </div>
-                {case 900}
+                {case Sabatier\CoreData\AttributeType::date}
                     <div class="row align-items-center">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
@@ -186,7 +186,7 @@
                             </div>
                         </div>
                     </div>
-                {case 1100, 1200}
+                {case Sabatier\CoreData\AttributeType::uuid, Sabatier\CoreData\AttributeType::uri}
                     <div class="row mb-3 align-items-center">
                         <label for="defaultValue" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Default Value</label>
                         <div class="col-sm-9">
@@ -194,7 +194,7 @@
                         </div>
                     </div>
                 {/switch}
-            {case 1000}
+            {case Sabatier\CoreData\AttributeType::binaryData}
                 <div class="row">
                     <div class="col-sm-3"></div>
                     <div class="col-sm-9">
@@ -204,7 +204,7 @@
                         </div>
                     </div>
                 </div>
-            {case 1800}
+            {case Sabatier\CoreData\AttributeType::transformable}
                 <div class="row mb-3 align-items-center">
                     <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom Class</label>
                     <div class="col-sm-9">
@@ -229,7 +229,7 @@
                     </div>
                 </div>
             </div>
-        {elseif ($selectedProperty->type->value === 1800)}
+        {elseif ($selectedProperty->type === Sabatier\CoreData\AttributeType::transformable)}
             <div class="row mb-3 align-items-center">
                 <label for="attributeValueClassName" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Custom Class</label>
                 <div class="col-sm-9">

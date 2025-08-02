@@ -27,12 +27,11 @@
             Expression
         </div>
         <div class="row mt-3 mb-3 align-items-center">
-            {var array $types = [0 => "Undefined", 100 => "Integer 16", 200 => "Integer 32", 300 => "Integer 64", 400 => "Decimal", 500 => "Double", 600 => "Float", 700 => "String", 800 => "Boolean", 900 => "Date", 1000 => "Binary Data", 1100 => "UUID", 1200 => "URI", 1800 => "Transformable"]}
             <label for="expressionResultType" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
             <div class="col-sm-9">
                 <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm" data-autosave="true" {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
-                    <option n:foreach="$types as $key => $value" value="{$key}" {$key === $selectedIndexElement->expressionResultType?->value ? selected}>
-                        {$value}
+                    <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $selectedIndexElement->expressionResultType?->value ? selected}>
+                        {$attributeType->name}
                     </option>
                 </select>
             </div>
@@ -43,7 +42,6 @@
                 <input type="text" name="expressionFormat" placeholder="Expression" class="form-control form-control-sm text-truncate" value="{$selectedIndexElement->expressionFormat}" aria-label="expressionFormat" autocomplete="off" spellcheck="false" required {$selectedIndexElement->propertyName !== "Expression" ? disabled}>
             </div>
         </div>
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-        <input class="d-none" type="submit">
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
     </form>
 {/define}

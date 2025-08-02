@@ -20,6 +20,7 @@ use Exception;
 use Override;
 use ReflectionClass;
 use Sabatier\CoreData\AttributeType;
+use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
@@ -90,6 +91,9 @@ class Editor extends ProjectViewController
     /** @var ArrayClass<object{name: string, value: int}> */
     #[Outlet]
     private(set) ArrayClass $attributeTypes;
+    /** @var ArrayClass<object{name: string, value: int}> */
+    #[Outlet]
+    private(set) ArrayClass $fetchRequestResultTypes;
 
     private function className(Entity $entity, string $namespace): string
     {
@@ -164,6 +168,9 @@ class Editor extends ProjectViewController
             default => null
         });
         $this->attributeTypes = $attributeTypes;
+        /** @var ArrayClass<object{name: string, value: int}> $fetchRequestResultTypes */
+        $fetchRequestResultTypes = new ArrayClass([(object)["name" => "Objects", "value" => FetchRequestResultType::managedObjectResultType->value], (object)["name" => "Object IDs", "value" => FetchRequestResultType::managedObjectIDResultType->value], (object)["name" => "Dictionaries", "value" => FetchRequestResultType::dictionaryResultType->value]]);
+        $this->fetchRequestResultTypes = $fetchRequestResultTypes;
     }
 
     /**
