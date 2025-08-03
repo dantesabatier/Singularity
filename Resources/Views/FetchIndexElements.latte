@@ -25,8 +25,8 @@
                     <form action="/FetchIndexElement" method="POST">
                         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                         <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
-                        <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm transparent border-0 py-0 w-auto" aria-label="expressionResultType" data-autosave="true" {$element->propertyName !== "Expression" ? disabled}>
-                            <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $selectedIndexElement?->expressionResultType?->value ? selected}>
+                        <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm transparent border-0 py-0 w-auto" aria-label="expressionResultType" data-autosave="true">
+                            <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $element?->expressionResultType?->value ? selected}>
                                 {$attributeType->name}
                             </option>
                         </select>
