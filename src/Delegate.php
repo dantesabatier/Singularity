@@ -63,7 +63,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
             $fetchRequest->serialization = Dictionary::dictionaryWithArray([
                 "name" => AttributeType::string,
                 "url" => AttributeType::uri,
-                "model" => [ 
+                "model" => [
                     "url" => AttributeType::uri
                 ]
             ]);
