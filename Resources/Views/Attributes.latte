@@ -22,7 +22,7 @@
                         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                         <input type="hidden" name="objectID" value="{$attribute->objectID->referenceObject}">
                         <input type="hidden" name="attributeValueClassName" value="{$attribute->attributeValueClassName}">
-                        <select name="type" id="type" aria-label="Type" class="form-select form-select-sm transparent border-0 py-0 text-truncate" style="width: 120px;" onchange="setType(this)">
+                        <select name="type" id="type" aria-label="Type" class="form-select form-select-sm transparent border-0 py-0 w-auto" onchange="setType(this)">
                             <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $attribute->type->value ? selected}>
                                 {$attributeType->name}
                             </option>
