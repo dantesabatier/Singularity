@@ -39,7 +39,7 @@
             <tr>
                 <td>
                     <div class="d-inline-block">
-                        <button class="btn icon p-0" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, register)">
+                        <button class="btn icon p-0" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, register)">
                             <i class="bi bi-plus"></i>
                         </button>
                         <button class="btn icon p-0" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>

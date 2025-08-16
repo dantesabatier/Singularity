@@ -273,9 +273,10 @@ const create = async (completion = undefined) => {
  * @param {string} entity
  * @param {string} name
  * @param {object} parent
+ * @param {number} position
  * @param {function|undefined} completion
  */
-const add = async (entity, name, parent, completion = undefined) => {
+const add = async (entity, name, parent, position, completion = undefined) => {
     switch (entity) {
         case "Entity":
         case "FetchRequestTemplate":
@@ -288,7 +289,8 @@ const add = async (entity, name, parent, completion = undefined) => {
             break
         case "Attribute":
             const obj = {
-                name: name
+                name: name,
+                position: position
             }
             if (parent.entityName === "Entity") {
                 obj.entityProperty = parent
@@ -302,6 +304,7 @@ const add = async (entity, name, parent, completion = undefined) => {
         case "FetchIndex":
             await send(url(entity), {
                 name: name,
+                position: position,
                 entityProperty: parent
             }, "POST", completion)
             break

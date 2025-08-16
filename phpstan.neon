@@ -5,3 +5,5 @@ parameters:
 	ignoreErrors:
 		- identifier: property.staticAccess
 		- identifier: staticMethod.notFound
+		- identifier: assign.propertyType
+		  path: src/ViewControllers/Welcome.php

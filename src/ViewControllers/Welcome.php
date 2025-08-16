@@ -40,7 +40,6 @@ class Welcome extends ViewController
                 $fetchRequest = Project::fetchRequest();
                 $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
                 $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-                /** @phpstan-ignore assign.propertyType */
                 $this->projects = $this->managedObjectContext->fetch($fetchRequest);
             }
             return $this->projects;

@@ -51,7 +51,7 @@
                 <td>
                     <div class="d-inline-block">
                         {var ?App\Model\Attribute $attribute = $selectedEntity?->attributes?->filter(fn(App\Model\Attribute $attribute): bool => !$attribute->isDerived)?->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex?->elements?->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))}
-                        <button class="btn icon p-0" onclick="add({App\Model\FetchIndexElement::entity()->name}, {$attribute?->name}, {$selectedIndex}, register)" {!$attribute instanceof App\Model\Attribute ? disabled}>
+                        <button class="btn icon p-0" onclick="add({App\Model\FetchIndexElement::entity()->name}, {$attribute?->name}, {$selectedIndex}, {$selectedIndex?->elements?->count}, register)" {!$attribute instanceof App\Model\Attribute ? disabled}>
                             <i class="bi bi-plus"></i>
                         </button>
                         <button class="btn icon p-0" onclick="remove({$selectedIndexElement}, register)" {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
