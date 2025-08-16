@@ -301,10 +301,15 @@ const add = async (entity, name, parent, position, completion = undefined) => {
             break
         case "Relationship":
         case "FetchedProperty":
-        case "FetchIndex":
             await send(url(entity), {
                 name: name,
                 position: position,
+                entityProperty: parent
+            }, "POST", completion)
+            break
+        case "FetchIndex":
+            await send(url(entity), {
+                name: name,
                 entityProperty: parent
             }, "POST", completion)
             break
