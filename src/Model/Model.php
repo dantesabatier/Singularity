@@ -246,6 +246,10 @@ class Model extends ManagedObject
      */
     public function load(URL $url): void
     {
+        $propertyList = PropertyListSerialization::propertyListWithURL($url);
+        if (!$propertyList instanceof Dictionary) {
+            return;
+        }
         $context = $this->managedObjectContext;
         $entities = $this->entities;
         $progress = $this->progress;
@@ -263,10 +267,6 @@ class Model extends ManagedObject
                 $context->delete($fetchRequestTemplate);
             }
             $context->save();
-        }
-        $propertyList = PropertyListSerialization::propertyListWithURL($url);
-        if (!$propertyList instanceof Dictionary) {
-            return;
         }
         /** @var ArrayClass<Dictionary>|null $representations */
         $representations = $propertyList["entities"];
