@@ -18,14 +18,23 @@ class Preferences extends ViewController
     #[Outlet]
     public ?string $companyName {
         get => UserDefaults::standard()->string(CompanyNamePreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, CompanyNamePreferencesKey);
+        }
     }
     #[Outlet]
     public bool $automaticallyDeleteProjectFolders {
         get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFoldersPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, AutomaticallyDeleteProjectFoldersPreferencesKey);
+        }
     }
     #[Outlet]
     public bool $automaticallySaveModel {
         get => UserDefaults::standard()->bool(AutomaticallySaveModelPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, AutomaticallySaveModelPreferencesKey);
+        }
     }
 
     /**
@@ -36,7 +45,7 @@ class Preferences extends ViewController
     {
         $body = $this->request->parsedBody;
         foreach ($body as $key => $value) {
-            UserDefaults::standard()->setObject($value, $key);
+            $this->$key = $value;
         }
         $this->content = json_encode(UserDefaults::standard()->dictionaryRepresentation(), JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
         $this->headerFields["Content-Type"] = "application/json";
