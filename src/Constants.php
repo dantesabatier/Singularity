@@ -6,4 +6,3 @@ const CompanyNamePreferencesKey = "CompanyName";
 const AutomaticallyDeleteProjectFoldersPreferencesKey = "AutomaticallyDeleteProjectFolders";
 const AutomaticallySaveModelPreferencesKey = "AutomaticallySaveModel";
 const EntityPositionsMappingPreferencesKey = "EntityPositionsMapping";
-const NeedsReloadKey = "NeedsReload";
