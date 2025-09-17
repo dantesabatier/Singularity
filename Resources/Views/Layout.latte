@@ -35,21 +35,11 @@
             })
         })
         document.querySelectorAll("div[data-href]").forEach(e => {
-            const location = window.location.origin + e.dataset.href
-            e.addEventListener("click", () => {
-                if (window.location.href !== location) {
-                    push(location, register)
-                }
-            }, {
+            e.addEventListener("click", () => push(window.location.origin + e.dataset.href, register), {
                 once: true
             })
         })
-        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", () => {
-            const location = window.location.origin + e.dataset.href
-            if (window.location.href !== location) {
-                push(location, register)
-            }
-        }, {
+        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", () => push(window.location.origin + e.dataset.href, register), {
             once: true
         }))
         document.querySelectorAll("select[data-autosave=true]").forEach(e => {
