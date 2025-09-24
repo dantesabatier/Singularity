@@ -22,6 +22,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/db-viewer-component@4.4.9/dist/main.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.5.2/jscolor.min.js" integrity="sha512-qFhMEJrjI50TwLDGZ7Oi0ksTSWnFOqTNXhlqqUgWnE65S23rWUtQOv+tMNEybkMYSXKgAc3eg/SzkX+qrtJT/g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 <script type="text/javascript" src="../../electron/renderer.js" defer></script>
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
@@ -128,6 +129,16 @@
                         }
                     })
                 }
+            }
+        })
+        document.querySelectorAll(".color-picker").forEach(e => {
+            const picker = e.jscolor
+            picker.hideOnPaletteClick = true
+            picker.onChange = () => {
+                send("Project", {
+                    objectID: e.dataset.project,
+                    color: picker.toHEXString()
+                }, "PATCH", register)
             }
         })
     }
