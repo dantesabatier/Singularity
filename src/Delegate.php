@@ -22,6 +22,7 @@ use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
+use Sabatier\Service\PublicAccessPolicy;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\full_user_name;
 use const Sabatier\CoreData\PersistentHistoryTrackingKey;
@@ -47,7 +48,7 @@ class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public function applicationWillFinishLaunching(Application $application): void
     {
-        $application->isProtectedContentAvailable = true;
+        $application->accessPolicy = new PublicAccessPolicy();
         NotificationCenter::default()->addObserverForName(ManagedObjectContext::didSaveObjectsNotification, null, function (Notification $notification) use ($application): void {
             if (!UserDefaults::standard()->bool(AutomaticallySaveModelPreferencesKey) || !($referer = $application->request->valueForHttpHeaderField("Referer"))) {
                 return;
