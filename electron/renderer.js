@@ -66,10 +66,10 @@ const replace = async (url, completion = undefined) => {
  * @param {function|undefined} completion
  */
 const push = async (url, completion = undefined) => {
+    await replace(url, completion)
     if (window.location.href === url) {
         return
     }
-    await replace(url, completion)
     await history.pushState({url: url}, "", url)
 }
 
