@@ -81,8 +81,8 @@ class SubclassFileWriter extends FileWriter
             $path = $fileURL->path;
             if (FileManager::default()->fileExists($path) && ($contents = FileManager::default()->contents($path)) && ($index = strpos($contents, "class"))) {
                 $array = preg_split(sprintf("/%s/", preg_quote("\n", "/")), substring_to_index($contents, $index), -1, PREG_SPLIT_NO_EMPTY);
-                $uses->appendContentsOf(array_filter($array, fn(string $e): bool => str_starts_with($e, "use")));
-                $properties->appendContentsOf(array_filter($array, fn(string $e): bool => str_contains($e, "@property")));
+                $uses->appendContentsOf(array_map(fn(string $e): string => rtrim($e), array_filter($array, fn(string $e): bool => str_starts_with($e, "use"))));
+                $properties->appendContentsOf(array_map(fn(string $e): string => rtrim($e), array_filter($array, fn(string $e): bool => str_starts_with($e, " * @property"))));
                 $declaration = substring_from_index($contents, $index);
             } else {
                 $declaration = "class $class extends $superclass\n{\n}\n";
