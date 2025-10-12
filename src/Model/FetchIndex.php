@@ -26,7 +26,7 @@ use Sabatier\Foundation\Set;
  * @method Set<FetchIndexElement> intersectElements(Set $objects)
  * @method void setElements(Set $objects)
  */
-class FetchIndex extends ManagedObject
+final class FetchIndex extends ManagedObject
 {
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {

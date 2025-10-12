@@ -25,7 +25,7 @@ use function Sabatier\Foundation\substring_to_index;
 /**
  * @psalm-type SubclassNameGenerator = Closure(Entity, string): string
  */
-class SubclassFileWriter extends FileWriter
+final class SubclassFileWriter extends FileWriter
 {
     private readonly Entity $entity;
     private readonly string $class;

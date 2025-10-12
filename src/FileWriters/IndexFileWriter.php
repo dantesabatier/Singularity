@@ -4,7 +4,7 @@ namespace App\FileWriters;
 
 use Sabatier\Service\Application;
 
-class IndexFileWriter extends FileWriter
+final class IndexFileWriter extends FileWriter
 {
     public string $contents {
         get {

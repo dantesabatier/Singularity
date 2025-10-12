@@ -10,7 +10,7 @@ use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 
-class ProjectFileWriter extends FileWriter
+final class ProjectFileWriter extends FileWriter
 {
     private(set) Project $project;
 

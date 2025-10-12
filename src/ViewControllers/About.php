@@ -11,7 +11,7 @@ use const Sabatier\Foundation\kCFBundleShortVersionStringKey;
 use const Sabatier\Foundation\kCFBundleVersionKey;
 
 #[Endpoint]
-class About extends ViewController
+final class About extends ViewController
 {
     #[Outlet]
     public ?string $bundleName {

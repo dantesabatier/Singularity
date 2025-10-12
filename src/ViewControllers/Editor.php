@@ -44,7 +44,7 @@ use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 
 #[Endpoint]
-class Editor extends ProjectViewController
+final class Editor extends ProjectViewController
 {
     /** @var ArrayClass<Project> */
     #[Outlet]

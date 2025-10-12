@@ -10,7 +10,7 @@ use Sabatier\Service\Endpoint;
 use const App\EntityPositionsMappingPreferencesKey;
 
 #[Endpoint]
-class Viewer extends ProjectViewController
+final class Viewer extends ProjectViewController
 {
     /**
      * @throws Exception

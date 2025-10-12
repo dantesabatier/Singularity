@@ -22,7 +22,7 @@ use Sabatier\Foundation\KeyValueObservingOptions;
  * @property bool $isMinCountBounded
  * @property bool $isMaxCountBounded
  */
-class Relationship extends Property
+final class Relationship extends Property
 {
     private(set) ?Entity $destinationEntity {
         get => $this->destinationEntity ??= $this->entityProperty?->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->lazyDestinationEntityName);

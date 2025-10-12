@@ -22,7 +22,7 @@ use Sabatier\Foundation\KeyValueObservingOptions;
  * @property string|null $expressionFormat
  * @property FetchIndex $index
  */
-class FetchIndexElement extends ManagedObject
+final class FetchIndexElement extends ManagedObject
 {
     private(set) ?Property $property {
         get {

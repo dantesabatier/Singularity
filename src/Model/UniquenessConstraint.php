@@ -8,6 +8,6 @@ use Sabatier\CoreData\ManagedObject;
  * @property string $stringValue
  * @property Entity|null $entityProperty
  */
-class UniquenessConstraint extends ManagedObject
+final class UniquenessConstraint extends ManagedObject
 {
 }

@@ -4,7 +4,7 @@ namespace App\FileWriters;
 
 use Sabatier\Foundation\Dictionary;
 
-class EnvFileWriter extends FileWriter
+final class EnvFileWriter extends FileWriter
 {
     public string $contents {
         get => new Dictionary([

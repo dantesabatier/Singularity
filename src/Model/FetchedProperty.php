@@ -10,7 +10,7 @@ use Sabatier\Foundation\Dictionary;
  * @property string|null $fetchRequestSortDescriptorKey
  * @property bool $fetchRequestSortDescriptorIsAscending
  */
-class FetchedProperty extends Property
+final class FetchedProperty extends Property
 {
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {

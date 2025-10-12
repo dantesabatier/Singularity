@@ -20,7 +20,7 @@ use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
  * @property int<0, max> $position
  * @property Model|null $model
  */
-class Project extends ManagedObject
+final class Project extends ManagedObject
 {
     /**
      * @throws Exception

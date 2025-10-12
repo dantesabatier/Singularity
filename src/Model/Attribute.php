@@ -33,7 +33,7 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
  * @property bool $isDefaultValueBounded
  * @property CompositeType|null $compositeType
  */
-class Attribute extends Property
+final class Attribute extends Property
 {
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {

@@ -7,7 +7,7 @@ use Override;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\URL;
 
-class ModelFileWriter extends FileWriter
+final class ModelFileWriter extends FileWriter
 {
     private(set) Model $model;
 

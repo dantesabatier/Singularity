@@ -51,7 +51,7 @@ use Sabatier\Foundation\SortDescriptor;
  * @method Set<UniquenessConstraint> intersectUniquenessConstraints(Set $objects)
  * @method void setUniquenessConstraints(Set $objects)
  */
-class Entity extends ManagedObject
+final class Entity extends ManagedObject
 {
     private(set) ?Entity $rootEntity {
         get {

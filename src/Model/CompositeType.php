@@ -18,7 +18,7 @@ use Sabatier\Foundation\Set;
  * @method Set<Attribute> intersectElements(Set $objects)
  * @method void setElements(Set $objects)
  */
-class CompositeType extends ManagedObject
+final class CompositeType extends ManagedObject
 {
     public AttributeType $type = AttributeType::compositeAttributeType;
     /** @var Dictionary<mixed> */

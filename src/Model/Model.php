@@ -58,7 +58,7 @@ use const Sabatier\Foundation\kCFBundleNameKey;
  * @method Set<CompositeType> intersectCompositeTypes(Set $objects)
  * @method void setCompositeTypes(Set $objects)
  */
-class Model extends ManagedObject
+final class Model extends ManagedObject
 {
     /** @var Set<Entity> */
     private(set) Set $rootEntities {

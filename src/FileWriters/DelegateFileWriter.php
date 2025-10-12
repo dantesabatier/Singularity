@@ -8,7 +8,7 @@ use Sabatier\Foundation\ObjectClass;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 
-class DelegateFileWriter extends FileWriter
+final class DelegateFileWriter extends FileWriter
 {
     public string $name {
         get => $this->url->deletingPathExtension()->lastPathComponent;

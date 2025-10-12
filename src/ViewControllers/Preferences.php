@@ -13,7 +13,7 @@ use const App\AutomaticallySaveModelPreferencesKey;
 use const App\CompanyNamePreferencesKey;
 
 #[Endpoint]
-class Preferences extends ViewController
+final class Preferences extends ViewController
 {
     #[Outlet]
     public ?string $companyName {

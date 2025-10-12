@@ -28,7 +28,7 @@ use function Sabatier\Foundation\human_readable_value;
 use function Sabatier\Foundation\localized_string;
 use function Sabatier\Foundation\substring_to_index;
 
-class LatteRenderer extends Renderer
+final class LatteRenderer extends Renderer
 {
     private(set) Engine $engine {
         get => $this->engine ??= $this->initializeEngine();

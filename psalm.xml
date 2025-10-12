@@ -16,6 +16,5 @@
         <InternalMethod errorLevel="suppress"/>
         <InternalProperty errorLevel="suppress"/>
         <RiskyTruthyFalsyComparison errorLevel="suppress"/>
-        <ClassMustBeFinal errorLevel="suppress"/>
     </issueHandlers>
 </psalm>

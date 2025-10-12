@@ -28,7 +28,7 @@ use function Sabatier\Foundation\full_user_name;
 use const Sabatier\CoreData\PersistentHistoryTrackingKey;
 use const Sabatier\CoreData\PersistentStoreRemoteChangeNotificationPostOptionKey;
 
-class Delegate extends ObjectClass implements ApplicationDelegate
+final class Delegate extends ObjectClass implements ApplicationDelegate
 {
     #[Override]
     public static function initialize(): void

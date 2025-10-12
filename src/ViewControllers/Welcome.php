@@ -30,7 +30,7 @@ use function Sabatier\Foundation\random_color;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint("/")]
-class Welcome extends ViewController
+final class Welcome extends ViewController
 {
     /** @var ArrayClass<Project> */
     #[Outlet]

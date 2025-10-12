@@ -20,7 +20,7 @@ use Sabatier\Foundation\Dictionary;
  * @property bool $returnsDistinctResults
  * @property Model $model
  */
-class FetchRequestTemplate extends ManagedObject
+final class FetchRequestTemplate extends ManagedObject
 {
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
