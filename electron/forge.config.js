@@ -21,6 +21,17 @@ module.exports = {
                 language: 1033,
                 manufacturer: "Dante Sabatier"
             }
+        },
+        {
+            name: "@electron-forge/maker-deb",
+            config: {
+                options: {
+                    icon: "icon.ico",
+                    setupIcon: "icon.ico",
+                    language: 1033,
+                    manufacturer: "Dante Sabatier"
+                }
+            }
         }
     ],
     plugins: [
