@@ -287,7 +287,7 @@ final class Model extends ManagedObject
         /** @var ArrayClass<Dictionary>|null $representations */
         $representations = $propertyList["fetchRequests"];
         if ($representations) {
-            $this->fetchRequestTemplates = new Set($representations->map(fn(Dictionary $representation): FetchRequestTemplate => $this->newFetchRequest($representation)));
+            $this->fetchRequestTemplates = new Set($representations->map($this->newFetchRequest(...)));
         }
         $context->save();
     }

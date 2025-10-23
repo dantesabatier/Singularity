@@ -135,7 +135,7 @@ final class Entity extends ManagedObject
             if (!$fetchedProperties->isEmpty) {
                 $dictionary["fetchedProperties"] = $fetchedProperties;
             }
-            $uniquenessConstraints = $this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => new ArrayClass(explode(",", $uniquenessConstraint->stringValue))->map(fn(string $e): string => trim($e)));
+            $uniquenessConstraints = $this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => new ArrayClass(explode(",", $uniquenessConstraint->stringValue))->map(trim(...)));
             if (!$uniquenessConstraints->isEmpty) {
                 $dictionary["uniquenessConstraints"] = $uniquenessConstraints;
             }

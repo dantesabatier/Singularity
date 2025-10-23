@@ -42,11 +42,11 @@ final class LatteRenderer extends Renderer
         $engine = new Engine();
         $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
         $engine->addFilter("camelCase", fn(string $value): string => (string)preg_replace_callback("/\s(.)/", fn(array $matches) => strtoupper($matches[1]), $value));
-        $engine->addFilter("firstLower", fn(string $value): string => lcfirst($value));
+        $engine->addFilter("firstLower", lcfirst(...));
         $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
         $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
-        $engine->addFilter("json", fn(mixed $value): string => json_encode($value, JSON_THROW_ON_ERROR));
-        $engine->addFunction("img", fn(ManagedObject $object): string => $this->image($object));
+        $engine->addFilter("json", json_encode(...));
+        $engine->addFunction("img", $this->image(...));
         $engine->addFunction("localized", fn(string $value): string => localized_string($value));
         $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
         $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
