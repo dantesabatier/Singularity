@@ -46,7 +46,7 @@ try {
                 __DIR__ . "/src/FileWriters/SubclassFileWriter.php"
             ],
             FunctionLikeToFirstClassCallableRector::class => [
-                __DIR__ . "/src/FileWriters/LatteRenderer.php"
+                __DIR__ . "/src/LatteRenderer.php"
             ]
         ])->withPreparedSets(deadCode: true, codeQuality: true, earlyReturn: true);
 } catch (InvalidConfigurationException $e) {
