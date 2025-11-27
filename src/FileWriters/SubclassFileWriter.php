@@ -33,6 +33,9 @@ final class SubclassFileWriter extends FileWriter
     /** @var SubclassNameGenerator */
     private readonly Closure $classNameGenerator;
     public string $contents {
+        /**
+         * @throws \Exception
+         */
         get {
             $entity = $this->entity;
             $namespace = $this->namespace;

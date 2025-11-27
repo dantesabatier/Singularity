@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-    "php": "^8.4",
+    "php": "^8.5",
     "ext-json": "*",
     "ext-gettext": "*",
     "ext-intl": "*",
@@ -24,8 +24,8 @@
   },
   "config": {
     "platform": {
-      "ext-pcntl": "8.4",
-      "ext-posix": "8.4"
+      "ext-pcntl": "8.5",
+      "ext-posix": "8.5"
     }
   },
   "autoload": {

@@ -35,6 +35,9 @@ final class Welcome extends ViewController
     /** @var ArrayClass<Project> */
     #[Outlet]
     private(set) ArrayClass $projects {
+        /**
+         * @throws Exception
+         */
         get {
             if (!isset($this->projects)) {
                 $fetchRequest = Project::fetchRequest();

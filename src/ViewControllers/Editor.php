@@ -49,6 +49,9 @@ final class Editor extends ProjectViewController
     /** @var ArrayClass<Project> */
     #[Outlet]
     private(set) ArrayClass $projects {
+        /**
+         * @throws Exception
+         */
         get {
             if (!isset($this->projects)) {
                 $fetchRequest = Project::fetchRequest();

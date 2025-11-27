@@ -19,6 +19,9 @@ abstract class ProjectViewController extends ViewController
 {
     #[Outlet]
     public Project $project {
+        /**
+         * @throws Exception
+         */
         get => $this->project ??= $this->loadProject();
     }
 
