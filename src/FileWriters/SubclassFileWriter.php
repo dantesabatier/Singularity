@@ -7,6 +7,7 @@ use App\Model\Entity;
 use App\Model\FetchedProperty;
 use App\Model\Relationship;
 use Closure;
+use Exception;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectID;
@@ -34,7 +35,7 @@ final class SubclassFileWriter extends FileWriter
     private readonly Closure $classNameGenerator;
     public string $contents {
         /**
-         * @throws \Exception
+         * @throws Exception
          */
         get {
             $entity = $this->entity;
