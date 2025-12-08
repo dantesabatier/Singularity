@@ -9,7 +9,6 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
-use const App\AutomaticallySaveModelPreferencesKey;
 use const App\CompanyNamePreferencesKey;
 
 #[Endpoint]
@@ -27,13 +26,6 @@ final class Preferences extends ViewController
         get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFoldersPreferencesKey);
         set {
             UserDefaults::standard()->setBool($value, AutomaticallyDeleteProjectFoldersPreferencesKey);
-        }
-    }
-    #[Outlet]
-    public bool $automaticallySaveModel {
-        get => UserDefaults::standard()->bool(AutomaticallySaveModelPreferencesKey);
-        set {
-            UserDefaults::standard()->setBool($value, AutomaticallySaveModelPreferencesKey);
         }
     }
 
