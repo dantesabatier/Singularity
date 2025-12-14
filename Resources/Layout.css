@@ -3,9 +3,9 @@
     --nav-item-hover-bg: rgba(13, 110, 253, 0.33);
 }
 
-html, body {
+html,
+body {
     height: 100%;
-    margin: 0;
 }
 
 ul {
@@ -16,17 +16,6 @@ ul {
 
 button {
     -webkit-app-region: no-drag;
-}
-
-.scroll-view {
-    overflow: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.scroll-view::-webkit-scrollbar {
-    width: 0;
-    height: 0;
 }
 
 .table {
@@ -67,6 +56,11 @@ option:not(:checked) {
     max-height: calc(100vh - 100px);
 }
 
+.scroll-view {
+    overflow: hidden;
+    overflow-y: auto;
+}
+
 .btn-toggle {
     display: inline-flex;
     padding: 0;
@@ -81,6 +75,9 @@ option:not(:checked) {
     transition: transform .35s ease;
     transform-origin: .5em 50%;
     width: 16px;
+}
+
+.btn-toggle[aria-expanded="true"] {
 }
 
 .btn-toggle[aria-expanded="true"]::before {
@@ -98,19 +95,18 @@ option:not(:checked) {
     align-items: center;
     text-decoration: none;
     height: 26px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: background .2s;
-    white-space: nowrap;
 }
 
 .nav-item.active {
     font-weight: 600;
-    background-color: rgba(13, 110, 253, 0.2);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.16);
+    background-color: var(--nav-item-active-bg);
+    border-radius: 6px;
 }
 
 .nav-item:hover {
-    background-color: rgba(13, 110, 253, 0.15);
+    background-color: var(--nav-item-hover-bg);
+    border-radius: var(--bs-border-radius);
 }
 
 .space {
@@ -129,6 +125,12 @@ option:not(:checked) {
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+.space {
+    display: inline-block;
+    width: 24px;
+    padding: 0 8px;
 }
 
 db-viewer {
