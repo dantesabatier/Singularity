@@ -15,7 +15,7 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 
-abstract class ProjectViewController extends ViewController
+abstract class ProjectController extends ViewController
 {
     #[Outlet]
     public Project $project {

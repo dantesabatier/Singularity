@@ -1,4 +1,4 @@
-{templateType App\ViewControllers\Editor}
+{templateType App\ViewControllers\EditorController}
 {define fetchRequestTemplates}
     <div class="flex-column w-100">
         <div n:foreach="$project->model->fetchRequestTemplates as $fetchRequestTemplate" class="nav-item{$fetchRequestTemplate->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject && !$selectedIndex ? ' active'} d-block text-truncate w-100" id="fetchRequest-{$fetchRequestTemplate->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$fetchRequestTemplate->objectID->referenceObject}">

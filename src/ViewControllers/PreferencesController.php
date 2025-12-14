@@ -6,14 +6,16 @@ use Exception;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use const App\CompanyNamePreferencesKey;
 
-#[Endpoint]
-final class Preferences extends ViewController
+#[Endpoint("Preferences")]
+final class PreferencesController extends ViewController
 {
+    public string $name = "Preferences";
     #[Outlet]
     public ?string $companyName {
         get => UserDefaults::standard()->string(CompanyNamePreferencesKey);
@@ -32,14 +34,13 @@ final class Preferences extends ViewController
     /**
      * @throws Exception
      */
-    #[Action]
+    #[Action(decorators: [JSONDecorator::class])]
     public function synchronize(): void
     {
         $body = $this->request->parsedBody;
         foreach ($body as $key => $value) {
             $this->$key = $value;
         }
-        $this->content = json_encode(UserDefaults::standard()->dictionaryRepresentation(), JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->headerFields["Content-Type"] = "application/json";
+        $this->data = UserDefaults::standard()->dictionaryRepresentation();
     }
 }

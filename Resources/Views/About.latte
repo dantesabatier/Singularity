@@ -1,29 +1,26 @@
 {layout "Layout.latte"}
-{templateType App\ViewControllers\About}
+{templateType App\ViewControllers\AboutController}
 {block content}
-    <div id="main">
-        <div class="navbar sticky-top bg-dark small user-select-none p-0" style="height: 40px; -webkit-app-region: drag">
-            <div class="container-fluid px-2">
-                <div class="navbar-brand">
-                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block">
-                    <small>{$title}</small>
+    <div id="main" class="vh-100 d-flex flex-column bg-dark text-light">
+        <!-- Custom title bar -->
+        <div class="navbar sticky-top bg-dark small user-select-none p-0" style="height: 40px; -webkit-app-region: drag;">
+            <div class="container-fluid px-2 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block me-2">
+                    <small class="fs-6">{$title}</small>
                 </div>
-                <button class="btn icon p-0" onclick="window.close()">
-                    <i class="bi bi-x-lg"></i>
+                <button class="btn btn-dark btn-sm p-0" onclick="window.close()" style="-webkit-app-region: no-drag;">
+                    <i class="bi bi-x-lg text-light"></i>
                 </button>
             </div>
         </div>
-        <div class="container-fluid d-flex flex-column">
-            <div class="row align-items-start">
-                <div class="col-3">
-                    <img src="/Resources/Images/icon64@1x.png" srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x" alt="{$title}">
-                </div>
-                <div class="col-9">
-                    <div class="fs-3">{$bundleName} {$bundleShortVersion}</div>
-                    <div>Build #{$bundleVersion}</div>
-                    <small class="text-muted text-wrap-word">{$bundleHumanReadableCopyright}</small>
-                </div>
-            </div>
+
+        <!-- Main content -->
+        <div class="container-fluid flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center px-3">
+            <img src="/Resources/Images/icon64@1x.png" srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x" alt="{$title}" class="mb-3">
+            <h2 class="mb-1">{$bundleName} {$bundleShortVersion}</h2>
+            <p class="mb-1">Build #{$bundleVersion}</p>
+            <small class="text-muted text-wrap-word">{$bundleHumanReadableCopyright}</small>
         </div>
     </div>
 {/block}

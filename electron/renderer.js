@@ -70,7 +70,7 @@ const push = async (url, completion = undefined) => {
     if (window.location.href === url) {
         return
     }
-    await history.pushState({url: url}, "", url)
+    history.pushState({url: url}, "", url)
 }
 
 /**

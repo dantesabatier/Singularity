@@ -38,14 +38,16 @@ use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 
-#[Endpoint]
-final class Editor extends ProjectViewController
+#[Endpoint("Editor")]
+final class EditorController extends ProjectController
 {
+    public string $name = "Editor";
     /** @var ArrayClass<Project> */
     #[Outlet]
     private(set) ArrayClass $projects {
@@ -193,7 +195,7 @@ final class Editor extends ProjectViewController
     /**
      * @throws Exception
      */
-    #[Action]
+    #[Action(decorators: [JSONDecorator::class])]
     public function save(): void
     {
         $project = $this->project;
@@ -201,14 +203,13 @@ final class Editor extends ProjectViewController
         $url = $project->url ?? throw new BadRequestException("url cannot be null");
         $fileWriter = new ProjectFileWriter($url, $project);
         $fileWriter->save();
-        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->headerFields["Content-Type"] = "application/json";
+        $this->data = $project;
     }
 
     /**
      * @throws Exception
      */
-    #[Action]
+    #[Action(decorators: [JSONDecorator::class])]
     public function import(): void
     {
         $body = $this->request->parsedBody;
@@ -219,14 +220,13 @@ final class Editor extends ProjectViewController
         /** @var Model $model */
         $model = $project->model;
         $model->load(URL::fileURL($path));
-        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->headerFields["Content-Type"] = "application/json";
+        $this->data = $project;
     }
 
     /**
      * @throws Exception
      */
-    #[Action]
+    #[Action(decorators: [JSONDecorator::class])]
     public function subclass(): void
     {
         $project = $this->project;
@@ -258,7 +258,7 @@ final class Editor extends ProjectViewController
     /**
      * @throws Exception
      */
-    #[Action]
+    #[Action(decorators: [JSONDecorator::class])]
     public function reorder(): void
     {
         $body = $this->request->parsedBody;
@@ -294,7 +294,6 @@ final class Editor extends ProjectViewController
             $entity->properties = new Set($properties);
             $this->managedObjectContext->save();
         }
-        $this->content = json_encode($entity, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->headerFields["Content-Type"] = "application/json";
+        $this->data = $entity;
     }
 }

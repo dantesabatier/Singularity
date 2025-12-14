@@ -1,4 +1,4 @@
-{templateType App\ViewControllers\Editor}
+{templateType App\ViewControllers\EditorController}
 {define compositeTypes}
     <div class="flex-column w-100">
         <div n:foreach="$project->model->compositeTypes as $compositeType" class="nav-item{$compositeType->objectID->referenceObject === $selectedCompositeType?->objectID?->referenceObject && !$selectedIndex ? ' active'} d-block text-truncate w-100" id="fetchRequest-{$compositeType->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$compositeType->objectID->referenceObject}">

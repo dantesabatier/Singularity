@@ -23,6 +23,7 @@ use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
@@ -30,8 +31,9 @@ use function Sabatier\Foundation\random_color;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint("/")]
-final class Welcome extends ViewController
+final class WelcomeController extends ViewController
 {
+    public string $name = "Welcome";
     /** @var ArrayClass<Project> */
     #[Outlet]
     private(set) ArrayClass $projects {
@@ -52,7 +54,7 @@ final class Welcome extends ViewController
     /**
      * @throws Exception
      */
-    #[Action]
+    #[Action(decorators: [JSONDecorator::class])]
     public function create(): void
     {
         $body = $this->request->parsedBody;
@@ -69,14 +71,13 @@ final class Welcome extends ViewController
         $project->model = $model;
         $fileWriter = new ProjectFileWriter($url, $project);
         $fileWriter->save();
-        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->headerFields["Content-Type"] = "application/json";
+        $this->data = $project;
     }
 
     /**
      * @throws Exception
      */
-    #[Action(HTTPRequestMethod::patch)]
+    #[Action(HTTPRequestMethod::patch, decorators: [JSONDecorator::class])]
     public function rename(): void
     {
         $body = $this->request->parsedBody;
@@ -95,8 +96,7 @@ final class Welcome extends ViewController
         $dictionary = $bundle->infoDictionary;
         $dictionary[kCFBundleNameKey] = $name;
         PropertyListSerialization::writePropertyList($dictionary, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
-        $this->content = json_encode($project, JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR);
-        $this->headerFields["Content-Type"] = "application/json";
+        $this->data = $project;
     }
 
     /**

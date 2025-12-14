@@ -10,9 +10,10 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 use const Sabatier\Foundation\kCFBundleShortVersionStringKey;
 use const Sabatier\Foundation\kCFBundleVersionKey;
 
-#[Endpoint]
-final class About extends ViewController
+#[Endpoint("About")]
+final class AboutController extends ViewController
 {
+    public string $name = "About";
     #[Outlet]
     public ?string $bundleName {
         get => $this->bundle->object(kCFBundleNameKey);

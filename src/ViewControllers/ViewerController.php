@@ -7,15 +7,17 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\JSONDecorator;
 use const App\EntityPositionsMappingPreferencesKey;
 
-#[Endpoint]
-final class Viewer extends ProjectViewController
+#[Endpoint("Viewer")]
+final class ViewerController extends ProjectController
 {
+    public string $name = "Viewer";
     /**
      * @throws Exception
      */
-    #[Action]
+    #[Action(decorators: [JSONDecorator::class])]
     public function moved(): void
     {
         $name = $this->project->name;
@@ -27,7 +29,6 @@ final class Viewer extends ProjectViewController
         $project[$body["name"]] = $body["pos"];
         $dictionary[$name] = $project;
         UserDefaults::standard()->setObject($dictionary, EntityPositionsMappingPreferencesKey);
-        $this->content = json_encode([], JSON_THROW_ON_ERROR);
-        $this->headerFields["Content-Type"] = "application/json";
+        $this->data = [];
     }
 }

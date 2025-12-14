@@ -1,13 +1,16 @@
-{templateType App\ViewControllers\Editor}
-{define entities, $entities}
-    <div class="ps-{$entities ? 2 : 0}">
+{templateType App\ViewControllers\EditorController}
+{define entities, $entities, $level = 0}
+    <div class="ps-{$level * 2}">
         <div n:foreach="$entities ?? $project->model->rootEntities as $entity">
-            <div class="nav-item{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'} d-block text-truncate w-100" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
-                <form action="/Entity" method="POST">
-                    <span n:if="$entity->isLeaf" class="space"></span>
-                    <button n:else class="btn btn-toggle ps-2" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="{$entity->isExpanded|json}"></button>
+            <div class="nav-item{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'} d-block text-truncate w-100" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}" title="{$entity->name}">
+                <form action="/Entity" method="POST" class="d-flex align-items-center">
+                    {if !$entity->isLeaf}
+                        <button class="btn btn-toggle me-1" type="button" data-bs-toggle="collapse" data-bs-target="#{$entity->name}" aria-controls="{$entity->name}" aria-expanded="{$entity->isExpanded|json}"></button>
+                    {else}
+                        <span class="space"></span>
+                    {/if}
                     <img class="ps-1" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="entity">
-                    <span class="px-1">{$entity->name}</span>
+                    <span class="px-1 text-truncate">{$entity->name}</span>
                     <input type="hidden" name="objectID" value="{$entity->objectID->referenceObject}">
                     <input type="hidden" name="entityName" value="{$entity->entityName}">
                     <input type="hidden" name="name" value="{$entity->name}">
@@ -17,14 +20,14 @@
             </div>
             <div class="collapse {$entity->isExpanded || $entity->isLeaf ? show}" id="{$entity->name}">
                 <div n:if="$entity->indexesCount" class="ps-2">
-                    <div n:foreach="$entity->indexes as $index" class="nav-item{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'} d-block text-truncate w-100" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}">
+                    <div n:foreach="$entity->indexes as $index" class="nav-item{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'} d-block text-truncate w-100" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}" title="{$index->name}">
                         <span class="space"></span>
                         <img class="ps-1" src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="index">
-                        <span class="px-1">{$index->name}</span>
+                        <span class="px-1 text-truncate">{$index->name}</span>
                     </div>
                 </div>
                 <div n:if="!$entity->isLeaf">
-                    {include entities, $entity->subentities}
+                    {include entities, $entity->subentities, $level + 1}
                 </div>
             </div>
         </div>

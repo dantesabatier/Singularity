@@ -1,5 +1,5 @@
 {layout "Layout.latte"}
-{templateType App\ViewControllers\Editor}
+{templateType App\ViewControllers\EditorController}
 {block title}{$project->name}{/block}
 {block content}
     <div id="main" class="user-select-none">
@@ -124,13 +124,13 @@
         </nav>
         <div class="container-fluid d-flex flex-column">
             <div class="row">
-                <div id="source" class="scroll-view col-sm-3 border-end border-black" style="height: calc(100vh - 68px)">
+                <div id="source" class="scroll-view col-sm-3 border-end border-black p-2" style="height: calc(100vh - 68px)">
                     {include sourceList from "SourceList.latte"}
                 </div>
-                <div id="content" class="scroll-view col-sm-6" style="height: calc(100vh - 68px)">
+                <div id="content" class="scroll-view col-sm-6 p-2" style="height: calc(100vh - 68px)">
                     {include content from "Content.latte"}
                 </div>
-                <div id="sidebar" class="scroll-view col-sm-3 border-start border-black" style="height: calc(100vh - 68px)">
+                <div id="sidebar" class="scroll-view col-sm-3 border-start border-black p-2" style="height: calc(100vh - 68px)">
                     {include inspector from "Inspector.latte"}
                 </div>
             </div>
