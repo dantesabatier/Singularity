@@ -13,6 +13,7 @@ use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 use Sabatier\Service\PublicAccessPolicy;
 use Sabatier\Service\ViewController;
+use Throwable;
 use function Sabatier\Foundation\full_user_name;
 use const Sabatier\CoreData\PersistentHistoryTrackingKey;
 use const Sabatier\CoreData\PersistentStoreRemoteChangeNotificationPostOptionKey;
@@ -46,6 +47,11 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
 
     #[Override]
     public function applicationWillTerminate(Application $application): void
+    {
+    }
+
+    #[Override]
+    public function applicationDidCrash(Application $application, Throwable $throwable): void
     {
     }
 }
