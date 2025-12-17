@@ -80,7 +80,7 @@ const createWindow = () => {
     window.webContents.session.webRequest.onHeadersReceived({urls: [ENTRY_URL + "*"]}, (details, callback) => {
         callback({cancel: details.resourceType === "mainFrame" && details.url === ENTRY_URL && details.statusCode >= 400})
     })
-    window.webContents.on("did-stop-loading", async () => {
+    window.webContents.on("did-fail-load", async () => {
         try {
             const response = await fetch(ENTRY_URL)
             const json = await response.json()
