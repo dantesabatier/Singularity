@@ -76,7 +76,40 @@ const createWindow = () => {
             ...options
         }
     }))
-    window.on("ready-to-show", () => window.show())
+    window.webContents.session.webRequest.onHeadersReceived({urls: ["http://localhost:8001/*"]}, (details, callback) => {
+        callback({cancel: details.statusCode >= 400})
+    })
+    window.webContents.on("did-stop-loading", async () => {
+        try {
+            const response = await fetch("http://localhost:8001")
+            const json = await response.json()
+            if (json.error) {
+                const error = json.error;
+                let message = error.localizedDescription ?? "Unexpected error";
+                let detail = error.localizedFailureReason ?? "";
+                if (error.localizedRecoverySuggestion) {
+                    detail += detail ? `\n${error.localizedRecoverySuggestion}` : error.localizedRecoverySuggestion;
+                }
+                if (error.userInfo) {
+                    detail += detail ? `\n${JSON.stringify(error.userInfo, null, 4)}` : JSON.stringify(error.userInfo, null, 4);
+                }
+                await dialog.showMessageBox({
+                    type: "error",
+                    title: message,
+                    message: detail || message,
+                    buttons: ["OK"]
+                })
+            }
+        } catch (e) {
+            await dialog.showMessageBox({
+                type: "error",
+                title: "Failed to load",
+                message: "Could not parse error response.",
+                buttons: ["OK"]
+            })
+        }
+    })
+    window.on("ready-to-show", async () => window.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     window.loadURL("http://localhost:8001")
 }
