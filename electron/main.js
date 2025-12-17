@@ -46,6 +46,7 @@ if (handleSquirrelEvent()) {
 }
 
 Menu.setApplicationMenu(null)
+const ENTRY_URL = "http://localhost:8001/"
 const options = {
     webPreferences: {
         webSecurity: false,
@@ -76,12 +77,12 @@ const createWindow = () => {
             ...options
         }
     }))
-    window.webContents.session.webRequest.onHeadersReceived({urls: ["http://localhost:8001/*"]}, (details, callback) => {
-        callback({cancel: details.statusCode >= 400})
+    window.webContents.session.webRequest.onHeadersReceived({urls: [ENTRY_URL + "*"]}, (details, callback) => {
+        callback({cancel: details.resourceType === "mainFrame" && details.url === ENTRY_URL && details.statusCode >= 400})
     })
     window.webContents.on("did-stop-loading", async () => {
         try {
-            const response = await fetch("http://localhost:8001")
+            const response = await fetch(ENTRY_URL)
             const json = await response.json()
             if (json.error) {
                 const error = json.error;
@@ -111,7 +112,7 @@ const createWindow = () => {
     })
     window.on("ready-to-show", async () => window.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
-    window.loadURL("http://localhost:8001")
+    window.loadURL(ENTRY_URL)
 }
 app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
