@@ -14,6 +14,7 @@ use const App\EntityPositionsMappingPreferencesKey;
 final class ViewerController extends ProjectController
 {
     public string $name = "Viewer";
+
     /**
      * @throws Exception
      */

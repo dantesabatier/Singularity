@@ -145,7 +145,7 @@ final class Model extends ManagedObject
             $entity->renamingIdentifier = $dictionary["renamingIdentifier"];
             /** @var Set<Property> $properties */
             $properties = new Set();
-            /** @var ArrayClass<Dictionary>|null $attributes */
+            /** @var ArrayClass<Dictionary<mixed>>|null $attributes */
             $attributes = $dictionary["attributes"];
             if ($attributes) {
                 $properties->appendContentsOf($attributes->map(function (Dictionary $description) use ($context, $entity): Attribute {
@@ -171,7 +171,7 @@ final class Model extends ManagedObject
                     return $attribute;
                 }));
             }
-            /** @var ArrayClass<Dictionary>|null $relationships */
+            /** @var ArrayClass<Dictionary<mixed>>|null $relationships */
             $relationships = $dictionary["relationships"];
             if ($relationships) {
                 $properties->appendContentsOf($relationships->map(function (Dictionary $description) use ($context, $entity): Relationship {
@@ -181,7 +181,7 @@ final class Model extends ManagedObject
                     return $relationship;
                 }));
             }
-            /** @var ArrayClass<Dictionary>|null $fetchedProperties */
+            /** @var ArrayClass<Dictionary<mixed>>|null $fetchedProperties */
             $fetchedProperties = $dictionary["fetchedProperties"];
             if ($fetchedProperties) {
                 $properties->appendContentsOf($fetchedProperties->map(function (Dictionary $description) use ($context, $entity): FetchedProperty {
@@ -197,7 +197,7 @@ final class Model extends ManagedObject
             if ($superentity) {
                 $entity->superentity = $this->newEntity($superentity);
             }
-            /** @var ArrayClass<Dictionary>|null $subentities */
+            /** @var ArrayClass<Dictionary<mixed>>|null $subentities */
             $subentities = $dictionary["subentities"];
             if ($subentities) {
                 $entity->subentities = new Set($subentities->map(function (Dictionary $description) use ($entity): Entity {
@@ -213,10 +213,10 @@ final class Model extends ManagedObject
                 $uniquenessConstraint->stringValue = $array->join(",");
                 return $uniquenessConstraint;
             }));
-            /** @var ArrayClass<Dictionary> $indexes */
+            /** @var ArrayClass<Dictionary<mixed>> $indexes */
             $indexes = $dictionary["indexes"] ?? new ArrayClass();
             $entity->indexes = new Set($indexes->map(function (Dictionary $description) use ($context, $entity): FetchIndex {
-                /** @var ArrayClass<Dictionary> $elements */
+                /** @var ArrayClass<Dictionary<mixed>> $elements */
                 $elements = $description["elements"] ?? new ArrayClass();
                 $fetchIndex = new FetchIndex($context);
                 $fetchIndex->name = $description["name"];
@@ -268,7 +268,7 @@ final class Model extends ManagedObject
             }
             $context->save();
         }
-        /** @var ArrayClass<Dictionary>|null $representations */
+        /** @var ArrayClass<Dictionary<mixed>>|null $representations */
         $representations = $propertyList["entities"];
         if ($representations) {
             /** @var Set<Entity> $entities */
@@ -284,7 +284,7 @@ final class Model extends ManagedObject
             $this->entities = $entities->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
         }
         $this->compositeTypes = new Set($this->compositeTypesByName->values);
-        /** @var ArrayClass<Dictionary>|null $representations */
+        /** @var ArrayClass<Dictionary<mixed>>|null $representations */
         $representations = $propertyList["fetchRequests"];
         if ($representations) {
             $this->fetchRequestTemplates = new Set($representations->map($this->newFetchRequest(...)));
