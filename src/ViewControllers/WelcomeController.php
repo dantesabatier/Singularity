@@ -24,7 +24,7 @@ use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
-use function Sabatier\Foundation\random_bright_color;
+use function Sabatier\Foundation\random_color;
 
 #[Endpoint("/")]
 final class WelcomeController extends ViewController
@@ -67,7 +67,7 @@ final class WelcomeController extends ViewController
         $project->creationDate = new Date();
         $project->name = $name;
         $project->url = $url;
-        $project->color = random_bright_color($name);
+        $project->color = random_color($name);
         $project->model = $model;
         $fileWriter = new ProjectFileWriter($url, $project, $generateWithSecurity, $generateWithCORS, $generateWithJWT);
         $fileWriter->save();
