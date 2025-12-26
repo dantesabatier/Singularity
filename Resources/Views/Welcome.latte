@@ -44,12 +44,18 @@
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><button class="dropdown-item" onclick="show({$project})">Open Selected</button></li>
-                                            <li><button class="dropdown-item" onclick="explorer({$path})">Show in Explorer</button></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><button class="dropdown-item" onclick="rename({$project})">Rename Project...</button></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><button class="dropdown-item" onclick="remove({$project}, register)">Remove Project</button></li>
+                                            <li>
+                                                <button class="dropdown-item" onclick="show({$project})">Open Selected</button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item" onclick="explorer({$path})">Show in Explorer</button>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item" onclick="remove({$project}, register)">Remove Project</button>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>
@@ -112,30 +118,4 @@
             </div>
         </div>
     </div>
-    <script>
-        /**
-         * @param { object } project
-         */
-        const rename = (project) => {
-            const element = document.getElementById("editProject")
-            /**
-             * @type { HTMLFormElement }
-             */
-            const form = element.querySelector(".modal-content form")
-            /**
-             * @type { HTMLInputElement }
-             */
-            const nameElement = form.querySelector("input[type=text]")
-            nameElement.value = project.name
-            const footer = form.querySelector(".modal-footer")
-            /**
-             * @type { HTMLInputElement }
-             */
-            const projectElement = footer.querySelector("input[name=objectID]")
-            projectElement.value = project.objectID
-            const modal = new bootstrap.Modal(element, {})
-            modal.show(undefined)
-            element.addEventListener("shown.bs.modal", () => nameElement.focus())
-        }
-    </script>
 {/block}
