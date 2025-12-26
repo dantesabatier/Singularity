@@ -368,7 +368,7 @@ const showNewProjectPanel = async () => window.api?.showWindow({
     url: `${window.location.origin}${url("NewProject")}`,
     overrideBrowserWindowOptions: {
         width: 500,
-        height: 360,
+        height: 320,
         modal: true,
         titleBarOverlay: false
     }
