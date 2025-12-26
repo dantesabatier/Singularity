@@ -55,9 +55,9 @@ final class WelcomeController extends ViewController
     {
         $body = $this->request->parsedBody;
         $path = $body["path"] ?? throw new BadRequestException();
-        $generateWithSecurity = $body["generateWithSecurity"] ?? true;
-        $generateWithCORS = $body["generateWithCORS"] ?? true;
-        $generateWithJWT = $body["generateWithJWT"] ?? true;
+        $generateWithSecurity = $body["generateWithSecurity"] ?? false;
+        $generateWithCORS = $body["generateWithCORS"] ?? false;
+        $generateWithJWT = $body["generateWithJWT"] ?? false;
         $url = URL::fileURL($path);
         $name = $url->lastPathComponent;
         $context = $this->managedObjectContext;

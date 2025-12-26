@@ -18,7 +18,7 @@ final class ProjectFileWriter extends FileWriter
     private bool $isGeneratedWithCORS;
     private bool $isGeneratedWithJWT;
 
-    public function __construct(URL $url, Project $project, bool $isGeneratedWithSecurity, bool $generateWithCORS, bool $generateWithJWT)
+    public function __construct(URL $url, Project $project, bool $isGeneratedWithSecurity = false, bool $generateWithCORS = false, bool $generateWithJWT = false)
     {
         parent::__construct($url);
         $this->project = $project;
