@@ -68,6 +68,12 @@
         }, {
             once: true
         }))
+        document.querySelectorAll(".form-new-project").forEach(e => e.addEventListener("submit", event => {
+            event.preventDefault()
+            create(e)
+        }, {
+            once: true
+        }))
         document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", event => {
             if (e.checkValidity()) {
                 event.preventDefault()
@@ -85,6 +91,9 @@
         }))
         document.querySelectorAll("form:not(.needs-validation)").forEach(e => e.addEventListener("submit", event => {
             event.preventDefault()
+            if (e.classList.contains("form-new-project")) {
+                return
+            }
             submit(e, register)
         }, {
             once: true

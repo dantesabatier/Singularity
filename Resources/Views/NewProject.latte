@@ -9,9 +9,6 @@
                     <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block me-2">
                     <small class="fs-6">{$title}</small>
                 </div>
-                <button class="btn btn-dark btn-sm p-0" onclick="window.close()" style="-webkit-app-region: no-drag;">
-                    <i class="bi bi-x-lg text-light"></i>
-                </button>
             </div>
         </div>
 
@@ -25,7 +22,7 @@
                     <div class="spinner-border spinner-border-sm text-primary float-end" role="status" hidden>
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <form action="/Create" method="post" class="needs-validation form-new-project">
+                    <form action="/Create" method="post" class="form-new-project">
                         <div class="mb-3">
                             <label for="path" class="col-form-label col-form-label-sm">Folder</label>
                             <div class="input-group input-group-sm">
@@ -45,7 +42,10 @@
                             <label class="form-check-label" for="generateWithJWT" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Adds JWT configuration keys to .env and prepares the project for Bearer authentication.">Enable Bearer Authentication (JWT)</label>
                             <input class="form-check-input" type="checkbox" name="generateWithJWT" id="generateWithJWT" value="{$generateWithJWT|json}" {$generateWithJWT ? checked}>
                         </div>
-                        <button type="submit" id="create" class="btn btn-primary mt-3" disabled>Create</button>
+                        <div class="mt-3 d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-secondary" onclick="window.close()">Cancel</button>
+                            <button type="submit" id="create" class="btn btn-primary" disabled>Create</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -67,15 +67,5 @@
                 createBtn.disabled = !pathInput.value.trim()
             }
         }
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll(".form-new-project").forEach(e => e.addEventListener("submit", event => {
-                event.preventDefault()
-                create(e)
-            }, {
-                once: true
-            }))
-        }, {
-            once: true
-        })
     </script>
 {/block}
