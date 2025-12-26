@@ -40,7 +40,7 @@
             <div class="col-sm-9">
                 <div class="form-check form-check-inline form-control-sm">
                     <label class="form-check-label" for="fetchRequestSortDescriptorIsAscending">Ascending</label>
-                    <input class="form-check-input" type="checkbox" name="fetchRequestSortDescriptorIsAscending" value="{$selectedProperty->fetchRequestSortDescriptorIsAscending}" id="fetchRequestSortDescriptorIsAscending" {$selectedProperty->fetchRequestSortDescriptorIsAscending ? checked}>
+                    <input class="form-check-input" type="checkbox" name="fetchRequestSortDescriptorIsAscending" value="{$selectedProperty->fetchRequestSortDescriptorIsAscending|json}" id="fetchRequestSortDescriptorIsAscending" {$selectedProperty->fetchRequestSortDescriptorIsAscending ? checked}>
                 </div>
             </div>
         </div>

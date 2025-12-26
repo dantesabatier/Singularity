@@ -1,0 +1,81 @@
+{layout "Layout.latte"}
+{templateType App\ViewControllers\NewProjectController}
+{block content}
+    <div id="main" class="vh-100 d-flex flex-column bg-dark text-light">
+        <!-- Custom title bar -->
+        <div class="navbar sticky-top bg-dark small user-select-none p-0" style="height: 40px; -webkit-app-region: drag;">
+            <div class="container-fluid px-2 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block me-2">
+                    <small class="fs-6">{$title}</small>
+                </div>
+                <button class="btn btn-dark btn-sm p-0" onclick="window.close()" style="-webkit-app-region: no-drag;">
+                    <i class="bi bi-x-lg text-light"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="container-fluid d-flex flex-column user-select-none">
+            <div class="card border-0 h-100">
+                <div class="card-header bg-dark border-0">
+                    <h5 class="card-title">Create a new project</h5>
+                </div>
+                <div class="card-body">
+                    <div class="spinner-border spinner-border-sm text-primary float-end" role="status" hidden>
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <form action="/Create" method="post" class="needs-validation form-new-project">
+                        <div class="mb-3">
+                            <label for="path" class="col-form-label col-form-label-sm">Folder</label>
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="path" id="path" placeholder="Select a folder where the project will be created" class="form-control form-control-sm" value="{$path}" readonly>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Browse your file system and select the target folder for the new project." onclick="choose()">Choose...</button>
+                            </div>
+                        </div>
+                        <div class="form-check form-control-sm mb-8">
+                            <label class="form-check-label" for="generateWithSecurity" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Generates project code with stricter access control policies.">Enable advanced security policies</label>
+                            <input class="form-check-input" type="checkbox" name="generateWithSecurity" id="generateWithSecurity" value="{$generateWithSecurity|json}" {$generateWithSecurity ? checked}>
+                        </div>
+                        <div class="form-check form-control-sm">
+                            <label class="form-check-label" for="generateWithCORS" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Adds default CORS configuration to .env to allow requests from external frontends such as React or Vue.">Allow access from external web apps (CORS)</label>
+                            <input class="form-check-input" type="checkbox" name="generateWithCORS" id="generateWithCORS" value="{$generateWithCORS|json}" {$generateWithCORS ? checked}>
+                        </div>
+                        <div class="form-check form-control-sm">
+                            <label class="form-check-label" for="generateWithJWT" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Adds JWT configuration keys to .env and prepares the project for Bearer authentication.">Enable Bearer Authentication (JWT)</label>
+                            <input class="form-check-input" type="checkbox" name="generateWithJWT" id="generateWithJWT" value="{$generateWithJWT|json}" {$generateWithJWT ? checked}>
+                        </div>
+                        <button type="submit" id="create" class="btn btn-primary mt-3" disabled>Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const choose = async () => {
+            const path = await browse()
+            if (!!path) {
+                /**
+                 * @type { HTMLInputElement }
+                 */
+                const pathInput = document.getElementById("path")
+                pathInput.value = path
+                /**
+                 * @type { HTMLButtonElement }
+                 */
+                const createBtn = document.getElementById("create")
+                createBtn.disabled = !pathInput.value.trim()
+            }
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".form-new-project").forEach(e => e.addEventListener("submit", event => {
+                event.preventDefault()
+                create(e)
+            }, {
+                once: true
+            }))
+        }, {
+            once: true
+        })
+    </script>
+{/block}

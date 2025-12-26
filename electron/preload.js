@@ -17,8 +17,10 @@ contextBridge.exposeInMainWorld("api", {
         properties: properties,
         filters: filters
     }),
+    notifyProjectCreated: () => ipcRenderer.send("notifyProjectCreated"),
     showAboutPanel: (options) => ipcRenderer.send("showAboutPanel", options),
     showWindow: (options) => ipcRenderer.send("showWindow", options),
     setProgressBar: (progress => ipcRenderer.send("setProgressBar", progress)),
-    openPath: (path) => ipcRenderer.send("openPath", path)
+    openPath: (path) => ipcRenderer.send("openPath", path),
+    onProjectRefreshRequested: (handler) => ipcRenderer.on("refreshProjects", handler),
 })

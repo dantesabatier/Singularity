@@ -49,7 +49,7 @@
             <div class="col-sm-9">
                 <div class="form-check form-check-inline form-control-sm">
                     <label class="form-check-label" for="includesSubentities">Include Subentities</label>
-                    <input class="form-check-input" type="checkbox" name="includesSubentities" value="{$selectedFetchRequestTemplate->includesSubentities}" id="includesSubentities" {$selectedFetchRequestTemplate->includesSubentities ? checked}>
+                    <input class="form-check-input" type="checkbox" name="includesSubentities" value="{$selectedFetchRequestTemplate->includesSubentities|json}" id="includesSubentities" {$selectedFetchRequestTemplate->includesSubentities ? checked}>
                 </div>
                 <div class="form-check form-check-inline form-control-sm">
                     <label class="form-check-label" for="includesPropertyValues">Include Property Values</label>
@@ -57,11 +57,11 @@
                 </div>
                 <div class="form-check form-check-inline form-control-sm">
                     <label class="form-check-label" for="returnsObjectsAsFaults">Return Objects as Faults</label>
-                    <input class="form-check-input" type="checkbox" name="returnsObjectsAsFaults" value="{$selectedFetchRequestTemplate->returnsObjectsAsFaults}" id="returnsObjectsAsFaults" {$selectedFetchRequestTemplate->returnsObjectsAsFaults ? checked}>
+                    <input class="form-check-input" type="checkbox" name="returnsObjectsAsFaults" value="{$selectedFetchRequestTemplate->returnsObjectsAsFaults|json}" id="returnsObjectsAsFaults" {$selectedFetchRequestTemplate->returnsObjectsAsFaults ? checked}>
                 </div>
                 <div class="form-check form-check-inline form-control-sm">
                     <label class="form-check-label" for="includesPendingChanges">Include Pending Changes</label>
-                    <input class="form-check-input" type="checkbox" name="includesPendingChanges" value="{$selectedFetchRequestTemplate->includesPendingChanges}" id="includesPendingChanges" {$selectedFetchRequestTemplate->includesPendingChanges ? checked}>
+                    <input class="form-check-input" type="checkbox" name="includesPendingChanges" value="{$selectedFetchRequestTemplate->includesPendingChanges|json}" id="includesPendingChanges" {$selectedFetchRequestTemplate->includesPendingChanges ? checked}>
                 </div>
                 <div class="form-check form-check-inline form-control-sm mb-3">
                     <label class="form-check-label" for="returnsDistinctResults">Return Distinct Results</label>

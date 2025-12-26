@@ -1,7 +1,7 @@
 if (require("electron-squirrel-startup")) {
     return
 }
-const {app, ipcMain, dialog, shell, BrowserWindow, Menu} = require("electron")
+const {app, ipcMain, dialog, shell, BrowserWindow} = require("electron")
 const ChildProcess = require("child_process")
 const path = require("path")
 
@@ -45,7 +45,6 @@ if (handleSquirrelEvent()) {
     return
 }
 
-Menu.setApplicationMenu(null)
 const ENTRY_URL = "http://localhost:8001/"
 const options = {
     webPreferences: {
@@ -65,22 +64,23 @@ const options = {
     },
     show: false
 }
+let mainWindow = null
 const createWindow = () => {
-    const window = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         ...options,
         width: 600,
         height: 480
     })
-    window.webContents.setWindowOpenHandler(() => ({
+    mainWindow.webContents.setWindowOpenHandler(() => ({
         action: "allow",
         overrideBrowserWindowOptions: {
             ...options
         }
     }))
-    window.webContents.session.webRequest.onHeadersReceived({urls: [ENTRY_URL + "*"]}, (details, callback) => {
+    mainWindow.webContents.session.webRequest.onHeadersReceived({urls: [ENTRY_URL + "*"]}, (details, callback) => {
         callback({cancel: details.resourceType === "mainFrame" && details.url === ENTRY_URL && details.statusCode >= 400})
     })
-    window.webContents.on("did-fail-load", async () => {
+    mainWindow.webContents.on("did-fail-load", async () => {
         try {
             const response = await fetch(ENTRY_URL)
             const json = await response.json()
@@ -110,11 +110,10 @@ const createWindow = () => {
             })
         }
     })
-    window.on("ready-to-show", async () => window.show())
+    mainWindow.on("ready-to-show", async () => mainWindow.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
-    window.loadURL(ENTRY_URL)
+    mainWindow.loadURL(ENTRY_URL)
 }
-app.commandLine.appendSwitch("--enable-features", "OverlayScrollbar, FluentOverlayScrollbars, ElasticOverscrollWin")
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())
 ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(BrowserWindow.fromWebContents(event.sender), {
@@ -169,3 +168,6 @@ ipcMain.on("showWindow", (event, arg) => {
 })
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
 ipcMain.on("openPath", (event, arg) => shell.openPath(arg))
+ipcMain.on("notifyProjectCreated", () => {
+    mainWindow.webContents.send("refreshProjects")
+})

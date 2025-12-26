@@ -39,7 +39,7 @@
                     <form action="/FetchIndexElement" method="POST">
                         <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
                         <input type="hidden" name="propertyName" value="{$element->propertyName}">
-                        <input class="form-check-input" type="checkbox" name="isAscending" value="{$element->isAscending}" id="isAscending" aria-label="Ascending" {$element->isAscending ? checked}>
+                        <input class="form-check-input" type="checkbox" name="isAscending" value="{$element->isAscending|json}" id="isAscending" aria-label="Ascending" {$element->isAscending ? checked}>
                         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                     </form>
                 </td>

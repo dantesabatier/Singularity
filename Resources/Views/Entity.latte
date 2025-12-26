@@ -17,7 +17,7 @@
                 <div class="col-sm-9">
                     <div class="form-check form-check-inline form-control-sm">
                         <label class="form-check-label" for="isAbstract">Abstract Entity</label>
-                        <input class="form-check-input" type="checkbox" name="isAbstract" id="isAbstract" value="{$selectedEntity->isAbstract}" {$selectedEntity->isAbstract ? checked}>
+                        <input class="form-check-input" type="checkbox" name="isAbstract" id="isAbstract" value="{$selectedEntity->isAbstract|json}" {$selectedEntity->isAbstract ? checked}>
                     </div>
                 </div>
             </div>

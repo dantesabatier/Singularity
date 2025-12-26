@@ -27,19 +27,19 @@
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
     const register = () => {
-        document.querySelectorAll(".btn-toggle").forEach(e => {
-            e.addEventListener("click", event => {
-                event.stopPropagation()
-                submit(e.form, register)
-            }, {
-                once: true
-            })
-        })
-        document.querySelectorAll("div[data-href]").forEach(e => {
-            e.addEventListener("click", () => push(window.location.origin + e.dataset.href, register), {
-                once: true
-            })
-        })
+        jscolor.install()
+        document.querySelectorAll(".btn-back").forEach(e => e.addEventListener("click", () => history.back(), {
+            once: true
+        }))
+        document.querySelectorAll(".btn-toggle").forEach(e => e.addEventListener("click", event => {
+            event.stopPropagation()
+            submit(e.form, register)
+        }, {
+            once: true
+        }))
+        document.querySelectorAll("div[data-href]").forEach(e => e.addEventListener("click", () => push(window.location.origin + e.dataset.href, register), {
+            once: true
+        }))
         document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", () => push(window.location.origin + e.dataset.href, register), {
             once: true
         }))
@@ -56,25 +56,24 @@
                 once: true
             })
         })
-        document.querySelectorAll("input[type=checkbox]").forEach(e => {
-            e.addEventListener("click", event => {
-                event.stopPropagation()
-                submit(e.form, register)
-            }, {
-                once: true
-            })
-        })
-        document.querySelectorAll("textarea").forEach(e => {
-            e.addEventListener("change", event => {
-                event.stopPropagation()
-                submit(e.form, register)
-            }, {
-                once: true
-            })
-        })
+        document.querySelectorAll("input[type=checkbox]").forEach(e => e.addEventListener("click", event => {
+            event.stopPropagation()
+            submit(e.form, register)
+        }, {
+            once: true
+        }))
+        document.querySelectorAll("textarea").forEach(e => e.addEventListener("change", event => {
+            event.stopPropagation()
+            submit(e.form, register)
+        }, {
+            once: true
+        }))
         document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", event => {
             if (e.checkValidity()) {
                 event.preventDefault()
+                if (e.classList.contains("form-new-project")) {
+                    return
+                }
                 submit(e, register)
                 return
             }
@@ -108,28 +107,37 @@
         })
         document.querySelectorAll("table").forEach(e => {
             const project = e.dataset.project
-            const entity = e.dataset.entity
-            const key = e.dataset.key
-            if (project && entity && key) {
-                const body = e.querySelector("tbody")
-                if (body) {
-                    Sortable.create(body, {
-                        onUpdate: event => {
-                            const fromIndex = event.oldIndex
-                            const toIndex = event.newIndex
-                            if (fromIndex !== toIndex) {
-                                send("Reorder", {
-                                    project: project,
-                                    entity: entity,
-                                    key: key,
-                                    fromIndex: fromIndex,
-                                    toIndex: toIndex,
-                                }, "POST", register)
-                            }
-                        }
-                    })
-                }
+            if (!project) {
+                return
             }
+            const entity = e.dataset.entity
+            if (!entity) {
+                return
+            }
+            const key = e.dataset.key
+            if (!key) {
+                return
+            }
+            const body = e.querySelector("tbody")
+            if (!body) {
+                return
+            }
+            Sortable.create(body, {
+                onUpdate: event => {
+                    const fromIndex = event.oldIndex
+                    const toIndex = event.newIndex
+                    if (fromIndex === toIndex) {
+                        return
+                    }
+                    send("Reorder", {
+                        project: project,
+                        entity: entity,
+                        key: key,
+                        fromIndex: fromIndex,
+                        toIndex: toIndex,
+                    }, "POST", register)
+                }
+            })
         })
         document.querySelectorAll(".color-picker").forEach(e => {
             const picker = e.jscolor

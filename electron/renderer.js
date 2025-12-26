@@ -80,11 +80,13 @@ const push = async (url, completion = undefined) => {
  * @param {function|undefined} completion
  */
 const send = async (action, body = undefined, method = "POST", completion = undefined) => {
-    const location = new URL(window.location)
+    const location = new URL(window.location ?? "/")
     setProgressBar(1.1)
     const headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
-    headers["Content-Type"] = "application/json; charset=utf-8"
+    if (body) {
+        headers["Content-Type"] = "application/json; charset=utf-8"
+    }
     const response = await fetch(action, {
         method: method,
         headers: headers,
@@ -101,6 +103,9 @@ const send = async (action, body = undefined, method = "POST", completion = unde
     const endpoint = url?.pathname.replace("/", "") ?? action.replace("/", "")
     const m = method.toUpperCase()
     switch (m) {
+        case "GET":
+            location.href = response.url
+            break
         case "POST":
         case "DELETE":
             switch (endpoint) {
@@ -180,7 +185,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
  * @returns {{method: string, body: object}}
  */
 const parse = (form) => {
-    const elements = Array.from(form.elements)
+    const elements = form ? Array.from(form.elements) : []
     return {
         body: elements.filter(e => !!e.name && e.type !== "submit" && e.name !== "X-Http-Method-Override").reduce((result, e) => {
             result[e.name] = (() => {
@@ -263,16 +268,6 @@ const model = async (project, path, completion = undefined) => {
 }
 
 /**
- * @param {function|undefined} completion
- */
-const create = async (completion = undefined) => {
-    const filePath = (await window.api?.showOpenDialog("New Project", "Select or create a folder", "Create", undefined, ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
-    if (filePath) {
-        await send(url("create"), {path: filePath}, "POST", completion)
-    }
-}
-
-/**
  * @param {string} entity
  * @param {string} name
  * @param {object} parent
@@ -337,7 +332,25 @@ const remove = async (item, completion = undefined) => {
     }
 }
 
-const explorer = (path) => window.api?.openPath(path)
+const reload = async () => await send("/", undefined, "GET", register)
+
+/**
+ * @param { HTMLFormElement } form
+ */
+const create = async (form) => await submit(form, () => {
+    window.api?.notifyProjectCreated()
+    window.close()
+})
+
+const explore = (path) => window.api?.openPath(path)
+
+/**
+ * @param {string|undefined} title
+ * @param {string|undefined} prompt
+ * @param {string|undefined} defaultButton
+ * @return {Promise<string|undefined>}
+ */
+const browse = async (title = undefined, prompt = undefined, defaultButton = undefined) => (await window.api?.showOpenDialog(title ?? "Select folder", prompt, defaultButton ?? "OK", undefined, ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
 
 /**
  * @param {string} messageText
@@ -350,6 +363,16 @@ const showMessageBox = (messageText, informativeText, buttons) => window.api?.sh
  * @param {object|undefined} error
  */
 const showErrorBox = (error) => window.api?.showErrorBox(error)
+
+const showNewProjectPanel = async () => window.api?.showWindow({
+    url: `${window.location.origin}${url("NewProject")}`,
+    overrideBrowserWindowOptions: {
+        width: 500,
+        height: 360,
+        modal: true,
+        titleBarOverlay: false
+    }
+})
 
 const showPreferences = () => window.api?.showWindow({
     url: `${window.location.origin}${url("Preferences")}`,
@@ -374,3 +397,5 @@ const showAboutPanel = () => window.api?.showWindow({
  * @param {number} progress
  */
 const setProgressBar = (progress) => window.api?.setProgressBar(progress)
+
+window.api?.onProjectRefreshRequested(async () => await reload())

@@ -16,7 +16,7 @@
                 <div class="col-sm-7 overflow-auto" style="height: calc(100vh - 40px)">
                     <div class="p-2">
                         <h2 class="text-wrap-word">Welcome to {$title}</h2>
-                        <button class="text-primary text-truncate border-0 bg-transparent" onclick="create(register)">
+                        <button class="text-primary text-truncate border-0 bg-transparent" onclick="showNewProjectPanel()">
                             Create a new project
                         </button>
                     </div>
@@ -48,7 +48,7 @@
                                                 <button class="dropdown-item" onclick="show({$project})">Open Selected</button>
                                             </li>
                                             <li>
-                                                <button class="dropdown-item" onclick="explorer({$path})">Show in Explorer</button>
+                                                <button class="dropdown-item" onclick="explore({$path})">Show in Explorer</button>
                                             </li>
                                             <li>
                                                 <hr class="dropdown-divider">
@@ -63,7 +63,6 @@
                         </ol>
                     {/if}
                 </div>
-
             </div>
             <div class="navbar fixed-bottom align-content-center" style="height: 56px;">
                 <div class="container-fluid">
@@ -87,33 +86,6 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="editProject" tabindex="-1" aria-labelledby="editProjectLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="/Rename" method="POST">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <h5 class="modal-title" id="editProjectLabel">Rename project</h5>
-                            </div>
-                            <div class="mb-3">
-                                <label for="name" class="form-label form-control-sm">Enter new project name</label>
-                                <input type="text" name="name" id="name" class="form-control form-control-sm" spellcheck="false" autocomplete="off" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer border-0">
-                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                Cancel
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                OK
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
