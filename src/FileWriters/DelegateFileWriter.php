@@ -3,10 +3,12 @@
 namespace App\FileWriters;
 
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Error;
 use Sabatier\Foundation\ObjectClass;
+use Sabatier\Foundation\URL;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
+use Sabatier\Service\PublicAccessPolicy;
+use Throwable;
 
 final class DelegateFileWriter extends FileWriter
 {
@@ -16,10 +18,11 @@ final class DelegateFileWriter extends FileWriter
     public string $contents {
         get {
             $uses = new ArrayClass([
-                "use " . Error::class . ";",
                 "use " . ObjectClass::class . ";",
                 "use " . Application::class . ";",
                 "use " . ApplicationDelegate::class . ";",
+                "use " . PublicAccessPolicy::class . ";",
+                "use " . Throwable::class . ";",
             ]);
             $content = "<?php\n";
             $content .= "\n";
@@ -36,21 +39,30 @@ final class DelegateFileWriter extends FileWriter
             $content .= "\n";
             $content .= "    public function applicationWillFinishLaunching(Application \$application): void\n";
             $content .= "    {\n";
+            if (!$this->isGeneratedWithSecurity) {
+                $content .= "        \$application->accessPolicy = new PublicAccessPolicy();\n";
+            }
             $content .= "    }\n";
             $content .= "\n";
             $content .= "    public function applicationDidFinishLaunching(Application \$application): void\n";
             $content .= "    {\n";
             $content .= "    }\n";
             $content .= "\n";
-            $content .= "    public function applicationWillPresentError(Application \$application, Error \$error): Error\n";
+            $content .= "    public function applicationWillTerminate(Application \$application): void\n";
             $content .= "    {\n";
-            $content .= "        return \$error;\n";
             $content .= "    }\n";
             $content .= "\n";
-            $content .= "    public function applicationWillTerminate(Application \$application): void\n";
+            $content .= "    public function applicationDidCrash(Application \$application, Throwable \$throwable): void\n";
             $content .= "    {\n";
             $content .= "    }\n";
             return "$content}\n";
         }
+    }
+    private bool $isGeneratedWithSecurity;
+
+    public function __construct(URL $url, bool $isGeneratedWithSecurity)
+    {
+        parent::__construct($url);
+        $this->isGeneratedWithSecurity = $isGeneratedWithSecurity;
     }
 }

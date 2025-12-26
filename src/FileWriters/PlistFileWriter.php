@@ -20,7 +20,7 @@ use const Sabatier\Foundation\kCFBundleShortVersionStringKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
 use const Sabatier\Foundation\kCFBundleVersionKey;
 
-final class InfoFileWriter extends FileWriter
+final class PlistFileWriter extends FileWriter
 {
     public string $contents {
         get {

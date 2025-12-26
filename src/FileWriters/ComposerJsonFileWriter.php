@@ -2,7 +2,7 @@
 
 namespace App\FileWriters;
 
-final class JSONFileWriter extends FileWriter
+final class ComposerJsonFileWriter extends FileWriter
 {
     public string $contents {
         get {
