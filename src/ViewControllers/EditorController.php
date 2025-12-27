@@ -273,27 +273,46 @@ final class EditorController extends ProjectController
         /** @var Model $model */
         $model = $this->project->model;
         /** @var Entity $entity */
-        $entity = $model->entitiesByName[$name] ?? throw new BadRequestException("entity cannot be null");
-        if ($fromIndex !== $toIndex) {
-            /** @var ArrayClass<Property> $value */
-            $value = $entity->valueForKey($key) ?? throw new BadRequestException("relationship cannot be null");
-            $moved = $value[$fromIndex];
-            /** @var Property $target */
-            $target = $value[$toIndex];
-            $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
-            $properties->remove($moved);
-            $toIndex = $properties->indexOf($target) ?? throw new BadRequestException("toIndex cannot be null");
-            $second = $properties->filter(fn(Property $property, int $index): bool => ($index + 1) > $toIndex);
-            $second->insertAt($moved, 0);
-            $properties->removeAll(fn(Property $property, int $index): bool => ($index + 1) > $toIndex);
-            $properties->appendContentsOf($second);
-            $properties = $properties->map(function (Property $property, int $index): Property {
-                $property->position = $index + 1;
-                return $property;
-            });
-            $entity->properties = new Set($properties);
-            $this->managedObjectContext->save();
+        $entity = $model->entitiesByName[$name] ?? throw new NotFoundException("Entity not found");
+        if ($fromIndex === $toIndex) {
+            $this->data = $entity;
+            return;
         }
+        /** @var ArrayClass<Property> $subset */
+        $subset = $entity->valueForKey($key);
+        $subset = new ArrayClass($subset->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        /** @var Property $moved */
+        $moved = $subset[$fromIndex];
+        /** @var Property $target */
+        $target = $subset[$toIndex];
+        $global = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $global->remove($moved);
+        /** @var int $globalToIndex */
+        $globalToIndex = $global->indexOf($target);
+        if ($toIndex > $fromIndex) {
+            $globalToIndex += 1;
+        }
+        $max = $subset->indexBefore($subset->endIndex);
+        if ($globalToIndex > $max) {
+            $globalToIndex = $max;
+        }
+        if ($globalToIndex < 0) {
+            $globalToIndex = 0;
+        }
+        $global->insertAt($moved, $globalToIndex);
+        if ($globalToIndex > $fromIndex) {
+            for ($i = $fromIndex; $i <= $globalToIndex; $i++) {
+                $property = $global[$i];
+                $property->position = $i + 1;
+            }
+        } else {
+            for ($i = $globalToIndex; $i <= $fromIndex; $i++) {
+                $property = $global[$i];
+                $property->position = $i + 1;
+            }
+        }
+        $entity->properties = new Set($global);
+        $this->managedObjectContext->save();
         $this->data = $entity;
     }
 }
