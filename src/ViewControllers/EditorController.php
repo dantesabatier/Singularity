@@ -285,10 +285,10 @@ final class EditorController extends ProjectController
         $moved = $subset[$fromIndex];
         /** @var Property $target */
         $target = $subset[$toIndex];
-        $global = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
-        $global->remove($moved);
+        $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $properties->remove($moved);
         /** @var int $globalToIndex */
-        $globalToIndex = $global->indexOf($target);
+        $globalToIndex = $properties->indexOf($target);
         if ($toIndex > $fromIndex) {
             $globalToIndex += 1;
         }
@@ -299,19 +299,19 @@ final class EditorController extends ProjectController
         if ($globalToIndex < 0) {
             $globalToIndex = 0;
         }
-        $global->insertAt($moved, $globalToIndex);
+        $properties->insertAt($moved, $globalToIndex);
         if ($globalToIndex > $fromIndex) {
             for ($i = $fromIndex; $i <= $globalToIndex; $i++) {
-                $property = $global[$i];
+                $property = $properties[$i];
                 $property->position = $i + 1;
             }
         } else {
             for ($i = $globalToIndex; $i <= $fromIndex; $i++) {
-                $property = $global[$i];
+                $property = $properties[$i];
                 $property->position = $i + 1;
             }
         }
-        $entity->properties = new Set($global);
+        $entity->properties = new Set($properties);
         $this->managedObjectContext->save();
         $this->data = $entity;
     }
