@@ -7,7 +7,7 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 
 #[Endpoint("/NewProject")]
-class NewProjectController extends ViewController
+final class NewProjectController extends ViewController
 {
     public string $name = "NewProject";
     #[Outlet]
