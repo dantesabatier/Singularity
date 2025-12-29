@@ -1,6 +1,11 @@
 // noinspection JSUnusedGlobalSymbols,JSUnresolvedReference
 
-const url = (endpoint, parameters) => {
+/**
+ * @param {string} endpoint
+ * @param {Object|undefined} parameters
+ * @return {string}
+ */
+const url = (endpoint, parameters = undefined) => {
     let url = endpoint
     if (!url.startsWith("/")) {
         url = "/" + url
