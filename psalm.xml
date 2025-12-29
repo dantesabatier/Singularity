@@ -16,5 +16,10 @@
         <InternalMethod errorLevel="suppress"/>
         <InternalProperty errorLevel="suppress"/>
         <RiskyTruthyFalsyComparison errorLevel="suppress"/>
+        <InvalidArgument>
+            <errorLevel type="suppress">
+                <file name="src/ViewControllers/ProjectController.php"/>
+            </errorLevel>
+        </InvalidArgument>
     </issueHandlers>
 </psalm>

@@ -9,7 +9,7 @@ use Sabatier\Foundation\URL;
 
 final class ModelFileWriter extends FileWriter
 {
-    private(set) Model $model;
+    private readonly Model $model;
 
     public function __construct(URL $url, Model $model)
     {

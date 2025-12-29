@@ -332,8 +332,6 @@ const remove = async (item, completion = undefined) => {
     }
 }
 
-const reload = async () => await send("/", undefined, "GET", register)
-
 /**
  * @param { HTMLFormElement } form
  */
@@ -398,4 +396,4 @@ const showAboutPanel = () => window.api?.showWindow({
  */
 const setProgressBar = (progress) => window.api?.setProgressBar(progress)
 
-window.api?.onProjectRefreshRequested(async () => await reload())
+window.api?.onProjectRefreshRequested(async () => await push("/", register))

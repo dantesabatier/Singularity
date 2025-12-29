@@ -13,10 +13,10 @@ use Sabatier\Foundation\URL;
 
 final class ProjectFileWriter extends FileWriter
 {
-    private(set) Project $project;
-    private bool $isGeneratedWithSecurity;
-    private bool $isGeneratedWithCORS;
-    private bool $isGeneratedWithJWT;
+    private readonly Project $project;
+    private readonly bool $isGeneratedWithSecurity;
+    private readonly bool $isGeneratedWithCORS;
+    private readonly bool $isGeneratedWithJWT;
 
     public function __construct(URL $url, Project $project, bool $isGeneratedWithSecurity = false, bool $generateWithCORS = false, bool $generateWithJWT = false)
     {

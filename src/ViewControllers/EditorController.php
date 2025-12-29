@@ -262,9 +262,9 @@ final class EditorController extends ProjectController
     public function reorder(): void
     {
         $body = $this->request->parsedBody;
-        /** @var int $fromIndex */
+        /** @var int<0, max> $fromIndex */
         $fromIndex = $body["fromIndex"] ?? throw new BadRequestException("fromIndex cannot be null");
-        /** @var int $toIndex */
+        /** @var int<0, max> $toIndex */
         $toIndex = $body["toIndex"] ?? throw new BadRequestException("toIndex cannot be null");
         /** @var string $key */
         $key = $body["key"] ?? throw new BadRequestException("key cannot be null");
@@ -287,7 +287,7 @@ final class EditorController extends ProjectController
         $target = $subset[$toIndex];
         $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
         $properties->remove($moved);
-        /** @var int $globalToIndex */
+        /** @var int<0, max> $globalToIndex */
         $globalToIndex = $properties->indexOf($target);
         if ($toIndex > $fromIndex) {
             $globalToIndex += 1;

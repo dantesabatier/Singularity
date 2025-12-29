@@ -58,7 +58,7 @@ final class DelegateFileWriter extends FileWriter
             return "$content}\n";
         }
     }
-    private bool $isGeneratedWithSecurity;
+    private readonly bool $isGeneratedWithSecurity;
 
     public function __construct(URL $url, bool $isGeneratedWithSecurity)
     {

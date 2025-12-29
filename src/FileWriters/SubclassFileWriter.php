@@ -28,11 +28,6 @@ use function Sabatier\Foundation\substring_to_index;
  */
 final class SubclassFileWriter extends FileWriter
 {
-    private readonly Entity $entity;
-    private readonly string $class;
-    private readonly string $namespace;
-    /** @var SubclassNameGenerator */
-    private readonly Closure $classNameGenerator;
     public string $contents {
         /**
          * @throws Exception
@@ -191,6 +186,11 @@ final class SubclassFileWriter extends FileWriter
             return $content . $declaration;
         }
     }
+    private readonly Entity $entity;
+    private readonly string $class;
+    private readonly string $namespace;
+    /** @var SubclassNameGenerator */
+    private readonly Closure $classNameGenerator;
 
     public function __construct(URL $url, Entity $entity, string $class, string $namespace, Closure $classNameGenerator)
     {

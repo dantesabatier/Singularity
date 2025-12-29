@@ -2,16 +2,13 @@
 
 namespace App\FileWriters;
 
-use Random\RandomException;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\URL;
+use function Sabatier\Foundation\read_random;
 
 final class DotEnvFileWriter extends FileWriter
 {
     public string $contents {
-        /**
-         * @throws RandomException
-         */
         get {
             $dictionary = new Dictionary([
                 "SQL_SCHEMA_NAME" => $this->name,
@@ -29,15 +26,15 @@ final class DotEnvFileWriter extends FileWriter
             }
             if ($this->isGeneratedWithJWT) {
                 $dictionary->merge(new Dictionary([
-                    "JWT_PRIVATE_KEY" => bin2hex(random_bytes(32)),
+                    "JWT_PRIVATE_KEY" => base64_encode(read_random(16)),
                     "JWT_VALIDITY_TIME_INTERVAL" => "28800"
                 ]));
             }
             return $dictionary->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n");
         }
     }
-    private bool $isGeneratedWithCORS;
-    private bool $isGeneratedWithJWT;
+    private readonly bool $isGeneratedWithCORS;
+    private readonly bool $isGeneratedWithJWT;
 
     public function __construct(URL $url, bool $isGeneratedWithCORS, bool $isGeneratedWithJWT)
     {
