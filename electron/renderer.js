@@ -84,9 +84,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
     setProgressBar(1.1)
     const headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
-    if (body) {
-        headers["Content-Type"] = "application/json; charset=utf-8"
-    }
+    headers["Content-Type"] = "application/json; charset=utf-8"
     const response = await fetch(action, {
         method: method,
         headers: headers,
@@ -103,9 +101,6 @@ const send = async (action, body = undefined, method = "POST", completion = unde
     const endpoint = url?.pathname.replace("/", "") ?? action.replace("/", "")
     const m = method.toUpperCase()
     switch (m) {
-        case "GET":
-            location.href = response.url
-            break
         case "POST":
         case "DELETE":
             switch (endpoint) {
