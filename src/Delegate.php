@@ -6,6 +6,7 @@ namespace App;
 
 use Override;
 use Sabatier\CoreData\SQLCore;
+use Sabatier\CoreData\SQLDebugLevel;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\UserDefaults;
@@ -23,8 +24,8 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public static function initialize(): void
     {
-        SQLCore::$debugDefault = 0;
-        SQLCore::$coloredLoggingDefault = true;
+        SQLCore::$debugLevel = SQLDebugLevel::none;
+        SQLCore::$debugColorOutputDefault = true;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
             PersistentHistoryTrackingKey => false,
