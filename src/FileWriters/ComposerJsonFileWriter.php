@@ -10,6 +10,7 @@ final class ComposerJsonFileWriter extends FileWriter
             return json_encode([
                 "name" => sprintf("vendor/%s", strtolower($name)),
                 "description" => $name,
+                "version" => "1.0.0",
                 "license" => "MIT",
                 "keywords" => [
                     $name
