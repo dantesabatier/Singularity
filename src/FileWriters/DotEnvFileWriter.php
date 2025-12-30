@@ -10,6 +10,7 @@ final class DotEnvFileWriter extends FileWriter
 {
     public string $contents {
         get {
+            /** @var Dictionary<string> $dictionary */
             $dictionary = new Dictionary([
                 "SQL_SCHEMA_NAME" => $this->name,
                 "SQL_SCHEMA_HOST" => "127.0.0.1",
