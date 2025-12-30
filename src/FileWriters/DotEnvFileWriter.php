@@ -17,18 +17,18 @@ final class DotEnvFileWriter extends FileWriter
                 "SQL_SCHEMA_CREDENTIAL_PASSWORD" => ""
             ]);
             if ($this->isGeneratedWithCORS) {
-                $dictionary->merge(new Dictionary([
+                $dictionary->merge([
                     "CORS_ALLOWED_ORIGINS" => "http://localhost",
                     "CORS_ALLOWED_METHODS" => "OPTIONS,HEAD,GET,POST,PATCH,DELETE",
                     "CORS_ALLOWED_HEADERS" => "Content-Type,Authorization,Serialization",
                     "CORS_ALLOW_CREDENTIALS" => "true"
-                ]));
+                ]);
             }
             if ($this->isGeneratedWithJWT) {
-                $dictionary->merge(new Dictionary([
+                $dictionary->merge([
                     "JWT_PRIVATE_KEY" => base64_encode(read_random(16)),
                     "JWT_VALIDITY_TIME_INTERVAL" => "28800"
-                ]));
+                ]);
             }
             return $dictionary->reduce("", fn(string &$result, string $value, string $key): string => $result .= "$key=$value\n");
         }
