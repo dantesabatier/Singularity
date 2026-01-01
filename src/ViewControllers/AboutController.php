@@ -2,6 +2,8 @@
 
 namespace App\ViewControllers;
 
+use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
@@ -13,6 +15,10 @@ use const Sabatier\Foundation\kCFBundleVersionKey;
 #[Endpoint("About")]
 final class AboutController extends ViewController
 {
+    /** @var ArrayClass<string> */
+    public ArrayClass $allowedMethods {
+        get => new ArrayClass([HTTPRequestMethod::get]);
+    }
     public string $name = "About";
     #[Outlet]
     public ?string $bundleName {

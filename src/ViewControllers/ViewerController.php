@@ -3,7 +3,9 @@
 namespace App\ViewControllers;
 
 use Exception;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
@@ -13,6 +15,10 @@ use const App\EntityPositionsMappingPreferencesKey;
 #[Endpoint("Viewer")]
 final class ViewerController extends ProjectController
 {
+    /** @var ArrayClass<string> */
+    public ArrayClass $allowedMethods {
+        get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
+    }
     public string $name = "Viewer";
 
     /**

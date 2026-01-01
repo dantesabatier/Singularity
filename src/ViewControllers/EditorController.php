@@ -30,6 +30,7 @@ use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
+use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Set;
@@ -47,6 +48,10 @@ use function Sabatier\Foundation\fatal_error;
 #[Endpoint("Editor")]
 final class EditorController extends ProjectController
 {
+    /** @var ArrayClass<string> */
+    public ArrayClass $allowedMethods {
+        get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
+    }
     public string $name = "Editor";
     /** @var ArrayClass<Project> */
     #[Outlet]
@@ -200,7 +205,7 @@ final class EditorController extends ProjectController
     {
         $project = $this->project;
         $project->lastModifiedDate = new Date();
-        $url = $project->url ?? throw new BadRequestException("url cannot be null");
+        $url = $project->url ?? throw new BadRequestException();
         $fileWriter = new ProjectFileWriter($url, $project);
         $fileWriter->save();
         $this->data = $project;
@@ -214,8 +219,8 @@ final class EditorController extends ProjectController
     {
         $body = $this->request->parsedBody;
         /** @var string $path */
-        $path = $body["path"] ?? throw new BadRequestException("path cannot be null");
-        $project = $this->project ?? throw new BadRequestException("project cannot be null");
+        $path = $body["path"] ?? throw new BadRequestException();
+        $project = $this->project ?? throw new BadRequestException();
         $project->lastModifiedDate = new Date();
         /** @var Model $model */
         $model = $project->model;
@@ -263,17 +268,17 @@ final class EditorController extends ProjectController
     {
         $body = $this->request->parsedBody;
         /** @var int<0, max> $fromIndex */
-        $fromIndex = $body["fromIndex"] ?? throw new BadRequestException("fromIndex cannot be null");
+        $fromIndex = $body["fromIndex"] ?? throw new BadRequestException();
         /** @var int<0, max> $toIndex */
-        $toIndex = $body["toIndex"] ?? throw new BadRequestException("toIndex cannot be null");
+        $toIndex = $body["toIndex"] ?? throw new BadRequestException();
         /** @var string $key */
-        $key = $body["key"] ?? throw new BadRequestException("key cannot be null");
+        $key = $body["key"] ?? throw new BadRequestException();
         /** @var string $name */
-        $name = $body["entity"] ?? throw new BadRequestException("name cannot be null");
+        $name = $body["entity"] ?? throw new BadRequestException();
         /** @var Model $model */
         $model = $this->project->model;
         /** @var Entity $entity */
-        $entity = $model->entitiesByName[$name] ?? throw new NotFoundException("Entity not found");
+        $entity = $model->entitiesByName[$name] ?? throw new NotFoundException();
         if ($fromIndex === $toIndex) {
             $this->data = $entity;
             return;

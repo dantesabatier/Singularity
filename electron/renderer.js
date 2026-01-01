@@ -137,7 +137,15 @@ const send = async (action, body = undefined, method = "POST", completion = unde
             }
             const values = keys.map(k => `${k}=${location.searchParams.get(k)}`)
             if (m === "POST") {
-                const objectID = response.status === 200 ? (await response.json())?.objectID : false
+                const objectID = (() => {
+                    switch (response.status) {
+                        case 200:
+                        case 201:
+                            return true
+                        default:
+                            return false
+                    }
+                })() ? (await response.json())?.objectID : false
                 if (objectID) {
                     const entity = (() => {
                         switch (endpoint) {
@@ -175,6 +183,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         default:
             break
     }
+    console.log(location.href)
     await push(location.href, completion)
     setProgressBar(-1)
 }

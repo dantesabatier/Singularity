@@ -3,31 +3,35 @@
 namespace App\ViewControllers;
 
 use Exception;
+use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
-use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
-use const App\CompanyNamePreferencesKey;
 
 #[Endpoint("Preferences")]
 final class PreferencesController extends ViewController
 {
+    /** @var ArrayClass<string> */
+    public ArrayClass $allowedMethods {
+        get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
+    }
     public string $name = "Preferences";
     #[Outlet]
     public ?string $companyName {
-        get => UserDefaults::standard()->string(CompanyNamePreferencesKey);
+        get => UserDefaults::standard()->string(__PROPERTY__);
         set {
-            UserDefaults::standard()->setObject($value, CompanyNamePreferencesKey);
+            UserDefaults::standard()->setObject($value, __PROPERTY__);
         }
     }
     #[Outlet]
     public bool $automaticallyDeleteProjectFolders {
-        get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFoldersPreferencesKey);
+        get => UserDefaults::standard()->bool(__PROPERTY__);
         set {
-            UserDefaults::standard()->setBool($value, AutomaticallyDeleteProjectFoldersPreferencesKey);
+            UserDefaults::standard()->setBool($value, __PROPERTY__);
         }
     }
 

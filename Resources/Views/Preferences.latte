@@ -19,12 +19,12 @@
                     </div>
                     <form action="/Synchronize" method="POST">
                         <div class="mb-3">
-                            <label for="CompanyName" class="col-form-label col-form-label-sm">Company Name</label>
-                            <input type="text" name="CompanyName" id="CompanyName" placeholder="Company Name" class="form-control form-control-sm" value="{$companyName}" autocomplete="off" required>
+                            <label for="companyName" class="col-form-label col-form-label-sm">Company Name</label>
+                            <input type="text" name="companyName" id="companyName" placeholder="Company Name" class="form-control form-control-sm" value="{$companyName}" autocomplete="off" required>
                         </div>
                         <div class="form-check form-control-sm">
-                            <label class="form-check-label" for="AutomaticallyDeleteProjectFolders">Deleting a project also deletes its folder</label>
-                            <input class="form-check-input" type="checkbox" name="AutomaticallyDeleteProjectFolders" id="AutomaticallyDeleteProjectFolders" value="{$automaticallyDeleteProjectFolders}" {$automaticallyDeleteProjectFolders ? checked}>
+                            <label class="form-check-label" for="automaticallyDeleteProjectFolders">Deleting a project also deletes its folder</label>
+                            <input class="form-check-input" type="checkbox" name="automaticallyDeleteProjectFolders" id="automaticallyDeleteProjectFolders" value="{$automaticallyDeleteProjectFolders|json}" {$automaticallyDeleteProjectFolders ? checked}>
                         </div>
                         <input class="d-none" type="submit">
                     </form>

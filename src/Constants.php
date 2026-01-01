@@ -2,6 +2,6 @@
 
 namespace App;
 
-const CompanyNamePreferencesKey = "CompanyName";
-const AutomaticallyDeleteProjectFoldersPreferencesKey = "AutomaticallyDeleteProjectFolders";
-const EntityPositionsMappingPreferencesKey = "EntityPositionsMapping";
+const CompanyNamePreferencesKey = "companyName";
+const AutomaticallyDeleteProjectFoldersPreferencesKey = "automaticallyDeleteProjectFolders";
+const EntityPositionsMappingPreferencesKey = "entityPositionsMapping";

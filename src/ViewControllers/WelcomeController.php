@@ -29,6 +29,10 @@ use function Sabatier\Foundation\random_color;
 #[Endpoint("/")]
 final class WelcomeController extends ViewController
 {
+    /** @var ArrayClass<string> */
+    public ArrayClass $allowedMethods {
+        get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post, HTTPRequestMethod::delete]);
+    }
     public string $name = "Welcome";
     /** @var ArrayClass<Project> */
     #[Outlet]
