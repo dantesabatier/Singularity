@@ -65,14 +65,14 @@ final class SubclassFileWriter extends FileWriter
             });
             $relationships = $entity->relationships->sorted([new SortDescriptor("position")]);
             if ($relationships->contains(fn(Relationship $relationship): bool => $relationship->isToMany)) {
-                $uses->append("use " . Set::class . ";");
+                $uses->insert("use " . Set::class . ";");
             }
             $fetchedProperties = $entity->fetchedProperties->sorted([new SortDescriptor("position")]);
             if (!$fetchedProperties->isEmpty) {
-                $uses->append("use " . ArrayClass::class . ";");
+                $uses->insert("use " . ArrayClass::class . ";");
             }
             if (!$superentity) {
-                $uses->append("use " . ManagedObject::class . ";");
+                $uses->insert("use " . ManagedObject::class . ";");
             }
             $superclass = $superentity?->name ?? class_name(ManagedObject::class);
             /** @var Set<string> $properties */
@@ -80,14 +80,14 @@ final class SubclassFileWriter extends FileWriter
             $path = $fileURL->path;
             if (FileManager::default()->fileExists($path) && ($contents = FileManager::default()->contents($path)) && ($index = strpos($contents, "class"))) {
                 $array = preg_split(sprintf("/%s/", preg_quote("\n", "/")), substring_to_index($contents, $index), -1, PREG_SPLIT_NO_EMPTY);
-                $uses->appendContentsOf(array_map(rtrim(...), array_filter($array, fn(string $e): bool => str_starts_with($e, "use"))));
-                $properties->appendContentsOf(array_map(rtrim(...), array_filter($array, fn(string $e): bool => str_starts_with($e, " * @property"))));
+                $uses->formUnion(array_map(rtrim(...), array_filter($array, fn(string $e): bool => str_starts_with($e, "use"))));
+                $properties->formUnion(array_map(rtrim(...), array_filter($array, fn(string $e): bool => str_starts_with($e, " * @property"))));
                 $declaration = substring_from_index($contents, $index);
             } else {
                 $declaration = "class $class extends $superclass\n{\n}\n";
             }
             /** @psalm-suppress InvalidArgument */
-            $properties->appendContentsOf($attributes->compactMap(function (Attribute $attribute) use ($properties): ?string {
+            $properties->formUnion($attributes->compactMap(function (Attribute $attribute) use ($properties): ?string {
                 if ($properties->contains(fn(string $e): bool => str_ends_with($e, "\$$attribute->name"))) {
                     return null;
                 }
@@ -134,8 +134,8 @@ final class SubclassFileWriter extends FileWriter
                 }
                 return "$string \$$attribute->name";
             }));
-            $properties->appendContentsOf($fetchedProperties->map(fn(FetchedProperty $fetchedProperty): string => " * @property-read $arrayClassName<$fetchedProperty->fetchRequestEntityName> \$$fetchedProperty->name"));
-            $properties->appendContentsOf($relationships->compactMap(function (Relationship $relationship) use ($setClassName): string {
+            $properties->formUnion($fetchedProperties->map(fn(FetchedProperty $fetchedProperty): string => " * @property-read $arrayClassName<$fetchedProperty->fetchRequestEntityName> \$$fetchedProperty->name"));
+            $properties->formUnion($relationships->compactMap(function (Relationship $relationship) use ($setClassName): string {
                 $lazyDestinationEntityName = $relationship->lazyDestinationEntityName;
                 $string = " * @property ";
                 $string .= $relationship->isToMany ? "$setClassName<$lazyDestinationEntityName>" : $lazyDestinationEntityName;
