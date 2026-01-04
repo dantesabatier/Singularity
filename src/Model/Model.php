@@ -148,7 +148,7 @@ final class Model extends ManagedObject
             /** @var ArrayClass<Dictionary<mixed>>|null $attributes */
             $attributes = $dictionary["attributes"];
             if ($attributes) {
-                $properties->appendContentsOf($attributes->map(function (Dictionary $description) use ($context, $entity): Attribute {
+                $properties->formUnion($attributes->map(function (Dictionary $description) use ($context, $entity): Attribute {
                     $attribute = new Attribute($context);
                     $attribute->entityProperty = $entity;
                     $attribute->isDerived = !empty($description["derivationExpressionFormat"]);
@@ -174,7 +174,7 @@ final class Model extends ManagedObject
             /** @var ArrayClass<Dictionary<mixed>>|null $relationships */
             $relationships = $dictionary["relationships"];
             if ($relationships) {
-                $properties->appendContentsOf($relationships->map(function (Dictionary $description) use ($context, $entity): Relationship {
+                $properties->formUnion($relationships->map(function (Dictionary $description) use ($context, $entity): Relationship {
                     $relationship = new Relationship($context);
                     $relationship->entityProperty = $entity;
                     $relationship->setValuesForKeys($description);
@@ -184,7 +184,7 @@ final class Model extends ManagedObject
             /** @var ArrayClass<Dictionary<mixed>>|null $fetchedProperties */
             $fetchedProperties = $dictionary["fetchedProperties"];
             if ($fetchedProperties) {
-                $properties->appendContentsOf($fetchedProperties->map(function (Dictionary $description) use ($context, $entity): FetchedProperty {
+                $properties->formUnion($fetchedProperties->map(function (Dictionary $description) use ($context, $entity): FetchedProperty {
                     $fetchedProperty = new FetchedProperty($context);
                     $fetchedProperty->entityProperty = $entity;
                     $fetchedProperty->setValuesForKeys($description);
@@ -278,7 +278,7 @@ final class Model extends ManagedObject
                 if ($progress->isCancelled) {
                     break;
                 }
-                $entities->append($this->newEntity($representation));
+                $entities->insert($this->newEntity($representation));
                 $progress->completedUnitCount = $index + 1;
             }
             $this->entities = $entities->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
