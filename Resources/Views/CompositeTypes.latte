@@ -1,10 +1,12 @@
 {templateType App\ViewControllers\EditorController}
 {define compositeTypes}
-    <div class="flex-column w-100">
-        <div n:foreach="$project->model->compositeTypes as $compositeType" class="nav-item{$compositeType->objectID->referenceObject === $selectedCompositeType?->objectID?->referenceObject && !$selectedIndex ? ' active'} d-block text-truncate w-100" id="fetchRequest-{$compositeType->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$compositeType->objectID->referenceObject}">
-            <span class="space"></span>
-            <img src="/Resources/Images/C@1x.png" srcset="/Resources/Images/C@2x.png 2x, /Resources/Images/C@3x.png 3x" alt="">
-            <span class="ps-2">{$compositeType->name}</span>
-        </div>
+    <div n:foreach="$project->model->compositeTypes as $compositeType"
+            class="source-row{$compositeType->objectID->referenceObject === $selectedCompositeType?->objectID?->referenceObject ? ' active'}"
+            data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$compositeType->objectID->referenceObject}"
+            style="--level: 0"> <!-- Nivel 0 por defecto -->
+
+        <span style="width: 16px; display: inline-block;"></span> <!-- Spacer -->
+        <img class="source-icon" src="/Resources/Images/C@1x.png" srcset="/Resources/Images/C@2x.png 2x, /Resources/Images/C@3x.png 3x" alt="">
+        <span class="source-label">{$compositeType->name}</span>
     </div>
 {/define}

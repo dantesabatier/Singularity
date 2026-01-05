@@ -1,66 +1,92 @@
 {templateType App\ViewControllers\EditorController}
 {define relationships}
-    <div class="table-responsive">
-        <table class="table table-hover table-sm caption-top" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="relationships">
-            <caption class="fw-bold text-shadow">Relationships</caption>
-            <thead>
-            <tr>
-                <th scope="col" class="col-sm-2 text-shadow">Name</th>
-                <th scope="col" class="col-sm-2 text-shadow">Destination</th>
-                <th scope="col" class="col-sm-2 text-shadow">Inverse</th>
-                <th scope="col" class="col-sm-6 text-shadow"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr n:foreach="$selectedEntity->relationships as $relationship" id="property-{$relationship->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$relationship->objectID->referenceObject}" n:class="$relationship->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
-                {var string $img = img($relationship)}
-                <td class="text-truncate">
-                    <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                    {$relationship->name}
-                </td>
-                <td>
-                    <form action="/Relationship" method="POST">
-                        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                        <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
-                        <select name="lazyDestinationEntityName" id="lazyDestinationEntityName" aria-label="Destination" class="form-select form-select-sm transparent border-0 py-0 w-auto" data-autosave="true">
-                            <option value="">No Value</option>
-                            <option n:foreach="$project->model->entities as $entity" value="{$entity->name}" {$entity->name === $relationship->lazyDestinationEntityName ? selected}>{$entity->name}</option>
-                        </select>
-                    </form>
-                </td>
-                <td>
-                    <form action="/Relationship" method="POST">
-                        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                        <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
-                        <select name="lazyInverseRelationshipName" id="lazyInverseRelationshipName" aria-label="Inverse" class="form-select form-select-sm transparent border-0 py-0 w-auto" data-autosave="true">
-                            <option value="">No Inverse</option>
-                            {var App\Model\Entity $destinationEntity = $relationship->destinationEntity}
-                            {if $destinationEntity}
-                                <option n:foreach="$destinationEntity->relationships->filter(fn(App\Model\Relationship $e): bool => !$e->isEqual($relationship)) as $e" value="{$e->name}" {$e->name === $relationship->lazyInverseRelationshipName ? selected}>{$e->name}</option>
-                            {/if}
-                        </select>
-                    </form>
-                </td>
-                <td></td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td>
-                    <div class="d-inline-block">
-                        <button class="btn icon p-0" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, register)">
-                            <i class="bi bi-plus"></i>
-                        </button>
-                        <button class="btn icon p-0" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
-                            <i class="bi bi-dash"></i>
-                        </button>
-                    </div>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            </tfoot>
-        </table>
+    <div class="ide-list-control">
+        <!-- Header -->
+        <div class="list-control-header">
+            <span class="list-control-title">Relationships</span>
+        </div>
+
+        <!-- Table -->
+        <div class="list-control-content">
+            <table class="list-control-table" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="relationships">
+                <thead>
+                <tr>
+                    <th class="col-name">Name</th>
+                    <th class="col-destination">Destination</th>
+                    <th class="col-inverse">Inverse</th>
+                    <th class="col-flex"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr n:foreach="$selectedEntity->relationships as $relationship"
+                        id="property-{$relationship->objectID->referenceObject}"
+                        data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$relationship->objectID->referenceObject}"
+                        n:class="$relationship->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
+
+                    <!-- Name Column -->
+                    <td class="col-name">
+                        <div class="cell-content">
+                            {var string $img = img($relationship)}
+                            <img class="cell-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span class="cell-text">{$relationship->name}</span>
+                        </div>
+                    </td>
+
+                    <!-- Destination Column -->
+                    <td class="col-destination">
+                        <form action="/Relationship" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
+                            <select name="lazyDestinationEntityName" aria-label="Destination" class="form-select transparent" data-autosave="true">
+                                <option value="">No Value</option>
+                                <option n:foreach="$project->model->entities as $entity"
+                                        value="{$entity->name}"
+                                        {$entity->name === $relationship->lazyDestinationEntityName ? selected}>
+                                    {$entity->name}
+                                </option>
+                            </select>
+                        </form>
+                    </td>
+
+                    <!-- Inverse Column -->
+                    <td class="col-inverse">
+                        <form action="/Relationship" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
+                            <select name="lazyInverseRelationshipName" aria-label="Inverse" class="form-select transparent" data-autosave="true">
+                                <option value="">No Inverse</option>
+                                {var App\Model\Entity $destinationEntity = $relationship->destinationEntity}
+                                    {if $destinationEntity}
+                                    <option n:foreach="$destinationEntity->relationships->filter(fn(App\Model\Relationship $e): bool => !$e->isEqual($relationship)) as $e"
+                                            value="{$e->name}"
+                                            {$e->name === $relationship->lazyInverseRelationshipName ? selected}>
+                                        {$e->name}
+                                    </option>
+                                {/if}
+                            </select>
+                        </form>
+                    </td>
+
+                    <!-- Empty Column -->
+                    <td class="col-flex"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="list-control-toolbar">
+            <button class="btn btn-icon"
+                    title="Add Relationship"
+                    onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, register)">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+            <button class="btn btn-icon"
+                    title="Remove Relationship"
+                    onclick="remove({$selectedProperty}, register)"
+                    {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
+                <i class="bi bi-dash-lg"></i>
+            </button>
+        </div>
     </div>
 {/define}

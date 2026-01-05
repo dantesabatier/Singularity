@@ -3,115 +3,119 @@
 {block title}{$project->name}{/block}
 {block content}
     <div id="main" class="user-select-none">
-        <nav class="navbar sticky-top bg-dark border-bottom border-black user-select-none p-0" style="height: 40px; -webkit-app-region: drag">
-            <div class="container-fluid justify-content-start align-content-center">
-                <div class="navbar-brand">
-                    <img src="/Resources/Images/icon24@1x.png" srcset="/Resources/Images/icon24@2x.png 2x, /Resources/Images/icon24@3x.png 3x" alt="{$title}" class="d-inline-block align-text-top">
+        <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
+            <div class="container-fluid justify-content-start align-items-center px-2">
+                <div class="navbar-brand mb-0 me-2">
+                    <img src="/Resources/Images/icon24@1x.png" srcset="/Resources/Images/icon24@2x.png 2x, /Resources/Images/icon24@3x.png 3x" alt="{$title}" class="d-inline-block">
                 </div>
                 <div class="dropdown">
-                    <button class="btn icon px-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-list" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Main Menu"></i>
+                    <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;" data-bs-placement="bottom" data-bs-title="Main Menu">
+                        <i class="bi bi-list"></i>
                     </button>
                     <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Add Element</h6></li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model}, {$project->model?->entities?->count}, register)">
-                                Add Entity
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model}, {$project->model?->entities?->count}, register)">
+                                <i class="bi bi-plus-circle"></i> <span>Add Entity</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\CompositeType::entity()->name}, {App\Model\CompositeType::entity()->name}, {$project->model}, {$project->model?->compositeTypes?->count}, register)">
-                                Add Composite Type
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\CompositeType::entity()->name}, {App\Model\CompositeType::entity()->name}, {$project->model}, {$project->model?->compositeTypes?->count}, register)">
+                                <i class="bi bi-diagram-3"></i> <span>Add Composite Type</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model}, {$project->model?->fetchRequestTemplates?->count}, register)">
-                                Add Fetch Request
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model}, {$project->model?->fetchRequestTemplates?->count}, register)">
+                                <i class="bi bi-search"></i> <span>Add Fetch Request</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project->model}, {$project->model?->configurations?->count}, register)">
-                                Add Configuration
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project->model}, {$project->model?->configurations?->count}, register)">
+                                <i class="bi bi-gear"></i> <span>Add Configuration</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><h6 class="dropdown-header">Entity Properties</h6></li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, register)"
+                                    {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                <i class="bi bi-tag"></i> <span>Add Attribute</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count}, register)"
+                                    {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                <i class="bi bi-box-arrow-in-down"></i> <span>Add Fetched Property</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, register)"
+                                    {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                <i class="bi bi-arrow-left-right"></i> <span>Add Relationship</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->indexes?->count}, register)"
+                                    {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                                <i class="bi bi-lightning"></i> <span>Add Fetch Index</span>
                             </button>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                Add Attribute
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                Add Fetched Property
-                            </button>
-                        </li>
-                        <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
-                                Add Relationship
+                            <button class="dropdown-item text-danger d-flex align-items-center gap-2" onclick="remove({$selection}, register)" {!$selection ? disabled}>
+                                <i class="bi bi-trash"></i> <span>Remove</span>
                             </button>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+                        <li><h6 class="dropdown-header">Project Actions</h6></li>
                         <li>
-                            <button class="dropdown-item" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->indexes?->count}, register)" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
-                                Add Fetch Index
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="save({$project}, register)">
+                                <i class="bi bi-floppy"></i> <span>Save</span>
                             </button>
                         </li>
                         <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <button class="dropdown-item" onclick="remove({$selection}, register)" {!$selection ? disabled}>
-                                Remove
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="view({$project}, register)">
+                                <i class="bi bi-file-earmark-code"></i> <span>Show SQL Schema...</span>
                             </button>
                         </li>
                         <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <button class="dropdown-item" onclick="save({$project}, register)">
-                                Save
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="subclass({$project}, register)">
+                                <i class="bi bi-file-earmark-plus"></i> <span>Create ManagedObject Subclass...</span>
                             </button>
                         </li>
                         <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <button class="dropdown-item" onclick="view({$project}, register)">
-                                Show SQL Schema...
-                            </button>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <button class="dropdown-item" onclick="subclass({$project}, register)">
-                                Create ManagedObject Subclass...
-                            </button>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <button class="dropdown-item" onclick="model({$project}, {$project->model?->url}, register)">
-                                Import...
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="model({$project}, {$project->model?->url}, register)">
+                                <i class="bi bi-upload"></i> <span>Import...</span>
                             </button>
                         </li>
                     </ul>
                 </div>
-                <div class="dropdown">
-                    <button type="button" class="btn icon dropdown-toggle d-inline-block" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="d-inline-block rounded text-center fw-medium" style="width: 24px; height: 24px; background-color: {$project->color|noescape};">{$project->name|first}</span>
-                        <span data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{$project->url?->path}">{$project->name}</span>
+                <div class="dropdown ms-2">
+                    <button type="button" class="btn btn-sm d-flex align-items-center gap-2 px-2" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag; background-color: var(--bg-hover); border: 1px solid var(--border-color);">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold" style="width: 20px; height: 20px; background-color: {$project->color|noescape}; font-size: 11px;">
+                            {$project->name|first}
+                        </span> <span class="text-truncate" style="max-width: 200px;">{$project->name}</span>
+                        <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
                     </button>
                     <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Switch Project</h6></li>
                         {foreach $projects as $i => $e}
                             <li>
-                                <button class="dropdown-item d-inline-block" type="button" onclick="load({$e})">
-                                    <span class="d-inline-block rounded text-center fw-medium" style="width: 24px; height: 24px; background-color: {$e->color|noescape};">{$e->name|first}</span>
-                                    {$e->name}
+                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="load({$e})">
+                                    <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold flex-shrink-0" style="width: 20px; height: 20px; background-color: {$e->color|noescape}; font-size: 11px;">
+                                        {$e->name|first}
+                                    </span> <span class="text-truncate">{$e->name}</span>
                                 </button>
                             </li>
                             <li n:if="$i < ($projects->count - 1)">
@@ -124,107 +128,128 @@
         </nav>
         <div class="container-fluid d-flex flex-column">
             <div class="row">
-                <div id="source" class="scroll-view col-sm-3 border-end border-black p-2" style="height: calc(100vh - 68px)">
+                <div id="source" class="scroll-view col-sm-3 border-end border-black p-2" style="height: calc(100vh - 68px); background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                     {include sourceList from "SourceList.latte"}
                 </div>
                 <div id="content" class="scroll-view col-sm-6 p-2" style="height: calc(100vh - 68px)">
                     {include content from "Content.latte"}
                 </div>
-                <div id="sidebar" class="scroll-view col-sm-3 border-start border-black p-2" style="height: calc(100vh - 68px)">
+                <div id="sidebar" class="scroll-view col-sm-3 border-start border-black p-2" style="height: calc(100vh - 68px); background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                     {include inspector from "Inspector.latte"}
                 </div>
             </div>
         </div>
-        <nav class="fixed-bottom border-top border-black py-0" aria-label="breadcrumb" style="--bs-breadcrumb-divider: '>'; height: 28px">
-            <ol class="breadcrumb">
-                <li n:foreach="$breadcrumb as $item" class="breadcrumb-item">
+        <nav class="breadcrumb-nav" aria-label="breadcrumb">
+            <ol class="breadcrumb-list">
+                <li n:foreach="$breadcrumb as $item" class="breadcrumb-item-wrapper">
                     {var string $img = img($item)}
-                    {if $item instanceof App\Model\Project}
+            {if $item instanceof App\Model\Project}
                         {varType App\Model\Project $item}
-                        <div class="nav-item" data-href="/Editor?project={$item->objectID->referenceObject}">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-{$img ? 2 : 0} pe-1">{$item->name}</span>
-                        </div>
+                        <a href="/Editor?project={$item->objectID->referenceObject}" class="breadcrumb-link">
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span>{$item->name}</span>
+                        </a>
                     {elseif $item instanceof App\Model\Model}
                     {varType App\Model\Model $item}
-                        <div class="nav-item">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                        <div class="breadcrumb-link">
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
-                                <button type="button" class="btn icon ps-{$img ? 2 : 0} pe-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                     {$project->name}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->entities as $entity">
-                                        <a class="dropdown-item" href="/Editor?project={$project->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}"><img src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="entity"><span class="ps-1">{$entity->name}</span></a>
+                                        <a class="dropdown-item" href="/Editor?project={$project->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                                            <img class="breadcrumb-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
+                                            <span>{$entity->name}</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\Entity}
                     {varType App\Model\Entity $item}
-                        <div class="nav-item">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                        <div class="breadcrumb-link">
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
-                                <button type="button" class="btn icon ps-{$img ? 2 : 0} pe-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                     {$item->name}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->properties as $property">
                                         <a class="dropdown-item" href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">
                                             {var string $icon = img($property)}
-                                            <img n:if="$icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="property">
-                                            <span class="ps-{$icon ? 1 : 0}">{$property->name}</span></a>
+                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                            <span>{$property->name}</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\FetchRequestTemplate}
                     {varType App\Model\FetchRequestTemplate $item}
-                        <div class="nav-item">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->name}</span>
-                        </div>
+                        <span class="breadcrumb-link">
+                    <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                    <span>{$item->name}</span>
+                </span>
                     {elseif $item instanceof App\Model\UniquenessConstraint}
                     {varType App\Model\UniquenessConstraint $item}
-                        <div class="nav-item">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->stringValue}</span>
-                        </div>
+                        <span class="breadcrumb-link">
+                    <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                    <span>{$item->stringValue}</span>
+                </span>
                     {elseif $item instanceof App\Model\Property}
                     {varType App\Model\Property $item}
-                        <div class="nav-item">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-{$img ? 2 : 0} pe-1 align-self-center">{$item->name}</span>
-                        </div>
+                        <span class="breadcrumb-link">
+                    <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                    <span>{$item->name}</span>
+                </span>
                     {elseif $item instanceof App\Model\FetchIndex}
                     {varType App\Model\FetchIndex $item}
-                        <div class="nav-item">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                        <div class="breadcrumb-link">
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropdown">
-                                <button type="button" class="btn icon ps-{$img ? 2 : 0} pe-1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                     {$item->name}
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li n:foreach="$item->elements as $element">
                                         <a class="dropdown-item" href="/Editor?project={$project->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">
                                             {var string $icon = img($element)}
-                                            <img n:if="$icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="property">
-                                            <span class="ps-1">{$element->propertyName}</span></a>
+                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                            <span>{$element->propertyName}</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     {elseif $item instanceof App\Model\FetchIndexElement}
                     {varType App\Model\FetchIndexElement $item}
-                        <div class="nav-item">
-                            <img n:if="$img" class="ps-1" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <span class="ps-{$img ? 2 : 0} pe-1">{$item->propertyName}</span>
-                        </div>
+                        <span class="breadcrumb-link">
+                    <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                    <span>{$item->propertyName}</span>
+                </span>
                     {/if}
                 </li>
             </ol>
         </nav>
     </div>
+
+    <!--suppress CssUnusedSymbol -->
+    <style>
+        #main .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-disabled);
+        }
+
+        #main .dropdown-menu-sm {
+            font-size: 12px;
+        }
+
+        #main .dropdown-menu-sm .dropdown-item {
+            padding: 6px 12px;
+        }
+    </style>
+
     <script>
         /**
          * @param { object } project

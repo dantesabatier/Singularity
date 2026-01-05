@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="#272b2f">
+    <meta name="theme-color" content="#272b2f">
     <meta name="color-scheme" content="light dark">
     <title>{block title}{/block}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" type="text/css" href="/Resources/Layout.css" media="screen">
 </head>
 <!--suppress HtmlDeprecatedAttribute -->
-<body onload="init()">
+<body>
 {block content}{/block}
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" defer></script>
@@ -163,6 +163,11 @@
         window.addEventListener("popstate", event => replace(event.state?.url ?? window.location.origin, register))
         register()
     }
+    document.addEventListener("DOMContentLoaded", () => {
+        init()
+    }, {
+        once: true
+    })
 </script>
 </body>
 </html>

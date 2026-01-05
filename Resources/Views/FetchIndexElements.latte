@@ -1,70 +1,107 @@
 {templateType App\ViewControllers\EditorController}
 {define fetchIndexElements}
-    <div class="table-responsive">
-        <table class="table table-hover table-sm">
-            <thead>
-            <tr>
-                <th scope="col" class="col-sm-2 text-shadow">Property</th>
-                <th scope="col" class="col-sm-2 text-shadow">Type</th>
-                <th scope="col" class="col-sm-2 text-shadow">Expression</th>
-                <th scope="col" class="col-sm-2 text-shadow">Ascending</th>
-                <th scope="col" class="col-sm-4 text-shadow"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? table-active">
-                <td>
-                    <form action="/FetchIndexElement" method="POST">
-                        <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
-                        <select name="propertyName" id="propertyName" aria-label="Property" class="form-select form-select-sm transparent border-0 py-0 w-auto" data-autosave="true">
-                            <option n:foreach="$selectedEntity->attributeNames as $attributeName" value="{$attributeName}" {$attributeName === $element->propertyName ? selected}>{$attributeName}</option>
-                        </select> <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                    </form>
-                </td>
-                <td>
-                    <form action="/FetchIndexElement" method="POST">
-                        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                        <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
-                        <select name="expressionResultType" id="expressionResultType" class="form-select form-select-sm transparent border-0 py-0 w-auto" aria-label="expressionResultType" data-autosave="true" {$element->propertyName !== "Expression" ? disabled}>
-                            <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $element?->expressionResultType?->value ? selected}>
-                                {$attributeType->name}
-                            </option>
-                        </select>
-                    </form>
-                </td>
-                <td>
-                    {$element->expressionFormat}
-                </td>
-                <td>
-                    <form action="/FetchIndexElement" method="POST">
-                        <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
-                        <input type="hidden" name="propertyName" value="{$element->propertyName}">
-                        <input class="form-check-input" type="checkbox" name="isAscending" value="{$element->isAscending|json}" id="isAscending" aria-label="Ascending" {$element->isAscending ? checked}>
-                        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                    </form>
-                </td>
-                <td></td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td>
-                    <div class="d-inline-block">
-                        {var ?App\Model\Attribute $attribute = $selectedEntity?->attributes?->filter(fn(App\Model\Attribute $attribute): bool => !$attribute->isDerived)?->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex?->elements?->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))}
-                        <button class="btn icon p-0" onclick="add({App\Model\FetchIndexElement::entity()->name}, {$attribute?->name}, {$selectedIndex}, {$selectedIndex?->elements?->count}, register)" {!$attribute instanceof App\Model\Attribute ? disabled}>
-                            <i class="bi bi-plus"></i>
-                        </button>
-                        <button class="btn icon p-0" onclick="remove({$selectedIndexElement}, register)" {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
-                            <i class="bi bi-dash"></i>
-                        </button>
-                    </div>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            </tfoot>
-        </table>
+    <div class="ide-list-control">
+        <!-- Header -->
+        <div class="list-control-header">
+            <span class="list-control-title">Fetch Index Elements</span>
+        </div>
+
+        <!-- Table -->
+        <div class="list-control-content">
+            <table class="list-control-table">
+                <thead>
+                <tr>
+                    <th class="col-property">Property</th>
+                    <th class="col-type">Type</th>
+                    <th class="col-expression">Expression</th>
+                    <th class="col-ascending">Ascending</th>
+                    <th class="col-flex"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr n:foreach="$selectedIndex->elements as $element"
+                        id="element-{$element->objectID->referenceObject}"
+                        data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}"
+                        n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? active">
+
+                    <!-- Property Column -->
+                    <td class="col-property">
+                        <form action="/FetchIndexElement" method="POST" class="cell-form">
+                            <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <select name="propertyName" aria-label="Property" class="form-select transparent" data-autosave="true">
+                                <option n:foreach="$selectedEntity->attributeNames as $attributeName"
+                                        value="{$attributeName}"
+                                        {$attributeName === $element->propertyName ? selected}>
+                                    {$attributeName}
+                                </option>
+                            </select>
+                        </form>
+                    </td>
+
+                    <!-- Type Column -->
+                    <td class="col-type">
+                        <form action="/FetchIndexElement" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                            <select name="expressionResultType"
+                                    aria-label="Expression Result Type"
+                                    class="form-select transparent"
+                                    data-autosave="true"
+                                    {$element->propertyName !== "Expression" ? disabled}>
+                                <option n:foreach="$attributeTypes as $attributeType"
+                                        value="{$attributeType->value}"
+                                        {$attributeType->value === $element?->expressionResultType?->value ? selected}>
+                                    {$attributeType->name}
+                                </option>
+                            </select>
+                        </form>
+                    </td>
+
+                    <!-- Expression Column -->
+                    <td class="col-expression">
+                        <div class="cell-content cell-code">
+                            <span class="cell-text">{$element->expressionFormat}</span>
+                        </div>
+                    </td>
+
+                    <!-- Ascending Column -->
+                    <td class="col-ascending">
+                        <form action="/FetchIndexElement" method="POST" class="cell-form cell-form-checkbox">
+                            <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                            <input type="hidden" name="propertyName" value="{$element->propertyName}">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input class="form-check-input"
+                                    type="checkbox"
+                                    name="isAscending"
+                                    value="{$element->isAscending|json}"
+                                    aria-label="Ascending"
+                                    {$element->isAscending ? checked}>
+                        </form>
+                    </td>
+
+                    <!-- Empty Column -->
+                    <td class="col-flex"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="list-control-toolbar">
+            {var ?App\Model\Attribute $attribute = $selectedEntity?->attributes?->filter(fn(App\Model\Attribute $attribute): bool => !$attribute->isDerived)?->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex?->elements?->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))}
+            <button class="btn btn-icon"
+                    title="Add Element"
+                    onclick="add({App\Model\FetchIndexElement::entity()->name}, {$attribute?->name}, {$selectedIndex}, {$selectedIndex?->elements?->count}, register)"
+                    {!$attribute instanceof App\Model\Attribute ? disabled}>
+                <i class="bi bi-plus-lg"></i>
+            </button>
+            <button class="btn btn-icon"
+                    title="Remove Element"
+                    onclick="remove({$selectedIndexElement}, register)"
+                    {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
+                <i class="bi bi-dash-lg"></i>
+            </button>
+        </div>
     </div>
 {/define}

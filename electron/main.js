@@ -168,6 +168,3 @@ ipcMain.on("showWindow", (event, arg) => {
 })
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
 ipcMain.on("openPath", (event, arg) => shell.openPath(arg))
-ipcMain.on("notifyProjectCreated", () => {
-    mainWindow.webContents.send("refreshProjects")
-})

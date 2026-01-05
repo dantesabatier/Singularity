@@ -1,39 +1,59 @@
 {templateType App\ViewControllers\EditorController}
 {define fetchedProperties}
-    <div class="table-responsive">
-        <table class="table table-hover table-sm caption-top" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="fetchedProperties">
-            <caption class="fw-bold text-shadow">Fetched Properties</caption>
-            <thead>
-            <tr>
-                <th scope="col" class="col-sm-2 text-shadow">Name</th>
-                <th scope="col" class="col-sm-10 text-shadow">Predicate</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr n:foreach="$selectedEntity->fetchedProperties as $fetchedProperty" id="property-{$fetchedProperty->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$fetchedProperty->objectID->referenceObject}" n:class="$fetchedProperty->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? table-active">
-                {var string $img = img($fetchedProperty)}
-                <td class="text-truncate">
-                    <img class="ps-2" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                    {$fetchedProperty->name}
-                </td>
-                <td class="text-truncate">{$fetchedProperty->fetchRequestPredicateFormat}</td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td>
-                    <div class="d-inline-block">
-                        <button class="btn icon p-0" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count}, register)">
-                            <i class="bi bi-plus"></i>
-                        </button>
-                        <button class="btn icon p-0" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\FetchedProperty ? disabled}>
-                            <i class="bi bi-dash"></i>
-                        </button>
-                    </div>
-                </td>
-                <td></td>
-            </tr>
-            </tfoot>
-        </table>
+    <div class="ide-list-control">
+        <!-- Header -->
+        <div class="list-control-header">
+            <span class="list-control-title">Fetched Properties</span>
+        </div>
+
+        <!-- Table -->
+        <div class="list-control-content">
+            <table class="list-control-table" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="fetchedProperties">
+                <thead>
+                <tr>
+                    <th class="col-name">Name</th>
+                    <th class="col-predicate">Predicate</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr n:foreach="$selectedEntity->fetchedProperties as $fetchedProperty"
+                        id="property-{$fetchedProperty->objectID->referenceObject}"
+                        data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$fetchedProperty->objectID->referenceObject}"
+                        n:class="$fetchedProperty->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
+
+                    <!-- Name Column -->
+                    <td class="col-name">
+                        <div class="cell-content">
+                            {var string $img = img($fetchedProperty)}
+                            <img class="cell-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span class="cell-text">{$fetchedProperty->name}</span>
+                        </div>
+                    </td>
+
+                    <!-- Predicate Column -->
+                    <td class="col-predicate">
+                        <div class="cell-content cell-code">
+                            <span class="cell-text">{$fetchedProperty->fetchRequestPredicateFormat}</span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="list-control-toolbar">
+            <button class="btn btn-icon"
+                    title="Add Fetched Property"
+                    onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count}, register)">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+            <button class="btn btn-icon"
+                    title="Remove Fetched Property"
+                    onclick="remove({$selectedProperty}, register)"
+                    {!$selectedProperty instanceof App\Model\FetchedProperty ? disabled}>
+                <i class="bi bi-dash-lg"></i>
+            </button>
+        </div>
     </div>
 {/define}

@@ -1,35 +1,40 @@
+{templateType App\ViewControllers\EditorController}
 {varType App\Model\FetchIndex $selectedIndex}
 {define fetchIndex}
-    <form action="/FetchIndex" method="POST">
-        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
-            Fetch Index
-        </div>
-        <input type="hidden" name="objectID" value="{$selectedIndex->objectID->referenceObject}">
-        <div class="row mb-3 align-items-center">
-            <label for="name" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Name</label>
-            <div class="col-sm-9">
-                <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control form-control-sm text-truncate" value="{$selectedIndex->name}" autocomplete="off" spellcheck="false" required>
+    <div class="px-3 pb-4">
+        <form action="/FetchIndex" method="POST">
+            <input type="hidden" name="objectID" value="{$selectedIndex->objectID->referenceObject}">
+
+            <div class="inspector-header">Fetch Index</div>
+
+            <div class="row mb-2">
+                <label for="name" class="col-sm-4 inspector-label">Name</label>
+                <div class="col-sm-8">
+                    <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedIndex->name}" autocomplete="off" spellcheck="false" required>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3 align-items-center">
-            <label for="collationType" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Type</label>
-            <div class="col-sm-9">
-                <select name="collationType" id="collationType" class="form-select form-select-sm" data-autosave="true">
-                    {var array $options = [2 => "Default", 0 => "Binary", 1 => "R-Tree"]}
-                    <option n:foreach="$options as $key => $option" value="{$key}" {$key === $selectedIndex->collationType->value ? selected}>{$option}</option>
-                </select>
+
+            <div class="row mb-2">
+                <label for="collationType" class="col-sm-4 inspector-label">Type</label>
+                <div class="col-sm-8">
+                    <select name="collationType" id="collationType" class="form-select form-select-sm" data-autosave="true">
+                        {var array $options = [2 => "Default", 0 => "Binary", 1 => "R-Tree"]}
+                        <option n:foreach="$options as $key => $option" value="{$key}" {$key === $selectedIndex->collationType->value ? selected}>{$option}</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="mb-3 fs-5">
-            Partial Index
-        </div>
-        <div class="row mb-3 align-items-center">
-            <label for="partialIndexPredicateFormat" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Predicate</label>
-            <div class="col-sm-9">
-                <input type="text" name="partialIndexPredicateFormat" id="partialIndexPredicateFormat" placeholder="Predicate" class="form-control form-control-sm text-truncate" value="{$selectedIndex->partialIndexPredicateFormat}" autocomplete="off" spellcheck="false">
+
+            <div class="inspector-header">Partial Index</div>
+
+            <div class="row mb-2">
+                <label for="partialIndexPredicateFormat" class="col-sm-4 inspector-label">Predicate</label>
+                <div class="col-sm-8">
+                    <input type="text" name="partialIndexPredicateFormat" id="partialIndexPredicateFormat" placeholder="Predicate" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedIndex->partialIndexPredicateFormat}" autocomplete="off" spellcheck="false" style="font-size: 11px;">
+                </div>
             </div>
-        </div>
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-        <input class="d-none" type="submit">
-    </form>
+
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+            <input class="d-none" type="submit">
+        </form>
+    </div>
 {/define}

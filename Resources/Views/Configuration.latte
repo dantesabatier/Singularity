@@ -1,16 +1,16 @@
 {templateType App\ViewControllers\EditorController}
 {define configuration}
-    <form action="/Configuration" method="POST">
-        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
-            Configuration
-        </div>
-        <input type="hidden" name="objectID" value="{$selectedConfiguration->objectID->referenceObject}">
-        <div class="row mb-3 align-items-center">
-            <label for="name" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Name</label>
-            <div class="col-sm-9">
-                <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control form-control-sm text-truncate" value="{$selectedConfiguration->name}" autocomplete="off" spellcheck="false" required>
+    <div class="px-3 pb-4">
+        <form action="/Configuration" method="POST">
+            <input type="hidden" name="objectID" value="{$selectedConfiguration->objectID->referenceObject}">
+            <div class="inspector-header">Configuration</div>
+            <div class="row mb-2">
+                <label for="name" class="col-sm-4 inspector-label">Name</label>
+                <div class="col-sm-8">
+                    <input type="text" name="name" id="name" placeholder="Configuration Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedConfiguration->name}" autocomplete="off" spellcheck="false" required>
+                </div>
             </div>
-        </div>
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
-    </form>
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+        </form>
+    </div>
 {/define}

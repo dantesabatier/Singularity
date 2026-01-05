@@ -1,16 +1,20 @@
 {templateType App\ViewControllers\EditorController}
 {define compositeType}
-    <form action="/CompositeType" method="POST">
-        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
-            Composite Attribute
-        </div>
-        <input type="hidden" name="objectID" value="{$selectedCompositeType->objectID->referenceObject}">
-        <div class="row mb-3 align-items-center">
-            <label for="name" class="col-sm-3 col-form-label col-form-label-sm text-end pe-0">Name</label>
-            <div class="col-sm-9">
-                <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control form-control-sm text-truncate" value="{$selectedCompositeType->name}" autocomplete="off" spellcheck="false" required>
+    <div class="px-3 pb-4">
+        <form action="/CompositeType" method="POST">
+            <input type="hidden" name="objectID" value="{$selectedCompositeType->objectID->referenceObject}">
+
+            <div class="inspector-header">Composite Attribute</div>
+
+            <div class="row mb-2">
+                <label for="name" class="col-sm-4 inspector-label">Name</label>
+                <div class="col-sm-8">
+                    <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedCompositeType->name}" autocomplete="off" spellcheck="false" required>
+                </div>
             </div>
-        </div>
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
-    </form>
+
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+            <input class="d-none" type="submit">
+        </form>
+    </div>
 {/define}

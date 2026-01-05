@@ -50,19 +50,17 @@ final class WelcomeController extends ViewController
             return $this->projects;
         }
     }
+    #[Outlet]
+    public ?string $directory = null;
+    #[Outlet]
+    public bool $generateWithSecurity = true;
+    #[Outlet]
+    public bool $generateWithCORS = true;
+    #[Outlet]
+    public bool $generateWithJWT = true;
 
-    /**
-     * @throws Exception
-     */
-    #[Action(decorators: [JSONDecorator::class])]
-    public function create(): void
+    private function createProjectFromURL(URL $url): Project
     {
-        $body = $this->request->parsedBody;
-        $path = $body["path"] ?? throw new BadRequestException();
-        $generateWithSecurity = $body["generateWithSecurity"] ?? false;
-        $generateWithCORS = $body["generateWithCORS"] ?? false;
-        $generateWithJWT = $body["generateWithJWT"] ?? false;
-        $url = URL::fileURL($path);
         $name = $url->lastPathComponent;
         $context = $this->managedObjectContext;
         $model = new Model($context);
@@ -73,6 +71,37 @@ final class WelcomeController extends ViewController
         $project->url = $url;
         $project->color = random_color($name);
         $project->model = $model;
+        return $project;
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Action(decorators: [JSONDecorator::class])]
+    public function open(): void
+    {
+        $body = $this->request->parsedBody;
+        $path = $body["directory"] ?? throw new BadRequestException();
+        $url = URL::fileURL($path);
+        $project = $this->createProjectFromURL($url);
+        $fileWriter = new ProjectFileWriter($url, $project);
+        $fileWriter->save();
+        $this->data = $project;
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Action(decorators: [JSONDecorator::class])]
+    public function create(): void
+    {
+        $body = $this->request->parsedBody;
+        $path = $body["directory"] ?? throw new BadRequestException();
+        $generateWithSecurity = $body["generateWithSecurity"] ?? false;
+        $generateWithCORS = $body["generateWithCORS"] ?? false;
+        $generateWithJWT = $body["generateWithJWT"] ?? false;
+        $url = URL::fileURL($path);
+        $project = $this->createProjectFromURL($url);
         $fileWriter = new ProjectFileWriter($url, $project, $generateWithSecurity, $generateWithCORS, $generateWithJWT);
         $fileWriter->save();
         $this->data = $project;

@@ -1,14 +1,50 @@
 {varType App\Model\FetchRequestTemplate $selectedFetchRequestTemplate}
 {define fetchRequestTemplatePredicate}
-    <form action="/FetchRequestTemplate" method="POST">
-        <div class="my-3 fs-4 fw-bold text-secondary text-shadow">
-            {$selectedFetchRequestTemplate->name}
+    <div class="content-panel">
+        <!-- Panel Header -->
+        <div class="content-panel-header">
+            <div class="content-panel-title">
+                <i class="bi bi-search"></i>
+                <span>{$selectedFetchRequestTemplate->name}</span>
+            </div>
+            <span class="content-panel-badge">TEMPLATE</span>
         </div>
-        <div class="mb-3">
-            <label for="predicateString" class="form-label">Predicate</label>
-            <textarea name="predicateString" id="predicateString" placeholder="Predicate" class="form-control form-control-sm" rows="3" autocomplete="off" spellcheck="false" required>{$selectedFetchRequestTemplate->predicateString}</textarea>
-        </div>
-        <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID->referenceObject}">
-        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
-    </form>
+
+        <!-- Panel Body -->
+        <form action="/FetchRequestTemplate" method="POST" class="content-panel-body">
+            <div class="form-section">
+                <!-- Section Header -->
+                <div class="form-section-header">
+                    <label for="predicateString" class="form-section-label">Predicate Format</label>
+                    <button type="button" class="form-section-help" title="NSPredicate Format Syntax">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Syntax Help</span>
+                    </button>
+                </div>
+
+                <!-- Code Editor -->
+                <textarea name="predicateString"
+                        id="predicateString"
+                        class="form-control code-editor"
+                        rows="5"
+                        autocomplete="off"
+                        spellcheck="false"
+                        placeholder="name == $NAME AND date > $DATE"
+                        required>{$selectedFetchRequestTemplate->predicateString}</textarea>
+
+                <!-- Help Text -->
+                <div class="form-help-text">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div class="form-help-content">
+                        <div>Use <code class="inline-code">$VARIABLE</code> for substitution variables.</div>
+                        <div class="form-help-note">String comparisons are case-sensitive by default.</div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID->referenceObject}">
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+            <input class="d-none" type="submit">
+        </form>
+    </div>
 {/define}

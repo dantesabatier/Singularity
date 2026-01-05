@@ -1,26 +1,189 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\AboutController}
 {block content}
-    <div id="main" class="vh-100 d-flex flex-column bg-dark text-light">
-        <!-- Custom title bar -->
-        <div class="navbar sticky-top bg-dark small user-select-none p-0" style="height: 40px; -webkit-app-region: drag;">
-            <div class="container-fluid px-2 d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block me-2">
-                    <small class="fs-6">{$title}</small>
+    <div id="main" class="vh-100 d-flex flex-column user-select-none" style="background-color: var(--bg-primary);">
+        {* Custom title bar con botón de cerrar *}
+        <div class="navbar sticky-top border-bottom p-0"
+                style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
+                <div class="container-fluid px-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="/Resources/Images/icon16@1x.png"
+                                srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x"
+                                alt="{$title}"
+                                class="d-inline-block">
+                        <span class="fs-6 fw-medium">{$title}</span>
+                    </div>
+                    <button class="btn btn-icon p-1"
+                            onclick="window.close()"
+                            style="-webkit-app-region: no-drag;"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="bottom"
+                            data-bs-title="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
-                <button class="btn btn-dark btn-sm p-0" onclick="window.close()" style="-webkit-app-region: no-drag;">
-                    <i class="bi bi-x-lg text-light"></i>
-                </button>
-            </div>
         </div>
 
-        <!-- Main content -->
-        <div class="container-fluid flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center px-3">
-            <img src="/Resources/Images/icon64@1x.png" srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x" alt="{$title}" class="mb-3">
-            <h2 class="mb-1">{$bundleName} {$bundleShortVersion}</h2>
-            <p class="mb-1">Build #{$bundleVersion}</p>
-            <small class="text-muted text-wrap-word">{$bundleHumanReadableCopyright}</small>
+        {* Main content centrado *}
+        <div class="container-fluid flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center px-4">
+                {* Ícono de la aplicación con efecto *}
+            <div class="mb-4 position-relative">
+                        <div class="icon-glow"></div>
+                        <img src="/Resources/Images/icon64@1x.png"
+                                srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x"
+                                alt="{$title}"
+                                class="app-icon"
+                                style="position: relative; z-index: 1;">
+            </div>
+
+            {* Información de la aplicación *}
+            <div class="mb-4">
+                        <h2 class="fw-bold mb-2" style="color: var(--text-bright); font-size: 24px;">
+                            {$bundleName}
+                        </h2>
+                        <div class="d-flex align-items-center justify-content-center gap-3 mb-2">
+                    <span class="badge bg-primary px-3 py-2" style="font-size: 13px;">
+                        Version {$bundleShortVersion}
+                    </span>
+                            <span class="badge px-3 py-2" style="background-color: var(--bg-tertiary); font-size: 13px;">
+                        Build {$bundleVersion}
+                    </span>
+                        </div>
+            </div>
+
+            {* Copyright y detalles *}
+                <div class="text-center" style="max-width: 400px;">
+                    <p class="text-muted mb-3 text-wrap-word" style="font-size: 13px; line-height: 1.6;">
+                        {$bundleHumanReadableCopyright}
+                    </p>
+
+                    {* Links o información adicional (opcional) *}
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2"
+                                onclick="openURL('https://yourwebsite.com')"
+                                style="-webkit-app-region: no-drag;">
+                            <i class="bi bi-globe"></i>
+                            <span>Website</span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2"
+                                onclick="openURL('https://github.com/yourrepo')"
+                                style="-webkit-app-region: no-drag;">
+                            <i class="bi bi-github"></i>
+                            <span>GitHub</span>
+                        </button>
+                    </div>
+                </div>
+        </div>
+
+        {* Footer con información del sistema (opcional) *}
+        <div class="border-top py-2 px-3 text-center"
+                style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+            <small class="text-muted d-flex align-items-center justify-content-center gap-2" style="font-size: 11px;">
+                <i class="bi bi-info-circle"></i>
+                <span>Powered by Electron & PHP</span>
+            </small>
         </div>
     </div>
+
+    <style>
+        /* Estilos específicos para la vista About */
+        #main .app-icon {
+            width: 64px;
+            height: 64px;
+            animation: fadeInScale 0.4s ease-out;
+        }
+
+        #main .icon-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(74, 136, 199, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.4;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        #main .badge {
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        #main .btn-outline-secondary {
+            border-color: var(--border-light);
+            color: var(--text-primary);
+        }
+
+        #main .btn-outline-secondary:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        #main h2 {
+            animation: fadeInDown 0.5s ease-out 0.1s both;
+        }
+
+        #main .badge {
+            animation: fadeInUp 0.5s ease-out 0.2s both;
+        }
+
+        #main p {
+            animation: fadeIn 0.5s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
 {/block}

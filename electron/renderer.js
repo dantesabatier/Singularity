@@ -341,23 +341,23 @@ const remove = async (item, completion = undefined) => {
     }
 }
 
-/**
- * @param { HTMLFormElement } form
- */
-const create = async (form) => await submit(form, () => {
-    window.api?.notifyProjectCreated()
-    window.close()
-})
-
 const explore = (path) => window.api?.openPath(path)
 
 /**
  * @param {string|undefined} title
  * @param {string|undefined} prompt
  * @param {string|undefined} defaultButton
+ * @param {string[]|undefined} options
  * @return {Promise<string|undefined>}
  */
-const browse = async (title = undefined, prompt = undefined, defaultButton = undefined) => (await window.api?.showOpenDialog(title ?? "Select folder", prompt, defaultButton ?? "OK", undefined, ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
+const browse = async (title = undefined, prompt = undefined, defaultButton = undefined, options = undefined) => (await window.api?.showOpenDialog(title ?? "Select folder", prompt, defaultButton ?? "OK", undefined, options ?? ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
+
+const showOpenPanel = async () => {
+    const filePath = await browse("Open Project", "Select the project file", "Open", ["openDirectory"])
+    if (filePath) {
+        await send(url("open"), {path: filePath}, "POST", register)
+    }
+}
 
 /**
  * @param {string} messageText
@@ -370,16 +370,6 @@ const showMessageBox = (messageText, informativeText, buttons) => window.api?.sh
  * @param {object|undefined} error
  */
 const showErrorBox = (error) => window.api?.showErrorBox(error)
-
-const showNewProjectPanel = async () => window.api?.showWindow({
-    url: `${window.location.origin}${url("NewProject")}`,
-    overrideBrowserWindowOptions: {
-        width: 500,
-        height: 320,
-        modal: true,
-        titleBarOverlay: false
-    }
-})
 
 const showPreferences = () => window.api?.showWindow({
     url: `${window.location.origin}${url("Preferences")}`,
@@ -394,7 +384,7 @@ const showAboutPanel = () => window.api?.showWindow({
     url: `${window.location.origin}${url("About")}`,
     overrideBrowserWindowOptions: {
         width: 380,
-        height: 220,
+        height: 320,
         modal: true,
         titleBarOverlay: false
     }
@@ -404,5 +394,3 @@ const showAboutPanel = () => window.api?.showWindow({
  * @param {number} progress
  */
 const setProgressBar = (progress) => window.api?.setProgressBar(progress)
-
-window.api?.onProjectRefreshRequested(async () => await push("/", register))
