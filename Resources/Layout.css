@@ -1090,6 +1090,23 @@ a.breadcrumb-link:hover {
 }
 
 /* ============================================
+   14. Database Viewer Component
+   ============================================ */
+
+db-viewer {
+    width: 100vw;
+    height: 100vh;
+    --viewer-background-color: var(--bg-primary);
+    --relation-color: var(--text-primary);
+    --relation-color-highlight: var(--accent-blue);
+    --entity-background: var(--bg-secondary);
+    --entity-border: var(--border-color);
+    --entity-header-background: var(--bg-tertiary);
+    --entity-text: var(--text-primary);
+    --entity-text-secondary: var(--text-secondary);
+}
+
+/* ============================================
    12. Utilities & Helpers
    ============================================ */
 
