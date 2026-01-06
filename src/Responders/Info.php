@@ -7,7 +7,7 @@ use Sabatier\Service\Responder;
 use Sabatier\Service\Response;
 
 #[Endpoint]
-class Info extends Responder
+final class Info extends Responder
 {
     public bool $isProtectedContentAvailable = true;
     public Response $response {
