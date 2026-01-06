@@ -11,6 +11,7 @@ use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\URLComponents;
 use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Service\ViewController;
+use const Sabatier\Service\ServiceObjectIDKey;
 
 /**
  * @template ResultType of ManagedObject
@@ -27,7 +28,7 @@ abstract class FetchController extends ViewController
     protected function fetchByReference(string $managedObjectClass, int $referenceObject, Dictionary $serialization)
     {
         $fetchRequest = $managedObjectClass::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass(["objectID", $referenceObject]));
+        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass([ServiceObjectIDKey, $referenceObject]));
         $fetchRequest->serialization = $serialization;
         return $this->managedObjectContext->fetch($fetchRequest)->first ?? null;
     }

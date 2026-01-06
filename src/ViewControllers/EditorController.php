@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\ViewControllers;
 
 use App\FileWriters\ProjectFileWriter;
@@ -23,7 +21,6 @@ use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
@@ -44,6 +41,7 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
+use const Sabatier\Service\ServiceObjectIDKey;
 
 #[Endpoint("Editor")]
 final class EditorController extends ProjectController
@@ -171,7 +169,7 @@ final class EditorController extends ProjectController
                 "element" => FetchIndexElement::class
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
-            $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
+            $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(ServiceObjectIDKey), Expression::expressionForConstantValue($objectID));
             if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first)) {
                 break;
             }

@@ -1,27 +1,20 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\ViewControllers;
 
 use App\FileWriters\ProjectFileWriter;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
-use Sabatier\CoreData\SQLEntity;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
-use Sabatier\Foundation\Networking\HTTPStatusCode;
-use Sabatier\Foundation\Predicates\ComparisonPredicate;
-use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\JSONDecorator;
-use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\random_color;
@@ -105,22 +98,5 @@ final class WelcomeController extends ViewController
         $fileWriter = new ProjectFileWriter($url, $project, $generateWithSecurity, $generateWithCORS, $generateWithJWT);
         $fileWriter->save();
         $this->data = $project;
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Action(HTTPRequestMethod::delete)]
-    public function remove(): void
-    {
-        $body = $this->request->parsedBody;
-        $objectID = $body[SQLEntity::primaryKeyName] ?? throw new BadRequestException();
-        $context = $this->managedObjectContext;
-        $fetchRequest = Project::fetchRequest();
-        $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(SQLEntity::primaryKeyName), Expression::expressionForConstantValue($objectID));
-        $project = $context->fetch($fetchRequest)->first ?? throw new NotFoundException();
-        $context->delete($project);
-        $context->save();
-        $this->statusCode = HTTPStatusCode::noContent;
     }
 }

@@ -362,7 +362,7 @@
             const directory = await browse();
             if (!!directory) {
                 await send("/Open", {
-                    path: directory
+                    directory: directory
                 })
             }
         }
