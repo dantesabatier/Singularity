@@ -2,91 +2,58 @@
 {templateType App\ViewControllers\AboutController}
 {block content}
     <div id="main" class="vh-100 d-flex flex-column user-select-none" style="background-color: var(--bg-primary);">
-        {* Custom title bar con botón de cerrar *}
         <div class="navbar sticky-top border-bottom p-0"
                 style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
-                <div class="container-fluid px-3 d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center gap-2">
-                        <img src="/Resources/Images/icon16@1x.png"
-                                srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x"
-                                alt="{$title}"
-                                class="d-inline-block">
-                        <span class="fs-6 fw-medium">{$title}</span>
-                    </div>
-                    <button class="btn btn-icon p-1"
-                            onclick="window.close()"
-                            style="-webkit-app-region: no-drag;"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="bottom"
-                            data-bs-title="Close">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
+            <div class="container-fluid px-3 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block">
+                    <span class="fs-6 fw-medium">{$title}</span>
                 </div>
-        </div>
-
-        {* Main content centrado *}
-        <div class="container-fluid flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center px-4">
-                {* Ícono de la aplicación con efecto *}
-            <div class="mb-4 position-relative">
-                        <div class="icon-glow"></div>
-                        <img src="/Resources/Images/icon64@1x.png"
-                                srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x"
-                                alt="{$title}"
-                                class="app-icon"
-                                style="position: relative; z-index: 1;">
+                <button class="btn btn-icon p-1" onclick="window.close()" style="-webkit-app-region: no-drag;" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
-
-            {* Información de la aplicación *}
+        </div>
+        <div class="container-fluid flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center px-4">
+            <div class="mb-4 position-relative">
+                <div class="icon-glow"></div>
+                <img src="/Resources/Images/icon64@1x.png" srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x" alt="{$title}" class="app-icon" style="position: relative; z-index: 1;">
+            </div>
             <div class="mb-4">
-                        <h2 class="fw-bold mb-2" style="color: var(--text-bright); font-size: 24px;">
-                            {$bundleName}
-                        </h2>
-                        <div class="d-flex align-items-center justify-content-center gap-3 mb-2">
+                <h2 class="fw-bold mb-2" style="color: var(--text-bright); font-size: 24px;">
+                    {$bundleName}
+                </h2>
+                <div class="d-flex align-items-center justify-content-center gap-3 mb-2">
                     <span class="badge bg-primary px-3 py-2" style="font-size: 13px;">
                         Version {$bundleShortVersion}
                     </span>
-                            <span class="badge px-3 py-2" style="background-color: var(--bg-tertiary); font-size: 13px;">
+                    <span class="badge px-3 py-2" style="background-color: var(--bg-tertiary); font-size: 13px;">
                         Build {$bundleVersion}
                     </span>
-                        </div>
-            </div>
-
-            {* Copyright y detalles *}
-                <div class="text-center" style="max-width: 400px;">
-                    <p class="text-muted mb-3 text-wrap-word" style="font-size: 13px; line-height: 1.6;">
-                        {$bundleHumanReadableCopyright}
-                    </p>
-
-                    {* Links o información adicional (opcional) *}
-                    <div class="d-flex justify-content-center gap-2 mt-4">
-                        <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2"
-                                onclick="openURL('https://yourwebsite.com')"
-                                style="-webkit-app-region: no-drag;">
-                            <i class="bi bi-globe"></i>
-                            <span>Website</span>
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2"
-                                onclick="openURL('https://github.com/yourrepo')"
-                                style="-webkit-app-region: no-drag;">
-                            <i class="bi bi-github"></i>
-                            <span>GitHub</span>
-                        </button>
-                    </div>
                 </div>
+            </div>
+            <div class="text-center" style="max-width: 400px;">
+                <p class="text-muted mb-3 text-wrap-word" style="font-size: 13px; line-height: 1.6;">
+                    {$bundleHumanReadableCopyright}
+                </p>
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" style="-webkit-app-region: no-drag;">
+                        <i class="bi bi-globe"></i> <span>Website</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" style="-webkit-app-region: no-drag;">
+                        <i class="bi bi-github"></i> <span>GitHub</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
-        {* Footer con información del sistema (opcional) *}
-        <div class="border-top py-2 px-3 text-center"
-                style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+        <div class="border-top py-2 px-3 text-center" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
             <small class="text-muted d-flex align-items-center justify-content-center gap-2" style="font-size: 11px;">
-                <i class="bi bi-info-circle"></i>
-                <span>Powered by Electron & PHP</span>
-            </small>
+                <i class="bi bi-info-circle"></i> <span>Powered by Electron & PHP</span> </small>
         </div>
     </div>
 
     <style>
-        /* Estilos específicos para la vista About */
         #main .app-icon {
             width: 64px;
             height: 64px;
