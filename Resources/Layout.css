@@ -295,6 +295,10 @@ button {
 
 /* Dropdowns */
 .dropdown-menu {
+    height: auto;
+    max-height: calc(100vh - 68px);
+    overflow: hidden;
+    overflow-y: auto;
     background-color: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-radius: 6px;

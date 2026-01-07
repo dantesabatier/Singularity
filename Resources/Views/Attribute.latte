@@ -5,16 +5,13 @@
         <form action="/Attribute" method="POST">
             <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
             <input type="hidden" name="attributeValueClassName" value="{$selectedProperty->attributeValueClassName}">
-
             <div class="inspector-header">Attribute</div>
-
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>
                 <div class="col-sm-8">
                     <input type="text" name="name" id="name" placeholder="Attribute Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedProperty->name}" autocomplete="off" spellcheck="false" required>
                 </div>
             </div>
-
             <div class="row mb-2">
                 <label for="type" class="col-sm-4 inspector-label">Type</label>
                 <div class="col-sm-8">
@@ -29,7 +26,6 @@
                     </select>
                 </div>
             </div>
-
             <div class="row mb-2">
                 <div class="col-sm-4"></div>
                 <div class="col-sm-8">
@@ -39,7 +35,7 @@
                             <label class="form-check-label small text-secondary" for="isOptional">Optional</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient|json}" id="isTransient" {$selectedProperty->isTransient ? checked} {$selectedProperty->isTransient ? disabled}>
+                            <input class="form-check-input" type="checkbox" name="isTransient" value="{$selectedProperty->isTransient|json}" id="isTransient" {$selectedProperty->isTransient ? checked}>
                             <label class="form-check-label small text-secondary" for="isTransient">Transient</label>
                         </div>
                         <div class="form-check">
@@ -48,24 +44,19 @@
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="isSensitive" value="{$selectedProperty->isSensitive|json}" id="isSensitive" {$selectedProperty->isSensitive ? checked}>
-                            <label class="form-check-label small text-secondary" for="isSensitive">
-                                Allows Cloud Encryption
-                            </label>
+                            <label class="form-check-label small text-secondary" for="isSensitive"> Allows Cloud Encryption </label>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div n:if="$selectedProperty->isDerived" class="row mb-2">
                 <label for="derivationExpressionFormat" class="col-sm-4 inspector-label">Derivation</label>
                 <div class="col-sm-8">
                     <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" required style="font-size: 11px;">
                 </div>
             </div>
-
             {if !$selectedProperty->isDerived}
                 <div class="inspector-header">Configuration</div>
-
                 {switch $selectedProperty->type}
                     {case Sabatier\CoreData\AttributeType::integer16, Sabatier\CoreData\AttributeType::integer32, Sabatier\CoreData\AttributeType::integer64}
                     <div class="row mb-2">
@@ -86,7 +77,6 @@
                             </div>
                         </div>
                     </div>
-
                 {case Sabatier\CoreData\AttributeType::decimal, Sabatier\CoreData\AttributeType::double, Sabatier\CoreData\AttributeType::float}
                     <div class="row mb-2">
                         <label for="defaultValue" class="col-sm-4 inspector-label">Default</label>
@@ -106,7 +96,6 @@
                             </div>
                         </div>
                     </div>
-
                 {case Sabatier\CoreData\AttributeType::string}
                     <div class="row mb-2">
                         <div class="col-sm-4"></div>
@@ -123,7 +112,6 @@
                             <input type="text" name="defaultValue" id="defaultValue" placeholder="{$selectedProperty->isDefaultValueBounded ? 'Empty String' : 'Null'}" class="form-control form-control-sm text-truncate" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <label class="col-sm-4 inspector-label">Length</label>
                         <div class="col-sm-8">
@@ -136,25 +124,21 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <label for="regex" class="col-sm-4 inspector-label">RegEx</label>
                         <div class="col-sm-8">
                             <input type="text" name="regex" id="regex" placeholder="Pattern" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->regex}" autocomplete="off" style="font-size: 11px;">
                         </div>
                     </div>
-
                 {case Sabatier\CoreData\AttributeType::boolean}
                     <div class="row mb-2">
                         <label for="defaultValue" class="col-sm-4 inspector-label">Default</label>
                         <div class="col-sm-8">
                             <select name="defaultValue" id="defaultValue" class="form-select form-select-sm" data-autosave="true">
-                                {var array $values = ["" => "None", "true" => "True", "false" => "False"]}
-                                <option n:foreach="$values as $key => $value" value="{$key}" {$key == ($selectedProperty->defaultValue|readable) ? selected}>{$value}</option>
+                                <option n:foreach="$booleanValues as $booleanValue" value="{$booleanValue->value}" {$booleanValue->value == ($selectedProperty->defaultValue|readable) ? selected}>{$booleanValue->name}</option>
                             </select>
                         </div>
                     </div>
-
                 {case Sabatier\CoreData\AttributeType::date}
                     <div class="row mb-2">
                         <div class="col-sm-4"></div>
@@ -171,7 +155,6 @@
                             <input type="datetime-local" name="defaultValue" id="defaultValue" class="form-control form-control-sm" value="{$selectedProperty->defaultValue}" {!$selectedProperty->isDefaultValueBounded ? disabled}>
                         </div>
                     </div>
-
                     <div class="row mb-1">
                         <div class="col-sm-4 inspector-label">Range</div>
                         <div class="col-sm-8">
@@ -193,7 +176,6 @@
                             </div>
                         </div>
                     </div>
-
                 {case Sabatier\CoreData\AttributeType::uuid, Sabatier\CoreData\AttributeType::uri}
                     <div class="row mb-2">
                         <label for="defaultValue" class="col-sm-4 inspector-label">Default</label>
@@ -201,7 +183,6 @@
                             <input type="text" name="defaultValue" id="defaultValue" class="form-control form-control-sm text-truncate" placeholder="Default Value" value="{$selectedProperty->defaultValue}" autocomplete="off" spellcheck="false">
                         </div>
                     </div>
-
                 {case Sabatier\CoreData\AttributeType::binaryData}
                     <div class="row mb-2">
                         <div class="col-sm-4"></div>
@@ -212,7 +193,6 @@
                             </div>
                         </div>
                     </div>
-
                 {case Sabatier\CoreData\AttributeType::transformable}
                     <div class="row mb-2">
                         <label for="attributeValueClassName" class="col-sm-4 inspector-label">Class</label>
@@ -228,7 +208,6 @@
                     </div>
                     {default}
                 {/switch}
-
                 <div class="inspector-header">Advanced</div>
                 <div class="row mb-2">
                     <div class="col-sm-4"></div>
@@ -239,9 +218,7 @@
                         </div>
                     </div>
                 </div>
-
             {elseif ($selectedProperty->type === Sabatier\CoreData\AttributeType::transformable)}
-
                 <div class="inspector-header">Transformable Settings</div>
                 <div class="row mb-2">
                     <label for="attributeValueClassName" class="col-sm-4 inspector-label">Class</label>
@@ -256,7 +233,6 @@
                     </div>
                 </div>
             {/if}
-
             <div class="inspector-header">Versioning</div>
             <div class="row mb-2">
                 <label for="versionHashModifier" class="col-sm-4 inspector-label">Hash Mod.</label>
@@ -270,9 +246,7 @@
                     <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Identifier" class="form-control form-control-sm text-truncate" value="{$selectedProperty->renamingIdentifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
     </div>
 {/define}

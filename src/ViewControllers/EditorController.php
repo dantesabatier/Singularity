@@ -19,6 +19,7 @@ use Override;
 use ReflectionClass;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\DeleteRule;
+use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
@@ -41,6 +42,7 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
+use function Sabatier\Foundation\localized_string;
 use const Sabatier\Service\ServiceObjectIDKey;
 
 #[Endpoint("Editor")]
@@ -124,11 +126,37 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ArrayClass $deleteRules {
         get => $this->deleteRules ??= new ArrayClass(DeleteRule::cases())->map(fn(DeleteRule $rule): object => (object)["name" => match ($rule) {
-            DeleteRule::noActionDeleteRule => "No Action",
-            DeleteRule::nullifyDeleteRule => "Nullify",
-            DeleteRule::cascadeDeleteRule => "Cascade",
-            DeleteRule::denyDeleteRule => "Deny"
+            DeleteRule::noActionDeleteRule => localized_string("No Action"),
+            DeleteRule::nullifyDeleteRule => localized_string("Nullify"),
+            DeleteRule::cascadeDeleteRule => localized_string("Cascade"),
+            DeleteRule::denyDeleteRule => localized_string("Deny"),
         }, "value" => $rule->value]);
+    }
+    /** @var ArrayClass<object{name: string, value: int}> */
+    #[Outlet]
+    private(set) ArrayClass $relationshipTypes {
+        get => $this->relationshipTypes ??= new ArrayClass([
+            (object)["name" => "To One", "value" => 0],
+            (object)["name" => "To Many", "value" => 1],
+        ]);
+    }
+    /** @var ArrayClass<object{name: string, value: int}> */
+    #[Outlet]
+    private(set) ArrayClass $collationTypes {
+        get => $this->collationTypes ??= new ArrayClass(FetchIndexElementType::cases())->map(fn(FetchIndexElementType $type): object => (object)["name" => match ($type) {
+            FetchIndexElementType::binary => localized_string("Binary"),
+            FetchIndexElementType::bTree => localized_string("R-Tree"),
+            FetchIndexElementType::rTree => localized_string("B-Tree")
+        }, "value" => $type->value]);
+    }
+    /** @var ArrayClass<object{name: string, value: string}> */
+    #[Outlet]
+    private(set) ArrayClass $booleanValues {
+        get => $this->booleanValues ??= new ArrayClass([
+            (object)["name" => "None", "value" => ""],
+            (object)["name" => "True", "value" => "true"],
+            (object)["name" => "False", "value" => "false"],
+        ]);
     }
 
     private function className(Entity $entity, string $namespace): string

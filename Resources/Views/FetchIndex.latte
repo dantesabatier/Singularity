@@ -4,37 +4,29 @@
     <div class="px-3 pb-4">
         <form action="/FetchIndex" method="POST">
             <input type="hidden" name="objectID" value="{$selectedIndex->objectID->referenceObject}">
-
             <div class="inspector-header">Fetch Index</div>
-
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>
                 <div class="col-sm-8">
                     <input type="text" name="name" id="name" placeholder="Fetch Index Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedIndex->name}" autocomplete="off" spellcheck="false" required>
                 </div>
             </div>
-
             <div class="row mb-2">
                 <label for="collationType" class="col-sm-4 inspector-label">Type</label>
                 <div class="col-sm-8">
                     <select name="collationType" id="collationType" class="form-select form-select-sm" data-autosave="true">
-                        {var array $options = [2 => "Default", 0 => "Binary", 1 => "R-Tree"]}
-                        <option n:foreach="$options as $key => $option" value="{$key}" {$key === $selectedIndex->collationType->value ? selected}>{$option}</option>
+                        <option n:foreach="$collationTypes as $collationType" value="{$collationType->value}" {$collationType->value === $selectedIndex->collationType->value ? selected}>{$collationType->name}</option>
                     </select>
                 </div>
             </div>
-
             <div class="inspector-header">Partial Index</div>
-
             <div class="row mb-2">
                 <label for="partialIndexPredicateFormat" class="col-sm-4 inspector-label">Predicate</label>
                 <div class="col-sm-8">
                     <input type="text" name="partialIndexPredicateFormat" id="partialIndexPredicateFormat" placeholder="Predicate" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedIndex->partialIndexPredicateFormat}" autocomplete="off" spellcheck="false" style="font-size: 11px;">
                 </div>
             </div>
-
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
     </div>
 {/define}

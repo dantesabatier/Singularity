@@ -1,21 +1,15 @@
 {templateType App\ViewControllers\EditorController}
 {define entity}
-    <!-- Main container with adjusted padding for inspector look -->
     <div class="px-3 pb-4">
         <form action="/Entity" method="POST">
             <input type="hidden" name="objectID" value="{$selectedEntity->objectID->referenceObject}">
-
-            <!-- SECTION: ENTITY IDENTITY -->
-            <!-- Negative margin in CSS handles the top spacing for the first header -->
             <div class="inspector-header">Entity Identity</div>
-
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>
                 <div class="col-sm-8">
                     <input type="text" name="name" id="name" placeholder="Entity Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedEntity->name}" autocomplete="off" spellcheck="false" required>
                 </div>
             </div>
-
             <div class="row mb-2">
                 <label for="superentityID" class="col-sm-4 inspector-label">Parent</label>
                 <div class="col-sm-8">
@@ -26,9 +20,8 @@
                     </select>
                 </div>
             </div>
-
             <div class="row mb-2">
-                <div class="col-sm-4"></div> <!-- Spacer for alignment -->
+                <div class="col-sm-4"></div>
                 <div class="col-sm-8">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="isAbstract" id="isAbstract" value="{$selectedEntity->isAbstract|json}" {$selectedEntity->isAbstract ? checked}>
@@ -36,23 +29,16 @@
                     </div>
                 </div>
             </div>
-
-            <!-- SECTION: CLASS GENERATION -->
             <div class="inspector-header">Class Generation</div>
-
             <div class="row mb-2">
                 <label for="managedObjectClassName" class="col-sm-4 inspector-label">Class Name</label>
                 <div class="col-sm-8">
-                    <!-- Placeholder defaults to "Entity Name" as per original -->
                     <input type="text" name="managedObjectClassName" id="managedObjectClassName" placeholder="Entity Name" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedEntity->managedObjectClassName}" autocomplete="off" spellcheck="false" style="font-size: 11px;">
                 </div>
             </div>
-
             <div class="row mb-2">
                 <div class="col-sm-4 inspector-label">Constraints</div>
                 <div class="col-sm-8">
-
-                    <!-- IDE Style List Control -->
                     <div class="list-control-container">
                         <div class="list-control-content">
                             <table class="list-control-table">
@@ -64,7 +50,6 @@
                                         id="constraint-{$uniquenessConstraint->objectID->referenceObject}"
                                         class="cursor-pointer {$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? active}"
                                         onclick="window.location.href = '/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}'">
-
                                     <td>
                                         <i class="bi bi-key-fill me-1 opacity-50" style="font-size: 10px;"></i>
                                         {$uniquenessConstraint->stringValue}
@@ -73,8 +58,6 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <!-- Toolbar attached to bottom -->
                         <div class="list-control-toolbar">
                             <button type="button" class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
                                 <i class="bi bi-plus-lg"></i>
@@ -84,32 +67,24 @@
                             </button>
                         </div>
                     </div>
-
                 </div>
             </div>
-
-            <!-- SECTION: VERSIONING -->
             <div class="inspector-header">Versioning</div>
-
             <div class="row mb-2">
                 <label for="versionHashModifier" class="col-sm-4 inspector-label">Hash Modifier</label>
                 <div class="col-sm-8">
                     <input type="text" name="versionHashModifier" id="versionHashModifier" placeholder="Version Hash Modifier" class="form-control form-control-sm text-truncate" value="{$selectedEntity->versionHashModifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-
             <div class="row mb-2">
                 <label for="renamingIdentifier" class="col-sm-4 inspector-label">Renaming ID</label>
                 <div class="col-sm-8">
                     <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control form-control-sm text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-
             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             <input class="d-none" type="submit">
         </form>
-
-        <!-- Modal (using .ide-modal style) -->
         <div class="modal fade ide-modal" id="addUniquenessConstraint" tabindex="-1" aria-labelledby="addUniquenessConstraintLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content">
