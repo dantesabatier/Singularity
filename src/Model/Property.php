@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Set;
 
 /**
  * @property string $name
@@ -19,6 +20,13 @@ use Sabatier\Foundation\Dictionary;
  * @property string|null $regex
  * @property int<0, max> $position
  * @property Entity|null $entityProperty
+ * @property Set<Annotation> $annotations
+ * @method void addAnnotationsObject(Annotation $object)
+ * @method void removeAnnotationsObject(Annotation $object)
+ * @method void addAnnotations(Set $objects)
+ * @method void removeAnnotations(Set $objects)
+ * @method Set<Annotation> intersectAnnotations(Set $objects)
+ * @method void setAnnotations(Set $objects)
  */
 abstract class Property extends ManagedObject
 {
