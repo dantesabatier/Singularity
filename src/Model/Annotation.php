@@ -9,13 +9,13 @@ use Sabatier\Foundation\Set;
  * @property string|null $name
  * @property bool|null $isEnabled
  * @property Property|null $property
- * @property Set<Argument> $arguments
- * @method void addArgumentsObject(Argument $object)
- * @method void removeArgumentsObject(Argument $object)
- * @method void addArguments(Set $objects)
- * @method void removeArguments(Set $objects)
- * @method Set<Argument> intersectArguments(Set $objects)
- * @method void setArguments(Set $objects)
+ * @property Set<Scope> $scopes
+ * @method void addScopesObject(Scope $object)
+ * @method void removeScopesObject(Scope $object)
+ * @method void addScopes(Set $objects)
+ * @method void removeScopes(Set $objects)
+ * @method Set<Scope> intersectScopes(Set $objects)
+ * @method void setScopes(Set $objects)
  */
 final class Annotation extends ManagedObject
 {

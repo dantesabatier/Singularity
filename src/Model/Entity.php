@@ -12,11 +12,14 @@ use Sabatier\Foundation\SortDescriptor;
  * @property string $name
  * @property string|null $managedObjectClassName
  * @property string|null $renamingIdentifier
- * @property bool $isAbstract
  * @property string|null $versionHashModifier
+ * @property bool $isAbstract
+ * @property bool $isExpanded
+ * @property bool $isAuthorizable
  * @property-read int $subentitiesCount
  * @property-read int $indexesCount
- * @property bool $isExpanded
+ * @property-read bool $isLeaf
+ * @property-read bool $isFinal
  * @property Model|null $model
  * @property Entity|null $superentity
  * @property Set<Entity> $subentities
@@ -107,9 +110,6 @@ final class Entity extends ManagedObject
             }
             return $this->attributeNames;
         }
-    }
-    private(set) bool $isLeaf {
-        get => $this->isLeaf ??= !$this->subentitiesCount;
     }
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {

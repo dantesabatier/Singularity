@@ -28,10 +28,7 @@
 <script>
     const register = () => {
         jscolor.install()
-        document.querySelectorAll(".btn-back").forEach(e => e.addEventListener("click", () => history.back(), {
-            once: true
-        }))
-        document.querySelectorAll(".btn-toggle").forEach(e => e.addEventListener("click", event => {
+        document.querySelectorAll(".tree-toggle").forEach(e => e.addEventListener("click", event => {
             event.stopPropagation()
             submit(e.form, register)
         }, {

@@ -4,6 +4,7 @@ namespace App\ViewControllers;
 
 use App\FileWriters\ProjectFileWriter;
 use App\FileWriters\SubclassFileWriter;
+use App\Model\Annotation;
 use App\Model\CompositeType;
 use App\Model\Configuration;
 use App\Model\Entity;
@@ -157,6 +158,11 @@ final class EditorController extends ProjectController
             (object)["name" => "True", "value" => "true"],
             (object)["name" => "False", "value" => "false"],
         ]);
+    }
+    /** @var ArrayClass<Annotation> */
+    #[Outlet]
+    private(set) ArrayClass $annotations {
+        get => $this->annotations ??= new ArrayClass();
     }
 
     private function className(Entity $entity, string $namespace): string
@@ -316,32 +322,22 @@ final class EditorController extends ProjectController
         $moved = $subset[$fromIndex];
         /** @var Property $target */
         $target = $subset[$toIndex];
-        $properties = new ArrayClass($entity->properties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $properties = new ArrayClass($entity->attributes->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $properties->appendContentsOf($entity->relationships->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $properties->appendContentsOf($entity->fetchedProperties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
         $properties->remove($moved);
+        $max = $properties->indexBefore($subset->endIndex);
         /** @var int<0, max> $globalToIndex */
         $globalToIndex = $properties->indexOf($target);
         if ($toIndex > $fromIndex) {
             $globalToIndex += 1;
         }
-        $max = $subset->indexBefore($subset->endIndex);
-        if ($globalToIndex > $max) {
-            $globalToIndex = $max;
-        }
-        if ($globalToIndex < 0) {
-            $globalToIndex = 0;
-        }
+        $globalToIndex = max(min($globalToIndex, $max), 0);
         $properties->insertAt($moved, $globalToIndex);
-        if ($globalToIndex > $fromIndex) {
-            for ($i = $fromIndex; $i <= $globalToIndex; $i++) {
-                $property = $properties[$i];
-                $property->position = $i + 1;
-            }
-        } else {
-            for ($i = $globalToIndex; $i <= $fromIndex; $i++) {
-                $property = $properties[$i];
-                $property->position = $i + 1;
-            }
-        }
+        $properties = $properties->map(function (Property $property, int $idx): Property {
+            $property->position = $idx;
+            return $property;
+        });
         $entity->properties = new Set($properties);
         $this->managedObjectContext->save();
         $this->data = $entity;

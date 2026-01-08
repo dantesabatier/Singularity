@@ -182,6 +182,8 @@ final class SubclassFileWriter extends FileWriter
             }
             if ($entity->isAbstract) {
                 $content .= "abstract ";
+            } elseif ($entity->isFinal) {
+                $content .= "final ";
             }
             return $content . $declaration;
         }

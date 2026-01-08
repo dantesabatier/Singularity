@@ -7,11 +7,9 @@ use Sabatier\CoreData\ManagedObject;
 
 /**
  * @property string|null $name
- * @property mixed $value
- * @property AttributeType $type
  * @property Annotation|null $annotation
  */
-final class Argument extends ManagedObject
+final class Scope extends ManagedObject
 {
     public function validateType(AttributeType|int|null &$type): bool
     {

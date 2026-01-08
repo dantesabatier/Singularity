@@ -1,36 +1,30 @@
 {templateType App\ViewControllers\EditorController}
 {define entities, $entities, $level = 0}
-    <!-- No wrapper div needed per level, helps layout performance -->
+    {varType Sabatier\Foundation\Set $entities}
     <div n:foreach="$entities ?? $project->model->rootEntities as $entity">
-        <!-- Entity Row -->
+        {varType App\Model\Entity $entity}
         <div class="source-row{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'}" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}" title="{$entity->name}" style="--level: {$level}">
             {if !$entity->isLeaf}
-                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID->referenceObject}" aria-controls="group-{$entity->objectID->referenceObject}" aria-expanded="{$entity->isExpanded|json}" onclick="event.stopPropagation()"></button>
+                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID->referenceObject}" aria-controls="group-{$entity->objectID->referenceObject}" aria-expanded="{$entity->isExpanded|json}"></button>
             {else}
-                <!-- Spacer for leaf nodes to align text -->
                 <span class="tree-spacer"></span>
             {/if}
             <img class="source-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
             <span class="source-label flex-grow-1">{$entity->name}</span>
-            <!-- Hidden form for state persistence (invisible, no layout impact) -->
             <form action="/Entity" method="POST" style="display: none;">
                 <input type="hidden" name="objectID" value="{$entity->objectID->referenceObject}">
-                <input type="hidden" name="isExpanded" value="{$entity->isExpanded ? 'false' : 'true'}">
+                <input type="hidden" name="isExpanded" value="{$entity->isExpanded|json}">
                 <input type="hidden" name="X-Http-Method-Override" value="PATCH">
             </form>
         </div>
-        <!-- Children Container (Indexes + Subentities) -->
         <div class="collapse {$entity->isExpanded || $entity->isLeaf ? show}" id="group-{$entity->objectID->referenceObject}">
-            <!-- Indexes (Level + 1) -->
             <div n:if="$entity->indexesCount">
                 <div n:foreach="$entity->indexes as $index" class="source-row{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}" title="{$index->name}" style="--level: {$level + 1}">
-                    <!-- Indent spacer for index (always leaf in this context) -->
                     <span class="tree-spacer"></span>
                     <img class="source-icon" src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="">
                     <span class="source-label flex-grow-1">{$index->name}</span>
                 </div>
             </div>
-            <!-- Recursive Subentities (Level + 1) -->
             <div n:if="!$entity->isLeaf">
                 {include entities, $entity->subentities, $level + 1}
             </div>
