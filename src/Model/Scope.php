@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
 
 /**
@@ -11,11 +10,4 @@ use Sabatier\CoreData\ManagedObject;
  */
 final class Scope extends ManagedObject
 {
-    public function validateType(AttributeType|int|null &$type): bool
-    {
-        if (is_int($type)) {
-            $type = AttributeType::from($type);
-        }
-        return true;
-    }
 }
