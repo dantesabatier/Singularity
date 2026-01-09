@@ -229,6 +229,18 @@
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->propertyName}</span>
                         </div>
+                    {elseif $item instanceof App\Model\Annotation}
+                    {varType App\Model\Annotation $item}
+                        <div class="breadcrumb-link">
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span>{$item->name}</span>
+                        </div>
+                    {elseif $item instanceof App\Model\Scope}
+                    {varType App\Model\Scope $item}
+                        <div class="breadcrumb-link">
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <span>{$item->name}</span>
+                        </div>
                     {/if}
                 </li>
             </ol>

@@ -1111,6 +1111,101 @@ db-viewer {
 }
 
 /* ============================================
+   15. Annotations & Scopes (Access Control)
+   ============================================ */
+
+/* Annotation hint in header */
+.annotation-hint {
+    font-size: 10px;
+    color: var(--text-disabled);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-left: 8px;
+}
+
+/* Column sizing for annotations table */
+.col-annotation-enabled {
+    width: 15%;
+}
+
+.col-annotation-name {
+    width: 30%;
+}
+
+.col-annotation-scopes {
+    width: 55%;
+}
+
+/* Column sizing for scopes table */
+.col-scope-name {
+    width: 100%;
+}
+
+/* Annotation name badges */
+.annotation-name-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+}
+
+.annotation-type-Owner {
+    background-color: rgba(199, 168, 81, 0.2);
+    color: var(--accent-yellow);
+}
+
+.annotation-type-Readable {
+    background-color: rgba(90, 156, 90, 0.2);
+    color: var(--accent-green);
+}
+
+.annotation-type-Writable {
+    background-color: rgba(199, 125, 74, 0.2);
+    color: var(--accent-orange);
+}
+
+/* Active row annotation badges */
+.list-control-table tbody tr.active .annotation-name-badge {
+    filter: brightness(1.2);
+}
+
+/* Scopes badges */
+.scopes-badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.scope-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+}
+
+/* Active row - scope badges */
+.list-control-table tbody tr.active .scope-badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Dropdown annotation badges in menu */
+.dropdown-item .annotation-name-badge {
+    font-size: 12px;
+}
+
+/* ============================================
    12. Utilities & Helpers
    ============================================ */
 

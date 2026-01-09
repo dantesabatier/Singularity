@@ -1,0 +1,71 @@
+{templateType App\ViewControllers\EditorController}
+{varType Sabatier\Foundation\ArrayClass $scopes}
+{define scopes}
+    <div class="ide-list-control">
+        <div class="list-control-header">
+            <span class="list-control-title">Scopes</span>
+            <span class="annotation-hint">#{$selectedAnnotation->name}</span>
+        </div>
+        <div class="list-control-content">
+            <table class="list-control-table">
+                <thead>
+                <tr>
+                    <th class="col-scope-name">Name</th>
+                    <th class="col-scope-name"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr n:foreach="$selectedAnnotation->scopes as $scope" id="scope-{$scope->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$selectedProperty->objectID->referenceObject}&annotation={$selectedAnnotation->objectID->referenceObject}&scope={$scope->objectID->referenceObject}" n:class="$scope->objectID->referenceObject === $selectedScope?->objectID?->referenceObject ? active">
+                    <td class="col-scope-name">
+                        <form action="/Scope" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$scope->objectID->referenceObject}">
+                            {var Sabatier\Foundation\Set $allScopes = $selectedAnnotation->scopes->valueForKey("name")}
+                            {$allScopes->formUnion([...$scopes->array, ...["custom..."]])}
+                            <select name="name" aria-label="Scope" class="form-select transparent" data-autosave="true">
+                                <option n:foreach="$allScopes as $e" value="{$e}" {$e === $scope->name ? selected}>
+                                    {$e}
+                                </option>
+                            </select>
+                        </form>
+                    </td>
+                    <td class="col-flex"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="list-control-toolbar">
+            <button class="btn btn-icon" title="Add Scope" onclick="add({App\Model\Scope::entity()->name}, 'public', {$selectedAnnotation}, {$selectedAnnotation?->scopes?->count}, register)" {$selectedAnnotation->name === 'Owner' && $selectedAnnotation->scopes->count > 0 ? disabled}>
+                <i class="bi bi-plus-lg"></i>
+            </button>
+            <button class="btn btn-icon" title="Remove Scope" onclick="remove({$selectedScope}, register)" {!$selectedScope instanceof App\Model\Scope ? disabled}>
+                <i class="bi bi-dash-lg"></i>
+            </button>
+        </div>
+    </div>
+    <div n:if="$selectedScope && !$scopes->contains(fn(string $scope): bool => $scope === $selectedScope->name)" class="content-panel">
+        <div class="content-panel-header">
+            <div class="content-panel-title">
+                <i class="bi bi-pencil"></i> <span>Custom Scope</span>
+            </div>
+        </div>
+        <div class="content-panel-body">
+            <form action="/Scope" method="POST">
+                <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                <input type="hidden" name="objectID" value="{$selectedScope->objectID->referenceObject}">
+                <div class="form-section">
+                    <label for="scopeName" class="form-section-label">Scope Name</label>
+                    <input type="text" name="name" id="scopeName" class="form-control" placeholder="custom_role" value="{$selectedScope->name}">
+                    <div class="form-help-text">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <div class="form-help-content">
+                            <div>Enter a custom scope name (role identifier).</div>
+                            <div class="form-help-note">Use lowercase with underscores: guest_user, premium_member</div>
+                        </div>
+                    </div>
+                </div>
+                <input class="d-none" type="submit">
+            </form>
+        </div>
+    </div>
+{/define}

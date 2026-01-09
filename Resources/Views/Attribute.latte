@@ -197,13 +197,13 @@
                     <div class="row mb-2">
                         <label for="attributeValueClassName" class="col-sm-4 inspector-label">Class</label>
                         <div class="col-sm-8">
-                            <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="NSObject" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false" style="font-size: 11px;">
+                            <input type="text" name="attributeValueClassName" id="attributeValueClassName" placeholder="ObjectClass" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->attributeValueClassName}" autocomplete="off" spellcheck="false" style="font-size: 11px;">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <label for="valueTransformerName" class="col-sm-4 inspector-label">Transformer</label>
                         <div class="col-sm-8">
-                            <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="NSSecureUnarchiveFromData" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false" style="font-size: 11px;">
+                            <input type="text" name="valueTransformerName" id="valueTransformerName" placeholder="SecureUnarchiveFromData" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->valueTransformerName}" autocomplete="off" spellcheck="false" style="font-size: 11px;">
                         </div>
                     </div>
                     {default}
@@ -248,5 +248,11 @@
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
+        {if $selectedProperty}
+            {include annotations from "Annotations.latte"}
+            {if $selectedAnnotation}
+                {include scopes from "Scopes.latte"}
+            {/if}
+        {/if}
     </div>
 {/define}

@@ -14,6 +14,7 @@ use App\Model\FetchRequestTemplate;
 use App\Model\Model;
 use App\Model\Project;
 use App\Model\Property;
+use App\Model\Scope;
 use App\Model\UniquenessConstraint;
 use Exception;
 use Override;
@@ -94,6 +95,10 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ?CompositeType $selectedCompositeType = null;
     #[Outlet]
+    private(set) ?Annotation $selectedAnnotation = null;
+    #[Outlet]
+    private(set) ?Scope $selectedScope = null;
+    #[Outlet]
     private(set) ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
@@ -159,10 +164,10 @@ final class EditorController extends ProjectController
             (object)["name" => "False", "value" => "false"],
         ]);
     }
-    /** @var ArrayClass<Annotation> */
+    /** @var ArrayClass<string> */
     #[Outlet]
-    private(set) ArrayClass $annotations {
-        get => $this->annotations ??= new ArrayClass();
+    private(set) ArrayClass $scopes {
+        get => $this->scopes ??= new ArrayClass(["public", "authenticated", "owner", "admin", "moderator", "editor", "viewer"]);
     }
 
     private function className(Entity $entity, string $namespace): string
@@ -186,7 +191,7 @@ final class EditorController extends ProjectController
         $this->breadcrumb[] = $project;
         $model = $project->model ?? throw new NotFoundException();
         $this->breadcrumb[] = $model;
-        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element"];
+        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "annotation", "scope"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
                 continue;
@@ -200,7 +205,9 @@ final class EditorController extends ProjectController
                 "constraint" => UniquenessConstraint::class,
                 "property" => Property::class,
                 "index" => FetchIndex::class,
-                "element" => FetchIndexElement::class
+                "element" => FetchIndexElement::class,
+                "annotation" => Annotation::class,
+                "scope" => Scope::class,
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
             $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(ServiceObjectIDKey), Expression::expressionForConstantValue($objectID));
@@ -223,6 +230,10 @@ final class EditorController extends ProjectController
                 $this->selectedIndex = $selection;
             } elseif ($selection instanceof FetchIndexElement) {
                 $this->selectedIndexElement = $selection;
+            } elseif ($selection instanceof Annotation) {
+                $this->selectedAnnotation = $selection;
+            } elseif ($selection instanceof Scope) {
+                $this->selectedScope = $selection;
             }
             $this->selection = $selection;
             $this->breadcrumb[] = $selection;

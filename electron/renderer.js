@@ -132,6 +132,9 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                 case "FetchIndexElement":
                     keys.push(...["project", "entity", "index"])
                     break
+                case "Annotation":
+                    keys.push(...["project", "entity", "property"])
+                    break
                 default:
                     break
             }
@@ -167,6 +170,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                                 return "constraint"
                             case "FetchIndexElement":
                                 return "element"
+                            case "Annotation":
+                                return "annotation"
                             default:
                                 return undefined
                         }
@@ -324,6 +329,18 @@ const add = async (entity, name, parent, position, completion = undefined) => {
             await send(url(entity), {
                 propertyName: name,
                 index: parent
+            }, "POST", completion)
+            break
+        case "Annotation":
+            await send(url(entity), {
+                name: name,
+                property: parent
+            }, "POST", completion)
+            break
+        case "Scope":
+            await send(url(entity), {
+                name: name,
+                annotation: parent
             }, "POST", completion)
             break
         default:

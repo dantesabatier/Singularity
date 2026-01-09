@@ -111,6 +111,12 @@
             })
             e.addEventListener("click", () => tooltip.hide())
         })
+        document.querySelectorAll(`[data-bs-toggle="popover"]`).forEach(e => {
+            const popover = new bootstrap.Popover(e, {
+                container: "body"
+            })
+            e.addEventListener("click", () => popover.hide())
+        })
         document.querySelectorAll("table").forEach(e => {
             const project = e.dataset.project
             if (!project) {
