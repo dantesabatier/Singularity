@@ -83,9 +83,9 @@
                         <div class="mb-1">
                             <div class="input-group input-group-sm">
                                 <div class="input-group-text bg-transparent border-end-0 px-1">
-                                    <input class="form-check-input mt-0" type="checkbox" name="isMinCountBounded" value="{$selectedProperty->isMinCountBounded|json}" id="isMinCountBounded" {$selectedProperty->isMinCountBounded ? checked} aria-label="Enable Minimum Count">
+                                    <input class="form-check-input mt-0" type="checkbox" name="isMinCountBounded" value="{$selectedProperty->isMinCountBounded|json}" id="isMinCountBounded" aria-label="Enable Minimum Count" {$selectedProperty->isMinCountBounded ? checked}>
                                 </div>
-                                <input type="number" name="minCount" id="minCount" class="form-control form-control-sm border-start-0" value="{$selectedProperty->minCount}" {!$selectedProperty->isMinCountBounded ? disabled} placeholder="Min Count" aria-label="Minimum Count">
+                                <input type="number" name="minCount" id="minCount" class="form-control form-control-sm border-start-0" value="{$selectedProperty->minCount}" placeholder="Min Count" aria-label="Minimum Count" {!$selectedProperty->isMinCountBounded ? disabled}>
                             </div>
                         </div>
                         <div>
@@ -93,7 +93,7 @@
                                 <div class="input-group-text bg-transparent border-end-0 px-1">
                                     <input class="form-check-input mt-0" type="checkbox" name="isMaxCountBounded" value="{$selectedProperty->isMaxCountBounded|json}" id="isMaxCountBounded" {$selectedProperty->isMaxCountBounded ? checked} aria-label="Enable Maximum Count">
                                 </div>
-                                <input type="number" name="maxValue" id="maxValue" class="form-control form-control-sm border-start-0" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxCountBounded ? disabled} placeholder="Max Count" aria-label="Maximum Count">
+                                <input type="number" name="maxValue" id="maxValue" class="form-control form-control-sm border-start-0" value="{$selectedProperty->maxValue}" placeholder="Max Count" aria-label="Maximum Count" {!$selectedProperty->isMaxCountBounded ? disabled}>
                             </div>
                         </div>
                     </div>

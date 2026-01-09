@@ -40,8 +40,7 @@
                         </li>
                         <li><h6 class="dropdown-header">Entity Properties</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, register)"
-                                    {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-tag"></i> <span>Add Attribute</span>
                             </button>
                         </li>

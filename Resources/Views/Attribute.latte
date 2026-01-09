@@ -71,7 +71,6 @@
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-transparent border-end-0 text-secondary px-1" style="font-size: 10px;">MIN</span>
                                 <input type="number" class="form-control form-control-sm border-start-0 ps-1" name="minValue" id="minValue" aria-label="Minimum Value" placeholder="-" value="{$selectedProperty->minValue}">
-
                                 <span class="input-group-text bg-transparent border-end-0 text-secondary px-1 border-start" style="font-size: 10px;">MAX</span>
                                 <input type="number" class="form-control form-control-sm border-start-0 ps-1" name="maxValue" id="maxValue" aria-label="Maximum Value" placeholder="-" value="{$selectedProperty->maxValue}">
                             </div>
@@ -163,15 +162,15 @@
                                     <div class="input-group-text bg-transparent border-end-0 px-1">
                                         <input class="form-check-input mt-0" type="checkbox" name="isMinValueBounded" value="{$selectedProperty->isMinValueBounded|json}" id="isMinValueBounded" {$selectedProperty->isMinValueBounded ? checked} aria-label="Enable Minimum Date">
                                     </div>
-                                    <input type="datetime-local" name="minValue" id="minValue" class="form-control form-control-sm border-start-0" value="{$selectedProperty->minValue}" {!$selectedProperty->isMinValueBounded ? disabled} placeholder="Min Date" aria-label="Minimum Date">
+                                    <input type="datetime-local" name="minValue" id="minValue" class="form-control form-control-sm border-start-0" value="{$selectedProperty->minValue}" placeholder="Min Date" aria-label="Minimum Date" {!$selectedProperty->isMinValueBounded ? disabled}>
                                 </div>
                             </div>
                             <div>
                                 <div class="input-group input-group-sm">
                                     <div class="input-group-text bg-transparent border-end-0 px-1">
-                                        <input class="form-check-input mt-0" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded|json}" id="isMaxValueBounded" {$selectedProperty->isMaxValueBounded ? checked} aria-label="Enable Maximum Date">
+                                        <input class="form-check-input mt-0" type="checkbox" name="isMaxValueBounded" value="{$selectedProperty->isMaxValueBounded|json}" id="isMaxValueBounded" aria-label="Enable Maximum Date" {$selectedProperty->isMaxValueBounded ? checked}>
                                     </div>
-                                    <input type="datetime-local" name="maxValue" id="maxValue" class="form-control form-control-sm border-start-0" value="{$selectedProperty->maxValue}" {!$selectedProperty->isMaxValueBounded ? disabled} placeholder="Max Date" aria-label="Maximum Date">
+                                    <input type="datetime-local" name="maxValue" id="maxValue" class="form-control form-control-sm border-start-0" value="{$selectedProperty->maxValue}" placeholder="Max Date" aria-label="Maximum Date" {!$selectedProperty->isMaxValueBounded ? disabled}>
                                 </div>
                             </div>
                         </div>
