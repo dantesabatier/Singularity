@@ -20,7 +20,6 @@ use Sabatier\Foundation\Set;
  * @property string|null $regex
  * @property int<0, max> $position
  * @property Entity|null $entityProperty
- * @property Set<AccessControl> $annotations
  * @property Set<AccessControl> $accessControls
  * @method void addAccessControlsObject(AccessControl $object)
  * @method void removeAccessControlsObject(AccessControl $object)
@@ -61,6 +60,7 @@ abstract class Property extends ManagedObject
             }
             $dictionary["minValue"] = $isMinValueBounded ? $this->minValue : null;
             $dictionary["maxValue"] = $isMaxValueBounded ? $this->maxValue : null;
+            $dictionary["accessControls"] = $this->accessControls->map(fn(AccessControl $accessControl): Dictionary => $accessControl->dictionaryRepresentation);
             return $dictionary;
         }
     }

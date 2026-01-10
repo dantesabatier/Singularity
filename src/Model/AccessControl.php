@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 
 /**
@@ -19,4 +20,17 @@ use Sabatier\Foundation\Set;
  */
 final class AccessControl extends ManagedObject
 {
+    /** @var Dictionary<mixed> */
+    public Dictionary $dictionaryRepresentation {
+        get {
+            /** @var Dictionary<mixed> $dictionary */
+            $dictionary = new Dictionary();
+            $dictionary["name"] = $this->name;
+            if ($isEnabled = $this->isEnabled) {
+                $dictionary["isEnabled"] = $isEnabled;
+            }
+            $dictionary["roles"] = $this->roles->map(fn(Role $role): Dictionary => $role->dictionaryRepresentation);
+            return $dictionary;
+        }
+    }
 }

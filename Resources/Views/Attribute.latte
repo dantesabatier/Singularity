@@ -52,7 +52,7 @@
             <div n:if="$selectedProperty->isDerived" class="row mb-2">
                 <label for="derivationExpressionFormat" class="col-sm-4 inspector-label">Derivation</label>
                 <div class="col-sm-8">
-                    <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" required style="font-size: 11px;">
+                    <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" style="font-size: 11px;" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$selectedProperty->derivationExpressionFormat}" required>
                 </div>
             </div>
             {if !$selectedProperty->isDerived}
@@ -89,7 +89,6 @@
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-transparent border-end-0 text-secondary px-1" style="font-size: 10px;">MIN</span>
                                 <input class="form-control form-control-sm border-start-0 ps-1" name="minValue" id="minValue" aria-label="Minimum Value" placeholder="-" value="{$selectedProperty->minValue}">
-
                                 <span class="input-group-text bg-transparent border-end-0 text-secondary px-1 border-start" style="font-size: 10px;">MAX</span>
                                 <input class="form-control form-control-sm border-start-0 ps-1" name="maxValue" id="maxValue" aria-label="Maximum Value" placeholder="-" value="{$selectedProperty->maxValue}">
                             </div>

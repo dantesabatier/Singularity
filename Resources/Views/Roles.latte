@@ -5,31 +5,30 @@
         <div class="role-popover-container">
             <form action="/Role" method="POST" class="role-popover-form">
                 <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                <input type="hidden" name="objectID" value="{$selectedRole?->objectID->referenceObject}">
+                <input type="hidden" name="objectID" value="{$selectedRole?->objectID?->referenceObject}">
                 <div class="role-popover-field">
                     <label for="scopeSelect" class="role-popover-label">Role</label>
-                    {var Sabatier\Foundation\Set $allRoles = $selectedAccessControl->roles->valueForKey("name")}
+                    {var Sabatier\Foundation\Set $allRoles = $selectedAccessControl?->roles?->valueForKey("name")}
                     {$allRoles->formUnion([...$roles->array, "custom..."])}
-                    <select name="name" id="scopeSelect" class="form-select form-select-sm role-select" data-current-value="{$selectedRole->name}" {$selectedAccessControl->name === 'Owner' ? disabled}>
-                        <option n:foreach="$allRoles as $scope" value="{$scope}" {$scope === $selectedRole->name ? selected}>
+                    <select name="name" id="scopeSelect" class="form-select form-select-sm role-select" data-current-value="{$selectedRole?->name}" {$selectedAccessControl?->name === 'Owner' ? disabled}>
+                        <option n:foreach="$allRoles as $scope" value="{$scope}" {$scope === $selectedRole?->name ? selected}>
                             {$scope}
                         </option>
                     </select>
                 </div>
                 <div class="role-popover-field role-custom-field" style="{$isCustomRole ? '' : 'display: none;'}">
                     <label for="scopeName" class="role-popover-label">Custom Name</label>
-                    <input type="text" name="name" id="scopeName" class="form-control form-control-sm" placeholder="custom_role" value="{$selectedRole->name}" pattern="^[A-Z](?:\w*)?$" title="Letters and numbers only">
+                    <input type="text" name="name" id="scopeName" class="form-control form-control-sm" placeholder="custom_role" value="{$selectedRole?->name}" pattern="^[A-Z](?:\w*)?$" title="Letters and numbers only">
                     <small class="role-hint">Use letters: Guest, User</small>
                 </div>
                 <div class="role-popover-actions">
                     <button type="button" class="btn btn-sm btn-secondary role-cancel-btn">Cancel</button>
-                    <button type="submit" class="btn btn-sm btn-primary role-save-btn">Save</button>
+                    <button type="button" class="btn btn-sm btn-primary role-save-btn">Save</button>
                 </div>
             </form>
         </div>
     </template>
 
-    <!-- Popover initialization script -->
     <script>
         (() => {
             document.addEventListener("shown.bs.popover", () => {
