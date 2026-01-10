@@ -111,11 +111,74 @@
             })
             e.addEventListener("click", () => tooltip.hide())
         })
+        window.activePopover = null;
         document.querySelectorAll(`[data-bs-toggle="popover"]`).forEach(e => {
             const popover = new bootstrap.Popover(e, {
-                container: "body"
+                container: "body",
+                html: true,
+                sanitize: false,
+                trigger: "manual",
+                content: "Loading…",
+                customClass: "role-popover",
+                placement: "auto",
+                fallbackPlacements: ["top", "bottom", "left", "right"]
             })
-            e.addEventListener("click", () => popover.hide())
+            e.addEventListener("click", async event => {
+                event.preventDefault()
+                event.stopPropagation()
+                event.stopImmediatePropagation()
+                if (window.activePopover) {
+                    window.activePopover.hide()
+                }
+                try {
+                    const url = new URL(window.location.href)
+                    if (!url.searchParams.get("accessControl")) {
+                        return
+                    }
+                    e.classList.add("loading")
+                    url.searchParams.set("role", e.dataset.role)
+                    const response = await fetch(url, {
+                        method: "GET",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    })
+                    const html = await response.text()
+                    const parser = new DOMParser()
+                    const doc = parser.parseFromString(html, "text/html")
+                    const template = doc.getElementById("roles-popover-content")
+                    popover.setContent({
+                        ".popover-body": template.innerHTML
+                    })
+                    popover.show()
+                    window.activePopover = popover
+                } catch (error) {
+                    popover.setContent({
+                        ".popover-body": `<div class="p-3 text-danger"><i class="bi bi-exclamation-triangle"></i> Failed to load</div>`
+                    })
+                    popover.show()
+                    setTimeout(() => {
+                        if (window.activePopover === popover) {
+                            popover.hide()
+                            window.activePopover = null
+                        }
+                    }, 2000)
+                } finally {
+                    e.classList.remove("loading")
+                }
+            })
+        })
+        document.addEventListener("click", (event) => {
+            if (window.activePopover && !event.target.closest(".popover") && !event.target.closest('[data-bs-toggle="popover"]')) {
+                window.activePopover.hide()
+                window.activePopover = null
+            }
+        })
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && window.activePopover) {
+                window.activePopover.hide();
+                window.activePopover = null;
+            }
         })
         document.querySelectorAll("table").forEach(e => {
             const project = e.dataset.project

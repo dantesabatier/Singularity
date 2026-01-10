@@ -4,7 +4,7 @@
 
 namespace App;
 
-use App\Model\Annotation;
+use App\Model\AccessControl;
 use App\Model\Attribute;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
@@ -14,7 +14,7 @@ use App\Model\FetchRequestTemplate;
 use App\Model\Model;
 use App\Model\Project;
 use App\Model\Relationship;
-use App\Model\Scope;
+use App\Model\Role;
 use App\Model\UniquenessConstraint;
 use Exception;
 use Latte\Engine;
@@ -80,7 +80,7 @@ final class LatteRenderer extends Renderer
             $object instanceof FetchIndex => "I",
             $object instanceof FetchIndexElement => ($property = $object->property) ? $this->image($property) : $this->name(AttributeType::undefined),
             $object instanceof UniquenessConstraint => "U",
-            $object instanceof Annotation, $object instanceof Scope => $this->name(AttributeType::undefined),
+            $object instanceof AccessControl, $object instanceof Role => $this->name(AttributeType::undefined),
             default => substring_to_index($object->entity->name, 1)
         };
     }

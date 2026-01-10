@@ -29,12 +29,6 @@ use Sabatier\Foundation\SortDescriptor;
  * @property-read ArrayClass<Attribute> $attributes
  * @property-read ArrayClass<Relationship> $relationships
  * @property-read ArrayClass<FetchedProperty> $fetchedProperties
- * @method void addSubentitiesObject(Entity $object)
- * @method void removeSubentitiesObject(Entity $object)
- * @method void addSubentities(Set $objects)
- * @method void removeSubentities(Set $objects)
- * @method Set<Entity> intersectSubentities(Set $objects)
- * @method void setSubentities(Set $objects)
  * @method void addPropertiesObject(Property $object)
  * @method void removePropertiesObject(Property $object)
  * @method void addProperties(Set $objects)
@@ -47,6 +41,12 @@ use Sabatier\Foundation\SortDescriptor;
  * @method void removeIndexes(Set $objects)
  * @method Set<FetchIndex> intersectIndexes(Set $objects)
  * @method void setIndexes(Set $objects)
+ * @method void addSubentitiesObject(Entity $object)
+ * @method void removeSubentitiesObject(Entity $object)
+ * @method void addSubentities(Set $objects)
+ * @method void removeSubentities(Set $objects)
+ * @method Set<Entity> intersectSubentities(Set $objects)
+ * @method void setSubentities(Set $objects)
  * @method void addUniquenessConstraintsObject(UniquenessConstraint $object)
  * @method void removeUniquenessConstraintsObject(UniquenessConstraint $object)
  * @method void addUniquenessConstraints(Set $objects)

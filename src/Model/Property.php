@@ -20,13 +20,14 @@ use Sabatier\Foundation\Set;
  * @property string|null $regex
  * @property int<0, max> $position
  * @property Entity|null $entityProperty
- * @property Set<Annotation> $annotations
- * @method void addAnnotationsObject(Annotation $object)
- * @method void removeAnnotationsObject(Annotation $object)
- * @method void addAnnotations(Set $objects)
- * @method void removeAnnotations(Set $objects)
- * @method Set<Annotation> intersectAnnotations(Set $objects)
- * @method void setAnnotations(Set $objects)
+ * @property Set<AccessControl> $annotations
+ * @property Set<AccessControl> $accessControls
+ * @method void addAccessControlsObject(AccessControl $object)
+ * @method void removeAccessControlsObject(AccessControl $object)
+ * @method void addAccessControls(Set $objects)
+ * @method void removeAccessControls(Set $objects)
+ * @method Set<AccessControl> intersectAccessControls(Set $objects)
+ * @method void setAccessControls(Set $objects)
  */
 abstract class Property extends ManagedObject
 {

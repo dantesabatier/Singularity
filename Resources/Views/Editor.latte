@@ -34,7 +34,6 @@
                                 <i class="bi bi-gear"></i> <span>Add Configuration</span>
                             </button>
                         </li>
-
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -56,7 +55,6 @@
                                 <i class="bi bi-arrow-left-right"></i> <span>Add Relationship</span>
                             </button>
                         </li>
-
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -228,14 +226,14 @@
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->propertyName}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Annotation}
-                    {varType App\Model\Annotation $item}
+                    {elseif $item instanceof App\Model\AccessControl}
+                    {varType App\Model\AccessControl $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Scope}
-                    {varType App\Model\Scope $item}
+                    {elseif $item instanceof App\Model\Role}
+                    {varType App\Model\Role $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>

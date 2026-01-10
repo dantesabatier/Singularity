@@ -540,7 +540,7 @@ button {
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
     margin-bottom: 16px;
 }
 
@@ -1111,11 +1111,11 @@ db-viewer {
 }
 
 /* ============================================
-   15. Annotations & Scopes (Access Control)
+   15. AccessControls & Roles (Access Control)
    ============================================ */
 
-/* Annotation hint in header */
-.annotation-hint {
+/* AccessControl hint in header */
+.accessControl-hint {
     font-size: 10px;
     color: var(--text-disabled);
     font-weight: 400;
@@ -1124,26 +1124,26 @@ db-viewer {
     margin-left: 8px;
 }
 
-/* Column sizing for annotations table */
-.col-annotation-enabled {
+/* Column sizing for accessControls table */
+.col-accessControl-enabled {
     width: 15%;
 }
 
-.col-annotation-name {
-    width: 30%;
+.col-accessControl-name {
+    width: 35%;
 }
 
-.col-annotation-scopes {
-    width: 55%;
+.col-accessControl-roles {
+    width: 50%;
 }
 
-/* Column sizing for scopes table */
-.col-scope-name {
+/* Column sizing for roles table */
+.col-role-name {
     width: 100%;
 }
 
-/* Annotation name badges */
-.annotation-name-badge {
+/* AccessControl name badges */
+.accessControl-name-badge {
     display: inline-flex;
     align-items: center;
     padding: 2px 8px;
@@ -1153,34 +1153,34 @@ db-viewer {
     font-family: var(--font-mono);
 }
 
-.annotation-type-Owner {
+.accessControl-type-Owner {
     background-color: rgba(199, 168, 81, 0.2);
     color: var(--accent-yellow);
 }
 
-.annotation-type-Readable {
+.accessControl-type-Readable {
     background-color: rgba(90, 156, 90, 0.2);
     color: var(--accent-green);
 }
 
-.annotation-type-Writable {
+.accessControl-type-Writable {
     background-color: rgba(199, 125, 74, 0.2);
     color: var(--accent-orange);
 }
 
-/* Active row annotation badges */
-.list-control-table tbody tr.active .annotation-name-badge {
+/* Active row accessControl badges */
+.list-control-table tbody tr.active .accessControl-name-badge {
     filter: brightness(1.2);
 }
 
-/* Scopes badges */
-.scopes-badge-list {
+/* Roles badges */
+.roles-badge-list {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
 }
 
-.scope-badge {
+.role-badge {
     display: inline-flex;
     align-items: center;
     padding: 2px 8px;
@@ -1193,16 +1193,273 @@ db-viewer {
     font-family: var(--font-mono);
 }
 
-/* Active row - scope badges */
-.list-control-table tbody tr.active .scope-badge {
+/* Active row - role badges */
+.list-control-table tbody tr.active .role-badge {
     background-color: rgba(255, 255, 255, 0.2);
     color: white;
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Dropdown annotation badges in menu */
-.dropdown-item .annotation-name-badge {
+/* Dropdown accessControl badges in menu */
+.dropdown-item .accessControl-name-badge {
     font-size: 12px;
+}
+
+/* ============================================
+   16. Role Badges & Popover Editor
+   ============================================ */
+
+/* Role badges in accessControl table */
+.roles-badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.role-badge:hover {
+    background-color: var(--bg-active);
+    border-color: var(--accent-blue);
+    color: var(--text-bright);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.role-badge:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Active row role badges */
+.list-control-table tbody tr.active .role-badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.list-control-table tbody tr.active .role-badge:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: white;
+}
+
+/* Popover custom styling */
+.role-popover {
+    --bs-popover-max-width: 300px;
+    --bs-popover-bg: var(--bg-secondary);
+    --bs-popover-border-color: var(--border-color);
+    --bs-popover-body-padding-x: 0;
+    --bs-popover-body-padding-y: 0;
+    box-shadow: var(--shadow-lg);
+    border-radius: 6px;
+}
+
+.role-popover .popover-arrow::before {
+    border-top-color: var(--border-color);
+}
+
+.role-popover .popover-arrow::after {
+    border-top-color: var(--bg-secondary);
+}
+
+/* Popover container */
+.role-popover-container {
+    background-color: var(--bg-secondary);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Popover form */
+.role-popover-form {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.role-popover-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.role-popover-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.role-hint {
+    font-size: 10px;
+    color: var(--text-disabled);
+    margin-top: 2px;
+    font-style: italic;
+}
+
+/* Custom field animation */
+.role-custom-field {
+    animation: slideDown 0.2s ease;
+    transform-origin: top;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: scaleY(0.95) translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: scaleY(1) translateY(0);
+    }
+}
+
+/* Popover actions */
+.role-popover-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 4px;
+    border-top: 1px solid var(--border-color);
+}
+
+.role-popover-actions .btn {
+    font-size: 12px;
+    padding: 4px 12px;
+    min-width: 60px;
+}
+
+.role-delete-btn {
+    margin-right: auto;
+    min-width: auto !important;
+    padding: 4px 8px !important;
+}
+
+/* Form validation feedback */
+.role-popover-form input:invalid {
+    border-color: var(--accent-red);
+}
+
+.role-popover-form input:invalid:focus {
+    box-shadow: 0 0 0 1px var(--accent-red);
+}
+
+/* Loading state */
+.role-popover-form.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Disabled state */
+.role-popover-form select:disabled,
+.role-popover-form input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   17. Role Badge with Delete Button
+   ============================================ */
+
+/* Wrapper for badge + delete button */
+.role-badge-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+/* Role badge (clickable for edit) */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.role-badge:hover {
+    background-color: var(--bg-active);
+    border-color: var(--accent-blue);
+    color: var(--text-bright);
+}
+
+/* Delete button on badge */
+.role-badge-delete {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    background-color: var(--accent-red);
+    border: 2px solid var(--accent-blue-hover);
+    border-radius: 50%;
+    color: white;
+    font-size: 10px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.role-badge-delete:hover {
+    background-color: #d73a3a;
+    transform: scale(1);
+}
+
+.role-badge-delete:active {
+    transform: scale(0.9);
+}
+
+/* Show delete button on wrapper hover */
+.role-badge-wrapper:hover .role-badge-delete {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Active row styles */
+.list-control-table tbody tr.active .role-badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.list-control-table tbody tr.active .role-badge:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: white;
+}
+
+.list-control-table tbody tr.active .role-badge-delete {
+    border-color: var(--accent-blue);
 }
 
 /* ============================================

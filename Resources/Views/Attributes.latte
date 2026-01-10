@@ -1,12 +1,9 @@
 {templateType App\ViewControllers\EditorController}
 {define attributes}
     <div class="ide-list-control">
-        <!-- Header -->
         <div class="list-control-header">
             <span class="list-control-title">Attributes</span>
         </div>
-
-        <!-- Table -->
         <div class="list-control-content">
             <table class="list-control-table" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="attributes">
                 <thead>
@@ -17,12 +14,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedEntity->attributes as $attribute"
-                        id="property-{$attribute->objectID->referenceObject}"
-                        data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$attribute->objectID->referenceObject}"
-                        n:class="$attribute->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
-
-                    <!-- Name Column -->
+                <tr n:foreach="$selectedEntity->attributes as $attribute" id="property-{$attribute->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$attribute->objectID->referenceObject}" n:class="$attribute->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
                     <td class="col-name">
                         <div class="cell-content">
                             {var string $img = img($attribute)}
@@ -30,47 +22,32 @@
                             <span class="cell-text">{$attribute->name}</span>
                         </div>
                     </td>
-
-                    <!-- Type Column -->
                     <td class="col-type">
                         <form action="/Attribute" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                             <input type="hidden" name="objectID" value="{$attribute->objectID->referenceObject}">
                             <input type="hidden" name="attributeValueClassName" value="{$attribute->attributeValueClassName}">
                             <select name="type" aria-label="Type" class="form-select transparent" onchange="setType(this)">
-                                <option n:foreach="$attributeTypes as $attributeType"
-                                        value="{$attributeType->value}"
-                                        {$attributeType->value === $attribute->type->value ? selected}>
+                                <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $attribute->type->value ? selected}>
                                     {$attributeType->name}
                                 </option>
                                 <option disabled>──────────</option>
-                                <option n:foreach="$project->model->compositeTypes as $compositeType"
-                                        value="{$compositeType->type->value}"
-                                        {$compositeType->name === $attribute->attributeValueClassName ? selected}>
+                                <option n:foreach="$project->model->compositeTypes as $compositeType" value="{$compositeType->type->value}" {$compositeType->name === $attribute->attributeValueClassName ? selected}>
                                     {$compositeType->name}
                                 </option>
                             </select>
                         </form>
                     </td>
-
-                    <!-- Empty Column -->
                     <td class="col-flex"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
-        <!-- Toolbar -->
         <div class="list-control-toolbar">
-            <button class="btn btn-icon"
-                    title="Add Attribute"
-                    onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, register)">
+            <button class="btn btn-icon" title="Add Attribute" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, register)">
                 <i class="bi bi-plus-lg"></i>
             </button>
-            <button class="btn btn-icon"
-                    title="Remove Attribute"
-                    onclick="remove({$selectedProperty}, register)"
-                    {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
+            <button class="btn btn-icon" title="Remove Attribute" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
                 <i class="bi bi-dash-lg"></i>
             </button>
         </div>

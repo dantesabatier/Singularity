@@ -1,12 +1,9 @@
 {templateType App\ViewControllers\EditorController}
 {define compositeTypeElements}
     <div class="ide-list-control">
-        <!-- Header -->
         <div class="list-control-header">
             <span class="list-control-title">Attributes</span>
         </div>
-
-        <!-- Table -->
         <div class="list-control-content">
             <table class="list-control-table">
                 <thead>
@@ -17,12 +14,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedCompositeType->elements as $element"
-                        id="property-{$element->objectID->referenceObject}"
-                        data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$selectedCompositeType->objectID->referenceObject}&property={$element->objectID->referenceObject}"
-                        n:class="$element->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
-
-                    <!-- Name Column -->
+                <tr n:foreach="$selectedCompositeType->elements as $element" id="property-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$selectedCompositeType->objectID->referenceObject}&property={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
                     <td class="col-name">
                         <div class="cell-content">
                             {var string $img = img($element)}
@@ -30,40 +22,27 @@
                             <span class="cell-text">{$element->name}</span>
                         </div>
                     </td>
-
-                    <!-- Type Column -->
                     <td class="col-type">
                         <form action="/Attribute" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                             <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
                             <select name="type" aria-label="Type" class="form-select transparent" data-autosave="true">
-                                <option n:foreach="$attributeTypes as $attributeType"
-                                        value="{$attributeType->value}"
-                                        {$attributeType->value === $element->type->value ? selected}>
+                                <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $element->type->value ? selected}>
                                     {$attributeType->name}
                                 </option>
                             </select>
                         </form>
                     </td>
-
-                    <!-- Empty Column -->
                     <td class="col-flex"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
-        <!-- Toolbar -->
         <div class="list-control-toolbar">
-            <button class="btn btn-icon"
-                    title="Add Attribute"
-                    onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedCompositeType}, {$selectedCompositeType?->elements?->count}, register)">
+            <button class="btn btn-icon" title="Add Attribute" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedCompositeType}, {$selectedCompositeType?->elements?->count}, register)">
                 <i class="bi bi-plus-lg"></i>
             </button>
-            <button class="btn btn-icon"
-                    title="Remove Attribute"
-                    onclick="remove({$selectedProperty}, register)"
-                    {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
+            <button class="btn btn-icon" title="Remove Attribute" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
                 <i class="bi bi-dash-lg"></i>
             </button>
         </div>

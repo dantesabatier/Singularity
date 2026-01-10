@@ -4,7 +4,7 @@ namespace App\ViewControllers;
 
 use App\FileWriters\ProjectFileWriter;
 use App\FileWriters\SubclassFileWriter;
-use App\Model\Annotation;
+use App\Model\AccessControl;
 use App\Model\CompositeType;
 use App\Model\Configuration;
 use App\Model\Entity;
@@ -14,7 +14,7 @@ use App\Model\FetchRequestTemplate;
 use App\Model\Model;
 use App\Model\Project;
 use App\Model\Property;
-use App\Model\Scope;
+use App\Model\Role;
 use App\Model\UniquenessConstraint;
 use Exception;
 use Override;
@@ -95,9 +95,9 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ?CompositeType $selectedCompositeType = null;
     #[Outlet]
-    private(set) ?Annotation $selectedAnnotation = null;
+    private(set) ?AccessControl $selectedAccessControl = null;
     #[Outlet]
-    private(set) ?Scope $selectedScope = null;
+    private(set) ?Role $selectedRole = null;
     #[Outlet]
     private(set) ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
@@ -166,8 +166,12 @@ final class EditorController extends ProjectController
     }
     /** @var ArrayClass<string> */
     #[Outlet]
-    private(set) ArrayClass $scopes {
-        get => $this->scopes ??= new ArrayClass(["public", "authenticated", "owner", "admin", "moderator", "editor", "viewer"]);
+    private(set) ArrayClass $roles {
+        get => $this->roles ??= new ArrayClass(["public", "authenticated", "owner", "admin", "moderator", "editor", "viewer"]);
+    }
+    #[Outlet]
+    private(set) bool $isCustomRole {
+        get => $this->isCustomRole ??= $this->roles->contains(fn(string $s): bool => $s === $this->selectedRole?->name);
     }
 
     private function className(Entity $entity, string $namespace): string
@@ -191,7 +195,7 @@ final class EditorController extends ProjectController
         $this->breadcrumb[] = $project;
         $model = $project->model ?? throw new NotFoundException();
         $this->breadcrumb[] = $model;
-        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "annotation", "scope"];
+        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
                 continue;
@@ -206,8 +210,8 @@ final class EditorController extends ProjectController
                 "property" => Property::class,
                 "index" => FetchIndex::class,
                 "element" => FetchIndexElement::class,
-                "annotation" => Annotation::class,
-                "scope" => Scope::class,
+                "accessControl" => AccessControl::class,
+                "role" => Role::class,
             };
             $fetchRequest = $managedObjectClass::fetchRequest();
             $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(ServiceObjectIDKey), Expression::expressionForConstantValue($objectID));
@@ -230,10 +234,10 @@ final class EditorController extends ProjectController
                 $this->selectedIndex = $selection;
             } elseif ($selection instanceof FetchIndexElement) {
                 $this->selectedIndexElement = $selection;
-            } elseif ($selection instanceof Annotation) {
-                $this->selectedAnnotation = $selection;
-            } elseif ($selection instanceof Scope) {
-                $this->selectedScope = $selection;
+            } elseif ($selection instanceof AccessControl) {
+                $this->selectedAccessControl = $selection;
+            } elseif ($selection instanceof Role) {
+                $this->selectedRole = $selection;
             }
             $this->selection = $selection;
             $this->breadcrumb[] = $selection;

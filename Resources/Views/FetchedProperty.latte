@@ -25,7 +25,7 @@
             <div class="row mb-2">
                 <label for="fetchRequestPredicateFormat" class="col-sm-4 inspector-label">Predicate</label>
                 <div class="col-sm-8">
-                    <input type="text" name="fetchRequestPredicateFormat" id="fetchRequestPredicateFormat" placeholder="Predicate" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->fetchRequestPredicateFormat}" autocomplete="off" spellcheck="false" required style="font-size: 11px;">
+                    <input type="text" name="fetchRequestPredicateFormat" id="fetchRequestPredicateFormat" placeholder="Predicate" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->fetchRequestPredicateFormat}" autocomplete="off" spellcheck="false" style="font-size: 11px;" required>
                 </div>
             </div>
             <div class="row mb-2">
@@ -47,5 +47,9 @@
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
+        {include accessControls from "AccessControls.latte"}
+        {if $selectedAccessControl}
+            {include roles from "Roles.latte"}
+        {/if}
     </div>
 {/define}

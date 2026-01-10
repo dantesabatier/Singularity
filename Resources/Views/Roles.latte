@@ -1,0 +1,107 @@
+{templateType App\ViewControllers\EditorController}
+{varType Sabatier\Foundation\ArrayClass $roles}
+{define roles}
+    <template id="roles-popover-content">
+        <div class="role-popover-container">
+            <form action="/Role" method="POST" class="role-popover-form">
+                <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                <input type="hidden" name="objectID" value="{$selectedRole?->objectID->referenceObject}">
+                <div class="role-popover-field">
+                    <label for="scopeSelect" class="role-popover-label">Role</label>
+                    {var Sabatier\Foundation\Set $allRoles = $selectedAccessControl->roles->valueForKey("name")}
+                    {$allRoles->formUnion([...$roles->array, "custom..."])}
+                    <select name="name" id="scopeSelect" class="form-select form-select-sm role-select" data-current-value="{$selectedRole->name}" {$selectedAccessControl->name === 'Owner' ? disabled}>
+                        <option n:foreach="$allRoles as $scope" value="{$scope}" {$scope === $selectedRole->name ? selected}>
+                            {$scope}
+                        </option>
+                    </select>
+                </div>
+                <div class="role-popover-field role-custom-field" style="{$isCustomRole ? '' : 'display: none;'}">
+                    <label for="scopeName" class="role-popover-label">Custom Name</label>
+                    <input type="text" name="name" id="scopeName" class="form-control form-control-sm" placeholder="custom_role" value="{$selectedRole->name}" pattern="^[A-Z](?:\w*)?$" title="Letters and numbers only">
+                    <small class="role-hint">Use letters: Guest, User</small>
+                </div>
+                <div class="role-popover-actions">
+                    <button type="button" class="btn btn-sm btn-secondary role-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-primary role-save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </template>
+
+    <!-- Popover initialization script -->
+    <script>
+        (() => {
+            document.addEventListener("shown.bs.popover", () => {
+                const popoverBody = document.querySelector(".popover-body")
+                if (!popoverBody) {
+                    return
+                }
+                const form = popoverBody.querySelector(".role-popover-form");
+                if (!form) {
+                    return
+                }
+                const select = form.querySelector(".role-select")
+                const customField = form.querySelector(".role-custom-field")
+                const customInput = form.querySelector("#scopeName")
+                const cancelBtn = form.querySelector(".role-cancel-btn")
+                const saveBtn = form.querySelector(".role-save-btn")
+                const addBtn = form.querySelector(".role-add-btn")
+                if (select && customField) {
+                    select.addEventListener("change", () => {
+                        if (select.value === "custom...") {
+                            customField.style.display = "block"
+                            customInput?.focus()
+                        } else {
+                            customField.style.display = "none"
+                        }
+                    })
+                }
+                if (cancelBtn) {
+                    cancelBtn.addEventListener("click", () => {
+                        if (window.activePopover) {
+                            window.activePopover.hide()
+                            window.activePopover = null
+                        }
+                    })
+                }
+                if (saveBtn) {
+                    saveBtn.addEventListener("click", function (e) {
+                        e.preventDefault()
+                        const selectedScope = select?.value
+                        const finalName = selectedScope === "custom..." ? customInput?.value : selectedScope
+                        if (!finalName || finalName === 'custom...') {
+                            customInput?.focus()
+                            return
+                        }
+                        const formData = new FormData(form)
+                        formData.set("name", finalName)
+                        submit(form, register)
+                        if (window.activePopover) {
+                            window.activePopover.hide()
+                            window.activePopover = null
+                        }
+                    })
+                }
+                if (customInput) {
+                    customInput.addEventListener("keypress", function (e) {
+                        if (e.key === "Enter") {
+                            e.preventDefault()
+                            if (saveBtn) {
+                                saveBtn.click()
+                            }
+                            if (addBtn) {
+                                addBtn.click()
+                            }
+                        }
+                    })
+                }
+                if (select && !select.disabled) {
+                    select.focus()
+                } else if (customInput) {
+                    customInput.focus()
+                }
+            })
+        })()
+    </script>
+{/define}

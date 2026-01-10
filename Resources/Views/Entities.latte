@@ -5,17 +5,18 @@
         {varType App\Model\Entity $entity}
         <div class="source-row{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'}" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}" title="{$entity->name}" style="--level: {$level}">
             {if !$entity->isLeaf}
-                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID->referenceObject}" aria-controls="group-{$entity->objectID->referenceObject}" aria-expanded="{$entity->isExpanded|json}"></button>
+                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID->referenceObject}" aria-controls="group-{$entity->objectID->referenceObject}" aria-expanded="{$entity->isExpanded|json}" form="toggle-form"></button>
+                <form action="/Entity" method="POST" id="toggle-form" style="display: none;">
+                    <input type="hidden" name="objectID" value="{$entity->objectID->referenceObject}">
+                    <input type="hidden" name="name" value="{$entity->name}">
+                    <input type="hidden" name="isExpanded" value="{!$entity->isExpanded|json}">
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                </form>
             {else}
                 <span class="tree-spacer"></span>
             {/if}
             <img class="source-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
             <span class="source-label flex-grow-1">{$entity->name}</span>
-            <form action="/Entity" method="POST" style="display: none;">
-                <input type="hidden" name="objectID" value="{$entity->objectID->referenceObject}">
-                <input type="hidden" name="isExpanded" value="{$entity->isExpanded|json}">
-                <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            </form>
         </div>
         <div class="collapse {$entity->isExpanded || $entity->isLeaf ? show}" id="group-{$entity->objectID->referenceObject}">
             <div n:if="$entity->indexesCount">

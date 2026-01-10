@@ -247,11 +247,9 @@
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
-        {if $selectedProperty}
-            {include annotations from "Annotations.latte"}
-            {if $selectedAnnotation}
-                {include scopes from "Scopes.latte"}
-            {/if}
+        {include accessControls from "AccessControls.latte"}
+        {if $selectedAccessControl}
+            {include roles from "Roles.latte"}
         {/if}
     </div>
 {/define}

@@ -43,11 +43,9 @@ const replace = async (url, completion = undefined) => {
         obj[e.id] = e.scrollTop
         return obj
     }, {})
-    const data = await response.text()
-    const doc = document.implementation.createHTMLDocument()
-    doc.open()
-    doc.write(data)
-    doc.close()
+    const html = await response.text()
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, "text/html")
     const e2 = doc.getElementById("main")
     const e1 = document.getElementById("main")
     if (e1 && e2) {
@@ -132,7 +130,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                 case "FetchIndexElement":
                     keys.push(...["project", "entity", "index"])
                     break
-                case "Annotation":
+                case "AccessControl":
                     keys.push(...["project", "entity", "property"])
                     break
                 default:
@@ -170,8 +168,8 @@ const send = async (action, body = undefined, method = "POST", completion = unde
                                 return "constraint"
                             case "FetchIndexElement":
                                 return "element"
-                            case "Annotation":
-                                return "annotation"
+                            case "AccessControl":
+                                return "accessControl"
                             default:
                                 return undefined
                         }
@@ -188,7 +186,6 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         default:
             break
     }
-    console.log(location.href)
     await push(location.href, completion)
     setProgressBar(-1)
 }
@@ -199,7 +196,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
  * @returns {{method: string, body: object}}
  */
 const parse = (form) => {
-    const elements = form ? Array.from(form.elements) : []
+    const elements = Array.from(form.elements)
     return {
         body: elements.filter(e => !!e.name && e.type !== "submit" && e.name !== "X-Http-Method-Override").reduce((result, e) => {
             result[e.name] = (() => {
@@ -331,16 +328,16 @@ const add = async (entity, name, parent, position, completion = undefined) => {
                 index: parent
             }, "POST", completion)
             break
-        case "Annotation":
+        case "AccessControl":
             await send(url(entity), {
                 name: name,
                 property: parent
             }, "POST", completion)
             break
-        case "Scope":
+        case "Role":
             await send(url(entity), {
                 name: name,
-                annotation: parent
+                accessControl: parent
             }, "POST", completion)
             break
         default:
