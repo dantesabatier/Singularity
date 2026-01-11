@@ -8,6 +8,7 @@
                 <tr>
                     <th class="col-accessControl-enabled">Enabled</th>
                     <th class="col-accessControl-name">Name</th>
+                    <th class="col-accessControl-scope">Scope</th>
                     <th class="col-accessControl-roles">Roles</th>
                     <th class="col-flex"></th>
                 </tr>
@@ -22,16 +23,23 @@
                         </form>
                     </td>
                     <td class="col-accessControl-name">
-                        <div class="cell-content">
-                                <span class="cell-text accessControl-name-badge accessControl-type-{$accessControl->name}">
-                                    #{$accessControl->name}
-                                </span>
-                        </div>
+                        <span class="cell-text accessControl-name-badge accessControl-type-{$accessControl->name}">#{$accessControl->name}</span>
+                    </td>
+                    <td class="col-accessControl-scope">
+                        <form action="/AccessControl" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$accessControl->objectID->referenceObject}">
+                            <input type="hidden" name="scope" value="{$accessControl->scope->value}">
+                            <select name="scope" aria-label="Scope" class="form-select transparent" onchange="setScope(this)">
+                                <option n:foreach="$scopes as $scope" value="{$scope->value}" {$accessControl->scope->value === $scope->value ? selected}>
+                                    {$scope->name}
+                                </option>
+                            </select>
+                        </form>
                     </td>
                     <td class="col-accessControl-roles">
-                        <div class="cell-content">
-                            {if !$accessControl->roles->isEmpty}
-                                <span class="roles-badge-list">
+                        {if !$accessControl->roles->isEmpty}
+                            <span class="roles-badge-list">
                                     <span n:foreach="$accessControl->roles as $role" class="role-badge-wrapper">
                                         <span class="role-badge" data-bs-toggle="popover" data-bs-html="true" data-bs-content="" data-bs-custom-class="role-popover" data-role="{$role->objectID->referenceObject}">
                                             {$role->name}
@@ -41,10 +49,9 @@
                                         </button>
                                     </span>
                                 </span>
-                            {else}
-                                <span class="cell-text text-disabled">No roles</span>
-                            {/if}
-                        </div>
+                        {else}
+                            <span class="cell-text text-disabled">No roles</span>
+                        {/if}
                     </td>
                     <td class="col-flex">
                     </td>

@@ -5,9 +5,11 @@ namespace App\Model;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
+use Sabatier\Service\AuthorizationScope;
 
 /**
  * @property string|null $name
+ * @property AuthorizationScope $scope
  * @property bool|null $isEnabled
  * @property Property|null $property
  * @property Set<Role> $roles
@@ -32,5 +34,13 @@ final class AccessControl extends ManagedObject
             $dictionary["roles"] = $this->roles->map(fn(Role $role): Dictionary => $role->dictionaryRepresentation);
             return $dictionary;
         }
+    }
+
+    public function validateScope(AuthorizationScope|int|null &$scope): bool
+    {
+        if (is_int($scope)) {
+            $scope = AuthorizationScope::from($scope);
+        }
+        return true;
     }
 }

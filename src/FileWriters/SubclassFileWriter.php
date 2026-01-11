@@ -2,10 +2,13 @@
 
 namespace App\FileWriters;
 
+use App\Model\AccessControl;
 use App\Model\Attribute;
 use App\Model\Entity;
 use App\Model\FetchedProperty;
+use App\Model\Property;
 use App\Model\Relationship;
+use App\Model\Role;
 use Closure;
 use Exception;
 use Sabatier\CoreData\AttributeType;
@@ -19,6 +22,7 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
+use Sabatier\Service\AuthorizationScope;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\substring_from_index;
 use function Sabatier\Foundation\substring_to_index;
@@ -39,9 +43,10 @@ final class SubclassFileWriter extends FileWriter
             $fileURL = $this->url;
             $setClassName = class_name(Set::class);
             $arrayClassName = class_name(ArrayClass::class);
+            $scopeClass = class_name(AuthorizationScope::class);
             $superentity = $entity->superentity;
-            $content = "<?php\n";
-            $content .= "\n";
+            $parts = new ArrayClass();
+            $content = "<?php\n\n";
             $content .= "namespace $namespace;\n";
             if (!$superentity) {
                 $content .= "\n";
@@ -86,11 +91,38 @@ final class SubclassFileWriter extends FileWriter
             } else {
                 $declaration = "class $class extends $superclass\n{\n}\n";
             }
-            /** @psalm-suppress InvalidArgument */
-            $properties->formUnion($attributes->compactMap(function (Attribute $attribute) use ($properties): ?string {
-                if ($properties->contains(fn(string $e): bool => str_ends_with($e, "\$$attribute->name"))) {
-                    return null;
+            $handleAccessControl = function (Property $property, string $type, bool $isOptional) use ($uses, $parts, $declaration, $scopeClass): bool {
+                /** @var Set<AccessControl> $accessControls */
+                $accessControls = $property->accessControls;
+                if ($accessControls->isEmpty) {
+                    return false;
                 }
+                if (str_contains($declaration, "\$$property->name")) {
+                    return true;
+                }
+                $phpAttributes = $accessControls->map(function (AccessControl $accessControl) use ($uses, $scopeClass): string {
+                    $uses->insert("use Sabatier\\Service\\$accessControl->name;");
+                    $uses->insert("use " . AuthorizationScope::class . ";");
+                    if ($accessControl->roles->isEmpty) {
+                        return "#[$accessControl->name]";
+                    }
+                    return "#[$accessControl->name({$accessControl->roles->map(fn(Role $role) => "\"$role->name\"")}, $scopeClass::{$accessControl->scope->name})]";
+                })->join("\n    ");
+                $nullable = $isOptional ? "|null" : "";
+                $parts->append(<<<PHP
+                $phpAttributes
+                    public $type$nullable \$$property->name {
+                        get => \$this->valueForKey(__PROPERTY__);
+                        set {
+                            \$this->setValueForKey(\$value, __PROPERTY__);
+                        }
+                    }
+                PHP
+                );
+                return true;
+            };
+            /** @psalm-suppress InvalidArgument */
+            $properties->formUnion($attributes->compactMap(function (Attribute $attribute) use ($properties, $handleAccessControl): ?string {
                 $attributeValueClassName = match ($attribute->type) {
                     AttributeType::date => Date::class,
                     AttributeType::uuid => UUID::class,
@@ -116,6 +148,12 @@ final class SubclassFileWriter extends FileWriter
                 })) {
                     return null;
                 }
+                if ($handleAccessControl($attribute, $type, $attribute->isOptional && $type !== "mixed")) {
+                    return null;
+                }
+                if ($properties->contains(fn(string $e): bool => str_ends_with($e, "\$$attribute->name"))) {
+                    return null;
+                }
                 $string = " * @property";
                 if ($attribute->isDerived) {
                     $string .= "-read";
@@ -134,15 +172,28 @@ final class SubclassFileWriter extends FileWriter
                 }
                 return "$string \$$attribute->name";
             }));
-            $properties->formUnion($fetchedProperties->map(fn(FetchedProperty $fetchedProperty): string => " * @property-read $arrayClassName<$fetchedProperty->fetchRequestEntityName> \$$fetchedProperty->name"));
-            $properties->formUnion($relationships->compactMap(function (Relationship $relationship) use ($setClassName): string {
+            $properties->formUnion($relationships->compactMap(function (Relationship $relationship) use ($setClassName, $handleAccessControl): ?string {
                 $lazyDestinationEntityName = $relationship->lazyDestinationEntityName;
+                $className = $relationship->isToMany ? "$setClassName" : $lazyDestinationEntityName;
+                if ($handleAccessControl($relationship, $className, $relationship->isOptional)) {
+                    return null;
+                }
                 $string = " * @property ";
-                $string .= $relationship->isToMany ? "$setClassName<$lazyDestinationEntityName>" : $lazyDestinationEntityName;
+                $string .= $className;
+                if ($relationship->isToMany) {
+                    $string .= "<$lazyDestinationEntityName>";
+                }
                 if ($relationship->isOptional) {
                     $string .= "|null";
                 }
                 return "$string \$$relationship->name";
+            }));
+            $properties->formUnion($fetchedProperties->compactMap(function (FetchedProperty $fetchedProperty) use ($arrayClassName, $handleAccessControl): ?string {
+                $type = "$arrayClassName";
+                if ($handleAccessControl($fetchedProperty, $type, false)) {
+                    return null;
+                }
+                return " * @property-read $type<$fetchedProperty->fetchRequestEntityName> \$$fetchedProperty->name";
             }));
             if (!$uses->isEmpty) {
                 if ($superentity) {
@@ -184,6 +235,16 @@ final class SubclassFileWriter extends FileWriter
                 $content .= "abstract ";
             } elseif ($entity->isFinal) {
                 $content .= "final ";
+            }
+            if (!$parts->isEmpty) {
+                $position = strpos($declaration, "{");
+                if ($position !== false) {
+                    $index = $position + 1;
+                    $declarationStart = substring_to_index($declaration, $index);
+                    $declarationEnd = substring_from_index($declaration, $index);
+                    $injection = "\n    {$parts->join("\n\n    ")}";
+                    $declaration = $declarationStart . $injection . $declarationEnd;
+                }
             }
             return $content . $declaration;
         }

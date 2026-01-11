@@ -37,6 +37,7 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
+use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\JSONDecorator;
@@ -163,6 +164,14 @@ final class EditorController extends ProjectController
             (object)["name" => "True", "value" => "true"],
             (object)["name" => "False", "value" => "false"],
         ]);
+    }
+    /** @var ArrayClass<object{name: string, value: int}> */
+    #[Outlet]
+    private(set) ArrayClass $scopes {
+        get => $this->scopes ??= new ArrayClass(AuthorizationScope::cases())->map(fn(AuthorizationScope $scope): object => (object)["name" => match ($scope) {
+            AuthorizationScope::all => localized_string("All"),
+            AuthorizationScope::own => localized_string("Own")
+        }, "value" => $scope->value]);
     }
     /** @var ArrayClass<string> */
     #[Outlet]

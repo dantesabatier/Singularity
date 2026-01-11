@@ -1118,11 +1118,15 @@ db-viewer {
 }
 
 .col-accessControl-name {
-    width: 35%;
+    width: 30%;
+}
+
+.col-accessControl-scope {
+    width: 22%;
 }
 
 .col-accessControl-roles {
-    width: 50%;
+    width: 33%;
 }
 
 /* AccessControl name badges */

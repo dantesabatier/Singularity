@@ -282,5 +282,6 @@
             element.value = sender.value === "2100" ? sender.options[sender.selectedIndex].text : "";
             submit(form, register)
         }
+        const setScope = sender => submit(sender.form, register)
     </script>
 {/block}
