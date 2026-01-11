@@ -52,8 +52,7 @@ final class ClassFileAssembler
         } elseif ($entity->isFinal) {
             $content .= "final ";
         }
-        $content .= $declaration;
-        return $content;
+        return "$content$declaration";
     }
 
     public function createDefaultDeclaration(string $class, Entity $entity): string

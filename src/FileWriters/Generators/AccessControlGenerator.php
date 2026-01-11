@@ -30,7 +30,6 @@ final readonly class AccessControlGenerator
         /** @var Set<AccessControl> $accessControls */
         $accessControls = $property->accessControls;
         if ($accessControls->isEmpty) {
-            /** @var Set<string> */
             return new Set();
         }
         /** @var Set<string> */

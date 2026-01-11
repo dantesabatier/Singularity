@@ -29,7 +29,6 @@ final readonly class PropertyBlock
         $code .= "        set {\n";
         $code .= "            \$this->setValueForKey(\$value, __PROPERTY__);\n";
         $code .= "        }\n";
-        $code .= "    }";
-        return $code;
+        return "$code    }";
     }
 }

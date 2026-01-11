@@ -21,7 +21,6 @@ final readonly class GeneratedProperty
         if ($this->isNullable) {
             $annotation .= "|null";
         }
-        $annotation .= " \$$this->name";
-        return $annotation;
+        return "$annotation \$$this->name";
     }
 }
