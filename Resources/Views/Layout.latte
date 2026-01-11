@@ -188,62 +188,69 @@
             if (!popoverBody) {
                 return
             }
-            const form = popoverBody.querySelector(".role-popover-form");
-            if (!form) {
-                return
-            }
+            /**
+             * @type { HTMLFormElement }
+             */
+            const form = popoverBody.querySelector(".role-popover-form")
+            /**
+             * @type { HTMLSelectElement }
+             */
             const select = form.querySelector(".role-select")
+            /**
+             * @type { HTMLDivElement }
+             */
             const customField = form.querySelector(".role-custom-field")
+            /**
+             * @type { HTMLInputElement }
+             */
             const customInput = form.querySelector("#scopeName")
+            /**
+             * @type { HTMLButtonElement }
+             */
             const cancelBtn = form.querySelector(".role-cancel-btn")
+            /**
+             * @type { HTMLButtonElement }
+             */
             const saveBtn = form.querySelector(".role-save-btn")
-            if (select && customField) {
-                select.addEventListener("change", () => {
-                    if (select.value === "custom...") {
-                        customField.style.display = "block"
-                        customInput?.focus()
-                    } else {
-                        customField.style.display = "none"
-                    }
-                })
-            }
-            if (cancelBtn) {
-                cancelBtn.addEventListener("click", () => {
-                    if (activePopover) {
-                        activePopover.hide()
-                        activePopover = null
-                    }
-                })
-            }
-            if (saveBtn) {
-                saveBtn.addEventListener("click", function (e) {
+            select.addEventListener("change", () => {
+                if (select.value === "custom...") {
+                    customField.style.display = "block"
+                    customInput?.focus()
+                } else {
+                    customField.style.display = "none"
+                }
+            })
+            cancelBtn.addEventListener("click", () => {
+                if (activePopover) {
+                    activePopover.hide()
+                    activePopover = null
+                }
+            })
+            saveBtn.addEventListener("click", function (e) {
+                e.preventDefault()
+                const selectedScope = select?.value
+                const finalName = selectedScope === "custom..." ? customInput?.value : selectedScope
+                if (!finalName || finalName === "custom...") {
+                    customInput?.focus()
+                    return
+                }
+                submit(form, register)
+                if (activePopover) {
+                    activePopover.hide()
+                    activePopover = null
+                }
+            })
+            customInput.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
                     e.preventDefault()
-                    const selectedScope = select?.value
-                    const finalName = selectedScope === "custom..." ? customInput?.value : selectedScope
-                    if (!finalName || finalName === "custom...") {
-                        customInput?.focus()
-                        return
+                    if (saveBtn) {
+                        saveBtn.click()
                     }
-                    //submit(form, register)
-                    if (activePopover) {
-                        activePopover.hide()
-                        activePopover = null
-                    }
-                })
-            }
-            if (customInput) {
-                customInput.addEventListener("keypress", function (e) {
-                    if (e.key === "Enter") {
-                        e.preventDefault()
-                        if (saveBtn) {
-                            saveBtn.click()
-                        }
-                    }
-                })
-            }
-            if (select && !select.disabled) {
+                }
+            })
+            if (!select.disabled) {
                 select.focus()
-            } else if (customInput) {
+            } else {
                 customInput.focus()
             }
         })
