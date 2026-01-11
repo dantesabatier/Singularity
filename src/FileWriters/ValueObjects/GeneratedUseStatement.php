@@ -1,18 +1,16 @@
 <?php
 
 namespace App\FileWriters\ValueObjects;
-final readonly class GeneratedUseStatement
+
+use Sabatier\Foundation\ObjectClass;
+
+final class GeneratedUseStatement extends ObjectClass
 {
-    public function __construct(public string $fullyQualifiedClassName) {
+    public string $description {
+        get => "use $this->fullyQualifiedClassName;";
     }
 
-    public function toString(): string
+    public function __construct(public readonly string $fullyQualifiedClassName)
     {
-        return "use $this->fullyQualifiedClassName;";
-    }
-
-    public function equals(self $other): bool
-    {
-        return $this->fullyQualifiedClassName === $other->fullyQualifiedClassName;
     }
 }

@@ -60,7 +60,10 @@ abstract class Property extends ManagedObject
             }
             $dictionary["minValue"] = $isMinValueBounded ? $this->minValue : null;
             $dictionary["maxValue"] = $isMaxValueBounded ? $this->maxValue : null;
-            $dictionary["accessControls"] = $this->accessControls->map(fn(AccessControl $accessControl): Dictionary => $accessControl->dictionaryRepresentation);
+            $accessControls = $this->accessControls;
+            if (!$accessControls->isEmpty) {
+                $dictionary["accessControls"] = $accessControls->map(fn(AccessControl $accessControl): Dictionary => $accessControl->dictionaryRepresentation);
+            }
             return $dictionary;
         }
     }

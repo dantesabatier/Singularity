@@ -2,17 +2,18 @@
 
 namespace App\FileWriters\ValueObjects;
 
+use Sabatier\Foundation\ObjectClass;
+
 /**
  * Value object representing a generated magic method doc-block annotation
  */
-final readonly class GeneratedMethod
+final class GeneratedMethod extends ObjectClass
 {
-    public function __construct(public string $signature)
-    {
+    public string $description {
+        get => " * @method $this->signature";
     }
 
-    public function toDocBlock(): string
+    public function __construct(public readonly string $signature)
     {
-        return " * @method $this->signature";
     }
 }

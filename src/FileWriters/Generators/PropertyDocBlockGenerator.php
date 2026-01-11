@@ -29,32 +29,40 @@ final readonly class PropertyDocBlockGenerator
     /**
      * @param Entity $entity
      * @param Set<string> $existingProperties
+     * @param array<string> $reservedPropertyNames
      * @param string $declaration
      * @return Set<string>
      */
-    public function generate(Entity $entity, Set $existingProperties, string $declaration): Set
+    public function generate(Entity $entity, Set $existingProperties, array $reservedPropertyNames, string $declaration): Set
     {
         /** @var Set<string> $properties */
         $properties = new Set($existingProperties);
-        $this->generateFromAttributes($entity, $properties, $declaration);
-        $this->generateFromRelationships($entity, $properties, $declaration);
+        $this->generateFromAttributes($entity, $properties, $reservedPropertyNames, $declaration);
+        $this->generateFromRelationships($entity, $properties, $reservedPropertyNames, $declaration);
         $this->generateFromFetchedProperties($entity, $properties, $declaration);
         return $properties;
     }
 
     /**
      * @param Set<string> $properties
+     * @param array<string> $reservedPropertyNames
      */
-    private function generateFromAttributes(Entity $entity, Set $properties, string $declaration): void
+    private function generateFromAttributes(Entity $entity, Set $properties, array $reservedPropertyNames, string $declaration): void
     {
         /** @var Set<string> $attributeProperties */
-        $attributeProperties = new Set($entity->attributes->sorted([new SortDescriptor("position")]))->compactMap(fn(Attribute $attr) => $this->generateAttributeProperty($attr, $declaration));
+        $attributeProperties = new Set($entity->attributes->sorted([new SortDescriptor("position")]))->compactMap(fn(Attribute $attr) => $this->generateAttributeProperty($attr, $reservedPropertyNames, $declaration));
         $properties->formUnion($attributeProperties);
     }
 
-    private function generateAttributeProperty(Attribute $attribute, string $declaration
-    ): ?string
+    /**
+     * @param array<string> $reservedPropertyNames
+     */
+    private function generateAttributeProperty(Attribute $attribute, array $reservedPropertyNames, string $declaration
+    ): ?GeneratedProperty
     {
+        if (in_array($attribute->name, $reservedPropertyNames)) {
+            return null;
+        }
         $type = $this->getAttributeType($attribute);
         if (!$type) {
             return null;
@@ -65,7 +73,7 @@ final readonly class PropertyDocBlockGenerator
         if (str_contains($declaration, "\$$attribute->name")) {
             return null;
         }
-        return new GeneratedProperty($attribute->name, $this->formatAttributeType($attribute, $type), $attribute->isDerived, $attribute->isOptional && $type !== "mixed")->toDocBlock();
+        return new GeneratedProperty($attribute->name, $this->formatAttributeType($attribute, $type), $attribute->isDerived, $attribute->isOptional && $type !== "mixed");
     }
 
     private function getAttributeType(Attribute $attribute): ?string
@@ -113,24 +121,31 @@ final readonly class PropertyDocBlockGenerator
     /**
      * @param Entity $entity
      * @param Set<string> $properties
+     * @param array<string> $reservedPropertyNames
      * @param string $declaration
      */
-    private function generateFromRelationships(Entity $entity, Set $properties, string $declaration): void
+    private function generateFromRelationships(Entity $entity, Set $properties, array $reservedPropertyNames, string $declaration): void
     {
         /** @var ArrayClass<string> $relationships */
-        $relationships = $entity->relationships->sorted([new SortDescriptor("position")])->compactMap(fn(Relationship $relationship) => $this->generateRelationshipProperty($relationship, $declaration, class_name(Set::class)));
+        $relationships = $entity->relationships->sorted([new SortDescriptor("position")])->compactMap(fn(Relationship $relationship) => $this->generateRelationshipProperty($relationship, $reservedPropertyNames, $declaration, class_name(Set::class)));
         $properties->formUnion($relationships);
     }
 
-    private function generateRelationshipProperty(Relationship $relationship, string $declaration, string $setClassName): ?string
+    /**
+     * @param array<string> $reservedPropertyNames
+     */
+    private function generateRelationshipProperty(Relationship $relationship, array $reservedPropertyNames, string $declaration, string $setClassName): ?GeneratedProperty
     {
+        if (in_array($relationship->name, $reservedPropertyNames)) {
+            return null;
+        }
         if ($this->accessControlGenerator->hasAccessControls($relationship)) {
             return null;
         }
         if (str_contains($declaration, "\$$relationship->name")) {
             return null;
         }
-        return new GeneratedProperty($relationship->name, $relationship->isToMany ? "$setClassName<$relationship->lazyDestinationEntityName>" : $relationship->lazyDestinationEntityName, false, $relationship->isOptional)->toDocBlock();
+        return new GeneratedProperty($relationship->name, $relationship->isToMany ? "$setClassName<$relationship->lazyDestinationEntityName>" : $relationship->lazyDestinationEntityName, false, $relationship->isOptional);
     }
 
     /**
@@ -149,9 +164,9 @@ final readonly class PropertyDocBlockGenerator
      * @param FetchedProperty $fetchedProperty
      * @param string $declaration
      * @param string $arrayClassName
-     * @return string|null
+     * @return GeneratedProperty|null
      */
-    private function generateFetchedProperty(FetchedProperty $fetchedProperty, string $declaration, string $arrayClassName): ?string
+    private function generateFetchedProperty(FetchedProperty $fetchedProperty, string $declaration, string $arrayClassName): ?GeneratedProperty
     {
         if ($this->accessControlGenerator->hasAccessControls($fetchedProperty)) {
             return null;
@@ -159,8 +174,6 @@ final readonly class PropertyDocBlockGenerator
         if (str_contains($declaration, "\$$fetchedProperty->name")) {
             return null;
         }
-        $type = "$arrayClassName<$fetchedProperty->fetchRequestEntityName>";
-        $generatedProperty = new GeneratedProperty($fetchedProperty->name, $type, true, false);
-        return $generatedProperty->toDocBlock();
+        return new GeneratedProperty($fetchedProperty->name, "$arrayClassName<$fetchedProperty->fetchRequestEntityName>", true, false);
     }
 }

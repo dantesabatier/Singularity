@@ -29,26 +29,28 @@ final readonly class PropertyBlockGenerator
 
     /**
      * @param Set<string> $uses
+     * @param array<string> $reservedPropertyNames
      * @return ArrayClass<PropertyBlock>
      */
-    public function generate(Entity $entity, Set $uses, string $declaration): ArrayClass
+    public function generate(Entity $entity, Set $uses, string $declaration, array $reservedPropertyNames = []): ArrayClass
     {
         /** @var ArrayClass<PropertyBlock> $blocks */
         $blocks = new ArrayClass();
-        $blocks->appendContentsOf($this->generateFromAttributes($entity, $uses, $declaration));
-        $blocks->appendContentsOf($this->generateFromRelationships($entity, $uses, $declaration));
+        $blocks->appendContentsOf($this->generateFromAttributes($entity, $uses, $declaration, $reservedPropertyNames));
+        $blocks->appendContentsOf($this->generateFromRelationships($entity, $uses, $declaration, $reservedPropertyNames));
         $blocks->appendContentsOf($this->generateFromFetchedProperties($entity, $uses, $declaration));
         return $blocks;
     }
 
     /**
      * @param Set<string> $uses
+     * @param array<string> $reservedPropertyNames
      * @return ArrayClass<PropertyBlock>
      */
-    private function generateFromAttributes(Entity $entity, Set $uses, string $declaration): ArrayClass
+    private function generateFromAttributes(Entity $entity, Set $uses, string $declaration, array $reservedPropertyNames): ArrayClass
     {
         /** @var ArrayClass<PropertyBlock> */
-        return $entity->attributes->sorted([new SortDescriptor("position")])->compactMap(fn(Attribute $attribute): ?PropertyBlock => $this->generateAttributeBlock($attribute, $uses, $declaration));
+        return $entity->attributes->sorted([new SortDescriptor("position")])->compactMap(fn(Attribute $attribute): ?PropertyBlock => in_array($attribute->name, $reservedPropertyNames) ? null : $this->generateAttributeBlock($attribute, $uses, $declaration));
     }
 
     /**
@@ -95,13 +97,14 @@ final readonly class PropertyBlockGenerator
 
     /**
      * @param Set<string> $uses
+     * @param array<string> $reservedPropertyNames
      * @return ArrayClass<PropertyBlock>
      */
-    private function generateFromRelationships(Entity $entity, Set $uses, string $declaration): ArrayClass
+    private function generateFromRelationships(Entity $entity, Set $uses, string $declaration, array $reservedPropertyNames): ArrayClass
     {
         $setClassName = class_name(Set::class);
         /** @var ArrayClass<PropertyBlock> */
-        return $entity->relationships->sorted([new SortDescriptor("position")])->compactMap(fn(Relationship $relationship): ?PropertyBlock => $this->generateRelationshipBlock($relationship, $uses, $declaration, $setClassName));
+        return $entity->relationships->sorted([new SortDescriptor("position")])->compactMap(fn(Relationship $relationship): ?PropertyBlock => in_array($relationship->name, $reservedPropertyNames) ? null : $this->generateRelationshipBlock($relationship, $uses, $declaration, $setClassName));
     }
 
     /**

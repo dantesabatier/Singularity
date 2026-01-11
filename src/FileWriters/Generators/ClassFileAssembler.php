@@ -58,6 +58,7 @@ final class ClassFileAssembler
     public function createDefaultDeclaration(string $class, Entity $entity): string
     {
         $superclass = $entity->superentity?->name ?? class_name(ManagedObject::class);
-        return "class $class extends $superclass\n{\n}\n";
+        $implements = $entity->isAuthorizable ? " implements Authorizable" : "";
+        return "class $class extends $superclass$implements\n{\n}\n";
     }
 }

@@ -15,7 +15,7 @@ use function Sabatier\Foundation\substring_to_index;
 final class ExistingClassParser
 {
     /**
-     * @return array{uses: Set<string>, properties: Set<string>, declaration: string}
+     * @return array{uses: Set<string>, properties: Set<string>, declaration: string|null}
      * @throws Exception
      */
     public function parse(URL $fileURL): array
@@ -24,16 +24,14 @@ final class ExistingClassParser
         $uses = new Set();
         /** @var Set<string> $properties */
         $properties = new Set();
-        $declaration = "";
+        $declaration = null;
         $path = $fileURL->path;
         if (!FileManager::default()->fileExists($path)) {
             return ["uses" => $uses, "properties" => $properties, "declaration" => $declaration];
         }
-        $contents = FileManager::default()->contents($path);
-        if (!$contents) {
+        if (!($contents = FileManager::default()->contents($path))) {
             return ["uses" => $uses, "properties" => $properties, "declaration" => $declaration];
         }
-
         $index = strpos($contents, "class");
         if ($index === false) {
             return ["uses" => $uses, "properties" => $properties, "declaration" => $declaration];

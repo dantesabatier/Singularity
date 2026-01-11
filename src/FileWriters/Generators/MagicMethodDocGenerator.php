@@ -50,14 +50,13 @@ final readonly class MagicMethodDocGenerator
         }
         $relationshipName = ucfirst($relationship->name);
         $entityClassName = ($this->classNameGenerator)($destinationEntity, $namespace);
-        $methods = [
+        return new ArrayClass([
             new GeneratedMethod("void add{$relationshipName}Object($entityClassName \$object)"),
             new GeneratedMethod("void remove{$relationshipName}Object($entityClassName \$object)"),
             new GeneratedMethod("void add$relationshipName($setClassName \$objects)"),
             new GeneratedMethod("void remove$relationshipName($setClassName \$objects)"),
             new GeneratedMethod("$setClassName<$entityClassName> intersect$relationshipName($setClassName \$objects)"),
             new GeneratedMethod("void set$relationshipName($setClassName \$objects)")
-        ];
-        return new ArrayClass($methods)->map(fn(GeneratedMethod $method) => $method->toDocBlock())->join("\n");
+        ])->join("\n");
     }
 }
