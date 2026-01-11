@@ -346,6 +346,7 @@ final class EditorController extends ProjectController
         $moved = $subset[$fromIndex];
         /** @var Property $target */
         $target = $subset[$toIndex];
+        /** @var ArrayClass<Property> $properties */
         $properties = new ArrayClass($entity->attributes->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
         $properties->appendContentsOf($entity->relationships->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
         $properties->appendContentsOf($entity->fetchedProperties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));

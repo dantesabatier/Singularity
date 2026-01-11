@@ -18,7 +18,7 @@ use Sabatier\Foundation\Set;
  * @property bool $isMinValueBounded
  * @property bool $isMaxValueBounded
  * @property string|null $regex
- * @property int<0, max> $position
+ * @property int $position
  * @property Entity|null $entityProperty
  * @property Set<AccessControl> $accessControls
  * @method void addAccessControlsObject(AccessControl $object)

@@ -197,7 +197,6 @@
             const customInput = form.querySelector("#scopeName")
             const cancelBtn = form.querySelector(".role-cancel-btn")
             const saveBtn = form.querySelector(".role-save-btn")
-            const addBtn = form.querySelector(".role-add-btn")
             if (select && customField) {
                 select.addEventListener("change", () => {
                     if (select.value === "custom...") {
@@ -221,13 +220,11 @@
                     e.preventDefault()
                     const selectedScope = select?.value
                     const finalName = selectedScope === "custom..." ? customInput?.value : selectedScope
-                    if (!finalName || finalName === 'custom...') {
+                    if (!finalName || finalName === "custom...") {
                         customInput?.focus()
                         return
                     }
-                    const formData = new FormData(form)
-                    formData.set("name", finalName)
-                    submit(form, register)
+                    //submit(form, register)
                     if (activePopover) {
                         activePopover.hide()
                         activePopover = null
@@ -240,9 +237,6 @@
                         e.preventDefault()
                         if (saveBtn) {
                             saveBtn.click()
-                        }
-                        if (addBtn) {
-                            addBtn.click()
                         }
                     }
                 })
