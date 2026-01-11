@@ -133,11 +133,8 @@
                 if (activePopover) {
                     activePopover.hide()
                 }
-                try {
-                    const url = new URL(window.location.href)
-                    if (!url.searchParams.get("accessControl")) {
-                        return
-                    }
+                const url = new URL(window.location.href)
+                if (url.searchParams.get("accessControl")) {
                     e.classList.add("loading")
                     url.searchParams.set("role", e.dataset.role)
                     const response = await fetch(url, {
@@ -155,20 +152,20 @@
                     })
                     popover.show()
                     activePopover = popover
-                } catch (error) {
+                } else {
                     popover.setContent({
-                        ".popover-body": `<div class="p-3 text-danger"><i class="bi bi-exclamation-triangle"></i> Failed to load</div>`
+                        ".popover-body": `<div class="p-3 text-danger"><i class="bi bi-exclamation-triangle"></i><span class="px-2">Failed to load role, select an access control and try again.</span></div>`
                     })
                     popover.show()
+                    activePopover = popover
                     setTimeout(() => {
                         if (activePopover === popover) {
-                            popover.hide()
+                            activePopover.hide()
                             activePopover = null
                         }
                     }, 2000)
-                } finally {
-                    e.classList.remove("loading")
                 }
+                e.classList.remove("loading")
             })
         })
         document.addEventListener("click", (event) => {
