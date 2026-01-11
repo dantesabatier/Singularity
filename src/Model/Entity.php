@@ -15,7 +15,6 @@ use Sabatier\Foundation\SortDescriptor;
  * @property string|null $versionHashModifier
  * @property bool $isAbstract
  * @property bool $isExpanded
- * @property bool $isAuthorizable
  * @property-read int $subentitiesCount
  * @property-read int $indexesCount
  * @property-read bool $isLeaf

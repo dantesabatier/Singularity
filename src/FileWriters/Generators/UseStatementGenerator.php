@@ -15,7 +15,6 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
-use Sabatier\Service\Authorizable;
 
 /**
  * Generates use statements for entity classes
@@ -51,13 +50,6 @@ final class UseStatementGenerator
         }
         if (!$entity->superentity) {
             $uses->insert("use " . ManagedObject::class . ";");
-        }
-        if ($entity->isAuthorizable) {
-            $uses->insert("use " . Authorizable::class . ";");
-            $uses->insert("use " . AttributeType::class . ";");
-            $uses->insert("use " . Dictionary::class . ";");
-            $uses->insert("use " . Set::class . ";");
-            $uses->insert("use Override;");
         }
         return $uses;
     }
