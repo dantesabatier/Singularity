@@ -111,7 +111,7 @@
             })
             e.addEventListener("click", () => tooltip.hide())
         })
-        window.activePopover = null;
+        let activePopover = null;
         document.querySelectorAll(`[data-bs-toggle="popover"]`).forEach(e => {
             const popover = new bootstrap.Popover(e, {
                 container: "body",
@@ -127,8 +127,8 @@
                 event.preventDefault()
                 event.stopPropagation()
                 event.stopImmediatePropagation()
-                if (window.activePopover) {
-                    window.activePopover.hide()
+                if (activePopover) {
+                    activePopover.hide()
                 }
                 try {
                     const url = new URL(window.location.href)
@@ -151,16 +151,16 @@
                         ".popover-body": template.innerHTML
                     })
                     popover.show()
-                    window.activePopover = popover
+                    activePopover = popover
                 } catch (error) {
                     popover.setContent({
                         ".popover-body": `<div class="p-3 text-danger"><i class="bi bi-exclamation-triangle"></i> Failed to load</div>`
                     })
                     popover.show()
                     setTimeout(() => {
-                        if (window.activePopover === popover) {
+                        if (activePopover === popover) {
                             popover.hide()
-                            window.activePopover = null
+                            activePopover = null
                         }
                     }, 2000)
                 } finally {
@@ -169,15 +169,85 @@
             })
         })
         document.addEventListener("click", (event) => {
-            if (window.activePopover && !event.target.closest(".popover") && !event.target.closest('[data-bs-toggle="popover"]')) {
-                window.activePopover.hide()
-                window.activePopover = null
+            if (activePopover && !event.target.closest(".popover") && !event.target.closest('[data-bs-toggle="popover"]')) {
+                activePopover.hide()
+                activePopover = null
             }
         })
         document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape" && window.activePopover) {
-                window.activePopover.hide();
-                window.activePopover = null;
+            if (event.key === "Escape" && activePopover) {
+                activePopover.hide();
+                activePopover = null;
+            }
+        })
+        document.addEventListener("shown.bs.popover", () => {
+            const popoverBody = document.querySelector(".popover-body")
+            if (!popoverBody) {
+                return
+            }
+            const form = popoverBody.querySelector(".role-popover-form");
+            if (!form) {
+                return
+            }
+            const select = form.querySelector(".role-select")
+            const customField = form.querySelector(".role-custom-field")
+            const customInput = form.querySelector("#scopeName")
+            const cancelBtn = form.querySelector(".role-cancel-btn")
+            const saveBtn = form.querySelector(".role-save-btn")
+            const addBtn = form.querySelector(".role-add-btn")
+            if (select && customField) {
+                select.addEventListener("change", () => {
+                    if (select.value === "custom...") {
+                        customField.style.display = "block"
+                        customInput?.focus()
+                    } else {
+                        customField.style.display = "none"
+                    }
+                })
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener("click", () => {
+                    if (activePopover) {
+                        activePopover.hide()
+                        activePopover = null
+                    }
+                })
+            }
+            if (saveBtn) {
+                saveBtn.addEventListener("click", function (e) {
+                    e.preventDefault()
+                    const selectedScope = select?.value
+                    const finalName = selectedScope === "custom..." ? customInput?.value : selectedScope
+                    if (!finalName || finalName === 'custom...') {
+                        customInput?.focus()
+                        return
+                    }
+                    const formData = new FormData(form)
+                    formData.set("name", finalName)
+                    submit(form, register)
+                    if (activePopover) {
+                        activePopover.hide()
+                        activePopover = null
+                    }
+                })
+            }
+            if (customInput) {
+                customInput.addEventListener("keypress", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault()
+                        if (saveBtn) {
+                            saveBtn.click()
+                        }
+                        if (addBtn) {
+                            addBtn.click()
+                        }
+                    }
+                })
+            }
+            if (select && !select.disabled) {
+                select.focus()
+            } else if (customInput) {
+                customInput.focus()
             }
         })
         document.querySelectorAll("table").forEach(e => {
