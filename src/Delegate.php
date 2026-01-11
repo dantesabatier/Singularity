@@ -24,7 +24,7 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public static function initialize(): void
     {
-        SQLCore::$debugLevel = SQLDebugLevel::prettyFormatSQL;
+        SQLCore::$debugLevel = SQLDebugLevel::none;
         SQLCore::$debugColorOutputDefault = true;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
