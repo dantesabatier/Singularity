@@ -5,13 +5,7 @@
         {varType App\Model\Entity $entity}
         <div class="source-row{$entity->objectID->referenceObject === $selectedEntity?->objectID?->referenceObject && !$selectedIndex ? ' active'}" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}" title="{$entity->name}" style="--level: {$level}">
             {if !$entity->isLeaf}
-                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID->referenceObject}" aria-controls="group-{$entity->objectID->referenceObject}" aria-expanded="{$entity->isExpanded|json}" form="toggle-form"></button>
-                <form action="/Entity" method="POST" id="toggle-form" style="display: none;">
-                    <input type="hidden" name="objectID" value="{$entity->objectID->referenceObject}">
-                    <input type="hidden" name="name" value="{$entity->name}">
-                    <input type="hidden" name="isExpanded" value="{!$entity->isExpanded|json}">
-                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                </form>
+                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID->referenceObject}" data-id="{$entity->objectID->referenceObject}" data-expanded="{!$entity->isExpanded|json}" aria-controls="group-{$entity->objectID->referenceObject}" aria-expanded="{$entity->isExpanded|json}"></button>
             {else}
                 <span class="tree-spacer"></span>
             {/if}

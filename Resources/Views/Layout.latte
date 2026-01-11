@@ -30,7 +30,10 @@
         jscolor.install()
         document.querySelectorAll(".tree-toggle").forEach(e => e.addEventListener("click", event => {
             event.stopPropagation()
-            submit(e.form, register)
+            send("Entity", {
+                objectID: e.dataset.id,
+                isExpanded: e.dataset.expanded,
+            }, "PATCH", register)
         }, {
             once: true
         }))
