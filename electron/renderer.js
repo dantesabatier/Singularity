@@ -355,7 +355,9 @@ const remove = async (item, completion = undefined) => {
     }
 }
 
-const explore = (path) => window.api?.openPath(path)
+const openPath = (path) => window.api?.openPath(path)
+
+const openURL = (url) => window.api?.openURL(url)
 
 /**
  * @param {string|undefined} title
@@ -365,8 +367,6 @@ const explore = (path) => window.api?.openPath(path)
  * @return {Promise<string|undefined>}
  */
 const browse = async (title = undefined, prompt = undefined, defaultButton = undefined, options = undefined) => (await window.api?.showOpenDialog(title ?? "Select folder", prompt, defaultButton ?? "OK", undefined, options ?? ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
-
-const openURL = (url) => window.api?.openURL(url)
 
 const showOpenPanel = async () => {
     const filePath = await browse("Open Project", "Select the project file", "Open", ["openDirectory"])
