@@ -2,6 +2,7 @@
 
 namespace App\FileWriters\Generators;
 
+use App\FileWriters\ValueObjects\PropertyBlock;
 use Sabatier\Foundation\ArrayClass;
 use function Sabatier\Foundation\substring_from_index;
 use function Sabatier\Foundation\substring_to_index;
@@ -11,6 +12,11 @@ use function Sabatier\Foundation\substring_to_index;
  */
 final class ClassDeclarationInjector
 {
+    /**
+     * @param string $declaration
+     * @param ArrayClass<PropertyBlock> $blocks
+     * @return string
+     */
     public function inject(string $declaration, ArrayClass $blocks): string
     {
         if ($blocks->isEmpty) {
