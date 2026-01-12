@@ -50,10 +50,7 @@
                                 <tr n:if="$selectedEntity->uniquenessConstraints->isEmpty">
                                     <td class="text-muted fst-italic text-center py-4" style="border: none;">No constraints</td>
                                 </tr>
-                                <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint"
-                                        id="constraint-{$uniquenessConstraint->objectID->referenceObject}"
-                                        class="cursor-pointer {$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? active}"
-                                        onclick="window.location.href = '/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}'">
+                                <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&constraint={$uniquenessConstraint->objectID->referenceObject}" class="cursor-pointer {$uniquenessConstraint->objectID->referenceObject === $selectedUniquenessConstraint?->objectID?->referenceObject ? active}">
                                     <td>
                                         <i class="bi bi-key-fill me-1 opacity-50" style="font-size: 10px;"></i>
                                         {$uniquenessConstraint->stringValue}
@@ -86,33 +83,30 @@
                     <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control form-control-sm text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-            <input class="d-none" type="submit">
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
         <div class="modal fade ide-modal" id="addUniquenessConstraint" tabindex="-1" aria-labelledby="addUniquenessConstraintLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h6 class="modal-title" id="addUniquenessConstraintLabel">
-                            Add Constraint
-                        </h6>
+                        <h6 class="modal-title" id="addUniquenessConstraintLabel">Add Uniqueness Constraint</h6>
                     </div>
                     <form id="addUniquenessConstraintForm" action="/UniquenessConstraint" method="POST">
                         <div class="modal-body">
-                            <div class="mb-1">
-                                <label for="stringValue" class="form-label">Attribute</label>
+                            <div class="modal-form-field">
+                                <label for="stringValue" class="modal-form-label">Attribute</label>
                                 <select name="stringValue" id="stringValue" class="form-select" {$selectedEntity->attributes->isEmpty ? disabled} required>
                                     {var $attributeNames = $selectedEntity->attributeNames->dropLast(1)}
-                                    <option value="" selected disabled>Select Attribute...</option>
-                                    <option n:foreach="$attributeNames as $attributeName" value="{$attributeName}" {$selectedEntity->uniquenessConstraints->contains(fn(App\Model\UniquenessConstraint $uniquenessConstraint): bool => $uniquenessConstraint->stringValue === $attributeName) ? disabled}>
+                                    <option value="" selected disabled>Select attribute...</option>
+                                    <option n:foreach="$attributeNames as $attributeName" value="{$attributeName}" {$selectedEntity->uniquenessConstraints->contains(fn(App\Model\UniquenessConstraint $constraint): bool => $constraint->stringValue === $attributeName) ? disabled}>
                                         {$attributeName}
                                     </option>
                                 </select>
-                                <div class="mt-2 d-flex gap-2 align-items-start" style="font-size: 11px; color: var(--text-secondary); line-height: 1.4;">
-                                    <i class="bi bi-info-circle-fill flex-shrink-0 mt-1" style="color: var(--accent-blue);"></i>
+                                <div class="modal-help-text">
+                                    <i class="bi bi-info-circle-fill"></i>
                                     <div>
                                         Enforces uniqueness for this attribute.
-                                        <div style="color: var(--text-disabled);">Conflicts resolve via merge policy.</div>
+                                        <span class="help-note">Conflicts resolve via merge policy.</span>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +114,7 @@
                         <input type="hidden" name="entityPropertyID" value="{$selectedEntity?->objectID?->referenceObject}">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-sm btn-primary" {$selectedEntity->attributes->isEmpty ? disabled}>Add</button>
+                            <button type="submit" class="btn btn-sm btn-primary" {$selectedEntity->attributes->isEmpty ? disabled}>Add Constraint</button>
                         </div>
                     </form>
                 </div>

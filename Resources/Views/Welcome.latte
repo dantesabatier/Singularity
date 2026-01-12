@@ -3,44 +3,40 @@
 {block title}{$title}{/block}
 {block content}
     <div id="main" class="user-select-none">
-        <nav class="navbar sticky-top bg-dark border-bottom border-black p-0" style="height: 40px; -webkit-app-region: drag">
-            <div class="container-fluid justify-content-start">
-                <div class="navbar-brand d-flex align-items-center gap-2 mb-0">
-                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block">
-                    <span class="fs-6 fw-medium">{$title}</span>
+        <nav class="welcome-navbar">
+            <div class="container-fluid">
+                <div class="navbar-brand">
+                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}">
+                    <span>{$title}</span>
                 </div>
             </div>
         </nav>
-        <div class="container-fluid d-flex flex-column p-0 position-relative overflow-hidden">
-            <div id="welcome-view" class="row g-0 transition-panel active">
-                <div class="col-sm-7 overflow-auto" style="height: calc(100vh - 40px)">
-                    <div class="p-4">
-                        <h2 class="text-wrap-word fw-bold mb-3">{$title}</h2>
-                        <p class="text-muted mb-4">Get started by creating a new project or opening an existing one.</p>
 
-                        <div class="d-flex flex-column gap-2">
-                            <button class="btn text-start d-flex align-items-center gap-2" onclick="showNewProjectView()" style="-webkit-app-region: no-drag;">
+        <div class="welcome-container">
+            <div id="welcome-view" class="transition-panel active">
+                <div class="welcome-content">
+                    <div class="welcome-actions">
+                        <div class="welcome-intro">
+                            <h2>{$title}</h2>
+                            <p>Get started by creating a new project or opening an existing one.</p>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="showNewProjectView()">
                                 <i class="bi bi-plus-circle"></i> <span>Create New Project</span>
                             </button>
-
-                            <button class="btn text-start d-flex align-items-center gap-2" onclick="openProject()" style="-webkit-app-region: no-drag;">
+                            <button class="action-btn" onclick="openProject()">
                                 <i class="bi bi-folder2-open"></i> <span>Open Existing Project</span>
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-sm-5 overflow-auto bg-dark-subtle" style="height: calc(100vh - 96px); min-width: 0;">
-                    <div class="p-3">
-                        <h6 class="text-secondary text-uppercase fw-semibold mb-3" style="font-size: 11px; letter-spacing: 1px;">
-                            Recent Projects
-                        </h6>
-
+                    <div class="recent-projects-panel">
+                        <h6 class="panel-title">Recent Projects</h6>
                         {if $projects->isEmpty}
-                            <div class="text-center py-5">
-                                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-                                <p class="text-muted mt-3 mb-0">No recent projects</p>
-                                <small class="text-muted">Projects you open will appear here</small>
+                            <div class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <p>No recent projects</p>
+                                <small>Projects you open will appear here</small>
                             </div>
                         {else}
                             <div class="list-group list-group-flush">
@@ -48,42 +44,29 @@
                                     {var $path = $project->url->path}
                                     <div class="list-group-item">
                                         <div class="d-flex align-items-center gap-3">
-                                            <!-- Project Avatar -->
-                                            <span class="project-avatar color-picker cursor-pointer"
-                                                    style="background-color: {$project?->color|noescape}; "
-                                                    data-jscolor="{ value: '{$project?->color|noescape}', preset: 'dark'}"
-                                                    data-project="{$project->objectID->referenceObject}">
-                    {$project->name|first|upper}
-                </span>
-
-                                            <!-- Project Info -->
+                                            <span class="project-avatar color-picker cursor-pointer" style="background-color: {$project?->color|noescape};" data-jscolor="{ value: '{$project?->color|noescape}', preset: 'dark'}" data-project="{$project->objectID->referenceObject}">
+                                                {$project->name|first|upper}
+                                            </span>
                                             <div class="project-info cursor-pointer" onclick="show({$project})">
                                                 <div class="project-name text-truncate">
                                                     {$project->name}
                                                 </div>
-                                                <div class="project-path text-truncate"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="bottom"
-                                                        data-bs-title="{$path}">
+                                                <div class="project-path text-truncate" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$path}">
                                                     {$path}
                                                 </div>
                                             </div>
-
-                                            <!-- Actions Dropdown -->
                                             <div class="dropdown project-actions-btn">
-                                                <button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;">
+                                                <button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <button class="dropdown-item d-flex align-items-center gap-2"
-                                                                onclick="show({$project})">
+                                                        <button class="dropdown-item" onclick="show({$project})">
                                                             <i class="bi bi-folder2-open"></i> <span>Open Project</span>
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        <button class="dropdown-item d-flex align-items-center gap-2"
-                                                                onclick="explore('{$path}')">
+                                                        <button class="dropdown-item" onclick="explore('{$path}')">
                                                             <i class="bi bi-folder"></i> <span>Show in Explorer</span>
                                                         </button>
                                                     </li>
@@ -91,8 +74,7 @@
                                                         <hr class="dropdown-divider">
                                                     </li>
                                                     <li>
-                                                        <button class="dropdown-item text-danger d-flex align-items-center gap-2"
-                                                                onclick="remove({$project}, register)">
+                                                        <button class="dropdown-item text-danger" onclick="remove({$project}, register)">
                                                             <i class="bi bi-trash"></i> <span>Remove from List</span>
                                                         </button>
                                                     </li>
@@ -106,95 +88,76 @@
                     </div>
                 </div>
             </div>
-            {* New Project View *}
-            <div id="new-project-view" class="transition-panel" style="height: calc(100vh - 96px);">
-                <div class="d-flex flex-column h-100">
-                    <div class="flex-grow-1 overflow-auto p-4">
-                        <h2 class="fw-bold mb-3">Create New Project</h2>
-                        <p class="text-muted mb-4">Configure your new project settings</p>
-                        <form action="/Create" method="POST" id="new-project-form" class="form-new-project" style="-webkit-app-region: no-drag;">
-                            <section class="mb-4">
-                                <h6 class="text-secondary text-uppercase fw-semibold mb-3" style="font-size: 11px; letter-spacing: 1px;">
-                                    Project Location
-                                </h6>
-                                <div class="mb-3">
-                                    <label for="directory" class="form-label d-flex align-items-center gap-2">
-                                        <i class="bi bi-folder text-muted"></i> <span>Project Folder</span> </label>
-                                    <div class="input-group">
-                                        <input type="text" name="directory" id="directory" placeholder="Choose a folder for your new project" class="form-control" value="{$directory}" readonly>
-                                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2" onclick="chooseProjectFolder()">
-                                            <i class="bi bi-folder2-open"></i> <span>Browse...</span>
-                                        </button>
-                                    </div>
-                                    <small class="text-muted mt-1 d-block"> Select the directory where your project files will be created </small>
-                                </div>
-                            </section>
 
-                            {* Project Configuration Section *}
-                            <section class="mb-4">
-                                <h6 class="text-secondary text-uppercase fw-semibold mb-3" style="font-size: 11px; letter-spacing: 1px;">
-                                    Configuration Options
-                                </h6>
-
-                                <div class="card border-0 mb-3">
-                                    <div class="card-body p-3">
-                                        <div class="d-flex align-items-start gap-3 mb-3">
-                                            <div class="form-check mt-1">
-                                                <input class="form-check-input" type="checkbox" name="generateWithSecurity" id="generateWithSecurity" value="{$generateWithSecurity|json}"{$generateWithSecurity ? checked}>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <label class="form-check-label fw-medium mb-1 cursor-pointer d-flex align-items-center gap-2" for="generateWithSecurity">
-                                                    <i class="bi bi-shield-check text-success"></i>
-                                                    <span>Advanced Security Policies</span> </label>
-                                                <p class="text-muted small mb-0">
-                                                    Generates project code with stricter access control policies for enhanced security
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex align-items-start gap-3 mb-3">
-                                            <div class="form-check mt-1">
-                                                <input class="form-check-input" type="checkbox" name="generateWithCORS" id="generateWithCORS" value="{$generateWithCORS|json}" {$generateWithCORS ? checked}>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <label class="form-check-label fw-medium mb-1 cursor-pointer d-flex align-items-center gap-2" for="generateWithCORS">
-                                                    <i class="bi bi-globe text-info"></i> <span>CORS Support</span>
-                                                </label>
-                                                <p class="text-muted small mb-0">
-                                                    Allow access from external web apps like React or Vue by adding default CORS configuration
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-start gap-3">
-                                            <div class="form-check mt-1">
-                                                <input class="form-check-input" type="checkbox" name="generateWithJWT" id="generateWithJWT" value="{$generateWithJWT|json}" {$generateWithJWT ? checked}>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <label class="form-check-label fw-medium mb-1 cursor-pointer d-flex align-items-center gap-2" for="generateWithJWT">
-                                                    <i class="bi bi-key text-warning"></i>
-                                                    <span>JWT Authentication</span> </label>
-                                                <p class="text-muted small mb-0">
-                                                    Enable Bearer authentication with JWT tokens for secure API access
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </form>
+            <div id="new-project-view" class="transition-panel">
+                <div class="new-project-content">
+                    <div class="new-project-header">
+                        <h2>Create New Project</h2>
+                        <p>Configure your new project settings</p>
                     </div>
+                    <form action="/Create" method="POST" id="new-project-form" class="new-project-form">
+                        <section class="form-section-group">
+                            <h6 class="section-title">Project Location</h6>
+                            <div class="form-group">
+                                <label for="directory" class="form-label"> <i class="bi bi-folder"></i>
+                                    <span>Project Folder</span> </label>
+                                <div class="input-group">
+                                    <input type="text" name="directory" id="directory" placeholder="Choose a folder for your new project" class="form-control" value="{$directory}" readonly>
+                                    <button type="button" class="btn btn-secondary" onclick="chooseProjectFolder()">
+                                        <i class="bi bi-folder2-open"></i> <span>Browse...</span>
+                                    </button>
+                                </div>
+                                <small class="form-text">Select the directory where your project files will be created</small>
+                            </div>
+                        </section>
+                        <section class="form-section-group">
+                            <h6 class="section-title">Configuration Options</h6>
+                            <div class="config-options">
+                                <div class="config-option">
+                                    <input class="form-check-input" type="checkbox" name="generateWithSecurity" id="generateWithSecurity" value="{$generateWithSecurity|json}" {$generateWithSecurity ? checked}>
+                                    <label for="generateWithSecurity">
+                                        <div class="option-header">
+                                            <i class="bi bi-shield-check text-success"></i>
+                                            <span>Advanced Security Policies</span>
+                                        </div>
+                                        <p>Generates project code with stricter access control policies for enhanced security</p>
+                                    </label>
+                                </div>
+
+                                <div class="config-option">
+                                    <input class="form-check-input" type="checkbox" name="generateWithCORS" id="generateWithCORS" value="{$generateWithCORS|json}" {$generateWithCORS ? checked}>
+                                    <label for="generateWithCORS">
+                                        <div class="option-header">
+                                            <i class="bi bi-globe text-info"></i> <span>CORS Support</span>
+                                        </div>
+                                        <p>Allow access from external web apps like React or Vue by adding default CORS configuration</p>
+                                    </label>
+                                </div>
+
+                                <div class="config-option">
+                                    <input class="form-check-input" type="checkbox" name="generateWithJWT" id="generateWithJWT" value="{$generateWithJWT|json}" {$generateWithJWT ? checked}>
+                                    <label for="generateWithJWT">
+                                        <div class="option-header">
+                                            <i class="bi bi-key text-warning"></i> <span>JWT Authentication</span>
+                                        </div>
+                                        <p>Enable Bearer authentication with JWT tokens for secure API access</p>
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="navbar fixed-bottom border-top align-content-center" style="height: 56px; background-color: var(--bg-tertiary);">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
+        <div class="welcome-footer">
+            <div class="container-fluid">
                 <div id="settings-menu" class="dropup">
-                    <button type="button" class="btn btn-icon dropdown p-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-placement="top" data-bs-title="Settings" style="-webkit-app-region: no-drag;">
+                    <button type="button" class="btn btn-icon" data-bs-toggle="dropdown" aria-expanded="false" title="Settings">
                         <i class="bi bi-gear"></i>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="showAboutPanel()">
+                            <button class="dropdown-item" type="button" onclick="showAboutPanel()">
                                 <i class="bi bi-info-circle"></i> <span>About</span>
                             </button>
                         </li>
@@ -202,18 +165,17 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="showPreferences()">
+                            <button class="dropdown-item" onclick="showPreferences()">
                                 <i class="bi bi-sliders"></i> <span>Preferences</span>
                             </button>
                         </li>
                     </ul>
                 </div>
-
-                <div id="project-actions" class="d-flex gap-2">
-                    <button type="button" class="btn btn-secondary d-flex align-items-center gap-2" onclick="showWelcomeView()" style="-webkit-app-region: no-drag;">
+                <div id="project-actions">
+                    <button type="button" class="btn btn-secondary" onclick="showWelcomeView()">
                         <span>Cancel</span>
                     </button>
-                    <button type="submit" id="create-project-btn" form="new-project-form" class="btn btn-primary d-flex align-items-center gap-2" disabled style="-webkit-app-region: no-drag;">
+                    <button type="submit" id="create-project-btn" form="new-project-form" class="btn btn-primary" disabled>
                         <span>Create Project</span>
                     </button>
                 </div>
@@ -221,119 +183,28 @@
         </div>
     </div>
 
-    <!--suppress CssUnusedSymbol -->
-    <style>
-        .transition-panel {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            pointer-events: none;
-        }
-
-        .transition-panel.active {
-            position: relative;
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-
-        .transition-panel.sliding-left {
-            transform: translateX(-100%);
-        }
-
-        .transition-panel.sliding-right {
-            transform: translateX(100%);
-        }
-
-        #new-project-view .card {
-            background-color: var(--bg-tertiary);
-        }
-
-        #create-project-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .dropdown-menu {
-            animation: fadeInSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: bottom center;
-        }
-
-        @keyframes fadeInSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        #settings-menu,
-        #project-actions {
-            transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-            transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
-            visibility 0.3s;
-        }
-
-        #settings-menu {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            visibility: visible;
-        }
-
-        body.in-new-project #settings-menu {
-            opacity: 0;
-            transform: translateY(10px) scale(0.95);
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        #project-actions {
-            display: flex;
-            opacity: 0;
-            transform: translateY(10px) scale(0.95);
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        body.in-new-project #project-actions {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            visibility: visible;
-            pointer-events: auto;
-        }
-    </style>
-
     <script>
         const showNewProjectView = () => {
             const welcomeView = document.getElementById("welcome-view")
             const newProjectView = document.getElementById("new-project-view")
 
             document.body.classList.add("in-new-project")
-
             welcomeView.classList.add("sliding-left")
 
             setTimeout(() => {
                 welcomeView.classList.remove("active")
                 newProjectView.classList.add("active")
                 welcomeView.classList.remove("sliding-left")
-            }, 300);
-        };
+            }, 300)
+        }
 
         const showWelcomeView = () => {
             const welcomeView = document.getElementById('welcome-view')
             const newProjectView = document.getElementById("new-project-view")
 
-            document.body.classList.remove("in-new-project");
-
+            document.body.classList.remove("in-new-project")
             newProjectView.classList.add("sliding-right")
+
             setTimeout(() => {
                 newProjectView.classList.remove("active")
                 welcomeView.classList.add("active")
@@ -350,7 +221,7 @@
 
         const chooseProjectFolder = async () => {
             const directory = await browse()
-            if (!!directory) {
+            if (directory) {
                 const pathInput = document.getElementById("directory")
                 pathInput.value = directory
                 const createBtn = document.getElementById("create-project-btn")
@@ -359,11 +230,9 @@
         }
 
         const openProject = async () => {
-            const directory = await browse();
-            if (!!directory) {
-                await send("/Open", {
-                    directory: directory
-                })
+            const directory = await browse()
+            if (directory) {
+                await send("/Open", { directory })
             }
         }
 
@@ -376,6 +245,6 @@
                     await submit(form, register)
                 })
             }
-        });
+        })
     </script>
 {/block}

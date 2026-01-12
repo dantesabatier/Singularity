@@ -1,15 +1,17 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\AboutController}
+{block styles}
+    <link rel="stylesheet" href="/Resources/Styles/About.css">
+{/block}
 {block content}
-    <div id="main" class="vh-100 d-flex flex-column user-select-none" style="background-color: var(--bg-primary);">
-        <div class="navbar sticky-top border-bottom p-0"
-                style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
+    <div id="main" class="vh-100 d-flex flex-column user-select-none">
+        <div class="navbar sticky-top border-bottom p-0">
             <div class="container-fluid px-3 d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
                     <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block">
                     <span class="fs-6 fw-medium">{$title}</span>
                 </div>
-                <button class="btn btn-icon p-1" onclick="window.close()" style="-webkit-app-region: no-drag;" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Close">
+                <button class="btn btn-icon p-1" onclick="window.close()" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Close (ESC)">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -17,140 +19,54 @@
         <div class="container-fluid flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center px-4">
             <div class="mb-4 position-relative">
                 <div class="icon-glow"></div>
-                <img src="/Resources/Images/icon64@1x.png" srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x" alt="{$title}" class="app-icon" style="position: relative; z-index: 1;">
+                <img src="/Resources/Images/icon64@1x.png" srcset="/Resources/Images/icon64@2x.png 2x, /Resources/Images/icon64@3x.png 3x" alt="{$title}" class="app-icon" title="Click me 5 times 😉">
             </div>
             <div class="mb-4">
-                <h2 class="fw-bold mb-2" style="color: var(--text-bright); font-size: 24px;">
+                <h2 class="fw-bold mb-2">
                     {$bundleName}
                 </h2>
                 <div class="d-flex align-items-center justify-content-center gap-3 mb-2">
                     <span class="badge bg-primary px-3 py-2" style="font-size: 13px;">
                         Version {$bundleShortVersion}
-                    </span>
-                    <span class="badge px-3 py-2" style="background-color: var(--bg-tertiary); font-size: 13px;">
+                    </span> <span class="badge badge-secondary px-3 py-2" style="font-size: 13px;">
                         Build {$bundleVersion}
+                    </span>
+                </div>
+                <div class="d-flex align-items-center justify-content-center gap-2 mt-2">
+                        <span class="badge badge-secondary px-2 py-1" style="font-size: 11px;">
+                        Electron {$electronVersion}
+                    </span> <span class="badge badge-secondary px-2 py-1" style="font-size: 11px;">
+                        PHP {$phpVersion}
                     </span>
                 </div>
             </div>
             <div class="text-center" style="max-width: 400px;">
-                <p class="text-muted mb-3 text-wrap-word" style="font-size: 13px; line-height: 1.6;">
+                <p class="text-muted mb-3 text-break">
                     {$bundleHumanReadableCopyright}
                 </p>
-                <div class="d-flex justify-content-center gap-2 mt-4">
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" style="-webkit-app-region: no-drag;">
+                <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="openURL({$websiteURL})">
                         <i class="bi bi-globe"></i> <span>Website</span>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" style="-webkit-app-region: no-drag;">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="openURL({$githubURL})">
                         <i class="bi bi-github"></i> <span>GitHub</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="openURL({$licenseURL})">
+                        <i class="bi bi-file-text"></i> <span>Licenses</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="copyVersionInfo()" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Copy version info">
+                        <i class="bi bi-clipboard"></i> <span>Copy Info</span>
                     </button>
                 </div>
             </div>
         </div>
-
-        <div class="border-top py-2 px-3 text-center" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
-            <small class="text-muted d-flex align-items-center justify-content-center gap-2" style="font-size: 11px;">
+        <div class="footer border-top py-2 px-3 text-center">
+            <small class="text-muted d-flex align-items-center justify-content-center gap-2">
                 <i class="bi bi-info-circle"></i> <span>Powered by Electron & PHP</span> </small>
         </div>
     </div>
+{/block}
 
-    <style>
-        #main .app-icon {
-            width: 64px;
-            height: 64px;
-            animation: fadeInScale 0.4s ease-out;
-        }
-
-        #main .icon-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, rgba(74, 136, 199, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.4;
-                transform: translate(-50%, -50%) scale(1);
-            }
-            50% {
-                opacity: 0.8;
-                transform: translate(-50%, -50%) scale(1.1);
-            }
-        }
-
-        #main .badge {
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        #main .btn-outline-secondary {
-            border-color: var(--border-light);
-            color: var(--text-primary);
-        }
-
-        #main .btn-outline-secondary:hover {
-            background-color: var(--bg-hover);
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
-
-        #main h2 {
-            animation: fadeInDown 0.5s ease-out 0.1s both;
-        }
-
-        #main .badge {
-            animation: fadeInUp 0.5s ease-out 0.2s both;
-        }
-
-        #main p {
-            animation: fadeIn 0.5s ease-out 0.3s both;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-    </style>
+{block scripts}
+    <script src="/Resources/Scripts/About.js"></script>
 {/block}

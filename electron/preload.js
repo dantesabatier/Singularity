@@ -21,4 +21,5 @@ contextBridge.exposeInMainWorld("api", {
     showWindow: (options) => ipcRenderer.send("showWindow", options),
     setProgressBar: (progress => ipcRenderer.send("setProgressBar", progress)),
     openPath: (path) => ipcRenderer.send("openPath", path),
+    openURL: (url) => ipcRenderer.invoke("openURL", url)
 })

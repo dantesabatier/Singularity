@@ -366,6 +366,8 @@ const explore = (path) => window.api?.openPath(path)
  */
 const browse = async (title = undefined, prompt = undefined, defaultButton = undefined, options = undefined) => (await window.api?.showOpenDialog(title ?? "Select folder", prompt, defaultButton ?? "OK", undefined, options ?? ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
 
+const openURL = (url) => window.api?.openURL(url)
+
 const showOpenPanel = async () => {
     const filePath = await browse("Open Project", "Select the project file", "Open", ["openDirectory"])
     if (filePath) {
@@ -398,7 +400,7 @@ const showAboutPanel = () => window.api?.showWindow({
     url: `${window.location.origin}${url("About")}`,
     overrideBrowserWindowOptions: {
         width: 380,
-        height: 320,
+        height: 380,
         modal: true,
         titleBarOverlay: false
     }

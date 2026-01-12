@@ -1,47 +1,35 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\PreferencesController}
 {block title}{$title}{/block}
+{block head}
+    <link rel="stylesheet" type="text/css" href="/Resources/Styles/Preferences.css" media="screen">
+{/block}
 {block content}
     <div id="main" class="user-select-none">
-        {* Navbar superior con estilo de título nativo *}
-        <nav class="navbar sticky-top bg-dark border-bottom border-black p-0" style="height: 40px; -webkit-app-region: drag">
+        <nav class="navbar sticky-top bg-dark border-bottom border-black p-0 h-navbar">
             <div class="container-fluid justify-content-start">
                 <div class="navbar-brand d-flex align-items-center gap-2 mb-0">
-                    <img src="/Resources/Images/icon16@1x.png"
-                            srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x"
-                            alt="{$title}"
-                            class="d-inline-block"> <span class="fs-6 fw-medium">{$title}</span>
+                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block">
+                    <span class="fs-6 fw-medium">{$title}</span>
                 </div>
             </div>
         </nav>
-
-        <div class="container-fluid p-0" style="height: calc(100vh - 40px);">
+        <div class="container-fluid p-0 h-content">
             <div class="row g-0 h-100">
-                {* Sidebar de categorías *}
-                <div class="col-3 bg-dark-subtle border-end d-flex flex-column" style="height: calc(100vh - 40px);">
+                <div class="col-3 bg-dark-subtle border-end d-flex flex-column h-content">
                     <div class="p-2 overflow-auto flex-grow-1">
-                        <h6 class="text-secondary text-uppercase fw-semibold px-2 mb-2" style="font-size: 11px; letter-spacing: 0.5px;">
+                        <h6 class="text-secondary text-uppercase fw-semibold px-2 mb-2 sidebar-header">
                             Settings
                         </h6>
                         <nav class="nav flex-column">
-                            <a class="nav-item active px-2" href="#general"> <i class="bi bi-gear me-2"></i>
-                                <span>General</span> </a> <a class="nav-item px-2" href="#projects">
+                            <a class="nav-item active" href="#general"> <i class="bi bi-gear me-2"></i>
+                                <span>General</span> </a> <a class="nav-item" href="#projects">
                                 <i class="bi bi-folder me-2"></i> <span>Projects</span> </a>
-                            <a class="nav-item px-2" href="#appearance"> <i class="bi bi-palette me-2"></i>
-                                <span>Appearance</span> </a>
                         </nav>
                     </div>
                 </div>
-                <div class="col-9 d-flex flex-column" style="height: calc(100vh - 40px);">
+                <div class="col-9 d-flex flex-column h-content">
                     <div class="overflow-auto flex-grow-1 p-4">
-                        {* Loading indicator *}
-
-
-                        <div class="spinner-border spinner-border-sm text-primary position-absolute top-0 end-0 m-3" role="status" hidden style="-webkit-app-region: no-drag;">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-
-
                         <form action="/Synchronize" method="POST" class="needs-validation">
                             <section id="general" class="mb-5">
                                 <h5 class="fw-semibold mb-3 pb-2 border-bottom">General</h5>
@@ -49,41 +37,34 @@
                                     <div class="col-md-8">
                                         <label for="companyName" class="form-label d-flex align-items-center gap-2">
                                             <i class="bi bi-building text-muted"></i> <span>Company Name</span> </label>
-                                        <input type="text" name="companyName" id="companyName" placeholder="Enter your company name" class="form-control" value="{$companyName}" autocomplete="off" required style="-webkit-app-region: no-drag;">
+                                        <input type="text" name="companyName" id="companyName" placeholder="Enter your company name" class="form-control" value="{$companyName}" autocomplete="off" required>
                                         <small class="form-text text-muted mt-1 d-block"> This name will be used throughout the application </small>
                                     </div>
                                 </div>
                             </section>
                             <section id="projects" class="mb-5">
                                 <h5 class="fw-semibold mb-3 pb-2 border-bottom">Projects</h5>
-
                                 <div class="card border-0 mb-3">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-start gap-3">
-                                            <div class="form-check mt-1" style="-webkit-app-region: no-drag;">
-                                                <input class="form-check-input" type="checkbox" name="automaticallyDeleteProjectFolders" id="automaticallyDeleteProjectFolders" value="{$automaticallyDeleteProjectFolders|json}" {$automaticallyDeleteProjectFolders ? checked}>
+                                            <div class="form-check mt-1">
+                                                <input class="form-check-input" type="checkbox" name="automaticallyDeleteProjectFolders" id="automaticallyDeleteProjectFolders" value="{$automaticallyDeleteProjectFolders|json}" {$automaticallyDeleteProjectFolders ? 'checked' : ''}>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <label class="form-check-label fw-medium mb-1 cursor-pointer" for="automaticallyDeleteProjectFolders" style="-webkit-app-region: no-drag;"> Delete project folders automatically </label>
-                                                <p class="text-muted small mb-0">When enabled, deleting a project will also remove its folder from the disk.
+                                                <label class="form-check-label fw-medium mb-1 cursor-pointer" for="automaticallyDeleteProjectFolders"> Delete project folders automatically </label>
+                                                <p class="text-muted small mb-0">
+                                                    When enabled, deleting a project will also remove its folder from the disk.
                                                     <span class="text-warning">This action cannot be undone.</span>
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="alert alert-warning border-0 d-flex align-items-start gap-2" role="alert">
                                     <i class="bi bi-exclamation-triangle-fill mt-1"></i>
                                     <div>
                                         <strong>Warning:</strong> Enabling this option will permanently delete project files from your system when removing a project.
                                     </div>
-                                </div>
-                            </section>
-                            <section id="appearance" class="mb-5">
-                                <h5 class="fw-semibold mb-3 pb-2 border-bottom">Appearance</h5>
-                                <div class="text-muted">
-                                    <i class="bi bi-tools me-2"></i> Appearance settings coming soon...
                                 </div>
                             </section>
                             <input class="d-none" type="submit">
@@ -97,51 +78,7 @@
             </div>
         </div>
     </div>
-
-    <style>
-        /* Estilos específicos para la vista de preferencias */
-        #main .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 16px;
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 2px 0;
-            transition: all 0.15s ease;
-            font-size: 13px;
-        }
-
-        #main .nav-item:hover {
-            background-color: var(--bg-hover);
-            color: var(--text-bright);
-        }
-
-        #main .nav-item.active {
-            background-color: var(--bg-active);
-            color: var(--accent-blue);
-            font-weight: 500;
-        }
-
-        #main section {
-            scroll-margin-top: 20px;
-        }
-
-        #main .card {
-            background-color: var(--bg-tertiary);
-        }
-
-        #main .alert-warning {
-            background-color: rgba(199, 166, 81, 0.1);
-            color: var(--accent-yellow);
-        }
-
-        #main .border-bottom {
-            border-color: var(--border-color) !important;
-        }
-
-        #main .border-top {
-            border-color: var(--border-color) !important;
-        }
-    </style>
+{/block}
+{block scripts}
+    <script src="/Resources/Scripts/Preferences.js"></script>
 {/block}

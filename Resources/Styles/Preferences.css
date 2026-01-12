@@ -1,0 +1,157 @@
+/* Preferences View Styles */
+
+:root {
+    --navbar-height: 40px;
+    --content-height: calc(100vh - var(--navbar-height));
+}
+
+/* Navigation Items */
+#main .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 6px;
+    margin: 2px 0;
+    transition: all 0.15s ease;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#main .nav-item:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-bright);
+}
+
+#main .nav-item.active {
+    background-color: var(--bg-active);
+    color: var(--accent-blue);
+    font-weight: 500;
+}
+
+#main .nav-item i {
+    transition: transform 0.15s ease;
+}
+
+#main .nav-item:hover i {
+    transform: scale(1.1);
+}
+
+/* Sections */
+#main section {
+    scroll-margin-top: 20px;
+}
+
+#main section h5 {
+    font-size: 1.125rem;
+}
+
+/* Cards */
+#main .card {
+    background-color: var(--bg-tertiary);
+    transition: background-color 0.2s ease;
+}
+
+#main .card:hover {
+    background-color: var(--bg-hover);
+}
+
+/* Alerts */
+#main .alert-warning {
+    background-color: rgba(199, 166, 81, 0.1);
+    color: var(--accent-yellow);
+}
+
+/* Borders */
+#main .border-bottom {
+    border-color: var(--border-color) !important;
+}
+
+#main .border-top {
+    border-color: var(--border-color) !important;
+}
+
+/* Form Controls - Native Feel */
+#main input[type="text"],
+#main input[type="email"],
+#main select,
+#main textarea {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#main input[type="text"]:focus,
+#main input[type="email"]:focus,
+#main select:focus,
+#main textarea:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+#main .form-check-input {
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    cursor: pointer;
+}
+
+#main .form-check-input:checked {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+/* Labels */
+#main label.cursor-pointer {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Empty State */
+#main .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+#main .empty-state i {
+    font-size: 3rem;
+    opacity: 0.25;
+    color: var(--text-muted);
+}
+
+#main .empty-state p {
+    margin-top: 1rem;
+    color: var(--text-muted);
+}
+
+/* Electron Drag Regions */
+#main .navbar {
+    -webkit-app-region: drag;
+}
+
+#main input,
+#main select,
+#main textarea,
+#main button,
+#main .form-check,
+#main label.cursor-pointer,
+#main .nav-item {
+    -webkit-app-region: no-drag;
+}
+
+/* Sidebar */
+#main .sidebar-header {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+/* Smooth Scrolling */
+#main .overflow-auto {
+    scroll-behavior: smooth;
+}
+
+/* Height utilities */
+.h-navbar {
+    height: var(--navbar-height);
+}
+
+.h-content {
+    height: var(--content-height);
+}

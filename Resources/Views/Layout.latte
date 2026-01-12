@@ -13,16 +13,27 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/Resources/Images/favicon-16x16.png">
     <link rel="manifest" href="/Resources/site.webmanifest">
     <link rel="mask-icon" href="/Resources/Images/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="stylesheet" type="text/css" href="/Resources/Layout.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/Resources/Styles/Layout.css" media="screen">
+    {block head}{/block}
 </head>
-<!--suppress HtmlDeprecatedAttribute -->
 <body>
 {block content}{/block}
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous" defer></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" defer></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/db-viewer-component@4.4.9/dist/main.min.js" defer></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" defer></script>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.5.2/jscolor.min.js" integrity="sha512-qFhMEJrjI50TwLDGZ7Oi0ksTSWnFOqTNXhlqqUgWnE65S23rWUtQOv+tMNEybkMYSXKgAc3eg/SzkX+qrtJT/g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+
+
 <script type="text/javascript" src="../../electron/renderer.js" defer></script>
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
@@ -306,5 +317,6 @@
         once: true
     })
 </script>
+ {block scripts}{/block}
 </body>
 </html>

@@ -8,8 +8,8 @@
                 <tr>
                     <th class="col-accessControl-enabled">Enabled</th>
                     <th class="col-accessControl-name">Name</th>
-                    <th class="col-accessControl-scope">Scope</th>
                     <th class="col-accessControl-roles">Roles</th>
+                    <th class="col-accessControl-scope">Scope</th>
                     <th class="col-flex"></th>
                 </tr>
                 </thead>
@@ -24,18 +24,6 @@
                     </td>
                     <td class="col-accessControl-name">
                         <span class="cell-text accessControl-name-badge accessControl-type-{$accessControl->name}">#{$accessControl->name}</span>
-                    </td>
-                    <td class="col-accessControl-scope">
-                        <form action="/AccessControl" method="POST" class="cell-form">
-                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$accessControl->objectID->referenceObject}">
-                            <input type="hidden" name="scope" value="{$accessControl->scope->value}">
-                            <select name="scope" aria-label="Scope" class="form-select transparent" onchange="setScope(this)">
-                                <option n:foreach="$scopes as $scope" value="{$scope->value}" {$accessControl->scope->value === $scope->value ? selected}>
-                                    {$scope->name}
-                                </option>
-                            </select>
-                        </form>
                     </td>
                     <td class="col-accessControl-roles">
                         {if !$accessControl->roles->isEmpty}
@@ -52,6 +40,18 @@
                         {else}
                             <span class="cell-text text-disabled">No roles</span>
                         {/if}
+                    </td>
+                    <td class="col-accessControl-scope">
+                        <form action="/AccessControl" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$accessControl->objectID->referenceObject}">
+                            <input type="hidden" name="scope" value="{$accessControl->scope->value}">
+                            <select name="scope" aria-label="Scope" class="form-select transparent" onchange="setScope(this)">
+                                <option n:foreach="$scopes as $scope" value="{$scope->value}" {$accessControl->scope->value === $scope->value ? selected}>
+                                    {$scope->name}
+                                </option>
+                            </select>
+                        </form>
                     </td>
                     <td class="col-flex">
                     </td>

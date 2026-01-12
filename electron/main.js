@@ -167,4 +167,5 @@ ipcMain.on("showWindow", (event, arg) => {
     window.loadURL(arg.url)
 })
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
-ipcMain.on("openPath", (event, arg) => shell.openPath(arg))
+ipcMain.on("openPath", (event, path) => shell.openPath(path))
+ipcMain.handle("openURL", async (event, url) => shell.openExternal(url))
