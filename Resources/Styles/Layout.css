@@ -1140,11 +1140,6 @@ db-viewer {
     font-family: var(--font-mono);
 }
 
-.accessControl-type-Owner {
-    background-color: rgba(199, 168, 81, 0.2);
-    color: var(--accent-yellow);
-}
-
 .accessControl-type-Readable {
     background-color: rgba(90, 156, 90, 0.2);
     color: var(--accent-green);

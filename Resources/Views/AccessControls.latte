@@ -37,27 +37,21 @@
                                         </button>
                                     </span>
                                 </span>
-                        {elseif $accessControl->isOwner}
-                            <span class="cell-text text-disabled">--</span>
                         {else}
                             <span class="cell-text text-disabled">No roles</span>
                         {/if}
                     </td>
                     <td class="col-accessControl-scope">
-                        {if $accessControl->isOwner}
-                            <span class="cell-text text-disabled">All</span>
-                        {else}
-                            <form action="/AccessControl" method="POST" class="cell-form">
-                                <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                                <input type="hidden" name="objectID" value="{$accessControl->objectID->referenceObject}">
-                                <input type="hidden" name="scope" value="{$accessControl->scope->value}">
-                                <select name="scope" aria-label="Scope" class="form-select transparent" onchange="setScope(this)">
-                                    <option n:foreach="$scopes as $scope" value="{$scope->value}" {$accessControl->scope->value === $scope->value ? selected}>
-                                        {$scope->name}
-                                    </option>
-                                </select>
-                            </form>
-                        {/if}
+                        <form action="/AccessControl" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$accessControl->objectID->referenceObject}">
+                            <input type="hidden" name="scope" value="{$accessControl->scope->value}">
+                            <select name="scope" aria-label="Scope" class="form-select transparent" onchange="setScope(this)">
+                                <option n:foreach="$scopes as $scope" value="{$scope->value}" {$accessControl->scope->value === $scope->value ? selected}>
+                                    {$scope->name}
+                                </option>
+                            </select>
+                        </form>
                     </td>
                     <td class="col-flex">
                     </td>
@@ -72,11 +66,6 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><h6 class="dropdown-header">Access Control</h6></li>
-                    <li>
-                        <button class="dropdown-item" onclick="add({App\Model\AccessControl::entity()->name}, 'Owner', {$selectedProperty}, {$selectedProperty?->accessControls?->count}, register)">
-                            <span class="accessControl-name-badge accessControl-type-Owner">#Owner</span>
-                        </button>
-                    </li>
                     <li>
                         <button class="dropdown-item" onclick="add({App\Model\AccessControl::entity()->name}, 'Readable', {$selectedProperty}, {$selectedProperty?->accessControls?->count}, register)">
                             <span class="accessControl-name-badge accessControl-type-Readable">#Readable</span>

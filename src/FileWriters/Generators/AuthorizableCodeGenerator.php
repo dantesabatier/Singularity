@@ -24,7 +24,7 @@ final readonly class AuthorizableCodeGenerator
         "roles" => "Set",
     ];
 
-    public function __construct(private AccessControlGenerator $accessControlGenerator)
+    public function __construct(private PropertyAttributeGenerator $accessControlGenerator)
     {
     }
 

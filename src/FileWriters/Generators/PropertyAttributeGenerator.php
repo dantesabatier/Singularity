@@ -12,7 +12,7 @@ use function Sabatier\Foundation\class_name;
 /**
  * Generates PHP attributes for access control
  */
-final readonly class AccessControlGenerator
+final readonly class PropertyAttributeGenerator
 {
     private string $scopeClass;
 
@@ -27,24 +27,21 @@ final readonly class AccessControlGenerator
      */
     public function generateAttributes(Property $property, Set $uses): Set
     {
-        /** @var Set<AccessControl> $accessControls */
-        $accessControls = $property->accessControls;
-        if ($accessControls->isEmpty) {
-            return new Set();
+        /** @var Set<string> $attributes */
+        $attributes = new Set();
+        if ($property->isOwner) {
+            $attributes->insert("#[Owner]");
         }
-        /** @var Set<string> */
-        return $accessControls->map(function (AccessControl $accessControl) use ($uses): string {
+        $attributes->formUnion($property->accessControls->map(function (AccessControl $accessControl) use ($uses): string {
             $uses->insert("use Sabatier\\Service\\$accessControl->name;");
             $uses->insert("use " . AuthorizationScope::class . ";");
-            if ($accessControl->roles->isEmpty) {
-                return "#[$accessControl->name]";
-            }
             return "#[$accessControl->name({$accessControl->roles->map(fn(Role $role) => "\"$role->name\"")}, $this->scopeClass::{$accessControl->scope->name})]";
-        });
+        }));
+        return $attributes;
     }
 
-    public function hasAccessControls(Property $property): bool
+    public function shouldGenerateAttributes(Property $property): bool
     {
-        return !$property->accessControls->isEmpty;
+        return $property->isOwner && !$property->accessControls->isEmpty;
     }
 }

@@ -11,6 +11,7 @@ use Sabatier\Foundation\Set;
  * @property bool $isOptional
  * @property bool $isTransient
  * @property bool $isSensitive
+ * @property bool $isOwner
  * @property string|null $renamingIdentifier
  * @property string|null $versionHashModifier
  * @property mixed $minValue
@@ -44,6 +45,9 @@ abstract class Property extends ManagedObject
             }
             if ($isSensitive = $this->isSensitive) {
                 $dictionary["isSensitive"] = $isSensitive;
+            }
+            if ($isOwner = $this->isOwner) {
+                $dictionary["isOwner"] = $isOwner;
             }
             $dictionary["versionHashModifier"] = $this->versionHashModifier;
             $dictionary["renamingIdentifier"] = $this->renamingIdentifier;

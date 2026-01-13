@@ -2,7 +2,7 @@
 
 namespace App\FileWriters;
 
-use App\FileWriters\Generators\AccessControlGenerator;
+use App\FileWriters\Generators\PropertyAttributeGenerator;
 use App\FileWriters\Generators\AuthorizableCodeGenerator;
 use App\FileWriters\Generators\ClassDeclarationInjector;
 use App\FileWriters\Generators\ClassFileAssembler;
@@ -44,7 +44,7 @@ final class SubclassFileWriter extends FileWriter
         $this->entity = $entity;
         $this->existingClassParser = new ExistingClassParser();
         $this->useStatementGenerator = new UseStatementGenerator();
-        $accessControlGenerator = new AccessControlGenerator();
+        $accessControlGenerator = new PropertyAttributeGenerator();
         $this->propertyDocBlockGenerator = new PropertyDocBlockGenerator($accessControlGenerator);
         $this->propertyBlockGenerator = new PropertyBlockGenerator($accessControlGenerator);
         $this->authorizableCodeGenerator = new AuthorizableCodeGenerator($accessControlGenerator);
