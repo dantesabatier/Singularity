@@ -22,6 +22,9 @@ use Sabatier\Service\AuthorizationScope;
  */
 final class AccessControl extends ManagedObject
 {
+    public bool $isOwner {
+        get => $this->name === "Owner";
+    }
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
         get {

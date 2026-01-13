@@ -12,7 +12,6 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
-use function Sabatier\Foundation\localized_string;
 
 #[Endpoint("Preferences")]
 final class PreferencesController extends ViewController
@@ -40,7 +39,7 @@ final class PreferencesController extends ViewController
     #[Override]
     public function viewWillLoad(): void
     {
-        $this->title = localized_string("Preferences");
+        $this->title = "Preferences";
     }
 
     /**

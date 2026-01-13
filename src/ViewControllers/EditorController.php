@@ -45,7 +45,6 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
-use function Sabatier\Foundation\localized_string;
 use const Sabatier\Service\ServiceObjectIDKey;
 
 #[Endpoint("Editor")]
@@ -133,10 +132,10 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ArrayClass $deleteRules {
         get => $this->deleteRules ??= new ArrayClass(DeleteRule::cases())->map(fn(DeleteRule $rule): object => (object)["name" => match ($rule) {
-            DeleteRule::noActionDeleteRule => localized_string("No Action"),
-            DeleteRule::nullifyDeleteRule => localized_string("Nullify"),
-            DeleteRule::cascadeDeleteRule => localized_string("Cascade"),
-            DeleteRule::denyDeleteRule => localized_string("Deny"),
+            DeleteRule::noActionDeleteRule => "No Action",
+            DeleteRule::nullifyDeleteRule => "Nullify",
+            DeleteRule::cascadeDeleteRule => "Cascade",
+            DeleteRule::denyDeleteRule => "Deny",
         }, "value" => $rule->value]);
     }
     /** @var ArrayClass<object{name: string, value: int}> */
@@ -151,9 +150,9 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ArrayClass $collationTypes {
         get => $this->collationTypes ??= new ArrayClass(FetchIndexElementType::cases())->map(fn(FetchIndexElementType $type): object => (object)["name" => match ($type) {
-            FetchIndexElementType::binary => localized_string("Binary"),
-            FetchIndexElementType::bTree => localized_string("R-Tree"),
-            FetchIndexElementType::rTree => localized_string("B-Tree")
+            FetchIndexElementType::binary => "Binary",
+            FetchIndexElementType::bTree => "R-Tree",
+            FetchIndexElementType::rTree => "B-Tree"
         }, "value" => $type->value]);
     }
     /** @var ArrayClass<object{name: string, value: string}> */
@@ -169,18 +168,32 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ArrayClass $scopes {
         get => $this->scopes ??= new ArrayClass(AuthorizationScope::cases())->map(fn(AuthorizationScope $scope): object => (object)["name" => match ($scope) {
-            AuthorizationScope::all => localized_string("All"),
-            AuthorizationScope::own => localized_string("Own")
+            AuthorizationScope::all => "All",
+            AuthorizationScope::own => "Own"
         }, "value" => $scope->value]);
     }
     /** @var ArrayClass<string> */
     #[Outlet]
-    private(set) ArrayClass $roles {
-        get => $this->roles ??= new ArrayClass(["public", "authenticated", "owner", "admin", "moderator", "editor", "viewer"]);
+    private(set) ArrayClass $defaultRoles {
+        get => $this->defaultRoles ??= new ArrayClass(["Moderator", "Editor", "Viewer"]);
+    }
+    /** @var Set<string> */
+    #[Outlet]
+    private(set) Set $allRoles {
+        get {
+            if (!isset($this->allRoles)) {
+                /** @var Set<string> $allRoles */
+                $allRoles = $this->selectedAccessControl?->roles?->map(fn(Role $role): string => $role->name) ?? new Set();
+                $allRoles->formUnion($this->defaultRoles);
+                $allRoles->insert("Custom...");
+                $this->allRoles = $allRoles;
+            }
+            return $this->allRoles;
+        }
     }
     #[Outlet]
     private(set) bool $isCustomRole {
-        get => $this->isCustomRole ??= $this->roles->contains(fn(string $s): bool => $s === $this->selectedRole?->name);
+        get => $this->isCustomRole ??= $this->defaultRoles->contains(fn(string $s): bool => $s === $this->selectedRole?->name);
     }
 
     private function className(Entity $entity, string $namespace): string

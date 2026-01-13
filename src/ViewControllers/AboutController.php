@@ -8,7 +8,6 @@ use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
-use function Sabatier\Foundation\localized_string;
 use const Sabatier\Foundation\kCFBundleHumanReadableCopyright;
 use const Sabatier\Foundation\kCFBundleNameKey;
 use const Sabatier\Foundation\kCFBundleShortVersionStringKey;
@@ -62,6 +61,6 @@ final class AboutController extends ViewController
     #[Override]
     public function viewWillLoad(): void
     {
-        $this->title = localized_string("About Singularity");
+        $this->title = "About Singularity";
     }
 }

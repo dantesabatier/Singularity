@@ -53,7 +53,7 @@ final class LatteRenderer extends Renderer
         $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
         $engine->addFilter("json", json_encode(...));
         $engine->addFunction("img", $this->image(...));
-        $engine->addFunction("localizedString", fn(string $value): string => localized_string($value));
+        $engine->addFunction("localized_string", fn(string $value): string => localized_string($value));
         $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
         $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
         return $engine;
