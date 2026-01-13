@@ -64,7 +64,6 @@ final readonly class PropertyBlockGenerator
         if (str_contains($declaration, "\$$attribute->name")) {
             return null;
         }
-
         if (!($type = $this->getAttributeType($attribute))) {
             return null;
         }

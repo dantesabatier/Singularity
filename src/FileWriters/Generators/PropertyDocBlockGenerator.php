@@ -20,9 +20,7 @@ use function Sabatier\Foundation\class_name;
 
 final readonly class PropertyDocBlockGenerator
 {
-    public function __construct(
-        private PropertyAttributeGenerator $accessControlGenerator
-    )
+    public function __construct(private PropertyAttributeGenerator $accessControlGenerator)
     {
     }
 
