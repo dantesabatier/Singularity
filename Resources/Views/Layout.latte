@@ -26,27 +26,29 @@
 <script type="text/javascript" src="../../electron/renderer.js" defer></script>
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
+    window.activePopover = null
     const register = () => {
         jscolor.install()
-        document.querySelectorAll(".tree-toggle").forEach(e => e.addEventListener("click", event => {
-            event.stopPropagation()
-            send("Entity", {
-                objectID: e.dataset.id,
-                isExpanded: e.dataset.expanded,
-            }, "PATCH", register)
-        }, {
-            once: true
-        }))
-        document.querySelectorAll("div[data-href]").forEach(e => e.addEventListener("click", () => push(window.location.origin + e.dataset.href, register), {
-            once: true
-        }))
-        document.querySelectorAll("tr[data-href]").forEach(e => e.addEventListener("click", () => push(window.location.origin + e.dataset.href, register), {
-            once: true
-        }))
-        document.querySelectorAll("select[data-autosave=true]").forEach(e => {
+        document.querySelectorAll(".tree-toggle").forEach(e => {
             e.addEventListener("click", event => {
                 event.stopPropagation()
+                send("Entity", {
+                    objectID: e.dataset.id,
+                    isExpanded: e.dataset.expanded,
+                }, "PATCH", register)
             }, {
+                once: true
+            })
+        })
+        document.querySelectorAll("[data-href]").forEach(e => {
+            e.addEventListener("click", () => {
+                push(window.location.origin + e.dataset.href, register)
+            }, {
+                once: true
+            })
+        })
+        document.querySelectorAll("select[data-autosave=true]").forEach(e => {
+            e.addEventListener("click", event => event.stopPropagation(), {
                 once: true
             })
             e.addEventListener("change", event => {
@@ -56,57 +58,55 @@
                 once: true
             })
         })
-        document.querySelectorAll("input[type=checkbox]").forEach(e => e.addEventListener("click", event => {
-            event.stopPropagation()
-            submit(e.form, register)
-        }, {
-            once: true
-        }))
-        document.querySelectorAll("textarea").forEach(e => e.addEventListener("change", event => {
-            event.stopPropagation()
-            submit(e.form, register)
-        }, {
-            once: true
-        }))
-        document.querySelectorAll(".form-new-project").forEach(e => e.addEventListener("submit", event => {
-            event.preventDefault()
-            create(e)
-        }, {
-            once: true
-        }))
-        document.querySelectorAll(".needs-validation").forEach(e => e.addEventListener("submit", event => {
-            if (e.checkValidity()) {
+        document.querySelectorAll("input[type=checkbox]").forEach(e => {
+            e.addEventListener("click", event => {
+                event.stopPropagation()
+                submit(e.form, register)
+            }, {
+                once: true
+            })
+        })
+        document.querySelectorAll("textarea").forEach(e => {
+            e.addEventListener("change", event => {
+                event.stopPropagation()
+                submit(e.form, register)
+            }, {
+                once: true
+            })
+        })
+        document.querySelectorAll("form:not(.needs-validation):not(.form-new-project)").forEach(e => {
+            e.addEventListener("submit", event => {
                 event.preventDefault()
-                if (e.classList.contains("form-new-project")) {
+                submit(e, register)
+            }, {
+                once: true
+            })
+        })
+        document.querySelectorAll(".needs-validation").forEach(e => {
+            e.addEventListener("submit", event => {
+                event.preventDefault()
+                if (!e.checkValidity()) {
+                    event.stopPropagation()
+                    e.classList.add("was-validated")
                     return
                 }
-                submit(e, register)
-                return
-            }
-            event.preventDefault()
-            event.stopPropagation()
-            e.classList.add("was-validated")
-        }, {
-            once: false
-        }))
-        document.querySelectorAll("form:not(.needs-validation)").forEach(e => e.addEventListener("submit", event => {
-            event.preventDefault()
-            if (e.classList.contains("form-new-project")) {
-                return
-            }
-            submit(e, register)
-        }, {
-            once: true
-        }))
-        document.querySelectorAll(".modal").forEach(e => e.addEventListener("hidden.bs.modal", () => {
-            /**
-             * @type { HTMLFormElement } form
-             */
-            const form = e.querySelector(".modal-content form")
-            form.reset()
-        }, {
-            once: false
-        }))
+                if (!e.classList.contains("form-new-project")) {
+                    submit(e, register)
+                }
+            }, {
+                once: false
+            })
+        })
+        document.querySelectorAll(".modal").forEach(e => {
+            e.addEventListener("hidden.bs.modal", () => {
+                const form = e.querySelector(".modal-content form")
+                if (form) {
+                    form.reset()
+                }
+            }, {
+                once: false
+            })
+        })
         document.querySelectorAll(`[data-bs-toggle="tooltip"]`).forEach(e => {
             const tooltip = new bootstrap.Tooltip(e, {
                 container: "body",
@@ -114,7 +114,42 @@
             })
             e.addEventListener("click", () => tooltip.hide())
         })
-        let activePopover = null;
+        initializeRolePopovers()
+        document.querySelectorAll("table[data-project][data-entity][data-key]").forEach(e => {
+            const body = e.querySelector("tbody")
+            if (!body) {
+                return
+            }
+            Sortable.create(body, {
+                onUpdate: event => {
+                    if (event.oldIndex === event.newIndex) {
+                        return
+                    }
+                    send("Reorder", {
+                        project: e.dataset.project,
+                        entity: e.dataset.entity,
+                        key: e.dataset.key,
+                        fromIndex: event.oldIndex,
+                        toIndex: event.newIndex,
+                    }, "POST", register)
+                }
+            })
+        })
+        document.querySelectorAll(".color-picker").forEach(e => {
+            const picker = e.jscolor
+            if (!picker) {
+                return
+            }
+            picker.hideOnPaletteClick = true
+            picker.onChange = () => {
+                send("Project", {
+                    objectID: e.dataset.project,
+                    color: picker.toHEXString()
+                }, "PATCH", register)
+            }
+        })
+    }
+    const initializeRolePopovers = () => {
         document.querySelectorAll(`[data-bs-toggle="popover"]`).forEach(e => {
             const popover = new bootstrap.Popover(e, {
                 container: "body",
@@ -126,58 +161,56 @@
                 placement: "auto",
                 fallbackPlacements: ["top", "bottom", "left", "right"]
             })
-            e.addEventListener("click", async event => {
+            e.addEventListener("click", async (event) => {
                 event.preventDefault()
                 event.stopPropagation()
                 event.stopImmediatePropagation()
-                if (activePopover) {
-                    activePopover.hide()
+                if (window.activePopover) {
+                    window.activePopover.hide()
+                    window.activePopover = null
                 }
-                const url = new URL(window.location.href)
-                if (!url.searchParams.get("accessControl")) {
-                    popover.setContent({
-                        ".popover-body": `<div class="p-3 text-danger"><i class="bi bi-exclamation-triangle"></i><span class="px-2">Failed to load the role, select an access control and try again.</span></div>`
-                    })
-                    popover.show()
-                    activePopover = popover
-                    setTimeout(() => {
-                        if (activePopover === popover) {
-                            activePopover.hide()
-                            activePopover = null
-                        }
-                    }, 2000)
-                    return
-                }
-                e.classList.add("loading")
-                url.searchParams.set("role", e.dataset.role)
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
+                try {
+                    const url = new URL(window.location.href)
+                    if (!url.searchParams.has("accessControl")) {
+                        showError(popover, "Please select an access control first")
+                        return
                     }
-                })
-                const html = await response.text()
-                const parser = new DOMParser()
-                const doc = parser.parseFromString(html, "text/html")
-                const template = doc.getElementById("roles-popover-content")
-                popover.setContent({
-                    ".popover-body": template.innerHTML
-                })
-                popover.show()
-                activePopover = popover
-                e.classList.remove("loading")
+                    e.classList.add("loading")
+                    url.searchParams.set("role", e.dataset.role)
+                    const response = await fetch(url, {
+                        method: "GET",
+                        headers: {"X-Requested-With": "XMLHttpRequest"}
+                    })
+                    if (!response.ok) {
+                        await showErrorBox((await response.json())?.error)
+                        return
+                    }
+                    const html = await response.text()
+                    const doc = new DOMParser().parseFromString(html, "text/html")
+                    const template = doc.getElementById("roles-popover-content")
+                    popover.setContent({".popover-body": template.innerHTML})
+                    popover.show()
+                    window.activePopover = popover
+                } catch (error) {
+                    console.error("Failed to load role popover:", error)
+                    showError(popover, "Failed to load role editor")
+                } finally {
+                    e.classList.remove("loading")
+                }
             })
         })
         document.addEventListener("click", (event) => {
-            if (activePopover && !event.target.closest(".popover") && !event.target.closest('[data-bs-toggle="popover"]')) {
-                activePopover.hide()
-                activePopover = null
+            if (window.activePopover &&
+                !event.target.closest(".popover") &&
+                !event.target.closest('[data-bs-toggle="popover"]')) {
+                window.activePopover.hide()
+                window.activePopover = null
             }
         })
         document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape" && activePopover) {
-                activePopover.hide();
-                activePopover = null;
+            if (event.key === "Escape" && window.activePopover) {
+                window.activePopover.hide()
+                window.activePopover = null
             }
         })
         document.addEventListener("shown.bs.popover", () => {
@@ -218,12 +251,12 @@
                 }
             })
             cancelBtn.addEventListener("click", () => {
-                if (activePopover) {
-                    activePopover.hide()
-                    activePopover = null
+                if (window.activePopover) {
+                    window.activePopover.hide()
+                    window.activePopover = null
                 }
             })
-            saveBtn.addEventListener("click", function (e) {
+            saveBtn.addEventListener("click", (e) => {
                 e.preventDefault()
                 const selectedScope = select?.value
                 const finalName = selectedScope === "custom..." ? customInput?.value : selectedScope
@@ -232,17 +265,15 @@
                     return
                 }
                 submit(form, register)
-                if (activePopover) {
-                    activePopover.hide()
-                    activePopover = null
+                if (window.activePopover) {
+                    window.activePopover.hide()
+                    window.activePopover = null
                 }
             })
-            customInput.addEventListener("keypress", function (e) {
+            customInput.addEventListener("keypress", (e) => {
                 if (e.key === "Enter") {
                     e.preventDefault()
-                    if (saveBtn) {
-                        saveBtn.click()
-                    }
+                    saveBtn?.click()
                 }
             })
             if (!select.disabled) {
@@ -251,61 +282,35 @@
                 customInput.focus()
             }
         })
-        document.querySelectorAll("table").forEach(e => {
-            const project = e.dataset.project
-            if (!project) {
-                return
-            }
-            const entity = e.dataset.entity
-            if (!entity) {
-                return
-            }
-            const key = e.dataset.key
-            if (!key) {
-                return
-            }
-            const body = e.querySelector("tbody")
-            if (!body) {
-                return
-            }
-            Sortable.create(body, {
-                onUpdate: event => {
-                    const fromIndex = event.oldIndex
-                    const toIndex = event.newIndex
-                    if (fromIndex === toIndex) {
-                        return
-                    }
-                    send("Reorder", {
-                        project: project,
-                        entity: entity,
-                        key: key,
-                        fromIndex: fromIndex,
-                        toIndex: toIndex,
-                    }, "POST", register)
-                }
-            })
+    }
+    const showError = (popover, message) => {
+        popover.setContent({
+            ".popover-body": `<div class="p-3 text-danger">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span class="px-2">${
+                message
+            }</span>
+        </div>`
         })
-        document.querySelectorAll(".color-picker").forEach(e => {
-            const picker = e.jscolor
-            picker.hideOnPaletteClick = true
-            picker.onChange = () => {
-                send("Project", {
-                    objectID: e.dataset.project,
-                    color: picker.toHEXString()
-                }, "PATCH", register)
+        popover.show()
+        window.activePopover = popover
+        setTimeout(() => {
+            if (window.activePopover === popover) {
+                window.activePopover.hide()
+                window.activePopover = null
             }
-        })
+        }, 2000)
     }
     const init = () => {
-        window.addEventListener("popstate", event => replace(event.state?.url ?? window.location.origin, register))
+        window.addEventListener("popstate", event => {
+            replace(event.state?.url ?? window.location.origin, register)
+        })
         register()
     }
-    document.addEventListener("DOMContentLoaded", () => {
-        init()
-    }, {
+    document.addEventListener("DOMContentLoaded", init, {
         once: true
     })
 </script>
- {block scripts}{/block}
+{block scripts}{/block}
 </body>
 </html>
