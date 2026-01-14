@@ -24,7 +24,7 @@
                             <label class="form-check-label small text-secondary" for="isTransient">Transient</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="isOwner" value="{$selectedProperty->isOwner|json}" id="isOwner" {$selectedProperty->isOwner ? checked}>
+                            <input class="form-check-input" type="checkbox" name="isOwner" value="{$selectedProperty->isOwner|json}" id="isOwner" {$selectedProperty->isOwner ? checked} {!$selectedProperty->destinationEntity?->isAuthorizable ? disabled}>
                             <label class="form-check-label small text-secondary" for="isOwner" title="Defines which entity owns this record">Owner</label>
                         </div>
                     </div>
