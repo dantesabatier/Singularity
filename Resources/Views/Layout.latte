@@ -243,7 +243,7 @@
              */
             const saveBtn = form.querySelector(".role-save-btn")
             select.addEventListener("change", () => {
-                if (select.value === "custom...") {
+                if (select.value === "Custom...") {
                     customField.style.display = "block"
                     customInput?.focus()
                 } else {
@@ -259,8 +259,8 @@
             saveBtn.addEventListener("click", (e) => {
                 e.preventDefault()
                 const selectedScope = select?.value
-                const finalName = selectedScope === "custom..." ? customInput?.value : selectedScope
-                if (!finalName || finalName === "custom...") {
+                const finalName = selectedScope === "Custom..." ? customInput?.value : selectedScope
+                if (!finalName || finalName === "Custom...") {
                     customInput?.focus()
                     return
                 }
