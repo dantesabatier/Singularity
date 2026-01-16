@@ -129,6 +129,80 @@ final class Model extends ManagedObject
         }
     }
 
+    public Dictionary $graph {
+        get {
+            $nodes = [];
+            $edges = [];
+            $processEntity = function (Entity $entity, ?string $parentName = null) use (&$nodes, &$edges, &$processEntity): void {
+                $type = $entity->isAbstract ? "abstract" : ($entity->isFinal ? "final" : "normal");
+                $classes = $entity->isAbstract ? "abstract-entity" : ($entity->isFinal ? "final-entity" : "");
+                $nodes[] = [
+                    "data" => [
+                        "id" => $entity->name,
+                        "label" => $entity->name,
+                        "type" => $type,
+                        "attributeCount" => $entity->attributes->count,
+                        "relationshipCount" => $entity->relationships->count
+                    ],
+                    "classes" => $classes
+                ];
+                if ($parentName !== null) {
+                    $edges[] = [
+                        "data" => [
+                            "id" => "$entity->name-inherits-$parentName",
+                            "source" => $entity->name,
+                            "target" => $parentName,
+                            "type" => "inheritance",
+                            "label" => ""
+                        ],
+                        "classes" => "inheritance-edge"
+                    ];
+                }
+                foreach ($entity->relationships as $relationship) {
+                    $destEntity = $relationship->destinationEntity?->name;
+                    if (!$destEntity) {
+                        continue;
+                    }
+                    $edgeId = "$entity->name-$relationship->name-$destEntity";
+                    $inverseRel = $relationship->inverseRelationship?->name ?? "";
+                    $reverseEdgeId = "$destEntity-$inverseRel-$entity->name";
+                    $exists = false;
+                    foreach ($edges as $edge) {
+                        if ($edge["data"]["id"] === $reverseEdgeId) {
+                            $exists = true;
+                            break;
+                        }
+                    }
+                    if (!$exists) {
+                        $arrow = $relationship->isToMany ? "»" : "›";
+                        $label = "$relationship->name $arrow";
+                        $edges[] = [
+                            "data" => [
+                                "id" => $edgeId,
+                                "source" => $entity->name,
+                                "target" => $destEntity,
+                                "type" => "relationship",
+                                "label" => $label,
+                                "isToMany" => $relationship->isToMany
+                            ],
+                            "classes" => "relationship-edge"
+                        ];
+                    }
+                }
+                foreach ($entity->subentities as $subentity) {
+                    $processEntity($subentity, $entity->name);
+                }
+            };
+            foreach ($this->rootEntities as $entity) {
+                $processEntity($entity);
+            }
+            return Dictionary::dictionaryWithArray([
+                "nodes" => $nodes,
+                "edges" => $edges
+            ]);
+        }
+    }
+
     private function newEntity(Dictionary $dictionary): Entity
     {
         $context = $this->managedObjectContext;
