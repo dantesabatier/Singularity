@@ -33,6 +33,13 @@
             <string>en</string>
             <string>es</string>
         </array>
+        <key>CFBundleDocumentTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeName</key>
+                <string>sql</string>
+            </dict>
+        </array>
         <key>electronVersion</key>
         <string>38.0</string>
         <key>phpVersion</key>

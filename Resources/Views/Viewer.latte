@@ -1,23 +1,400 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\ViewerController}
 {block title}{$title}{/block}
+{block head}
+    <style>
+        db-viewer {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .viewer-container {
+            position: relative;
+            background-color: var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .viewer-toolbar {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .viewer-toolbar-section {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .viewer-toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background-color: var(--border-color);
+        }
+
+        .viewer-toolbar .btn-icon {
+            width: 28px;
+            height: 28px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .viewer-toolbar .btn-icon:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-bright);
+        }
+
+        .viewer-toolbar .btn-icon:active {
+            background-color: var(--bg-active);
+            transform: scale(0.95);
+        }
+
+        .viewer-toolbar-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            padding: 0 8px;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        #viewer-zoom-level {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            min-width: 32px;
+            text-align: center;
+        }
+
+        .viewer-empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-disabled);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .viewer-empty-state i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .viewer-empty-state h3 {
+            color: var(--text-secondary);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .viewer-empty-state p {
+            font-size: 14px;
+            color: var(--text-disabled);
+        }
+    </style>
+{/block}
 {block content}
-    <div>
-        <div class="container-fluid">
+    <div id="main" class="user-select-none">
+        <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
+            <div class="container-fluid justify-content-start align-items-center px-2">
+                <div class="navbar-brand mb-0 me-2">
+                    <img src="/Resources/Images/icon24@1x.png" srcset="/Resources/Images/icon24@2x.png 2x, /Resources/Images/icon24@3x.png 3x" alt="{$title}" class="d-inline-block">
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;" data-bs-placement="bottom" data-bs-title="Main Menu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">View Options</h6></li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="resetZoom()">
+                                <i class="bi bi-arrows-fullscreen"></i> <span>Reset Zoom</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="centerView()">
+                                <i class="bi bi-bullseye"></i> <span>Center View</span>
+                            </button>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><h6 class="dropdown-header">Actions</h6></li>
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="exportSchema()">
+                                <i class="bi bi-download"></i> <span>Export Schema</span>
+                            </button>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button" onclick="showAboutPanel()">
+                                <i class="bi bi-info-circle"></i> <span>About</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown ms-2">
+                    <button type="button" class="btn btn-sm d-flex align-items-center gap-2 px-2" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag; background-color: var(--bg-hover); border: 1px solid var(--border-color);">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold" style="width: 20px; height: 20px; background-color: {$project->color|noescape}; font-size: 11px;">
+                            {$project->name|first}
+                        </span> <span class="text-truncate" style="max-width: 200px;">{$project->name}</span>
+                        <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Database Schema</h6></li>
+                        <li>
+                            <div class="dropdown-item d-flex align-items-center gap-2">
+                                <i class="bi bi-database"></i> <span>{$project->name}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="viewer-container" style="height: calc(100vh - 68px); position: relative;">
+            <div class="viewer-toolbar">
+                <div class="viewer-toolbar-section">
+                    <button class="btn-icon" onclick="zoomIn()" title="Zoom In">
+                        <i class="bi bi-zoom-in"></i>
+                    </button>
+                    <button class="btn-icon" onclick="zoomOut()" title="Zoom Out">
+                        <i class="bi bi-zoom-out"></i>
+                    </button>
+                    <button class="btn-icon" onclick="resetZoom()" title="Reset Zoom">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                    </button>
+                </div>
+                <div class="viewer-toolbar-divider"></div>
+                <div class="viewer-toolbar-section">
+                    <button class="btn-icon" onclick="centerView()" title="Center View">
+                        <i class="bi bi-bullseye"></i>
+                    </button>
+                </div>
+                <div class="viewer-toolbar-divider"></div>
+                <div class="viewer-toolbar-section">
+                    <span class="viewer-toolbar-label">Zoom:</span>
+                    <span id="viewer-zoom-level" class="viewer-toolbar-label">25%</span>
+                </div>
+            </div>
+
             <db-viewer></db-viewer>
+
+            <div id="viewer-empty-state" class="viewer-empty-state" style="display: none;">
+                <i class="bi bi-database"></i>
+                <h3>No Schema Available</h3>
+                <p>The database schema is empty or not loaded yet</p>
+            </div>
         </div>
+
+        <nav class="breadcrumb-nav" aria-label="breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item-wrapper">
+                    <div class="breadcrumb-link">
+                        <img class="breadcrumb-icon" src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="">
+                        <span>{$project->name}</span>
+                    </div>
+                </li>
+                <li class="breadcrumb-item-wrapper">
+                    <div class="breadcrumb-link">
+                        <i class="bi bi-database breadcrumb-icon" style="width: 14px; height: 14px;"></i>
+                        <span>Database Schema</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
     </div>
-    <!--suppress JSUnresolvedReference -->
+
+    <!--suppress JSUnresolvedReference, JSUnusedAssignment -->
     <script>
+        let currentViewer = null
+        const updateZoomLevel = (zoom) => {
+            const zoomElement = document.getElementById("viewer-zoom-level")
+            if (zoomElement) {
+                zoomElement.innerText = Math.round(zoom * 100) + "%"
+            }
+        };
+
+        const zoomIn = () => {
+            if (currentViewer) {
+                const currentZoom = currentViewer.getZoom()
+                currentViewer.setZoom(currentZoom * 1.2)
+                updateZoomLevel(currentViewer.getZoom())
+            }
+        };
+
+        const zoomOut = () => {
+            if (currentViewer) {
+                const currentZoom = currentViewer.getZoom()
+                currentViewer.setZoom(currentZoom * 0.8)
+                updateZoomLevel(currentViewer.getZoom())
+            }
+        }
+
+        const resetZoom = () => {
+            if (currentViewer) {
+                currentViewer.setZoom(0.25)
+                updateZoomLevel(0.25)
+            }
+        }
+
+        const centerView = () => {
+            if (currentViewer) {
+                currentViewer.centerView()
+            }
+        }
+
+        const exportSchema = () => console.log("Export schema functionality to be implemented")
+
         document.addEventListener("DOMContentLoaded", () => {
             const loaded = () => {
                 const viewer = document.querySelector("db-viewer")
+                const emptyState = document.getElementById("viewer-empty-state")
+                const applyTheme = () => {
+                    const styles = getComputedStyle(document.documentElement)
+                    viewer.style.setProperty('--viewer-background-color', styles.getPropertyValue('--bg-primary').trim())
+                    viewer.style.setProperty('--relation-color', styles.getPropertyValue('--text-primary').trim())
+                    viewer.style.setProperty('--relation-color-highlight', styles.getPropertyValue('--accent-blue').trim())
+                    viewer.style.setProperty('--entity-background', styles.getPropertyValue('--bg-secondary').trim())
+                    viewer.style.setProperty('--entity-border', styles.getPropertyValue('--border-color').trim())
+                    viewer.style.setProperty('--entity-header-background', styles.getPropertyValue('--bg-tertiary').trim())
+                    viewer.style.setProperty('--entity-text', styles.getPropertyValue('--text-primary').trim())
+                    viewer.style.setProperty('--entity-text-secondary', styles.getPropertyValue('--text-secondary').trim())
+                }
+                applyTheme()
                 viewer.addEventListener("ready", event => {
-                    event.target.viewer.setZoom(0.25)
-                    viewer.schema = {$project->model?->schema ?? []}
+                    currentViewer = event.target.viewer
+                    const schema = {$project->model?->schema ?? []}
+                    if (schema.length === 0) {
+                        if (emptyState) {
+                            emptyState.style.display = "block"
+                        }
+                    } else {
+                        if (emptyState) {
+                            emptyState.style.display = "none"
+                        }
+                    }
+                    setTimeout(() => {
+                        applyTheme()
+                        if (viewer.shadowRoot) {
+                            const style = document.createElement("style")
+                            style.textContent = `
+                                * {
+                                    --color: #bcbec4 !important;
+                                    --table-boarder-color: #3d3f41 !important;
+                                }
+
+                                #veiwer-container {
+                                    background-color: #1e1f22 !important;
+                                }
+
+                                #veiwer {
+                                    background-color: #1e1f22 !important;
+                                }
+
+                                #minimap {
+                                    background-color: #2b2d30 !important;
+                                    border-color: #3d3f41 !important;
+                                }
+
+                                .table {
+                                    background-color: #2b2d30 !important;
+                                    border-color: #3d3f41 !important;
+                                    color: #bcbec4 !important;
+                                }
+
+                                .table tr th {
+                                    background-color: #3d3f41 !important;
+                                    color: #e8eaed !important;
+                                }
+
+                                .table tr {
+                                    border-bottom-color: #4a4d51 !important;
+                                }
+
+                                .table td {
+                                    color: #bcbec4 !important;
+                                    background-color: transparent !important;
+                                }
+
+                                .tableGroup {
+                                    stroke: #4a4d51 !important;
+                                }
+
+                                path {
+                                    stroke: #868991 !important;
+                                    stroke-width: 1 !important;
+                                }
+
+                                .pathHover {
+                                    stroke: #4a88c7 !important;
+                                    stroke-width: 2 !important;
+                                }
+
+                                .highlight {
+                                    stroke-width: 12 !important;
+                                    stroke: transparent !important;
+                                }
+
+                                .table td.status {
+                                    background-color: transparent !important;
+                                }
+
+                                .table td.status .pk,
+                                .table td.status .fk {
+                                    filter: invert(1) brightness(0.9) !important;
+                                    opacity: 0.8 !important;
+                                }
+
+                                .table tr:hover td.status .pk,
+                                .table tr:hover td.status .fk {
+                                    opacity: 1 !important;
+                                }
+
+                                .fromRelation {
+                                    background-color: rgba(90, 156, 90, 0.2) !important;
+                                }
+
+                                .toRelation {
+                                    background-color: rgba(199, 84, 80, 0.2) !important;
+                                }
+
+                                #minimap-container #btn-container {
+                                    display: none !important;
+                                }
+                            `
+                            viewer.shadowRoot.appendChild(style)
+                        }
+                    }, 100)
+
+                    currentViewer.setZoom(0.25)
+                    updateZoomLevel(0.25)
+                    viewer.schema = schema
                 }, {
                     once: true
                 })
+
                 viewer.addEventListener("tableMoveEnd", event => {
                     send("Moved", {
                         ...event.detail,
@@ -27,6 +404,7 @@
                     once: true
                 })
             }
+
             loaded()
         }, {
             once: true

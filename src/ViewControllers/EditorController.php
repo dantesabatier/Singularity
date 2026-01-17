@@ -49,6 +49,9 @@ use function Sabatier\Foundation\fatal_error;
 use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorTableViewValue;
+use const Sabatier\CoreData\SQLStoreType;
+use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
+use const Sabatier\Foundation\kCFBundleTypeNameKey;
 use const Sabatier\Service\ServiceObjectIDKey;
 
 #[Endpoint("Editor")]
@@ -64,6 +67,20 @@ final class EditorController extends ProjectController
     #[Outlet]
     public ?string $selectedView {
         get => UserDefaults::standard()->string(EditorSelectedViewPreferencesKey);
+    }
+    #[Outlet]
+    private(set) bool $isSQLViewerEnabled {
+        get {
+            if (isset($this->isSQLViewerEnabled)) {
+                return $this->isSQLViewerEnabled;
+            }
+            if (!($url = $this->project->url)) {
+                return $this->isSQLViewerEnabled = false;
+            }
+            /** @var ArrayClass<Dictionary<string>> $documentTypes */
+            $documentTypes = Bundle::bundleWithURL($url)->object(kCFBundleDocumentTypesKey);
+            return $this->isSQLViewerEnabled = $documentTypes->contains(fn(Dictionary $dictionary): bool => $dictionary[kCFBundleTypeNameKey] === SQLStoreType);
+        }
     }
     /** @var ArrayClass<Project> */
     #[Outlet]
