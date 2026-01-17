@@ -136,11 +136,34 @@ final class Model extends ManagedObject
             $processEntity = function (Entity $entity, ?string $parentName = null) use (&$nodes, &$edges, &$processEntity): void {
                 $type = $entity->isAbstract ? "abstract" : ($entity->isFinal ? "final" : "normal");
                 $classes = $entity->isAbstract ? "abstract-entity" : ($entity->isFinal ? "final-entity" : "");
+                $attributesData = [];
+                foreach ($entity->attributes as $attribute) {
+                    $attributesData[] = [
+                        "name" => $attribute->name,
+                        "type" => $attribute->type->name,
+                        "isOptional" => $attribute->isOptional,
+                        "isTransient" => $attribute->isTransient,
+                        "defaultValue" => $attribute->defaultValue,
+                        "isDerived" => $attribute->isDerived
+                    ];
+                }
+                $relationshipsData = [];
+                foreach ($entity->relationships as $relationship) {
+                    $relationshipsData[] = [
+                        "name" => $relationship->name,
+                        "destination" => $relationship->lazyDestinationEntityName,
+                        "isToMany" => $relationship->isToMany,
+                        "isOptional" => $relationship->isOptional,
+                        "deleteRule" => $relationship->deleteRule->name
+                    ];
+                }
                 $nodes[] = [
                     "data" => [
                         "id" => $entity->name,
                         "label" => $entity->name,
                         "type" => $type,
+                        "attributes" => $attributesData,
+                        "relationships" => $relationshipsData,
                         "attributeCount" => $entity->attributes->count,
                         "relationshipCount" => $entity->relationships->count
                     ],
@@ -153,7 +176,7 @@ final class Model extends ManagedObject
                             "source" => $entity->name,
                             "target" => $parentName,
                             "type" => "inheritance",
-                            "label" => ""
+                            "label" => "inherits"
                         ],
                         "classes" => "inheritance-edge"
                     ];
@@ -174,16 +197,17 @@ final class Model extends ManagedObject
                         }
                     }
                     if (!$exists) {
-                        $arrow = $relationship->isToMany ? "»" : "›";
-                        $label = "$relationship->name $arrow";
                         $edges[] = [
                             "data" => [
                                 "id" => $edgeId,
                                 "source" => $entity->name,
                                 "target" => $destEntity,
                                 "type" => "relationship",
-                                "label" => $label,
-                                "isToMany" => $relationship->isToMany
+                                "label" => $relationship->name,
+                                "sourceLabel" => $relationship->name,
+                                "targetLabel" => $inverseRel,
+                                "isToMany" => $relationship->isToMany,
+                                "inverseIsToMany" => $relationship->inverseRelationship?->isToMany ?? false
                             ],
                             "classes" => "relationship-edge"
                         ];
