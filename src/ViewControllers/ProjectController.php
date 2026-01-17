@@ -25,7 +25,7 @@ abstract class ProjectController extends FetchController
     /**
      * @throws Exception
      */
-    private function loadProject(): Project
+    protected function loadProject(): Project
     {
         if (!($referenceObject = $this->referenceObject("project"))) {
             throw new NotFoundException();

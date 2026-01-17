@@ -223,6 +223,8 @@ final class Model extends ManagedObject
                 $processEntity($entity);
             }
             return Dictionary::dictionaryWithArray([
+                "project" => $this->project?->objectID?->referenceObject,
+                "model" => $this->objectID->referenceObject,
                 "nodes" => $nodes,
                 "edges" => $edges
             ]);

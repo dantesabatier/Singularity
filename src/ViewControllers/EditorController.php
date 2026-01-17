@@ -69,6 +69,14 @@ final class EditorController extends ProjectController
         get => UserDefaults::standard()->string(EditorSelectedViewPreferencesKey);
     }
     #[Outlet]
+    public bool $isTableViewSelected {
+        get => $this->selectedView === self::tableViewValue;
+    }
+    #[Outlet]
+    public bool $isGraphViewSelected {
+        get => $this->selectedView === self::graphViewValue;
+    }
+    #[Outlet]
     private(set) bool $isSQLViewerEnabled {
         get {
             if (isset($this->isSQLViewerEnabled)) {

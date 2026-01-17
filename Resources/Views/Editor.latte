@@ -3,6 +3,7 @@
 {block title}{$project->name}{/block}
 {block content}
     <div id="main" class="user-select-none">
+        <div id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
         <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
             <div class="container-fluid justify-content-start align-items-center px-2">
                 <div class="navbar-brand mb-0 me-2">
@@ -119,7 +120,7 @@
                         <li><h6 class="dropdown-header">Switch Project</h6></li>
                         {foreach $projects as $i => $e}
                             <li>
-                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="load({$e}, {$e->model?->graph})">
+                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="load({$e})">
                                     <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold flex-shrink-0" style="width: 20px; height: 20px; background-color: {$e->color|noescape}; font-size: 11px;">
                                         {$e->name|first}
                                     </span> <span class="text-truncate">{$e->name}</span>
@@ -132,10 +133,10 @@
                     </ul>
                 </div>
                 <div class="segmented-control small ms-2" id="interactive-switcher">
-                    <button class="segmented-control-button {$selectedView === App\ViewControllers\EditorController::tableViewValue ? active}" data-target="tableView">
+                    <button class="segmented-control-button {$isTableViewSelected ? active}" data-target="tableView">
                         <i class="bi bi-table"></i> <span>Tables</span>
                     </button>
-                    <button class="segmented-control-button {$selectedView === App\ViewControllers\EditorController::graphViewValue ? active}" data-target="graphView">
+                    <button class="segmented-control-button {$isGraphViewSelected ? active}" data-target="graphView">
                         <i class="bi bi-diagram-3"></i> <span>Graph</span>
                     </button>
                 </div>
@@ -147,11 +148,7 @@
                     {include sourceList from "SourceList.latte"}
                 </div>
                 <div id="content" class="scroll-view col-sm-6 p-2" style="height: calc(100vh - 68px)">
-                    {if $selectedView === App\ViewControllers\EditorController::tableViewValue}
-                        {include content from "Content.latte"}
-                    {else}
-                        {include graphView from "GraphView.latte"}
-                    {/if}
+                    {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
                 </div>
                 <div id="sidebar" class="scroll-view col-sm-3 border-start border-black p-2" style="height: calc(100vh - 68px); background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                     {include inspector from "Inspector.latte"}
@@ -161,15 +158,12 @@
         <nav class="breadcrumb-nav" aria-label="breadcrumb">
             <ol class="breadcrumb-list">
                 <li n:foreach="$breadcrumb as $item" class="breadcrumb-item-wrapper">
-                    {var string $img = img($item)}
-                    {if $item instanceof App\Model\Project}
-                        {varType App\Model\Project $item}
+                    {var string $img = img($item)} {if $item instanceof App\Model\Project} {varType App\Model\Project $item}
                         <div data-href="/Editor?project={$item->objectID->referenceObject}" class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Model}
-                    {varType App\Model\Model $item}
+                    {elseif $item instanceof App\Model\Model} {varType App\Model\Model $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -186,8 +180,7 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\Entity}
-                    {varType App\Model\Entity $item}
+                    {elseif $item instanceof App\Model\Entity} {varType App\Model\Entity $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -205,26 +198,22 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\FetchRequestTemplate}
-                    {varType App\Model\FetchRequestTemplate $item}
+                    {elseif $item instanceof App\Model\FetchRequestTemplate} {varType App\Model\FetchRequestTemplate $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\UniquenessConstraint}
-                    {varType App\Model\UniquenessConstraint $item}
+                    {elseif $item instanceof App\Model\UniquenessConstraint} {varType App\Model\UniquenessConstraint $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->stringValue}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Property}
-                    {varType App\Model\Property $item}
+                    {elseif $item instanceof App\Model\Property} {varType App\Model\Property $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndex}
-                    {varType App\Model\FetchIndex $item}
+                    {elseif $item instanceof App\Model\FetchIndex} {varType App\Model\FetchIndex $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -242,20 +231,17 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndexElement}
-                    {varType App\Model\FetchIndexElement $item}
+                    {elseif $item instanceof App\Model\FetchIndexElement} {varType App\Model\FetchIndexElement $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->propertyName}</span>
                         </div>
-                    {elseif $item instanceof App\Model\AccessControl}
-                    {varType App\Model\AccessControl $item}
+                    {elseif $item instanceof App\Model\AccessControl} {varType App\Model\AccessControl $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Role}
-                    {varType App\Model\Role $item}
+                    {elseif $item instanceof App\Model\Role} {varType App\Model\Role $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
@@ -270,14 +256,10 @@
     <script>
         /**
          * @param { Object } project
-         * @param { Object } graph
          */
-        const load = (project, graph) => push(url("Editor", {
+        const load = (project) => push(url("Editor", {
             project: project.objectID
-        }), () => {
-            initializeGraphView(graph)
-            register()
-        })
+        }))
 
         /**
          * @param { HTMLSelectElement } sender
@@ -302,9 +284,14 @@
          * @param { Object|undefined } graphModel
          */
         const initializeGraphView = (graphModel = undefined) => {
-            console.log("Initializing view")
+            if (!graphModel) {
+                /**
+                 * @type { HTMLDivElement }
+                 */
+                const dataContainer = document.getElementById("current-graph-data")
+                graphModel = JSON.parse(dataContainer.dataset.json)
+            }
             let initialized = false
-            const selectecView = {$selectedView}
             const switcher = document.getElementById("interactive-switcher")
             const buttons = switcher.querySelectorAll(".segmented-control-button")
             buttons.forEach(button => {
@@ -340,7 +327,6 @@
                 return headerH + attrH + extraH + 2
             }
             let cy = null
-            graphModel ??= {$project->model?->graph}
             if (!graphModel?.nodes?.length) {
                 /**
                  * @type { HTMLDivElement }
@@ -532,7 +518,11 @@
             if (container) {
                 resizeObserver.observe(container)
             }
-            if (selectecView === {App\ViewControllers\EditorController::graphViewValue}) {
+            /**
+             * @type { boolean }
+             */
+            const isGraphViewSelected = {$isGraphViewSelected}
+            if (isGraphViewSelected) {
                 requestAnimationFrame(() => initGraph())
             }
         }
