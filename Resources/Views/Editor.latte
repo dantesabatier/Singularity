@@ -44,14 +44,12 @@
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count}, register)"
-                                    {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-box-arrow-in-down"></i> <span>Add Fetched Property</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, register)"
-                                    {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, register)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-arrow-left-right"></i> <span>Add Relationship</span>
                             </button>
                         </li>
@@ -59,8 +57,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->indexes?->count}, register)"
-                                    {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->indexes?->count}, register)" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                                 <i class="bi bi-lightning"></i> <span>Add Fetch Index</span>
                             </button>
                         </li>
@@ -134,6 +131,14 @@
                         {/foreach}
                     </ul>
                 </div>
+                <div class="segmented-control small" id="interactive-switcher">
+                    <button class="segmented-control-button active" data-target="table-view">
+                        <i class="bi bi-table"></i> <span>Tables</span>
+                    </button>
+                    <button class="segmented-control-button" data-target="graph-view">
+                        <i class="bi bi-diagram-3"></i> <span>Graph</span>
+                    </button>
+                </div>
             </div>
         </nav>
         <div class="container-fluid d-flex flex-column">
@@ -142,7 +147,12 @@
                     {include sourceList from "SourceList.latte"}
                 </div>
                 <div id="content" class="scroll-view col-sm-6 p-2" style="height: calc(100vh - 68px)">
-                    {include content from "Content.latte"}
+                    <div class="view-content" id="table-view" style="display:block">
+                        {include content from "Content.latte"}
+                    </div>
+                    <div class="view-content" id="graph-view" style="display:none">
+                        {include graphView from "GraphView.latte"}
+                    </div>
                 </div>
                 <div id="sidebar" class="scroll-view col-sm-3 border-start border-black p-2" style="height: calc(100vh - 68px); background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                     {include inspector from "Inspector.latte"}
@@ -278,9 +288,10 @@
              * @type { HTMLInputElement }
              */
             const element = form.querySelector("input[name=attributeValueClassName]")
-            element.value = sender.value === "2100" ? sender.options[sender.selectedIndex].text : "";
+            element.value = sender.value === "2100" ? sender.options[sender.selectedIndex].text : ""
             submit(form, register)
         }
         const setScope = sender => submit(sender.form, register)
     </script>
 {/block}
+
