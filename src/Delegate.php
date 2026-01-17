@@ -31,7 +31,8 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
             PersistentHistoryTrackingKey => false,
             PersistentStoreRemoteChangeNotificationPostOptionKey => false,
             AutomaticallyDeleteProjectFoldersPreferencesKey => false,
-            CompanyNamePreferencesKey => full_user_name()
+            CompanyNamePreferencesKey => full_user_name(),
+            EditorSelectedViewPreferencesKey => EditorTableViewValue
         ]));
     }
 

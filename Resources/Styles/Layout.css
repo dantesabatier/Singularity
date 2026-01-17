@@ -1643,7 +1643,6 @@ db-viewer {
     line-height: 1.5;
 }
 
-/* Welcome Footer */
 .welcome-footer {
     position: fixed;
     bottom: 0;
@@ -1751,6 +1750,305 @@ body.in-new-project #project-actions {
 
 .modal-footer .btn {
     min-width: 80px;
+}
+
+/* ============================================
+   Segmented Control Component
+   ============================================ */
+
+.segmented-control {
+    display: inline-flex;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 2px;
+    gap: 2px;
+    -webkit-app-region: no-drag;
+}
+
+.segmented-control-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 4px 12px;
+    min-width: 70px;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    position: relative;
+}
+
+.segmented-control-button i {
+    font-size: 14px;
+    transition: transform 0.15s ease;
+}
+
+.segmented-control-button:hover:not(.active) {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.segmented-control-button.active {
+    background-color: var(--accent-blue);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.segmented-control-button.active i {
+    transform: scale(1.05);
+}
+
+.segmented-control-button:active {
+    transform: scale(0.98);
+}
+
+.segmented-control-button.icon-only {
+    min-width: 32px;
+    padding: 4px 8px;
+}
+
+.segmented-control.small {
+    padding: 1px;
+    gap: 1px;
+}
+
+.segmented-control.small .segmented-control-button {
+    padding: 3px 10px;
+    min-width: 60px;
+    font-size: 11px;
+}
+
+.segmented-control.small .segmented-control-button i {
+    font-size: 12px;
+}
+
+/* ============================================
+   Graph View Component
+   ============================================ */
+
+.view-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.graph-view-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    background-color: var(--bg-tertiary);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#graph-canvas {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    position: relative;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.graph-toolbar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px;
+    box-shadow: var(--shadow-md);
+}
+
+.graph-toolbar-section {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.graph-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+}
+
+.graph-toolbar .btn-icon {
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.graph-toolbar .btn-icon:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-bright);
+}
+
+.graph-toolbar .btn-icon:active {
+    background-color: var(--bg-active);
+}
+
+.graph-toolbar-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    padding: 0 8px;
+    white-space: nowrap;
+}
+
+#graph-zoom-level {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+}
+
+/* Empty State */
+.graph-empty-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--text-disabled);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.graph-empty-state i {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+}
+
+.graph-empty-state h3 {
+    color: var(--text-secondary);
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.graph-empty-state p {
+    font-size: 14px;
+}
+
+/* Toolbar flotante */
+.graph-toolbar {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 4px;
+    box-shadow: var(--shadow-md);
+}
+
+.graph-toolbar-section {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.graph-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+}
+
+.graph-toolbar .btn-icon {
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.graph-toolbar .btn-icon:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-bright);
+}
+
+.graph-toolbar .btn-icon:active {
+    background-color: var(--bg-active);
+    transform: scale(0.95);
+}
+
+.graph-toolbar-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    padding: 0 8px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+#graph-zoom-level {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    min-width: 32px;
+    text-align: center;
+}
+
+/* Empty State */
+.graph-empty-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--text-disabled);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.graph-empty-state i {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+}
+
+.graph-empty-state h3 {
+    color: var(--text-secondary);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.graph-empty-state p {
+    font-size: 14px;
+    color: var(--text-disabled);
 }
 
 /* ============================================

@@ -1,0 +1,37 @@
+{templateType App\ViewControllers\EditorController}
+{define graphView}
+    <div class="graph-view-container">
+        <div class="graph-toolbar">
+            <div class="graph-toolbar-section">
+                <button class="btn btn-icon" id="graph-zoom-in" data-bs-toggle="tooltip" data-bs-title="Zoom In">
+                    <i class="bi bi-zoom-in"></i>
+                </button>
+                <button class="btn btn-icon" id="graph-zoom-out" data-bs-toggle="tooltip" data-bs-title="Zoom Out">
+                    <i class="bi bi-zoom-out"></i>
+                </button>
+                <button class="btn btn-icon" id="graph-fit" data-bs-toggle="tooltip" data-bs-title="Fit to Screen">
+                    <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+                <button class="btn btn-icon" id="graph-center" data-bs-toggle="tooltip" data-bs-title="Center View">
+                    <i class="bi bi-bullseye"></i>
+                </button>
+            </div>
+            <div class="graph-toolbar-divider"></div>
+            <div class="graph-toolbar-section">
+                <button class="btn btn-icon" id="graph-layout" data-bs-toggle="tooltip" data-bs-title="Auto Layout">
+                    <i class="bi bi-diagram-3"></i>
+                </button>
+            </div>
+            <div class="graph-toolbar-divider"></div>
+            <div class="graph-toolbar-section">
+                <span class="graph-toolbar-label">Zoom: <span id="graph-zoom-level">100%</span></span>
+            </div>
+        </div>
+        <div id="graph-canvas"></div>
+        <div id="graph-empty-state" class="graph-empty-state" style="display: none;">
+            <i class="bi bi-diagram-3"></i>
+            <h3>No Entities Found</h3>
+            <p>Add entities to your model to see them visualized here</p>
+        </div>
+    </div>
+{/define}

@@ -232,7 +232,7 @@
         const openProject = async () => {
             const directory = await browse()
             if (directory) {
-                await send("/Open", { directory })
+                await send("Open", { directory })
             }
         }
 

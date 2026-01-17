@@ -19,7 +19,7 @@
                     once: true
                 })
                 viewer.addEventListener("tableMoveEnd", event => {
-                    send(url("Moved"), {
+                    send("Moved", {
                         ...event.detail,
                         project: {$project->objectID}
                     }, "POST", loaded)

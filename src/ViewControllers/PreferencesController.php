@@ -35,6 +35,12 @@ final class PreferencesController extends ViewController
             UserDefaults::standard()->setBool($value, __PROPERTY__);
         }
     }
+    public ?string $editorSelectedView {
+        get => UserDefaults::standard()->string(__PROPERTY__);
+        set {
+            UserDefaults::standard()->setObject($value, __PROPERTY__);
+        }
+    }
 
     #[Override]
     public function viewWillLoad(): void

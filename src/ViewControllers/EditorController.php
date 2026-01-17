@@ -36,6 +36,7 @@ use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
+use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
@@ -45,16 +46,25 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
+use const App\EditorGraphViewValue;
+use const App\EditorSelectedViewPreferencesKey;
+use const App\EditorTableViewValue;
 use const Sabatier\Service\ServiceObjectIDKey;
 
 #[Endpoint("Editor")]
 final class EditorController extends ProjectController
 {
+    const string tableViewValue = EditorTableViewValue;
+    const string graphViewValue = EditorGraphViewValue;
     /** @var ArrayClass<string> */
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }
     public string $name = "Editor";
+    #[Outlet]
+    public ?string $selectedView {
+        get => UserDefaults::standard()->string(EditorSelectedViewPreferencesKey);
+    }
     /** @var ArrayClass<Project> */
     #[Outlet]
     private(set) ArrayClass $projects {

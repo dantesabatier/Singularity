@@ -119,7 +119,7 @@
                         <li><h6 class="dropdown-header">Switch Project</h6></li>
                         {foreach $projects as $i => $e}
                             <li>
-                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="load({$e})">
+                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="load({$e}, {$e->model?->graph})">
                                     <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold flex-shrink-0" style="width: 20px; height: 20px; background-color: {$e->color|noescape}; font-size: 11px;">
                                         {$e->name|first}
                                     </span> <span class="text-truncate">{$e->name}</span>
@@ -131,11 +131,11 @@
                         {/foreach}
                     </ul>
                 </div>
-                <div class="segmented-control small" id="interactive-switcher">
-                    <button class="segmented-control-button active" data-target="table-view">
+                <div class="segmented-control small ms-2" id="interactive-switcher">
+                    <button class="segmented-control-button {$selectedView === App\ViewControllers\EditorController::tableViewValue ? active}" data-target="tableView">
                         <i class="bi bi-table"></i> <span>Tables</span>
                     </button>
-                    <button class="segmented-control-button" data-target="graph-view">
+                    <button class="segmented-control-button {$selectedView === App\ViewControllers\EditorController::graphViewValue ? active}" data-target="graphView">
                         <i class="bi bi-diagram-3"></i> <span>Graph</span>
                     </button>
                 </div>
@@ -147,11 +147,12 @@
                     {include sourceList from "SourceList.latte"}
                 </div>
                 <div id="content" class="scroll-view col-sm-6 p-2" style="height: calc(100vh - 68px)">
-                    <div class="view-content" id="table-view" style="display:block">
-                        {include content from "Content.latte"}
-                    </div>
-                    <div class="view-content" id="graph-view" style="display:none">
-                        {include graphView from "GraphView.latte"}
+                    <div class="view-content">
+                        {if $selectedView === App\ViewControllers\EditorController::tableViewValue}
+                            {include content from "Content.latte"}
+                        {else}
+                            {include graphView from "GraphView.latte"}
+                        {/if}
                     </div>
                 </div>
                 <div id="sidebar" class="scroll-view col-sm-3 border-start border-black p-2" style="height: calc(100vh - 68px); background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
@@ -270,11 +271,15 @@
 {block scripts}
     <script>
         /**
-         * @param { object } project
+         * @param { Object } project
+         * @param { Object } graph
          */
-        const load = project => push(url("Editor", {
+        const load = (project, graph) => push(url("Editor", {
             project: project.objectID
-        }), register)
+        }), () => {
+            initializeGraphView(graph)
+            register()
+        })
 
         /**
          * @param { HTMLSelectElement } sender
@@ -292,6 +297,258 @@
             submit(form, register)
         }
         const setScope = sender => submit(sender.form, register)
+    </script>
+    <!--suppress JSUnresolvedReference, SpellCheckingInspection, JSUnusedAssignment -->
+    <script>
+        /**
+         * @param { Object|undefined } graphData
+         */
+        const initializeGraphView = (graphData = undefined) => {
+            let initialized = false
+            const selectecView = {$selectedView}
+            const switcher = document.getElementById("interactive-switcher")
+            const buttons = switcher.querySelectorAll(".segmented-control-button")
+            buttons.forEach(button => {
+                button.addEventListener("click", () => {
+                    const target = button.dataset.target
+                    buttons.forEach(b => b.classList.remove("active"))
+                    button.classList.add("active")
+                    if (target === {App\ViewControllers\EditorController::graphViewValue}) {
+                        requestAnimationFrame(() => {
+                            if (!initialized) {
+                                initGraph()
+                            } else if (window.cy) {
+                                window.cy.resize()
+                                window.cy.fit(50)
+                            }
+                        })
+                    }
+                    send("Synchronize", {
+                        editorSelectedView: target
+                    }, "POST", () => {
+                        initializeGraphView()
+                        register()
+                    })
+                })
+            })
+            const calculateNodeHeight = attrs => {
+                if (!attrs?.length) {
+                    return 60
+                }
+                const headerH = 28
+                const rowH = 24
+                const maxAttrs = 10
+                const displayAttrs = Math.min(attrs.length, maxAttrs)
+                const attrH = displayAttrs * rowH
+                const extraH = (attrs.length > maxAttrs ? rowH : 0)
+                return headerH + attrH + extraH + 2
+            }
+            let cy = null
+            graphData ??= {$project->model?->graph}
+            if (!graphData?.nodes?.length) {
+                /**
+                 * @type { HTMLDivElement }
+                 */
+                const emptyState = document.getElementById("graph-empty-state")
+                if (emptyState) {
+                    emptyState.style.display = "block"
+                }
+            }
+            graphData?.nodes?.forEach(node => node.data.height = calculateNodeHeight(node.data.attributes ?? []))
+            const initGraph = () => {
+                if (initialized) {
+                    return
+                }
+                const updateZoom = () => document.getElementById("graph-zoom-level").innerText = Math.round(cy.zoom() * 100) + "%"
+                /**
+                 * @type { HTMLDivElement|undefined }
+                 */
+                const container = document.getElementById("graph-canvas")
+                if (!container || container.offsetWidth === 0 || container.offsetHeight === 0) {
+                    setTimeout(initGraph, 50)
+                    return
+                }
+                if (typeof cytoscapeDagre !== "undefined") {
+                    cytoscape.use(cytoscapeDagre)
+                }
+                try {
+                    const elements = graphData?.nodes?.concat(graphData?.edges ?? [])
+                    cy = cytoscape({
+                        container: container,
+                        elements: elements,
+                        minZoom: 0.1,
+                        maxZoom: 3,
+                        style: [
+                            {
+                                selector: "node",
+                                style: {
+                                    "shape": "rectangle",
+                                    "width": 200,
+                                    "height": "data(height)",
+                                    "background-opacity": 0,
+                                    "border-width": 0
+                                }
+                            },
+                            {
+                                selector: "edge",
+                                style: {
+                                    "width": 2,
+                                    "curve-style": "taxi",
+                                    "taxi-direction": "vertical",
+                                    "taxi-turn": 20,
+                                    "line-color": "#6c757d",
+                                    "target-arrow-color": "#6c757d",
+                                    "source-arrow-color": "#6c757d",
+                                    "arrow-scale": 1.2,
+                                    "color": "#adb5bd",
+                                    "font-size": 10,
+                                    "text-background-color": "#1e1f22",
+                                    "text-background-opacity": 0.8,
+                                    "text-background-padding": 2,
+                                    "label": ""
+                                }
+                            },
+                            {
+                                selector: 'edge[type="inheritance"]',
+                                style: {
+                                    "target-arrow-shape": "triangle",
+                                    "target-arrow-fill": "hollow",
+                                    "line-style": "dashed",
+                                    "line-color": "#c7a651",
+                                    "target-arrow-color": "#c7a651"
+                                }
+                            },
+                            {
+                                selector: 'edge[type="relationship"]',
+                                style: {
+                                    "target-arrow-shape": "none"
+                                }
+                            },
+                            {
+                                selector: 'edge[type="relationship"][?isToMany]',
+                                style: {
+                                    "target-arrow-shape": "triangle"
+                                }
+                            },
+                            {
+                                selector: 'edge[type="relationship"][?inverseIsToMany]',
+                                style: {
+                                    "source-arrow-shape": "triangle"
+                                }
+                            }
+                        ],
+                        layout: {
+                            name: "dagre",
+                            rankDir: "TB",
+                            nodeSep: 80,
+                            rankSep: 100,
+                            padding: 50,
+                            animate: false
+                        }
+                    })
+
+                    window.cy = cy
+
+                    if (typeof cy.nodeHtmlLabel === "function") {
+                        cy.nodeHtmlLabel([{
+                            query: "node",
+                            halign: "center",
+                            valign: "center",
+                            halignBox: "center",
+                            valignBox: "center",
+                            tpl: data => {
+                                const attrs = data.attributes || []
+                                const totalH = data.height || 60
+                                const borderColor = (data.type === "abstract") ? "#c7a651" : "#5a98d7"
+                                const headerBg = (data.type === "abstract") ? "#3a3530" : "#313335"
+
+                                let html = "<div style=\"width:200px; height:" + totalH + 'px; background:#2b2d30; border:1px solid ' + borderColor + '; border-radius:4px; overflow:hidden; display:flex; flex-direction:column; box-sizing:border-box;">'
+                                html += "<div style=\"height:28px; background:" + headerBg + '; color:#e8eaed; font-weight:600; padding:0 8px; display:flex; align-items:center; border-bottom:1px solid ' + borderColor + '; font-size:12px;">' + (data.label || data.id) + '</div>'
+                                html += "<div style=\"flex:1; display:flex; flex-direction:column; overflow:hidden;\">"
+                                if (attrs.length === 0) {
+                                    html += "<div style=\"flex:1; display:flex; align-items:center; justify-content:center; color:#868991; font-style:italic; font-size:11px;\">No attributes</div>"
+                                } else {
+                                    const maxAttrs = 10
+                                    const displayAttrs = attrs.slice(0, maxAttrs)
+                                    displayAttrs.forEach(a => {
+                                        html += "<div style=\"height:24px; display:flex; justify-content:space-between; align-items:center; padding:0 8px; border-bottom:1px solid #3d3f41; font-size:11px;\">";
+                                        html += "<span style=\"color:#bcbec4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\">" + a.name + '</span>';
+                                        html += "<span style=\"color:#868991; font-size:10px; margin-left:8px;\">" + a.type + '</span>'
+                                        html += "</div>"
+                                    })
+                                    if (attrs.length > maxAttrs) {
+                                        html += "<div style=\"height:24px; display:flex; justify-content:center; align-items:center; color:#868991; font-style:italic; font-size:10px;\">+ " + (attrs.length - maxAttrs) + " more</div>"
+                                    }
+                                }
+                                html += "</div></div>"
+                                return html
+                            }
+                        }])
+                    }
+                    document.getElementById("graph-zoom-in").onclick = () => {
+                        cy.zoom(cy.zoom() * 1.2)
+                        cy.center()
+                        updateZoom()
+                    }
+                    document.getElementById("graph-zoom-out").onclick = () => {
+                        cy.zoom(cy.zoom() * 0.8)
+                        cy.center()
+                        updateZoom()
+                    }
+                    document.getElementById("graph-fit").onclick = () => {
+                        cy.fit(50)
+                        updateZoom()
+                    }
+                    document.getElementById("graph-center").onclick = () => {
+                        cy.center()
+                    }
+                    document.getElementById("graph-layout").onclick = () => {
+                        cy.layout({
+                            name: "dagre",
+                            rankDir: "TB",
+                            nodeSep: 80,
+                            rankSep: 100,
+                            padding: 50,
+                            animate: true
+                        }).run()
+                    }
+
+                    cy.on("zoom", updateZoom)
+                    cy.on("mouseover", "node", () => cy.container().style.cursor = "pointer")
+                    cy.on("mouseout", "node", () => cy.container().style.cursor = "default")
+                    cy.on("tap", "node", evt => {
+                        const node = evt.target
+                        console.log(node.data())
+                        const href = node.data("href")
+                        if (!href) {
+                            return
+                        }
+                        push(window.location.origin + href, () => {
+                            initializeGraphView()
+                            register()
+                        })
+                    })
+
+                    initialized = true
+                    cy.fit(50)
+                    updateZoom()
+                } catch (error) {
+                    console.error("Error al inicializar Cytoscape:", error)
+                }
+            }
+            const container = document.getElementById("graph-view-container")
+            if (container) {
+                resizeObserver.observe(container)
+            }
+            if (selectecView === {App\ViewControllers\EditorController::graphViewValue}) {
+                requestAnimationFrame(() => initGraph())
+            }
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            initializeGraphView()
+        }, {
+            once: true
+        })
     </script>
 {/block}
 

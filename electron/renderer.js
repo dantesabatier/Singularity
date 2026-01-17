@@ -78,21 +78,30 @@ const push = async (url, completion = undefined) => {
 
 /**
  * @param {string} action
- * @param {object|undefined} body
+ * @param {Object|undefined} body
+ * @param {string} method
+ */
+const request = async (action, body = undefined, method = "POST") => {
+    const headers = {}
+    headers["X-Requested-With"] = "XmlHttpRequest"
+    headers["Content-Type"] = "application/json; charset=utf-8"
+    return await fetch(action, {
+        method: method,
+        headers: headers,
+        body: !!body ? JSON.stringify(body) : undefined
+    })
+}
+
+/**
+ * @param {string} action
+ * @param {Object|undefined} body
  * @param {string} method
  * @param {function|undefined} completion
  */
 const send = async (action, body = undefined, method = "POST", completion = undefined) => {
     const location = new URL(window.location ?? "/")
     setProgressBar(1.1)
-    const headers = {}
-    headers["X-Requested-With"] = "XmlHttpRequest"
-    headers["Content-Type"] = "application/json; charset=utf-8"
-    const response = await fetch(action, {
-        method: method,
-        headers: headers,
-        body: !!body ? JSON.stringify(body) : undefined
-    })
+    const response = await request(action, body, method)
     if (!response.ok) {
         await showErrorBox((await response.json())?.error)
         await replace(location.href, completion)
@@ -193,7 +202,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
 /**
  *
  * @param {HTMLFormElement} form
- * @returns {{method: string, body: object}}
+ * @returns {{method: string, body: Object}}
  */
 const parse = (form) => {
     const elements = Array.from(form.elements)
@@ -231,7 +240,7 @@ const submit = async (form, completion = undefined) => {
 }
 
 /**
- * @param {object} project
+ * @param {Object} project
  */
 const show = async (project) => window.api?.showWindow({
     url: `${window.location.origin}${url("Editor", {project: project.objectID})}`,
@@ -250,19 +259,19 @@ const view = async (project) => window.api?.showWindow({
 })
 
 /**
- * @param {object} project
+ * @param {Object} project
  * @param {function|undefined} completion
  */
 const save = async (project, completion = undefined) => await send(url("Save"), {project: project.objectID}, "POST", completion)
 
 /**
- * @param {object} project
+ * @param {Object} project
  * @param {function|undefined} completion
  */
 const subclass = async (project, completion = undefined) => await send(url("Subclass"), {project: project.objectID}, "POST", completion)
 
 /**
- * @param {object} project
+ * @param {Object} project
  * @param {string|undefined} path
  * @param {function|undefined} completion
  */
@@ -281,7 +290,7 @@ const model = async (project, path, completion = undefined) => {
 /**
  * @param {string} entity
  * @param {string} name
- * @param {object} parent
+ * @param {Object} parent
  * @param {number} position
  * @param {function|undefined} completion
  */
@@ -346,7 +355,7 @@ const add = async (entity, name, parent, position, completion = undefined) => {
 }
 
 /**
- * @param {object} item
+ * @param {Object} item
  * @param completion
  */
 const remove = async (item, completion = undefined) => {
@@ -383,7 +392,7 @@ const showOpenPanel = async () => {
 const showMessageBox = (messageText, informativeText, buttons) => window.api?.showMessageBox(messageText, informativeText, buttons)
 
 /**
- * @param {object|undefined} error
+ * @param {Object|undefined} error
  */
 const showErrorBox = (error) => window.api?.showErrorBox(error)
 

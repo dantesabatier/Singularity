@@ -144,7 +144,8 @@ final class Model extends ManagedObject
                         "isOptional" => $attribute->isOptional,
                         "isTransient" => $attribute->isTransient,
                         "defaultValue" => $attribute->defaultValue,
-                        "isDerived" => $attribute->isDerived
+                        "isDerived" => $attribute->isDerived,
+                        "reference" => $attribute->objectID->referenceObject,
                     ];
                 }
                 $relationshipsData = [];
@@ -154,7 +155,7 @@ final class Model extends ManagedObject
                         "destination" => $relationship->lazyDestinationEntityName,
                         "isToMany" => $relationship->isToMany,
                         "isOptional" => $relationship->isOptional,
-                        "deleteRule" => $relationship->deleteRule->name
+                        "deleteRule" => $relationship->deleteRule->name,
                     ];
                 }
                 $nodes[] = [
@@ -165,7 +166,8 @@ final class Model extends ManagedObject
                         "attributes" => $attributesData,
                         "relationships" => $relationshipsData,
                         "attributeCount" => $entity->attributes->count,
-                        "relationshipCount" => $entity->relationships->count
+                        "relationshipCount" => $entity->relationships->count,
+                        "href" => "/Editor?project={$this->project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}"
                     ],
                     "classes" => $classes
                 ];
@@ -207,7 +209,7 @@ final class Model extends ManagedObject
                                 "sourceLabel" => $relationship->name,
                                 "targetLabel" => $inverseRel,
                                 "isToMany" => $relationship->isToMany,
-                                "inverseIsToMany" => $relationship->inverseRelationship?->isToMany ?? false
+                                "inverseIsToMany" => $relationship->inverseRelationship?->isToMany ?? false,
                             ],
                             "classes" => "relationship-edge"
                         ];
