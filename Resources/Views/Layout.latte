@@ -39,14 +39,14 @@
                 send("Entity", {
                     objectID: e.dataset.id,
                     isExpanded: e.dataset.expanded,
-                }, "PATCH", register)
+                }, "PATCH")
             }, {
                 once: true
             })
         })
         document.querySelectorAll("[data-href]").forEach(e => {
             e.addEventListener("click", () => {
-                push(window.location.origin + e.dataset.href, register)
+                push(window.location.origin + e.dataset.href)
             }, {
                 once: true
             })
@@ -57,7 +57,7 @@
             })
             e.addEventListener("change", event => {
                 event.stopPropagation()
-                submit(e.form, register)
+                submit(e.form)
             }, {
                 once: true
             })
@@ -65,7 +65,7 @@
         document.querySelectorAll("input[type=checkbox]").forEach(e => {
             e.addEventListener("click", event => {
                 event.stopPropagation()
-                submit(e.form, register)
+                submit(e.form)
             }, {
                 once: true
             })
@@ -73,7 +73,7 @@
         document.querySelectorAll("textarea").forEach(e => {
             e.addEventListener("change", event => {
                 event.stopPropagation()
-                submit(e.form, register)
+                submit(e.form)
             }, {
                 once: true
             })
@@ -81,7 +81,7 @@
         document.querySelectorAll("form:not(.needs-validation):not(.form-new-project)").forEach(e => {
             e.addEventListener("submit", event => {
                 event.preventDefault()
-                submit(e, register)
+                submit(e)
             }, {
                 once: true
             })
@@ -95,7 +95,7 @@
                     return
                 }
                 if (!e.classList.contains("form-new-project")) {
-                    submit(e, register)
+                    submit(e)
                 }
             }, {
                 once: false
@@ -135,7 +135,7 @@
                         key: e.dataset.key,
                         fromIndex: event.oldIndex,
                         toIndex: event.newIndex,
-                    }, "POST", register)
+                    }, "POST")
                 }
             })
         })
@@ -149,7 +149,7 @@
                 send("Project", {
                     objectID: e.dataset.project,
                     color: picker.toHEXString()
-                }, "PATCH", register)
+                }, "PATCH")
             }
         })
     }
@@ -181,10 +181,7 @@
                     }
                     e.classList.add("loading")
                     url.searchParams.set("role", e.dataset.role)
-                    const response = await fetch(url, {
-                        method: "GET",
-                        headers: {"X-Requested-With": "XMLHttpRequest"}
-                    })
+                    const response = await request(url, "GET")
                     if (!response.ok) {
                         await showErrorBox((await response.json())?.error)
                         return
@@ -268,7 +265,7 @@
                     customInput?.focus()
                     return
                 }
-                submit(form, register)
+                submit(form)
                 if (window.activePopover) {
                     window.activePopover.hide()
                     window.activePopover = null
@@ -307,12 +304,15 @@
     }
     const init = () => {
         window.addEventListener("popstate", event => {
-            replace(event.state?.url ?? window.location.origin, register)
+            replace(event.state?.url ?? window.location.origin)
         })
         register()
     }
     document.addEventListener("DOMContentLoaded", init, {
         once: true
+    })
+    document.addEventListener("view:updated", init, {
+        once: false
     })
 </script>
 {block scripts}{/block}

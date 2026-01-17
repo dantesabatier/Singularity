@@ -56,10 +56,10 @@
             </table>
         </div>
         <div class="list-control-toolbar">
-            <button class="btn btn-icon" title="Add Relationship" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, register)">
+            <button class="btn btn-icon" title="Add Relationship" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count})">
                 <i class="bi bi-plus-lg"></i>
             </button>
-            <button class="btn btn-icon" title="Remove Relationship" onclick="remove({$selectedProperty}, register)" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
+            <button class="btn btn-icon" title="Remove Relationship" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
                 <i class="bi bi-dash-lg"></i>
             </button>
         </div>

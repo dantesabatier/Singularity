@@ -26,15 +26,27 @@ const url = (endpoint, parameters = undefined) => {
 
 /**
  * @param {string} url
- * @param {function|undefined} completion
+ * @param {Object|undefined} body
+ * @param {string} method
  */
-const replace = async (url, completion = undefined) => {
+const request = async (url, body = undefined, method = "POST") => {
     const headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
-    const response = await fetch(url, {
-        method: "GET",
-        headers: headers
+    if (body) {
+        headers["Content-Type"] = "application/json; charset=utf-8"
+    }
+    return await fetch(url, {
+        method: method,
+        headers: headers,
+        body: !!body ? JSON.stringify(body) : undefined
     })
+}
+
+/**
+ * @param {string} url
+ */
+const replace = async (url) => {
+    const response = await request(url, undefined, "GET")
     if (!response.ok) {
         await showErrorBox((await response.json())?.error)
         return
@@ -59,17 +71,16 @@ const replace = async (url, completion = undefined) => {
     if (backdrop) {
         backdrop.remove()
     }
-    if (completion) {
-        completion()
-    }
+    document.dispatchEvent(new CustomEvent("view:updated", {
+        detail: {url: url}
+    }))
 }
 
 /**
  * @param {string} url
- * @param {function|undefined} completion
  */
-const push = async (url, completion = undefined) => {
-    await replace(url, completion)
+const push = async (url) => {
+    await replace(url)
     if (window.location.href === url) {
         return
     }
@@ -81,30 +92,13 @@ const push = async (url, completion = undefined) => {
  * @param {Object|undefined} body
  * @param {string} method
  */
-const request = async (action, body = undefined, method = "POST") => {
-    const headers = {}
-    headers["X-Requested-With"] = "XmlHttpRequest"
-    headers["Content-Type"] = "application/json; charset=utf-8"
-    return await fetch(action, {
-        method: method,
-        headers: headers,
-        body: !!body ? JSON.stringify(body) : undefined
-    })
-}
-
-/**
- * @param {string} action
- * @param {Object|undefined} body
- * @param {string} method
- * @param {function|undefined} completion
- */
-const send = async (action, body = undefined, method = "POST", completion = undefined) => {
+const send = async (action, body = undefined, method = "POST") => {
     const location = new URL(window.location ?? "/")
     setProgressBar(1.1)
     const response = await request(action, body, method)
     if (!response.ok) {
         await showErrorBox((await response.json())?.error)
-        await replace(location.href, completion)
+        await replace(location.href)
         setProgressBar(-1)
         return
     }
@@ -195,7 +189,7 @@ const send = async (action, body = undefined, method = "POST", completion = unde
         default:
             break
     }
-    await push(location.href, completion)
+    await push(location.href)
     setProgressBar(-1)
 }
 
@@ -229,14 +223,13 @@ const parse = (form) => {
 
 /**
  * @param {HTMLFormElement} form
- * @param {function|undefined} completion
  */
-const submit = async (form, completion = undefined) => {
+const submit = async (form) => {
     const headers = {}
     headers["X-Requested-With"] = "XmlHttpRequest"
     headers["Content-Type"] = "application/json; charset=utf-8"
     const parsed = parse(form)
-    await send(form.action, parsed.body, parsed.method, completion)
+    await send(form.action, parsed.body, parsed.method)
 }
 
 /**
@@ -260,22 +253,19 @@ const view = async (project) => window.api?.showWindow({
 
 /**
  * @param {Object} project
- * @param {function|undefined} completion
  */
-const save = async (project, completion = undefined) => await send(url("Save"), {project: project.objectID}, "POST", completion)
+const save = async (project) => await send(url("Save"), {project: project.objectID}, "POST")
 
 /**
  * @param {Object} project
- * @param {function|undefined} completion
  */
-const subclass = async (project, completion = undefined) => await send(url("Subclass"), {project: project.objectID}, "POST", completion)
+const subclass = async (project) => await send(url("Subclass"), {project: project.objectID}, "POST")
 
 /**
  * @param {Object} project
  * @param {string|undefined} path
- * @param {function|undefined} completion
  */
-const model = async (project, path, completion = undefined) => {
+const model = async (project, path) => {
     const filePath = (await window.api?.showOpenDialog("Import Model", "Select the model file", "Import", path, ["openFile"], [
         {
             name: "Property list",
@@ -283,7 +273,7 @@ const model = async (project, path, completion = undefined) => {
         }
     ])).filePaths.find(Boolean)
     if (filePath) {
-        await send(url("import"), {project: project.objectID, path: filePath}, "POST", completion)
+        await send(url("import"), {project: project.objectID, path: filePath}, "POST")
     }
 }
 
@@ -292,9 +282,8 @@ const model = async (project, path, completion = undefined) => {
  * @param {string} name
  * @param {Object} parent
  * @param {number} position
- * @param {function|undefined} completion
  */
-const add = async (entity, name, parent, position, completion = undefined) => {
+const add = async (entity, name, parent, position) => {
     switch (entity) {
         case "Entity":
         case "FetchRequestTemplate":
@@ -303,7 +292,7 @@ const add = async (entity, name, parent, position, completion = undefined) => {
             await send(url(entity), {
                 name: name,
                 model: parent
-            }, "POST", completion)
+            }, "POST")
             break
         case "Attribute":
             const obj = {
@@ -315,7 +304,7 @@ const add = async (entity, name, parent, position, completion = undefined) => {
             } else if (parent.entityName === "CompositeType") {
                 obj.compositeType = parent
             }
-            await send(url(entity), obj, "POST", completion)
+            await send(url(entity), obj, "POST")
             break
         case "Relationship":
         case "FetchedProperty":
@@ -323,31 +312,31 @@ const add = async (entity, name, parent, position, completion = undefined) => {
                 name: name,
                 position: position,
                 entityProperty: parent
-            }, "POST", completion)
+            }, "POST")
             break
         case "FetchIndex":
             await send(url(entity), {
                 name: name,
                 entityProperty: parent
-            }, "POST", completion)
+            }, "POST")
             break
         case "FetchIndexElement":
             await send(url(entity), {
                 propertyName: name,
                 index: parent
-            }, "POST", completion)
+            }, "POST")
             break
         case "AccessControl":
             await send(url(entity), {
                 name: name,
                 property: parent
-            }, "POST", completion)
+            }, "POST")
             break
         case "Role":
             await send(url(entity), {
                 name: name,
                 accessControl: parent
-            }, "POST", completion)
+            }, "POST")
             break
         default:
             break
@@ -356,11 +345,10 @@ const add = async (entity, name, parent, position, completion = undefined) => {
 
 /**
  * @param {Object} item
- * @param completion
  */
-const remove = async (item, completion = undefined) => {
+const remove = async (item) => {
     if ((await window.api?.showMessageBox(`Remove "${item.name ?? item.propertyName ?? item.stringValue}"?`, "This action cannot be undone.", ["Cancel", "OK"]))?.response) {
-        await send(url(item.entityName), {objectID: item.objectID}, "DELETE", completion)
+        await send(url(item.entityName), {objectID: item.objectID}, "DELETE")
     }
 }
 
@@ -380,7 +368,7 @@ const browse = async (title = undefined, prompt = undefined, defaultButton = und
 const showOpenPanel = async () => {
     const filePath = await browse("Open Project", "Select the project file", "Open", ["openDirectory"])
     if (filePath) {
-        await send(url("open"), {path: filePath}, "POST", register)
+        await send(url("open"), {path: filePath}, "POST")
     }
 }
 

@@ -15,22 +15,22 @@
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">Add Element</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model}, {$project->model?->entities?->count}, reload)">
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model}, {$project->model?->entities?->count})">
                                 <i class="bi bi-plus-circle"></i> <span>Add Entity</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\CompositeType::entity()->name}, {App\Model\CompositeType::entity()->name}, {$project->model}, {$project->model?->compositeTypes?->count}, reload)">
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\CompositeType::entity()->name}, {App\Model\CompositeType::entity()->name}, {$project->model}, {$project->model?->compositeTypes?->count})">
                                 <i class="bi bi-diagram-3"></i> <span>Add Composite Type</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model}, {$project->model?->fetchRequestTemplates?->count}, reload)">
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model}, {$project->model?->fetchRequestTemplates?->count})">
                                 <i class="bi bi-search"></i> <span>Add Fetch Request</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project->model}, {$project->model?->configurations?->count}, reload)">
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project->model}, {$project->model?->configurations?->count})">
                                 <i class="bi bi-gear"></i> <span>Add Configuration</span>
                             </button>
                         </li>
@@ -39,17 +39,17 @@
                         </li>
                         <li><h6 class="dropdown-header">Entity Properties</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count}, reload)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-tag"></i> <span>Add Attribute</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count}, reload)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-box-arrow-in-down"></i> <span>Add Fetched Property</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count}, reload)" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-arrow-left-right"></i> <span>Add Relationship</span>
                             </button>
                         </li>
@@ -57,7 +57,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->indexes?->count}, reload)" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->indexes?->count})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                                 <i class="bi bi-lightning"></i> <span>Add Fetch Index</span>
                             </button>
                         </li>
@@ -65,7 +65,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item text-danger d-flex align-items-center gap-2" onclick="remove({$selection}, reload)" {!$selection ? disabled}>
+                            <button class="dropdown-item text-danger d-flex align-items-center gap-2" onclick="remove({$selection})" {!$selection ? disabled}>
                                 <i class="bi bi-trash"></i> <span>Remove</span>
                             </button>
                         </li>
@@ -74,22 +74,22 @@
                         </li>
                         <li><h6 class="dropdown-header">Project Actions</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="save({$project}, reload)">
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="save({$project})">
                                 <i class="bi bi-floppy"></i> <span>Save</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="view({$project}, reload)" {!$isSQLViewerEnabled ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="view({$project})" {!$isSQLViewerEnabled ? disabled}>
                                 <i class="bi bi-file-earmark-code"></i> <span>Show SQL Schema...</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="subclass({$project}, reload)">
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="subclass({$project})">
                                 <i class="bi bi-file-earmark-plus"></i> <span>Create ManagedObject Subclass...</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="model({$project}, {$project->model?->url}, reload)">
+                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="model({$project}, {$project->model?->url})">
                                 <i class="bi bi-upload"></i> <span>Import...</span>
                             </button>
                         </li>
@@ -269,19 +269,15 @@
 {block scripts}
     <script>
         /**
-         * @param { Object|undefined } graph
-         */
-        const reload = (graph = undefined) => {
-            initializeGraphView(graph)
-            register()
-        }
-        /**
          * @param { Object } project
          * @param { Object } graph
          */
         const load = (project, graph) => push(url("Editor", {
             project: project.objectID
-        }), () => reload(graph))
+        }), () => {
+            initializeGraphView(graph)
+            register()
+        })
 
         /**
          * @param { HTMLSelectElement } sender
@@ -296,16 +292,17 @@
              */
             const element = form.querySelector("input[name=attributeValueClassName]")
             element.value = sender.value === "2100" ? sender.options[sender.selectedIndex].text : ""
-            submit(form, reload)
+            submit(form)
         }
-        const setScope = sender => submit(sender.form, reload)
+        const setScope = sender => submit(sender.form)
     </script>
     <!--suppress JSUnresolvedReference, SpellCheckingInspection, JSUnusedAssignment -->
     <script>
         /**
-         * @param { Object|undefined } graphData
+         * @param { Object|undefined } graphModel
          */
-        const initializeGraphView = (graphData = undefined) => {
+        const initializeGraphView = (graphModel = undefined) => {
+            console.log("Initializing view")
             let initialized = false
             const selectecView = {$selectedView}
             const switcher = document.getElementById("interactive-switcher")
@@ -327,7 +324,7 @@
                     }
                     send("Synchronize", {
                         editorSelectedView: target
-                    }, "POST", reload)
+                    }, "POST")
                 })
             })
             const calculateNodeHeight = attrs => {
@@ -343,8 +340,8 @@
                 return headerH + attrH + extraH + 2
             }
             let cy = null
-            graphData ??= {$project->model?->graph}
-            if (!graphData?.nodes?.length) {
+            graphModel ??= {$project->model?->graph}
+            if (!graphModel?.nodes?.length) {
                 /**
                  * @type { HTMLDivElement }
                  */
@@ -353,7 +350,7 @@
                     emptyState.style.display = "block"
                 }
             }
-            graphData?.nodes?.forEach(node => node.data.height = calculateNodeHeight(node.data.attributes ?? []))
+            graphModel?.nodes?.forEach(node => node.data.height = calculateNodeHeight(node.data.attributes ?? []))
             const initGraph = () => {
                 if (initialized) {
                     return
@@ -371,7 +368,7 @@
                     cytoscape.use(cytoscapeDagre)
                 }
                 try {
-                    const elements = graphData?.nodes?.concat(graphData?.edges ?? [])
+                    const elements = graphModel?.nodes?.concat(graphModel?.edges ?? [])
                     cy = cytoscape({
                         container: container,
                         elements: elements,
@@ -517,12 +514,11 @@
                     cy.on("mouseout", "node", () => cy.container().style.cursor = "default")
                     cy.on("tap", "node", evt => {
                         const node = evt.target
-                        console.log(node.data())
                         const href = node.data("href")
                         if (!href) {
                             return
                         }
-                        push(window.location.origin + href, reload)
+                        push(window.location.origin + href)
                     })
 
                     initialized = true
@@ -544,6 +540,11 @@
             initializeGraphView()
         }, {
             once: true
+        })
+        document.addEventListener("view:updated", () => {
+            initializeGraphView()
+        }, {
+            once: false
         })
     </script>
 {/block}
