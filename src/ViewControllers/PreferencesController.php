@@ -36,18 +36,21 @@ final class PreferencesController extends ViewController
             UserDefaults::standard()->setBool($value, __PROPERTY__);
         }
     }
+    #[Outlet]
     public ?string $editorSelectedView {
         get => UserDefaults::standard()->string(__PROPERTY__);
         set {
             UserDefaults::standard()->setObject($value, __PROPERTY__);
         }
     }
+    #[Outlet]
     public float $graphViewZoom {
         get => UserDefaults::standard()->float(__PROPERTY__);
         set {
             UserDefaults::standard()->setFloat($value, __PROPERTY__);
         }
     }
+    #[Outlet]
     public Dictionary $graphViewPan {
         get => UserDefaults::standard()->dictionary(__PROPERTY__);
         set {
