@@ -2,115 +2,7 @@
 {templateType App\ViewControllers\ViewerController}
 {block title}{$title}{/block}
 {block head}
-    <style>
-        db-viewer {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .viewer-container {
-            position: relative;
-            background-color: var(--bg-primary);
-            overflow: hidden;
-        }
-
-        .viewer-toolbar {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 4px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .viewer-toolbar-section {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .viewer-toolbar-divider {
-            width: 1px;
-            height: 24px;
-            background-color: var(--border-color);
-        }
-
-        .viewer-toolbar .btn-icon {
-            width: 28px;
-            height: 28px;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.15s ease;
-        }
-
-        .viewer-toolbar .btn-icon:hover {
-            background-color: var(--bg-hover);
-            color: var(--text-bright);
-        }
-
-        .viewer-toolbar .btn-icon:active {
-            background-color: var(--bg-active);
-            transform: scale(0.95);
-        }
-
-        .viewer-toolbar-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            padding: 0 8px;
-            white-space: nowrap;
-            user-select: none;
-        }
-
-        #viewer-zoom-level {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-family: var(--font-mono);
-            min-width: 32px;
-            text-align: center;
-        }
-
-        .viewer-empty-state {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: var(--text-disabled);
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .viewer-empty-state i {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.3;
-        }
-
-        .viewer-empty-state h3 {
-            color: var(--text-secondary);
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .viewer-empty-state p {
-            font-size: 14px;
-            color: var(--text-disabled);
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/Resources/Styles/Viewer.css" media="screen">
 {/block}
 {block content}
     <div id="main" class="user-select-none">
@@ -225,7 +117,8 @@
             </ol>
         </nav>
     </div>
-
+{/block}
+{block scripts}
     <!--suppress JSUnresolvedReference, JSUnusedAssignment -->
     <script>
         let currentViewer = null

@@ -347,13 +347,7 @@
                 minSize: [0, 400, 0],
                 gutterSize: 1,
                 snapOffset: 20,
-                onDragEnd: () => {
-                    updateToggleButtons()
-                    if (window.cy) {
-                        window.cy.resize()
-                        window.cy.fit()
-                    }
-                }
+                onDragEnd: () => updateToggleButtons()
             })
             updateToggleButtons()
         }
@@ -376,12 +370,6 @@
                 }
             }
             updateToggleButtons()
-            setTimeout(() => {
-                if (window.cy) {
-                    window.cy.resize()
-                    window.cy.fit()
-                }
-            }, 150)
         }
         /**
          * @param { Object|undefined } graphModel
@@ -395,6 +383,7 @@
                 graphModel = JSON.parse(dataContainer.dataset.json)
             }
             let initialized = false
+            const zoomLabel = document.getElementById("graph-zoom-level")
             const switcher = document.getElementById("interactive-switcher")
             const buttons = switcher.querySelectorAll(".segmented-control-button")
             buttons.forEach(button => {
@@ -406,9 +395,6 @@
                         requestAnimationFrame(() => {
                             if (!initialized) {
                                 initGraph()
-                            } else if (window.cy) {
-                                window.cy.resize()
-                                window.cy.fit(50)
                             }
                         })
                     }
@@ -447,7 +433,7 @@
                 }
                 let saveTimer
                 const updateZoom = () => {
-                    document.getElementById("graph-zoom-level").innerText = Math.round(cy.zoom() * 100) + "%"
+                    zoomLabel.innerText = Math.round(cy.zoom() * 100) + "%"
                     clearTimeout(saveTimer)
                     saveTimer = setTimeout(() => {
                         const currentZoom = cy.zoom()
@@ -471,14 +457,16 @@
                 }
                 try {
                     const elements = graphModel?.nodes?.concat(graphModel?.edges ?? [])
+                    const zoom = graphModel?.preferences?.zoom ?? 0.1
+                    const pan = graphModel?.preferences?.pan ?? {
+                        x: 0,
+                        y: 0
+                    }
                     cy = cytoscape({
                         container: container,
                         elements: elements,
-                        zoom: graphModel?.preferences?.zoom ?? 0.1,
-                        pan: graphModel?.preferences?.pan ?? {
-                            x: 0,
-                            y: 0
-                        },
+                        zoom: zoom,
+                        pan: pan,
                         minZoom: 0.1,
                         maxZoom: 3,
                         style: [
@@ -546,8 +534,9 @@
                             nodeSep: 80,
                             rankSep: 100,
                             padding: 50,
-                            animate: false
-                        }
+                            animate: false,
+                            fit: false
+                        },
                     })
 
                     window.cy = cy
@@ -628,7 +617,7 @@
                     })
 
                     initialized = true
-                    updateZoom()
+                    zoomLabel.innerText = Math.round(cy.zoom() * 100) + "%"
                 } catch (error) {
                     console.error("Error al inicializar Cytoscape:", error)
                 }
