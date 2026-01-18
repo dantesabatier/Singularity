@@ -134,36 +134,54 @@
                 </div>
                 <div class="segmented-control small ms-2" id="interactive-switcher">
                     <button class="segmented-control-button {$isTableViewSelected ? active}" data-target="tableView">
-                        <i class="bi bi-table"></i> <span>Tables</span>
+                        <i class="bi bi-table"></i>
                     </button>
                     <button class="segmented-control-button {$isGraphViewSelected ? active}" data-target="graphView">
-                        <i class="bi bi-diagram-3"></i> <span>Graph</span>
+                        <i class="bi bi-diagram-3"></i>
                     </button>
                 </div>
+                <div class="d-flex align-items-center justify-content-center ms-auto ps-2 ms-2 gap-1" style="border-left: 1px solid var(--border-color); height: 24px;">
+                    <button id="btn-toggle-source"
+                            class="btn btn-icon btn-pane-toggle btn-sm active"
+                            onclick="togglePanel('source')"
+                            title="Toggle Navigator"
+                            style="-webkit-app-region: no-drag;">
+                        <i class="bi bi-layout-sidebar"></i>
+                    </button>
+                    <button id="btn-toggle-sidebar"
+                            class="btn btn-icon btn-pane-toggle btn-sm active"
+                            onclick="togglePanel('sidebar')"
+                            title="Toggle Inspector"
+                            style="-webkit-app-region: no-drag;">
+                        <i class="bi bi-layout-sidebar-reverse"></i>
+                    </button>
+                </div>
+                <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
             </div>
         </nav>
-        <div class="container-fluid d-flex flex-column">
-            <div class="row">
-                <div id="source" class="scroll-view col-sm-3 border-end border-black p-2" style="height: calc(100vh - 68px); background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
-                    {include sourceList from "SourceList.latte"}
-                </div>
-                <div id="content" class="scroll-view col-sm-6 p-2" style="height: calc(100vh - 68px)">
-                    {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
-                </div>
-                <div id="sidebar" class="scroll-view col-sm-3 border-start border-black p-2" style="height: calc(100vh - 68px); background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
-                    {include inspector from "Inspector.latte"}
-                </div>
+        <div class="split-container" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
+            <div id="source" class="split-panel scroll-view border-end border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+                {include sourceList from "SourceList.latte"}
+            </div>
+            <div id="content" class="split-panel scroll-view p-2">
+                {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
+            </div>
+            <div id="sidebar" class="split-panel scroll-view border-start border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+                {include inspector from "Inspector.latte"}
             </div>
         </div>
         <nav class="breadcrumb-nav" aria-label="breadcrumb">
             <ol class="breadcrumb-list">
                 <li n:foreach="$breadcrumb as $item" class="breadcrumb-item-wrapper">
-                    {var string $img = img($item)} {if $item instanceof App\Model\Project} {varType App\Model\Project $item}
+                    {var string $img = img($item)}
+                    {if $item instanceof App\Model\Project}
+                        {varType App\Model\Project $item}
                         <div data-href="/Editor?project={$item->objectID->referenceObject}" class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Model} {varType App\Model\Model $item}
+                    {elseif $item instanceof App\Model\Model}
+                    {varType App\Model\Model $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -180,7 +198,8 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\Entity} {varType App\Model\Entity $item}
+                    {elseif $item instanceof App\Model\Entity}
+                    {varType App\Model\Entity $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -198,22 +217,26 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\FetchRequestTemplate} {varType App\Model\FetchRequestTemplate $item}
+                    {elseif $item instanceof App\Model\FetchRequestTemplate}
+                    {varType App\Model\FetchRequestTemplate $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\UniquenessConstraint} {varType App\Model\UniquenessConstraint $item}
+                    {elseif $item instanceof App\Model\UniquenessConstraint}
+                    {varType App\Model\UniquenessConstraint $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->stringValue}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Property} {varType App\Model\Property $item}
+                    {elseif $item instanceof App\Model\Property}
+                    {varType App\Model\Property $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndex} {varType App\Model\FetchIndex $item}
+                    {elseif $item instanceof App\Model\FetchIndex}
+                    {varType App\Model\FetchIndex $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -231,17 +254,20 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndexElement} {varType App\Model\FetchIndexElement $item}
+                    {elseif $item instanceof App\Model\FetchIndexElement}
+                    {varType App\Model\FetchIndexElement $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->propertyName}</span>
                         </div>
-                    {elseif $item instanceof App\Model\AccessControl} {varType App\Model\AccessControl $item}
+                    {elseif $item instanceof App\Model\AccessControl}
+                    {varType App\Model\AccessControl $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Role} {varType App\Model\Role $item}
+                    {elseif $item instanceof App\Model\Role}
+                    {varType App\Model\Role $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
@@ -280,6 +306,217 @@
     </script>
     <!--suppress JSUnresolvedReference, SpellCheckingInspection, JSUnusedAssignment -->
     <script>
+        let splitInstance
+        const updateToggleButtons = () => {
+            if (!splitInstance) {
+                return;
+            }
+
+            const sizes = splitInstance.getSizes(); // Devuelve array ej: [20, 60, 20]
+
+            // Panel Izquierdo (Source) - Índice 0
+            const btnSource = document.getElementById('btn-toggle-source');
+            if (btnSource) {
+                // Si el tamaño es mayor a 2%, consideramos que está "Abierto"
+                if (sizes[0] > 2) {
+                    btnSource.classList.add('active');
+                } else {
+                    btnSource.classList.remove('active');
+                }
+            }
+
+            // Panel Derecho (Inspector) - Índice 2
+            const btnSidebar = document.getElementById('btn-toggle-sidebar');
+            if (btnSidebar) {
+                if (sizes[2] > 2) {
+                    btnSidebar.classList.add('active');
+                } else {
+                    btnSidebar.classList.remove('active');
+                }
+            }
+        }
+        const initSplitView = () => {
+            if (splitInstance) {
+                splitInstance.destroy()
+            }
+            const elSource = document.getElementById("source")
+            const elContent = document.getElementById("content")
+            const elSidebar = document.getElementById("sidebar")
+            if (!elSource || !elContent || !elSidebar) {
+                return
+            }
+            splitInstance = Split(["#source", "#content", "#sidebar"], {
+                sizes: [20, 60, 20],
+                minSize: [0, 400, 0],
+                gutterSize: 1,
+                snapOffset: 20,
+                onDragEnd: () => {
+                    updateToggleButtons()
+                    if (window.cy) {
+                        window.cy.resize()
+                        window.cy.fit()
+                    }
+                }
+            })
+            updateToggleButtons()
+        }
+        const togglePanel = (panel) => {
+            if (!splitInstance) {
+                return
+            }
+            const sizes = splitInstance.getSizes()
+            if (panel === "source") {
+                if (sizes[0] < 2) {
+                    splitInstance.setSizes([20, 60, 20])
+                } else {
+                    splitInstance.collapse(0)
+                }
+            } else if (panel === 'sidebar') {
+                if (sizes[2] < 2) {
+                    splitInstance.setSizes([20, 60, 20])
+                } else {
+                    splitInstance.collapse(2)
+                }
+            }
+            updateToggleButtons()
+            setTimeout(() => {
+                if (window.cy) {
+                    window.cy.resize()
+                    window.cy.fit()
+                }
+            }, 150)
+        }
+        const initializeRolePopovers = () => {
+            document.querySelectorAll(`[data-bs-toggle="popover"]`).forEach(e => {
+                const popover = new bootstrap.Popover(e, {
+                    container: "body",
+                    html: true,
+                    sanitize: false,
+                    trigger: "manual",
+                    content: "Loading…",
+                    customClass: "role-popover",
+                    placement: "auto",
+                    fallbackPlacements: ["top", "bottom", "left", "right"]
+                })
+                e.addEventListener("click", async (event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    event.stopImmediatePropagation()
+                    if (window.activePopover) {
+                        window.activePopover.hide()
+                        window.activePopover = null
+                    }
+                    try {
+                        const url = new URL(window.location.href)
+                        if (!url.searchParams.has("accessControl")) {
+                            showError(popover, "Please select an access control first")
+                            return
+                        }
+                        e.classList.add("loading")
+                        url.searchParams.set("role", e.dataset.role)
+                        const response = await request(url, "GET")
+                        if (!response.ok) {
+                            await showErrorBox((await response.json())?.error)
+                            return
+                        }
+                        const html = await response.text()
+                        const doc = new DOMParser().parseFromString(html, "text/html")
+                        const template = doc.getElementById("roles-popover-content")
+                        popover.setContent({".popover-body": template.innerHTML})
+                        popover.show()
+                        window.activePopover = popover
+                    } catch (error) {
+                        console.error("Failed to load role popover:", error)
+                        showError(popover, "Failed to load role editor")
+                    } finally {
+                        e.classList.remove("loading")
+                    }
+                })
+            })
+            document.addEventListener("click", (event) => {
+                if (window.activePopover &&
+                    !event.target.closest(".popover") &&
+                    !event.target.closest('[data-bs-toggle="popover"]')) {
+                    window.activePopover.hide()
+                    window.activePopover = null
+                }
+            })
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && window.activePopover) {
+                    window.activePopover.hide()
+                    window.activePopover = null
+                }
+            })
+            document.addEventListener("shown.bs.popover", () => {
+                const popoverBody = document.querySelector(".popover-body")
+                if (!popoverBody) {
+                    return
+                }
+                /**
+                 * @type { HTMLFormElement }
+                 */
+                const form = popoverBody.querySelector(".role-popover-form")
+                /**
+                 * @type { HTMLSelectElement }
+                 */
+                const select = form.querySelector(".role-select")
+                /**
+                 * @type { HTMLDivElement }
+                 */
+                const customField = form.querySelector(".role-custom-field")
+                /**
+                 * @type { HTMLInputElement }
+                 */
+                const customInput = form.querySelector("#scopeName")
+                /**
+                 * @type { HTMLButtonElement }
+                 */
+                const cancelBtn = form.querySelector(".role-cancel-btn")
+                /**
+                 * @type { HTMLButtonElement }
+                 */
+                const saveBtn = form.querySelector(".role-save-btn")
+                select.addEventListener("change", () => {
+                    if (select.value === "Custom...") {
+                        customField.style.display = "block"
+                        customInput?.focus()
+                    } else {
+                        customField.style.display = "none"
+                    }
+                })
+                cancelBtn.addEventListener("click", () => {
+                    if (window.activePopover) {
+                        window.activePopover.hide()
+                        window.activePopover = null
+                    }
+                })
+                saveBtn.addEventListener("click", (e) => {
+                    e.preventDefault()
+                    const selectedScope = select?.value
+                    const finalName = selectedScope === "Custom..." ? customInput?.value : selectedScope
+                    if (!finalName || finalName === "Custom...") {
+                        customInput?.focus()
+                        return
+                    }
+                    submit(form)
+                    if (window.activePopover) {
+                        window.activePopover.hide()
+                        window.activePopover = null
+                    }
+                })
+                customInput.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault()
+                        saveBtn?.click()
+                    }
+                })
+                if (!select.disabled) {
+                    select.focus()
+                } else {
+                    customInput.focus()
+                }
+            })
+        }
         /**
          * @param { Object|undefined } graphModel
          */
@@ -527,11 +764,13 @@
             }
         }
         document.addEventListener("DOMContentLoaded", () => {
+            initSplitView()
             initializeGraphView()
         }, {
             once: true
         })
         document.addEventListener("view:updated", () => {
+            initSplitView()
             initializeGraphView()
         }, {
             once: false
