@@ -1,6 +1,6 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\AboutController}
-{block styles}
+{block head}
     <link rel="stylesheet" href="/Resources/Styles/About.css">
 {/block}
 {block content}
@@ -54,7 +54,7 @@
                     <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="openURL({$licenseURL})">
                         <i class="bi bi-file-text"></i> <span>Licenses</span>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="copyVersionInfo()" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Copy version info">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="copyVersionInfo(this)" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Copy version info">
                         <i class="bi bi-clipboard"></i> <span>Copy Info</span>
                     </button>
                 </div>

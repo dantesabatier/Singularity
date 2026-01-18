@@ -10,44 +10,54 @@
 }
 
 /* Navbar */
-#main .navbar {
+.navbar {
     height: var(--navbar-height);
     background-color: var(--bg-tertiary);
     border-color: var(--border-color) !important;
     -webkit-app-region: drag;
 }
 
-#main .navbar .btn-icon {
+.navbar .btn-icon {
     -webkit-app-region: no-drag;
     transition: all 0.2s ease;
 }
 
-#main .navbar .btn-icon:hover {
+.navbar .btn-icon:hover {
     background-color: var(--bg-hover);
     color: var(--accent-blue);
 }
 
-/* App Icon */
-#main .app-icon {
+/* App Icon - CRÍTICO: Sin transition para que funcione la animación */
+.app-icon {
+    display: inline-block;
+    user-select: none;
     width: 64px;
     height: 64px;
     position: relative;
     z-index: 1;
     cursor: pointer;
-    transition: transform 0.2s ease;
-    animation: fadeInScale 0.4s ease-out;
+    /* NO poner transition: transform aquí */
 }
 
-#main .app-icon:hover {
+/* Hover solo cuando NO está shaking */
+.app-icon:not(.shake):hover {
     transform: scale(1.05);
+    transition: transform 0.2s ease;
 }
 
-#main .app-icon:active {
+.app-icon:not(.shake):active {
     transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+/* ANIMACIÓN SHAKE - SIN #main */
+.app-icon.shake {
+    animation: shake 0.5s ease-in-out !important;
+    /* IMPORTANTE: Sin transition aquí */
 }
 
 /* Icon Glow Effect */
-#main .icon-glow {
+.icon-glow {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -61,78 +71,79 @@
 }
 
 /* Typography */
-#main h2 {
+h2 {
     color: var(--text-bright);
     font-size: 24px;
-    animation: fadeInDown 0.5s ease-out 0.1s both;
 }
 
-#main p {
+p {
     font-size: 13px;
     line-height: 1.6;
-    animation: fadeIn 0.5s ease-out 0.3s both;
 }
 
 /* Badges */
-#main .badge {
+.badge {
     font-weight: 500;
     letter-spacing: 0.3px;
-    animation: fadeInUp 0.5s ease-out 0.2s both;
 }
 
-#main .badge-secondary {
+.badge-secondary {
     background-color: var(--bg-tertiary);
 }
 
 /* Buttons */
-#main .btn {
+.btn {
     -webkit-app-region: no-drag;
     transition: all 0.2s ease;
 }
 
-#main .btn-outline-secondary {
+.btn-outline-secondary {
     border-color: var(--border-light);
     color: var(--text-primary);
 }
 
-#main .btn-outline-secondary:hover {
+.btn-outline-secondary:hover {
     background-color: var(--bg-hover);
     border-color: var(--accent-blue);
     color: var(--accent-blue);
     transform: translateY(-1px);
 }
 
-#main .btn-outline-secondary:active {
+.btn-outline-secondary:active {
     transform: translateY(0);
 }
 
-#main .btn i {
+.btn i {
     transition: transform 0.2s ease;
 }
 
-#main .btn:hover i {
+.btn:hover i {
     transform: scale(1.1);
 }
 
 /* Footer */
-#main .footer {
+.footer {
     background-color: var(--bg-secondary);
     border-color: var(--border-color) !important;
 }
 
-#main .footer small {
+.footer small {
     font-size: 11px;
 }
 
-/* Animations */
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
+/* ============================================
+   ANIMACIONES - KEYFRAMES
+   ============================================ */
+
+@keyframes shake {
+    0%, 100% {
+        transform: rotate(0deg);
     }
-    to {
-        opacity: 1;
-        transform: scale(1);
+    10%, 30%, 50%, 70%, 90% {
+        transform: rotate(-8deg);
+    }
+    20%, 40%, 60%, 80% {
+        transform: rotate(8deg);
     }
 }
 
@@ -144,6 +155,17 @@
     50% {
         opacity: 0.8;
         transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
@@ -176,21 +198,4 @@
     to {
         opacity: 1;
     }
-}
-
-/* Easter Egg Shake */
-@keyframes shake {
-    0%, 100% {
-        transform: rotate(0deg);
-    }
-    10%, 30%, 50%, 70%, 90% {
-        transform: rotate(-5deg);
-    }
-    20%, 40%, 60%, 80% {
-        transform: rotate(5deg);
-    }
-}
-
-#main .app-icon.shake {
-    animation: shake 0.5s ease-in-out;
 }
