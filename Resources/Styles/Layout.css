@@ -117,56 +117,48 @@ button {
    ============================================ */
 
 .btn-pane-toggle {
-    /* Base: Transparente y gris suave */
     background-color: transparent;
     border-color: transparent;
-    color: var(--text-secondary); /* #868991 */
+    color: var(--text-secondary);
     border-radius: 4px;
-    width: 28px;  /* Coincide con tu .btn-icon */
+    width: 28px;
     height: 28px;
     transition: all 0.2s ease;
 }
 
-/* Hover: Un gris muy sutil */
 .btn-pane-toggle:hover {
-    background-color: var(--bg-hover); /* #2c2e31 */
-    color: var(--text-primary); /* #bcbec4 */
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
 }
 
-/* ACTIVE STATE: La magia de Xcode */
-/* Usamos tu --accent-blue (#4a88c7) pero con opacidad en el fondo */
 .btn-pane-toggle.active {
     color: var(--accent-blue);
-    background-color: rgba(74, 136, 199, 0.15); /* Azul muy tenue */
+    background-color: rgba(74, 136, 199, 0.15);
 }
 
 .btn-pane-toggle.active:hover {
-    background-color: rgba(74, 136, 199, 0.25); /* Un poco más oscuro al hover */
+    background-color: rgba(74, 136, 199, 0.25);
 }
 
-/* Ajuste fino de iconos para que se vean nítidos */
 .btn-pane-toggle i {
-    font-size: 15px; /* Ligeramente más grande que texto normal */
+    font-size: 15px;
 }
 
-/* Variante Small (Compacta) */
 .btn-pane-toggle.btn-sm {
     width: 22px;
     height: 22px;
-    font-size: 11px; /* Tamaño base de fuente */
+    font-size: 11px;
     border-radius: 4px;
 }
 
-/* Ajuste preciso del icono para esta variante */
 .btn-pane-toggle.btn-sm i {
-    font-size: 12px; /* Icono nítido y pequeño */
+    font-size: 12px;
     line-height: 1;
     display: block;
 }
 
-/* Ajuste opcional para el estado activo en versión pequeña */
 .btn-pane-toggle.btn-sm.active {
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Sutil profundidad */
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
 
 /* ============================================
@@ -2006,104 +1998,6 @@ body.in-new-project #project-actions {
 
 .graph-empty-state p {
     font-size: 14px;
-}
-
-/* Toolbar flotante */
-.graph-toolbar {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 4px;
-    box-shadow: var(--shadow-md);
-}
-
-.graph-toolbar-section {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-}
-
-.graph-toolbar-divider {
-    width: 1px;
-    height: 24px;
-    background-color: var(--border-color);
-}
-
-.graph-toolbar .btn-icon {
-    width: 28px;
-    height: 28px;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.graph-toolbar .btn-icon:hover {
-    background-color: var(--bg-hover);
-    color: var(--text-bright);
-}
-
-.graph-toolbar .btn-icon:active {
-    background-color: var(--bg-active);
-    transform: scale(0.95);
-}
-
-.graph-toolbar-label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    padding: 0 8px;
-    white-space: nowrap;
-    user-select: none;
-}
-
-#graph-zoom-level {
-    font-weight: 600;
-    color: var(--text-primary);
-    font-family: var(--font-mono);
-    min-width: 32px;
-    text-align: center;
-}
-
-/* Empty State */
-.graph-empty-state {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: var(--text-disabled);
-    pointer-events: none;
-    z-index: 10;
-}
-
-.graph-empty-state i {
-    font-size: 64px;
-    margin-bottom: 16px;
-    opacity: 0.3;
-}
-
-.graph-empty-state h3 {
-    color: var(--text-secondary);
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.graph-empty-state p {
-    font-size: 14px;
-    color: var(--text-disabled);
 }
 
 /* ============================================
