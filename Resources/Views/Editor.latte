@@ -312,29 +312,23 @@
         let splitInstance
         const updateToggleButtons = () => {
             if (!splitInstance) {
-                return;
+                return
             }
-
-            const sizes = splitInstance.getSizes(); // Devuelve array ej: [20, 60, 20]
-
-            // Panel Izquierdo (Source) - Índice 0
-            const btnSource = document.getElementById('btn-toggle-source');
+            const sizes = splitInstance.getSizes()
+            const btnSource = document.getElementById("btn-toggle-source")
             if (btnSource) {
-                // Si el tamaño es mayor a 2%, consideramos que está "Abierto"
                 if (sizes[0] > 2) {
-                    btnSource.classList.add('active');
+                    btnSource.classList.add("active")
                 } else {
-                    btnSource.classList.remove('active');
+                    btnSource.classList.remove("active")
                 }
             }
-
-            // Panel Derecho (Inspector) - Índice 2
-            const btnSidebar = document.getElementById('btn-toggle-sidebar');
+            const btnSidebar = document.getElementById("btn-toggle-sidebar")
             if (btnSidebar) {
                 if (sizes[2] > 2) {
-                    btnSidebar.classList.add('active');
+                    btnSidebar.classList.add("active")
                 } else {
-                    btnSidebar.classList.remove('active');
+                    btnSidebar.classList.remove("active")
                 }
             }
         }
@@ -349,7 +343,7 @@
                 return
             }
             splitInstance = Split(["#source", "#content", "#sidebar"], {
-                sizes: [18, 57, 25],
+                sizes: [20, 60, 20],
                 minSize: [0, 400, 0],
                 gutterSize: 1,
                 snapOffset: 20,
@@ -436,6 +430,7 @@
                 return headerH + attrH + extraH + 2
             }
             let cy = null
+            graphModel ??= {$project->model?->graph}
             if (!graphModel?.nodes?.length) {
                 /**
                  * @type { HTMLDivElement }
