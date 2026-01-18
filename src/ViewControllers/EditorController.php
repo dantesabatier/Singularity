@@ -48,6 +48,7 @@ use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
+use const App\EditorSplitSizesPreferencesKey;
 use const App\EditorTableViewValue;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
@@ -69,6 +70,13 @@ final class EditorController extends ProjectController
         get => UserDefaults::standard()->string(EditorSelectedViewPreferencesKey);
         set {
             UserDefaults::standard()->setObject($value, EditorSelectedViewPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?ArrayClass $splitSizes {
+        get => UserDefaults::standard()->array(EditorSplitSizesPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorSplitSizesPreferencesKey);
         }
     }
     #[Outlet]

@@ -44,6 +44,16 @@ final class PreferencesController extends ViewController
         }
     }
     #[Outlet]
+    public ?ArrayClass $editorSplitSizes {
+        get => UserDefaults::standard()->array(__PROPERTY__);
+        set {
+            if (is_array($value)) {
+                $value = new ArrayClass($value);
+            }
+            UserDefaults::standard()->setObject($value, __PROPERTY__);
+        }
+    }
+    #[Outlet]
     public float $graphViewZoom {
         get => UserDefaults::standard()->float(__PROPERTY__);
         set {

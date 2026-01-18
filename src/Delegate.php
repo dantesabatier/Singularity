@@ -7,6 +7,7 @@ namespace App;
 use Override;
 use Sabatier\CoreData\SQLCore;
 use Sabatier\CoreData\SQLDebugLevel;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\UserDefaults;
@@ -33,7 +34,8 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
             AutomaticallyDeleteProjectFoldersPreferencesKey => false,
             CompanyNamePreferencesKey => full_user_name(),
             EditorSelectedViewPreferencesKey => EditorTableViewValue,
-            GraphViewZoomPreferencesKey => GraphViewZoomDefaultValue
+            EditorSplitSizesPreferencesKey => new ArrayClass([20, 60, 20]),
+            GraphViewZoomPreferencesKey => GraphViewZoomDefaultValue,
         ]));
     }
 

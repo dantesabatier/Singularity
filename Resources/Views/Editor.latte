@@ -162,7 +162,7 @@
                 <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
             </div>
         </nav>
-        <div class="split-container" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
+        <div id="split-container" class="split-container" data-split-sizes="{$splitSizes->array}" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
             <div id="source" class="split-panel scroll-view border-end border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                 {include sourceList from "SourceList.latte"}
             </div>
@@ -310,6 +310,19 @@
     <!--suppress JSUnresolvedReference, SpellCheckingInspection, JSUnusedAssignment -->
     <script>
         let splitInstance
+        let splitSaveTimer
+        const saveSplitState = () => {
+            if (!splitInstance) {
+                return
+            }
+            clearTimeout(splitSaveTimer)
+            splitSaveTimer = setTimeout(() => {
+                const sizes = splitInstance.getSizes()
+                request("Synchronize", {
+                    editorSplitSizes: sizes
+                })
+            }, 500)
+        }
         const updateToggleButtons = () => {
             if (!splitInstance) {
                 return
@@ -317,19 +330,11 @@
             const sizes = splitInstance.getSizes()
             const btnSource = document.getElementById("btn-toggle-source")
             if (btnSource) {
-                if (sizes[0] > 2) {
-                    btnSource.classList.add("active")
-                } else {
-                    btnSource.classList.remove("active")
-                }
+                btnSource.classList.toggle("active", sizes[0] > 2)
             }
             const btnSidebar = document.getElementById("btn-toggle-sidebar")
             if (btnSidebar) {
-                if (sizes[2] > 2) {
-                    btnSidebar.classList.add("active")
-                } else {
-                    btnSidebar.classList.remove("active")
-                }
+                btnSidebar.classList.toggle("active", sizes[2] > 2)
             }
         }
         const initSplitView = () => {
@@ -339,15 +344,23 @@
             const elSource = document.getElementById("source")
             const elContent = document.getElementById("content")
             const elSidebar = document.getElementById("sidebar")
-            if (!elSource || !elContent || !elSidebar) {
+            const container = document.getElementById("split-container")
+            if (!elSource || !elContent || !elSidebar || !container) {
                 return
             }
+            const savedSizes = JSON.parse(container.dataset.splitSizes) ?? {$splitSizes->array} ?? [20, 60, 20]
             splitInstance = Split(["#source", "#content", "#sidebar"], {
-                sizes: [20, 60, 20],
+                sizes: savedSizes,
                 minSize: [0, 400, 0],
                 gutterSize: 1,
                 snapOffset: 20,
-                onDragEnd: () => updateToggleButtons()
+                onDragEnd: () => {
+                    updateToggleButtons()
+                    saveSplitState()
+                    if (window.cy) {
+                        window.cy.resize()
+                    }
+                }
             })
             updateToggleButtons()
         }
@@ -370,6 +383,12 @@
                 }
             }
             updateToggleButtons()
+            saveSplitState()
+            setTimeout(() => {
+                if (window.cy) {
+                    window.cy.resize()
+                }
+            }, 150)
         }
         /**
          * @param { Object|undefined } graphModel
