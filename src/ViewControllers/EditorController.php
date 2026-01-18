@@ -50,6 +50,7 @@ use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\EditorTableViewValue;
+use const App\GraphViewPreferencesKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
@@ -77,6 +78,22 @@ final class EditorController extends ProjectController
         get => UserDefaults::standard()->array(EditorSplitSizesPreferencesKey);
         set {
             UserDefaults::standard()->setObject($value, EditorSplitSizesPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?Dictionary $graphViewPreferences {
+        get => UserDefaults::standard()->dictionary(GraphViewPreferencesKey) ?? $this->projects->reduce(new Dictionary(), function (Dictionary $initialResult, Project $project): Dictionary {
+            $initialResult[$project->name] = new Dictionary([
+                "zoom" => 0.1,
+                "pan" => new Dictionary([
+                    "x" => 0,
+                    "y" => 0
+                ])
+            ]);
+            return $initialResult;
+        });
+        set {
+            UserDefaults::standard()->setObject($value, GraphViewPreferencesKey);
         }
     }
     #[Outlet]

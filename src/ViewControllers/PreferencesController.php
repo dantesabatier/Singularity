@@ -51,14 +51,7 @@ final class PreferencesController extends ViewController
         }
     }
     #[Outlet]
-    public float $graphViewZoom {
-        get => UserDefaults::standard()->float(__PROPERTY__);
-        set {
-            UserDefaults::standard()->setFloat($value, __PROPERTY__);
-        }
-    }
-    #[Outlet]
-    public Dictionary $graphViewPan {
+    public ?Dictionary $graphViewPreferences {
         get => UserDefaults::standard()->dictionary(__PROPERTY__);
         set {
             UserDefaults::standard()->setObject($value, __PROPERTY__);

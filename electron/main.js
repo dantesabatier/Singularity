@@ -2,48 +2,7 @@ if (require("electron-squirrel-startup")) {
     return
 }
 const {app, ipcMain, dialog, shell, BrowserWindow} = require("electron")
-const ChildProcess = require("child_process")
 const path = require("path")
-
-function handleSquirrelEvent() {
-    if (process.argv.length === 1) {
-        return false
-    }
-    const appFolder = path.resolve(process.execPath, "..")
-    const rootAtomFolder = path.resolve(appFolder, "..")
-    const updateDotExe = path.resolve(path.join(rootAtomFolder, "Update.exe"))
-    const exeName = path.basename(process.execPath);
-    const spawn = function (command, args) {
-        let spawnedProcess
-        try {
-            spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
-        } catch (error) {
-        }
-        return spawnedProcess
-    }
-    const spawnUpdate = function (args) {
-        return spawn(updateDotExe, args);
-    }
-    const squirrelEvent = process.argv[1]
-    switch (squirrelEvent) {
-        case "--squirrel-install":
-        case "--squirrel-updated":
-            spawnUpdate(["--createShortcut", exeName])
-            setTimeout(app.quit, 1000)
-            return true;
-        case "--squirrel-uninstall":
-            spawnUpdate(["--removeShortcut", exeName])
-            setTimeout(app.quit, 1000)
-            return true
-        case "--squirrel-obsolete":
-            app.quit()
-            return true
-    }
-}
-
-if (handleSquirrelEvent()) {
-    return
-}
 
 const ENTRY_URL = "http://localhost:8001/"
 const options = {
@@ -64,9 +23,58 @@ const options = {
     },
     show: false
 }
-let mainWindow = null
+
+let isNetworkInterceptorSet = false
+const setupWindowErrorHandling = (window) => {
+    if (!isNetworkInterceptorSet && window.webContents.session) {
+        window.webContents.session.webRequest.onHeadersReceived(
+            {urls: [ENTRY_URL + "*"]},
+            (details, callback) => {
+                const shouldCancel = details.resourceType === "mainFrame" && details.statusCode >= 400
+                callback({cancel: shouldCancel})
+            }
+        )
+        isNetworkInterceptorSet = true
+    }
+
+    window.webContents.on("did-fail-load", async (event, errorCode, errorDescription, validatedURL) => {
+        if (errorCode === -3) {
+            return
+        }
+        try {
+            const targetUrl = validatedURL || ENTRY_URL
+            const response = await fetch(targetUrl)
+            const json = await response.json()
+            if (json.error) {
+                const error = json.error
+                let message = error.localizedDescription ?? "Unexpected error"
+                let detail = error.localizedFailureReason ?? ""
+                if (error.localizedRecoverySuggestion) {
+                    detail += detail ? `\n${error.localizedRecoverySuggestion}` : error.localizedRecoverySuggestion
+                }
+                if (error.userInfo) {
+                    detail += detail ? `\n${JSON.stringify(error.userInfo, null, 4)}` : JSON.stringify(error.userInfo, null, 4)
+                }
+                await dialog.showMessageBox(window, {
+                    type: "error",
+                    title: message,
+                    message: detail || message,
+                    buttons: ["OK"]
+                })
+            }
+        } catch (e) {
+            await dialog.showMessageBox(window, {
+                type: "error",
+                title: "Failed to load",
+                message: `Failed to load: ${validatedURL || "server"}.\nCode: ${errorCode}`,
+                buttons: ["OK"]
+            })
+        }
+    })
+}
+
 const createWindow = () => {
-    mainWindow = new BrowserWindow({
+    const mainWindow = new BrowserWindow({
         ...options,
         width: 600,
         height: 480
@@ -77,62 +85,29 @@ const createWindow = () => {
             ...options
         }
     }))
-    mainWindow.webContents.session.webRequest.onHeadersReceived({urls: [ENTRY_URL + "*"]}, (details, callback) => {
-        callback({cancel: details.resourceType === "mainFrame" && details.url === ENTRY_URL && details.statusCode >= 400})
-    })
-    mainWindow.webContents.on("did-fail-load", async () => {
-        try {
-            const response = await fetch(ENTRY_URL)
-            const json = await response.json()
-            if (json.error) {
-                const error = json.error;
-                let message = error.localizedDescription ?? "Unexpected error";
-                let detail = error.localizedFailureReason ?? "";
-                if (error.localizedRecoverySuggestion) {
-                    detail += detail ? `\n${error.localizedRecoverySuggestion}` : error.localizedRecoverySuggestion;
-                }
-                if (error.userInfo) {
-                    detail += detail ? `\n${JSON.stringify(error.userInfo, null, 4)}` : JSON.stringify(error.userInfo, null, 4);
-                }
-                await dialog.showMessageBox({
-                    type: "error",
-                    title: message,
-                    message: detail || message,
-                    buttons: ["OK"]
-                })
-            }
-        } catch (e) {
-            await dialog.showMessageBox({
-                type: "error",
-                title: "Failed to load",
-                message: "Could not parse error response.",
-                buttons: ["OK"]
-            })
-        }
-    })
+
+    setupWindowErrorHandling(mainWindow)
+
     mainWindow.on("ready-to-show", async () => mainWindow.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     mainWindow.loadURL(ENTRY_URL)
 }
+
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())
+
 ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(BrowserWindow.fromWebContents(event.sender), {
     ...arg,
     icon: path.join(__dirname, "icon.png")
 }))
+
 ipcMain.handle("showErrorBox", async (event, error) => {
     error ??= error = {
         localizedDescription: "An unexpected error has occurred",
         localizedFailureReason: undefined,
         localizedRecoverySuggestion: undefined
     }
-    /**
-     * @type {string}
-     */
-    const title = error.localizedDescription ?? error.message ?? "Ha ocurrido un error inesperado"
-    /**
-     * @type {string}
-     */
+    const title = error.localizedDescription ?? error.message ?? "An unexpected error has occurred"
     let content = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? ""
     if (!!content && error.localizedRecoverySuggestion && content !== error.localizedRecoverySuggestion) {
         if (!content.endsWith(".")) {
@@ -148,6 +123,7 @@ ipcMain.handle("showErrorBox", async (event, error) => {
     }
     return dialog.showErrorBox(title, content)
 })
+
 ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
 ipcMain.on("showAboutPanel", async (event, arg) => {
     app.setAboutPanelOptions({
@@ -156,16 +132,21 @@ ipcMain.on("showAboutPanel", async (event, arg) => {
     })
     app.showAboutPanel()
 })
+
 ipcMain.on("showWindow", (event, arg) => {
     const window = new BrowserWindow({
         ...options,
         ...arg.overrideBrowserWindowOptions,
         parent: arg.overrideBrowserWindowOptions?.modal ? BrowserWindow.fromWebContents(event.sender) : undefined
     })
+
+    setupWindowErrorHandling(window)
+
     window.on("ready-to-show", () => window.show())
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     window.loadURL(arg.url)
 })
+
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
 ipcMain.on("openPath", (event, path) => shell.openPath(path))
 ipcMain.handle("openURL", async (event, url) => shell.openExternal(url))

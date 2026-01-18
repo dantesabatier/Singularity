@@ -9,6 +9,4 @@ const EditorSelectedViewPreferencesKey = "editorSelectedView";
 const EditorSplitSizesPreferencesKey = "editorSplitSizes";
 const EditorTableViewValue = "tableView";
 const EditorGraphViewValue = "graphView";
-const GraphViewZoomPreferencesKey = "graphViewZoom";
-const GraphViewZoomDefaultValue = 0.1;
-const GraphViewPanPreferencesKey = "graphViewPan";
+const GraphViewPreferencesKey = "graphViewPreferences";

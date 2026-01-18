@@ -4,6 +4,7 @@
 {block content}
     <div id="main" class="user-select-none">
         <div id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
+        <div id="current-graph-preferences" data-json="{$graphViewPreferences|json}" style="display:none;"></div>
         <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
             <div class="container-fluid justify-content-start align-items-center px-2">
                 <div class="navbar-brand mb-0 me-2">
@@ -390,17 +391,7 @@
                 }
             }, 150)
         }
-        /**
-         * @param { Object|undefined } graphModel
-         */
-        const initializeGraphView = (graphModel = undefined) => {
-            if (!graphModel) {
-                /**
-                 * @type { HTMLDivElement }
-                 */
-                const dataContainer = document.getElementById("current-graph-data")
-                graphModel = JSON.parse(dataContainer.dataset.json)
-            }
+        const initializeGraphView = () => {
             let initialized = false
             const zoomLabel = document.getElementById("graph-zoom-level")
             const switcher = document.getElementById("interactive-switcher")
@@ -435,7 +426,7 @@
                 return headerH + attrH + extraH + 2
             }
             let cy = null
-            graphModel ??= {$project->model?->graph}
+            const graphModel = JSON.parse(document.getElementById("current-graph-data")?.dataset?.json) ?? {$project->model?->graph}
             if (!graphModel?.nodes?.length) {
                 /**
                  * @type { HTMLDivElement }
@@ -446,6 +437,16 @@
                 }
             }
             graphModel?.nodes?.forEach(node => node.data.height = calculateNodeHeight(node.data.attributes ?? []))
+            const elements = graphModel?.nodes?.concat(graphModel?.edges ?? [])
+            const graphPreferences = JSON.parse(document.getElementById("current-graph-preferences")?.dataset?.json) ?? {$graphViewPreferences}
+            const graphModelName = graphModel?.name ?? ""
+            const options = graphPreferences[graphModelName] ?? {
+                zoom: 0.1,
+                pan: {
+                    x: 0,
+                    y: 0
+                }
+            }
             const initGraph = () => {
                 if (initialized) {
                     return
@@ -455,11 +456,14 @@
                     zoomLabel.innerText = Math.round(cy.zoom() * 100) + "%"
                     clearTimeout(saveTimer)
                     saveTimer = setTimeout(() => {
-                        const currentZoom = cy.zoom()
-                        const currentPan = cy.pan()
                         request("Synchronize", {
-                            graphViewZoom: currentZoom,
-                            graphViewPan: currentPan
+                            graphViewPreferences: {
+                                ...graphPreferences,
+                                [graphModelName]: {
+                                    zoom: cy.zoom(),
+                                    pan: cy.pan()
+                                }
+                            }
                         })
                     }, 500)
                 }
@@ -475,12 +479,8 @@
                     cytoscape.use(cytoscapeDagre)
                 }
                 try {
-                    const elements = graphModel?.nodes?.concat(graphModel?.edges ?? [])
-                    const zoom = graphModel?.preferences?.zoom ?? 0.1
-                    const pan = graphModel?.preferences?.pan ?? {
-                        x: 0,
-                        y: 0
-                    }
+                    const zoom = options.zoom
+                    const pan = options.pan
                     cy = cytoscape({
                         container: container,
                         elements: elements,

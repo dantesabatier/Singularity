@@ -34,8 +34,7 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
             AutomaticallyDeleteProjectFoldersPreferencesKey => false,
             CompanyNamePreferencesKey => full_user_name(),
             EditorSelectedViewPreferencesKey => EditorTableViewValue,
-            EditorSplitSizesPreferencesKey => new ArrayClass([20, 60, 20]),
-            GraphViewZoomPreferencesKey => GraphViewZoomDefaultValue,
+            EditorSplitSizesPreferencesKey => new ArrayClass([20, 60, 20])
         ]));
     }
 

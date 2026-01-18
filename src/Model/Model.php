@@ -24,7 +24,6 @@ use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
 use function Sabatier\Foundation\fatal_error;
 use const App\EntityPositionsMappingPreferencesKey;
-use const App\GraphViewZoomPreferencesKey;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 /**
@@ -218,10 +217,7 @@ final class Model extends ManagedObject
                 $processEntity($entity);
             }
             return Dictionary::dictionaryWithArray([
-                "preferences" => [
-                    "zoom" => UserDefaults::standard()->float(GraphViewZoomPreferencesKey),
-                    "pan" => UserDefaults::standard()->dictionary(GraphViewZoomPreferencesKey) ?? ["x" => 0, "y" => 0]
-                ],
+                "name" => $this->project->name,
                 "nodes" => $nodes,
                 "edges" => $edges
             ]);
