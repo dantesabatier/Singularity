@@ -154,6 +154,137 @@
             }
         })
     }
+    const initializeRolePopovers = () => {
+        document.querySelectorAll(`[data-bs-toggle="popover"]`).forEach(e => {
+            const popover = new bootstrap.Popover(e, {
+                container: "body",
+                html: true,
+                sanitize: false,
+                trigger: "manual",
+                content: "Loading…",
+                customClass: "role-popover",
+                placement: "auto",
+                fallbackPlacements: ["top", "bottom", "left", "right"]
+            })
+            e.addEventListener("click", async (event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                event.stopImmediatePropagation()
+                if (window.activePopover) {
+                    window.activePopover.hide()
+                    window.activePopover = null
+                }
+                try {
+                    const url = new URL(window.location.href)
+                    if (!url.searchParams.has("accessControl")) {
+                        showError(popover, "Please select an access control first")
+                        return
+                    }
+                    e.classList.add("loading")
+                    url.searchParams.set("role", e.dataset.role)
+                    const response = await request(url, undefined, "GET")
+                    if (!response.ok) {
+                        await showErrorBox((await response.json())?.error)
+                        return
+                    }
+                    const html = await response.text()
+                    const doc = new DOMParser().parseFromString(html, "text/html")
+                    const template = doc.getElementById("roles-popover-content")
+                    popover.setContent({".popover-body": template.innerHTML})
+                    popover.show()
+                    window.activePopover = popover
+                } catch (error) {
+                    console.error("Failed to load role popover:", error)
+                    showError(popover, "Failed to load role editor")
+                } finally {
+                    e.classList.remove("loading")
+                }
+            })
+        })
+        document.addEventListener("click", (event) => {
+            if (window.activePopover &&
+                !event.target.closest(".popover") &&
+                !event.target.closest("[data-bs-toggle=\"popover\"]")) {
+                window.activePopover.hide()
+                window.activePopover = null
+            }
+        })
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && window.activePopover) {
+                window.activePopover.hide()
+                window.activePopover = null
+            }
+        })
+        document.addEventListener("shown.bs.popover", () => {
+            const popoverBody = document.querySelector(".popover-body")
+            if (!popoverBody) {
+                return
+            }
+            /**
+             * @type { HTMLFormElement }
+             */
+            const form = popoverBody.querySelector(".role-popover-form")
+            /**
+             * @type { HTMLSelectElement }
+             */
+            const select = form.querySelector(".role-select")
+            /**
+             * @type { HTMLDivElement }
+             */
+            const customField = form.querySelector(".role-custom-field")
+            /**
+             * @type { HTMLInputElement }
+             */
+            const customInput = form.querySelector("#scopeName")
+            /**
+             * @type { HTMLButtonElement }
+             */
+            const cancelBtn = form.querySelector(".role-cancel-btn")
+            /**
+             * @type { HTMLButtonElement }
+             */
+            const saveBtn = form.querySelector(".role-save-btn")
+            select.addEventListener("change", () => {
+                if (select.value === "Custom...") {
+                    customField.style.display = "block"
+                    customInput?.focus()
+                } else {
+                    customField.style.display = "none"
+                }
+            })
+            cancelBtn.addEventListener("click", () => {
+                if (window.activePopover) {
+                    window.activePopover.hide()
+                    window.activePopover = null
+                }
+            })
+            saveBtn.addEventListener("click", (e) => {
+                e.preventDefault()
+                const selectedScope = select?.value
+                const finalName = selectedScope === "Custom..." ? customInput?.value : selectedScope
+                if (!finalName || finalName === "Custom...") {
+                    customInput?.focus()
+                    return
+                }
+                submit(form)
+                if (window.activePopover) {
+                    window.activePopover.hide()
+                    window.activePopover = null
+                }
+            })
+            customInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault()
+                    saveBtn?.click()
+                }
+            })
+            if (!select.disabled) {
+                select.focus()
+            } else {
+                customInput.focus()
+            }
+        })
+    }
     const showError = (popover, message) => {
         popover.setContent({
             ".popover-body": `<div class="p-3 text-danger">
