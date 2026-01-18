@@ -16,11 +16,11 @@ use const App\EntityPositionsMappingPreferencesKey;
 #[Endpoint("Viewer")]
 final class ViewerController extends ProjectController
 {
+    public string $name = "Viewer";
     /** @var ArrayClass<string> */
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }
-    public string $name = "Viewer";
 
     #[Override]
     public function viewWillLoad(): void

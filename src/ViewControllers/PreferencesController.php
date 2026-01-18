@@ -17,11 +17,11 @@ use Sabatier\Service\ViewController;
 #[Endpoint("Preferences")]
 final class PreferencesController extends ViewController
 {
+    public string $name = "Preferences";
     /** @var ArrayClass<string> */
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }
-    public string $name = "Preferences";
     #[Outlet]
     public ?string $companyName {
         get => UserDefaults::standard()->string(__PROPERTY__);

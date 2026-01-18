@@ -185,30 +185,24 @@ final class Model extends ManagedObject
                     ];
                 }
                 foreach ($entity->relationships as $relationship) {
-                    $destEntity = $relationship->destinationEntity?->name;
-                    if (!$destEntity) {
+                    $destinationEntityName = $relationship->destinationEntity?->name;
+                    if (!$destinationEntityName) {
                         continue;
                     }
-                    $edgeId = "$entity->name-$relationship->name-$destEntity";
-                    $inverseRel = $relationship->inverseRelationship?->name ?? "";
-                    $reverseEdgeId = "$destEntity-$inverseRel-$entity->name";
-                    $exists = false;
-                    foreach ($edges as $edge) {
-                        if ($edge["data"]["id"] === $reverseEdgeId) {
-                            $exists = true;
-                            break;
-                        }
-                    }
+                    $edgeId = "$entity->name-$relationship->name-$destinationEntityName";
+                    $inverseRelationshipName = $relationship->inverseRelationship?->name ?? "";
+                    $inverseEdgeId = "$destinationEntityName-$inverseRelationshipName-$entity->name";
+                    $exists = array_any($edges, fn($edge) => $edge["data"]["id"] === $inverseEdgeId);
                     if (!$exists) {
                         $edges[] = [
                             "data" => [
                                 "id" => $edgeId,
                                 "source" => $entity->name,
-                                "target" => $destEntity,
+                                "target" => $destinationEntityName,
                                 "type" => "relationship",
                                 "label" => $relationship->name,
                                 "sourceLabel" => $relationship->name,
-                                "targetLabel" => $inverseRel,
+                                "targetLabel" => $inverseRelationshipName,
                                 "isToMany" => $relationship->isToMany,
                                 "inverseIsToMany" => $relationship->inverseRelationship?->isToMany ?? false,
                             ],

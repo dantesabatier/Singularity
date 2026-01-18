@@ -57,13 +57,13 @@ use const Sabatier\Service\ServiceObjectIDKey;
 #[Endpoint("Editor")]
 final class EditorController extends ProjectController
 {
-    const string tableViewValue = EditorTableViewValue;
-    const string graphViewValue = EditorGraphViewValue;
+    public const string tableViewValue = EditorTableViewValue;
+    public const string graphViewValue = EditorGraphViewValue;
+    public string $name = "Editor";
     /** @var ArrayClass<string> */
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }
-    public string $name = "Editor";
     #[Outlet]
     public ?string $selectedView {
         get => UserDefaults::standard()->string(EditorSelectedViewPreferencesKey);

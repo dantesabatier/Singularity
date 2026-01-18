@@ -16,11 +16,11 @@ use const Sabatier\Foundation\kCFBundleVersionKey;
 #[Endpoint("About")]
 final class AboutController extends ViewController
 {
+    public string $name = "About";
     /** @var ArrayClass<string> */
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get]);
     }
-    public string $name = "About";
     #[Outlet]
     public ?string $bundleName {
         get => $this->bundle->object(kCFBundleNameKey);
