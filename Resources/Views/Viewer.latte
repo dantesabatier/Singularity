@@ -219,7 +219,7 @@
                 <li class="breadcrumb-item-wrapper">
                     <div class="breadcrumb-link">
                         <i class="bi bi-database breadcrumb-icon" style="width: 14px; height: 14px;"></i>
-                        <span>Database Schema</span>
+                        <span>Schema</span>
                     </div>
                 </li>
             </ol>
@@ -387,24 +387,21 @@
                             viewer.shadowRoot.appendChild(style)
                         }
                     }, 100)
-
                     currentViewer.setZoom(0.25)
                     updateZoomLevel(0.25)
                     viewer.schema = schema
                 }, {
                     once: true
                 })
-
                 viewer.addEventListener("tableMoveEnd", event => {
                     send("Moved", {
                         ...event.detail,
                         project: {$project->objectID}
-                    }, "POST", loaded)
+                    })
                 }, {
                     once: true
                 })
             }
-
             loaded()
         }, {
             once: true

@@ -254,12 +254,12 @@ const view = async (project) => window.api?.showWindow({
 /**
  * @param {Object} project
  */
-const save = async (project) => await send(url("Save"), {project: project.objectID}, "POST")
+const save = async (project) => await send(url("Save"), {project: project.objectID})
 
 /**
  * @param {Object} project
  */
-const subclass = async (project) => await send(url("Subclass"), {project: project.objectID}, "POST")
+const subclass = async (project) => await send(url("Subclass"), {project: project.objectID})
 
 /**
  * @param {Object} project
@@ -273,7 +273,7 @@ const model = async (project, path) => {
         }
     ])).filePaths.find(Boolean)
     if (filePath) {
-        await send(url("import"), {project: project.objectID, path: filePath}, "POST")
+        await send(url("import"), {project: project.objectID, path: filePath})
     }
 }
 
@@ -304,7 +304,7 @@ const add = async (entity, name, parent, position) => {
             } else if (parent.entityName === "CompositeType") {
                 obj.compositeType = parent
             }
-            await send(url(entity), obj, "POST")
+            await send(url(entity), obj)
             break
         case "Relationship":
         case "FetchedProperty":
@@ -312,31 +312,31 @@ const add = async (entity, name, parent, position) => {
                 name: name,
                 position: position,
                 entityProperty: parent
-            }, "POST")
+            })
             break
         case "FetchIndex":
             await send(url(entity), {
                 name: name,
                 entityProperty: parent
-            }, "POST")
+            })
             break
         case "FetchIndexElement":
             await send(url(entity), {
                 propertyName: name,
                 index: parent
-            }, "POST")
+            })
             break
         case "AccessControl":
             await send(url(entity), {
                 name: name,
                 property: parent
-            }, "POST")
+            })
             break
         case "Role":
             await send(url(entity), {
                 name: name,
                 accessControl: parent
-            }, "POST")
+            })
             break
         default:
             break
@@ -368,7 +368,7 @@ const browse = async (title = undefined, prompt = undefined, defaultButton = und
 const showOpenPanel = async () => {
     const filePath = await browse("Open Project", "Select the project file", "Open", ["openDirectory"])
     if (filePath) {
-        await send(url("open"), {path: filePath}, "POST")
+        await send(url("open"), {path: filePath})
     }
 }
 

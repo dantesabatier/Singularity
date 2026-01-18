@@ -414,7 +414,7 @@
                     }
                     send("Synchronize", {
                         editorSelectedView: target
-                    }, "POST")
+                    })
                 })
             })
             const calculateNodeHeight = attrs => {
@@ -445,7 +445,19 @@
                 if (initialized) {
                     return
                 }
-                const updateZoom = () => document.getElementById("graph-zoom-level").innerText = Math.round(cy.zoom() * 100) + "%"
+                let saveTimer
+                const updateZoom = () => {
+                    document.getElementById("graph-zoom-level").innerText = Math.round(cy.zoom() * 100) + "%"
+                    clearTimeout(saveTimer)
+                    saveTimer = setTimeout(() => {
+                        const currentZoom = cy.zoom()
+                        const currentPan = cy.pan()
+                        request("Synchronize", {
+                            graphViewZoom: currentZoom,
+                            graphViewPan: currentPan
+                        })
+                    }, 500)
+                }
                 /**
                  * @type { HTMLDivElement|undefined }
                  */
@@ -462,6 +474,11 @@
                     cy = cytoscape({
                         container: container,
                         elements: elements,
+                        zoom: graphModel?.preferences?.zoom ?? 0.1,
+                        pan: graphModel?.preferences?.pan ?? {
+                            x: 0,
+                            y: 0
+                        },
                         minZoom: 0.1,
                         maxZoom: 3,
                         style: [
@@ -598,8 +615,7 @@
                             animate: true
                         }).run()
                     }
-
-                    cy.on("zoom", updateZoom)
+                    cy.on("zoom pan", updateZoom)
                     cy.on("mouseover", "node", () => cy.container().style.cursor = "pointer")
                     cy.on("mouseout", "node", () => cy.container().style.cursor = "default")
                     cy.on("tap", "node", evt => {
@@ -612,7 +628,6 @@
                     })
 
                     initialized = true
-                    cy.fit(50)
                     updateZoom()
                 } catch (error) {
                     console.error("Error al inicializar Cytoscape:", error)

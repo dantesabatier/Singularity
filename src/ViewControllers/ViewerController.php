@@ -3,6 +3,7 @@
 namespace App\ViewControllers;
 
 use Exception;
+use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
@@ -20,6 +21,12 @@ final class ViewerController extends ProjectController
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }
     public string $name = "Viewer";
+
+    #[Override]
+    public function viewWillLoad(): void
+    {
+        $this->title = "SQL Schema";
+    }
 
     /**
      * @throws Exception

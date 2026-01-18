@@ -67,6 +67,9 @@ final class EditorController extends ProjectController
     #[Outlet]
     public ?string $selectedView {
         get => UserDefaults::standard()->string(EditorSelectedViewPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorSelectedViewPreferencesKey);
+        }
     }
     #[Outlet]
     public bool $isTableViewSelected {
