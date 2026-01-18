@@ -30,14 +30,6 @@
     --accent-red: #c75450;
     --accent-orange: #c77d4a;
 
-    /* --- UI Components --- */
-    --input-bg: var(--bg-primary);
-    --input-border: var(--border-color);
-    --button-bg: #3d4045;
-    --button-hover: #4a4d51;
-    --nav-item-active-bg: var(--accent-blue);
-    --nav-item-hover-bg: rgba(74, 136, 199, 0.2);
-
     /* --- Shadows --- */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -113,7 +105,7 @@ button {
 }
 
 /* ============================================
-   Xcode-style Panel Toggles
+   2. Xcode-style Panel Toggles
    ============================================ */
 
 .btn-pane-toggle {
@@ -158,17 +150,17 @@ button {
 }
 
 .btn-pane-toggle.btn-sm.active {
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* ============================================
-   2. Forms
+   3. Forms
    ============================================ */
 
 .form-control,
 .form-select {
-    background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
     color: var(--text-primary);
     border-radius: 4px;
     font-size: 13px;
@@ -189,7 +181,7 @@ button {
 
 .form-control:focus,
 .form-select:focus {
-    background-color: var(--input-bg);
+    background-color: var(--bg-primary);
     border-color: var(--border-focus);
     color: var(--text-bright);
     box-shadow: 0 0 0 1px var(--border-focus);
@@ -211,14 +203,14 @@ button {
 
 .form-select.transparent:hover,
 .form-select.transparent:focus {
-    background-color: var(--input-bg);
+    background-color: var(--bg-primary);
     border-color: var(--border-color);
     padding-left: 8px;
 }
 
 /* Checkboxes */
 .form-check-input {
-    background-color: var(--input-bg);
+    background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
     width: 14px;
     height: 14px;
@@ -257,7 +249,7 @@ button {
 }
 
 /* ============================================
-   3. Buttons
+   4. Buttons
    ============================================ */
 
 .btn {
@@ -308,13 +300,13 @@ button {
 }
 
 .btn-secondary {
-    background-color: var(--button-bg);
+    background-color: var(--bg-active);
     border-color: var(--border-color);
     color: var(--text-primary);
 }
 
 .btn-secondary:hover {
-    background-color: var(--button-hover);
+    background-color: var(--border-light);
     color: var(--text-bright);
 }
 
@@ -336,7 +328,7 @@ button {
 }
 
 /* ============================================
-   4. Navigation & Menus
+   5. Navigation & Menus
    ============================================ */
 
 .nav-item {
@@ -349,11 +341,11 @@ button {
 }
 
 .nav-item:hover {
-    background-color: var(--nav-item-hover-bg);
+    background-color: rgba(74, 136, 199, 0.2);
 }
 
 .nav-item.active {
-    background-color: var(--nav-item-active-bg);
+    background-color: var(--accent-blue);
     color: white;
 }
 
@@ -420,7 +412,7 @@ button {
 }
 
 /* ============================================
-   5. Modals
+   6. Modals
    ============================================ */
 
 .modal-backdrop.show {
@@ -470,8 +462,55 @@ button {
     opacity: 1;
 }
 
+/* Modal Forms */
+.modal-form-field {
+    margin-bottom: 16px;
+}
+
+.modal-form-field:last-child {
+    margin-bottom: 0;
+}
+
+.modal-form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.modal-help-text {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    background-color: rgba(74, 136, 199, 0.1);
+    border-left: 2px solid var(--accent-blue);
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+.modal-help-text i {
+    color: var(--accent-blue);
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+.modal-help-text .help-note {
+    display: block;
+    color: var(--text-disabled);
+    margin-top: 2px;
+}
+
+.modal-footer .btn {
+    min-width: 80px;
+}
+
 /* ============================================
-   6. Source Tree / Sidebar
+   7. Source Tree / Sidebar
    ============================================ */
 
 .source-section-header {
@@ -567,7 +606,7 @@ button {
 }
 
 /* ============================================
-   7. Inspector (Properties Panel)
+   8. Inspector (Properties Panel)
    ============================================ */
 
 .inspector-header {
@@ -597,7 +636,7 @@ button {
 }
 
 /* ============================================
-   8. List Control Components (Tables)
+   9. List Control Components (Tables)
    ============================================ */
 
 .ide-list-control {
@@ -839,7 +878,7 @@ button {
 }
 
 /* ============================================
-   9. Content Panels (Non-table content)
+   10. Content Panels (Non-table content)
    ============================================ */
 
 .content-panel {
@@ -974,7 +1013,7 @@ button {
 }
 
 /* ============================================
-   10. Code Editor
+   11. Code Editor
    ============================================ */
 
 .code-editor {
@@ -993,7 +1032,7 @@ button {
 }
 
 /* ============================================
-   11. Recent Projects List
+   12. Recent Projects List
    ============================================ */
 
 .list-group-flush {
@@ -1070,7 +1109,7 @@ button {
 }
 
 /* ============================================
-   12. Breadcrumb Navigation
+   13. Breadcrumb Navigation
    ============================================ */
 
 .breadcrumb-nav {
@@ -1400,407 +1439,7 @@ a.breadcrumb-link:hover {
 }
 
 /* ============================================
-   17. Welcome Screen
-   ============================================ */
-
-.welcome-navbar {
-    position: sticky;
-    top: 0;
-    height: 40px;
-    background-color: var(--bg-tertiary);
-    border-bottom: 1px solid var(--border-color);
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    -webkit-app-region: drag;
-    z-index: 100;
-}
-
-.welcome-navbar .navbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin: 0;
-}
-
-.welcome-navbar img {
-    width: 16px;
-    height: 16px;
-}
-
-.welcome-container {
-    position: relative;
-    height: calc(100vh - 96px);
-    overflow: hidden;
-}
-
-/* Transition Panels */
-.transition-panel {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    pointer-events: none;
-}
-
-.transition-panel.active {
-    position: relative;
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-}
-
-.transition-panel.sliding-left {
-    transform: translateX(-100%);
-}
-
-.transition-panel.sliding-right {
-    transform: translateX(100%);
-}
-
-/* Welcome View */
-.welcome-content {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    height: 100%;
-}
-
-.welcome-actions {
-    padding: 48px;
-    overflow-y: auto;
-}
-
-.welcome-intro h2 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text-bright);
-    margin-bottom: 12px;
-}
-
-.welcome-intro p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 32px;
-}
-
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.action-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-size: 14px;
-    font-weight: 500;
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    -webkit-app-region: no-drag;
-}
-
-.action-btn:hover {
-    background-color: var(--bg-tertiary);
-    border-color: var(--accent-blue);
-    color: var(--text-bright);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-}
-
-.action-btn i {
-    font-size: 20px;
-    color: var(--accent-blue);
-}
-
-/* Recent Projects Panel */
-.recent-projects-panel {
-    background-color: var(--bg-secondary);
-    border-left: 1px solid var(--border-color);
-    padding: 24px;
-    overflow-y: auto;
-}
-
-.panel-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 16px;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 64px 24px;
-    color: var(--text-disabled);
-}
-
-.empty-state i {
-    font-size: 48px;
-    margin-bottom: 16px;
-    opacity: 0.5;
-}
-
-.empty-state p {
-    font-size: 14px;
-    margin-bottom: 4px;
-    color: var(--text-secondary);
-}
-
-.empty-state small {
-    font-size: 12px;
-}
-
-/* New Project View */
-.new-project-content {
-    padding: 48px;
-    overflow-y: auto;
-    height: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.new-project-header h2 {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-bright);
-    margin-bottom: 8px;
-}
-
-.new-project-header p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 32px;
-}
-
-.form-section-group {
-    margin-bottom: 32px;
-}
-
-.section-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 16px;
-}
-
-.form-group {
-    margin-bottom: 16px;
-}
-
-.form-group .form-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-}
-
-.form-group .form-label i {
-    color: var(--text-secondary);
-}
-
-.form-text {
-    display: block;
-    margin-top: 6px;
-    font-size: 12px;
-    color: var(--text-disabled);
-}
-
-.input-group {
-    display: flex;
-    gap: 0;
-}
-
-.input-group .form-control {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: none;
-}
-
-.input-group .btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    white-space: nowrap;
-}
-
-/* Config Options */
-.config-options {
-    background-color: var(--bg-tertiary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.config-option {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 12px;
-    align-items: start;
-}
-
-.config-option input[type="checkbox"] {
-    margin-top: 3px;
-}
-
-.config-option label {
-    cursor: pointer;
-    margin: 0;
-}
-
-.option-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-}
-
-.option-header i {
-    font-size: 16px;
-}
-
-.config-option p {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin: 0;
-    line-height: 1.5;
-}
-
-.welcome-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    background-color: var(--bg-tertiary);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    z-index: 100;
-}
-
-.welcome-footer .container-fluid {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-#settings-menu,
-#project-actions {
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-}
-
-#settings-menu {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    visibility: visible;
-}
-
-body.in-new-project #settings-menu {
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-    visibility: hidden;
-    pointer-events: none;
-}
-
-#project-actions {
-    display: flex;
-    gap: 8px;
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-    visibility: hidden;
-    pointer-events: none;
-}
-
-body.in-new-project #project-actions {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    visibility: visible;
-    pointer-events: auto;
-}
-
-#create-project-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* ============================================
-   18. Modal Forms
-   ============================================ */
-
-.modal-form-field {
-    margin-bottom: 16px;
-}
-
-.modal-form-field:last-child {
-    margin-bottom: 0;
-}
-
-.modal-form-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-}
-
-.modal-help-text {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    padding: 8px 10px;
-    background-color: rgba(74, 136, 199, 0.1);
-    border-left: 2px solid var(--accent-blue);
-    border-radius: 4px;
-    font-size: 11px;
-    line-height: 1.4;
-    color: var(--text-secondary);
-}
-
-.modal-help-text i {
-    color: var(--accent-blue);
-    flex-shrink: 0;
-    margin-top: 2px;
-    font-size: 12px;
-}
-
-.modal-help-text .help-note {
-    display: block;
-    color: var(--text-disabled);
-    margin-top: 2px;
-}
-
-.modal-footer .btn {
-    min-width: 80px;
-}
-
-/* ============================================
-   Segmented Control Component
+   16. Segmented Control Component
    ============================================ */
 
 .segmented-control {
@@ -1877,7 +1516,7 @@ body.in-new-project #project-actions {
 }
 
 /* ============================================
-   Graph View Component
+   17. Graph View Component
    ============================================ */
 
 .view-content {
@@ -2001,7 +1640,7 @@ body.in-new-project #project-actions {
 }
 
 /* ============================================
-   16. Utilities & Helpers
+   18. Utilities & Helpers
    ============================================ */
 
 .text-shadow {

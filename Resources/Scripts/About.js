@@ -3,7 +3,7 @@
  * Handles external links, tooltips, keyboard shortcuts, and Easter eggs
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     initializeTooltips();
     initializeKeyboardShortcuts();
     initializeEasterEgg();
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * Initialize Bootstrap tooltips
  */
 function initializeTooltips() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipTriggerList = document.querySelectorAll("[data-bs-toggle=\"tooltip\"]");
     [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
 }
 

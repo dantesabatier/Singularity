@@ -1,6 +1,9 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\WelcomeController}
 {block title}{$title}{/block}
+{block head}
+    <link rel="stylesheet" type="text/css" href="/Resources/Styles/Welcome.css" media="screen">
+{/block}
 {block content}
     <div id="main" class="user-select-none">
         <nav class="welcome-navbar">
@@ -116,31 +119,31 @@
                                 <div class="config-option">
                                     <input class="form-check-input" type="checkbox" name="generateWithSecurity" id="generateWithSecurity" value="{$generateWithSecurity|json}" {$generateWithSecurity ? checked}>
                                     <label for="generateWithSecurity">
-                                        <div class="option-header">
-                                            <i class="bi bi-shield-check text-success"></i>
+                                        <span class="option-header d-block">
+                                                <i class="bi bi-shield-check text-success"></i>
                                             <span>Advanced Security Policies</span>
-                                        </div>
-                                        <p>Generates project code with stricter access control policies for enhanced security</p>
+                                        </span>
+                                        <span class="d-block">Generates project code with stricter access control policies for enhanced security</span>
                                     </label>
                                 </div>
 
                                 <div class="config-option">
                                     <input class="form-check-input" type="checkbox" name="generateWithCORS" id="generateWithCORS" value="{$generateWithCORS|json}" {$generateWithCORS ? checked}>
                                     <label for="generateWithCORS">
-                                        <div class="option-header">
+                                        <span class="option-header d-block">
                                             <i class="bi bi-globe text-info"></i> <span>CORS Support</span>
-                                        </div>
-                                        <p>Allow access from external web apps like React or Vue by adding default CORS configuration</p>
+                                        </span>
+                                        <span class="d-block">Allow access from external web apps like React or Vue by adding default CORS configuration</span>
                                     </label>
                                 </div>
 
                                 <div class="config-option">
                                     <input class="form-check-input" type="checkbox" name="generateWithJWT" id="generateWithJWT" value="{$generateWithJWT|json}" {$generateWithJWT ? checked}>
                                     <label for="generateWithJWT">
-                                        <div class="option-header">
+                                        <span class="option-header d-block">
                                             <i class="bi bi-key text-warning"></i> <span>JWT Authentication</span>
-                                        </div>
-                                        <p>Enable Bearer authentication with JWT tokens for secure API access</p>
+                                        </span>
+                                        <span class="d-block">Enable Bearer authentication with JWT tokens for secure API access</span>
                                     </label>
                                 </div>
                             </div>
@@ -182,69 +185,7 @@
             </div>
         </div>
     </div>
-
-    <script>
-        const showNewProjectView = () => {
-            const welcomeView = document.getElementById("welcome-view")
-            const newProjectView = document.getElementById("new-project-view")
-
-            document.body.classList.add("in-new-project")
-            welcomeView.classList.add("sliding-left")
-
-            setTimeout(() => {
-                welcomeView.classList.remove("active")
-                newProjectView.classList.add("active")
-                welcomeView.classList.remove("sliding-left")
-            }, 300)
-        }
-
-        const showWelcomeView = () => {
-            const welcomeView = document.getElementById('welcome-view')
-            const newProjectView = document.getElementById("new-project-view")
-
-            document.body.classList.remove("in-new-project")
-            newProjectView.classList.add("sliding-right")
-
-            setTimeout(() => {
-                newProjectView.classList.remove("active")
-                welcomeView.classList.add("active")
-                newProjectView.classList.remove('sliding-right')
-                /**
-                 * @type { HTMLFormElement }
-                 */
-                const form = document.getElementById('new-project-form')
-                form.reset()
-                document.getElementById("directory").value = ""
-                document.getElementById("create-project-btn").disabled = true
-            }, 300)
-        }
-
-        const chooseProjectFolder = async () => {
-            const directory = await browse()
-            if (directory) {
-                const pathInput = document.getElementById("directory")
-                pathInput.value = directory
-                const createBtn = document.getElementById("create-project-btn")
-                createBtn.disabled = !pathInput.value.trim()
-            }
-        }
-
-        const openProject = async () => {
-            const directory = await browse()
-            if (directory) {
-                await send("Open", { directory })
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("new-project-form")
-            if (form) {
-                form.addEventListener("submit", async (e) => {
-                    e.preventDefault()
-                    showWelcomeView()
-                    await submit(form)
-                })
-            }
-        })
-    </script>
+{/block}
+{block scripts}
+    <script src="/Resources/Scripts/Welcome.js"></script>
 {/block}
