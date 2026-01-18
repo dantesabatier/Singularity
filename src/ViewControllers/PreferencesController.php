@@ -47,9 +47,6 @@ final class PreferencesController extends ViewController
     public ?ArrayClass $editorSplitSizes {
         get => UserDefaults::standard()->array(__PROPERTY__);
         set {
-            if (is_array($value)) {
-                $value = new ArrayClass($value);
-            }
             UserDefaults::standard()->setObject($value, __PROPERTY__);
         }
     }
