@@ -5,6 +5,7 @@
 namespace App\Model;
 
 use Exception;
+use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\SQLColumn;
@@ -27,7 +28,10 @@ use const App\EntityPositionsMappingPreferencesKey;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 /**
+ * @property string $name
  * @property URL|null $url
+ * @property float $zoom
+ * @property Dictionary<float> $coordinate
  * @property Project|null $project
  * @property Set<Entity> $entities
  * @property Set<FetchRequestTemplate> $fetchRequestTemplates
@@ -217,11 +221,20 @@ final class Model extends ManagedObject
                 $processEntity($entity);
             }
             return Dictionary::dictionaryWithArray([
-                "name" => $this->project->name,
+                "id" => $this->objectID->referenceObject,
+                "name" => $this->name,
+                "zoom" => $this->zoom,
+                "coordinate" => $this->coordinate,
                 "nodes" => $nodes,
                 "edges" => $edges
             ]);
         }
+    }
+
+    #[Override]
+    public function awakeFromFetch(): void
+    {
+        $this->name = $this->project->name;
     }
 
     private function newEntity(Dictionary $dictionary): Entity

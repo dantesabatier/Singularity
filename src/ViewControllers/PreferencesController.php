@@ -5,7 +5,6 @@ namespace App\ViewControllers;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
@@ -46,13 +45,6 @@ final class PreferencesController extends ViewController
     #[Outlet]
     public ?ArrayClass $editorSplitSizes {
         get => UserDefaults::standard()->array(__PROPERTY__);
-        set {
-            UserDefaults::standard()->setObject($value, __PROPERTY__);
-        }
-    }
-    #[Outlet]
-    public ?Dictionary $graphViewPreferences {
-        get => UserDefaults::standard()->dictionary(__PROPERTY__);
         set {
             UserDefaults::standard()->setObject($value, __PROPERTY__);
         }

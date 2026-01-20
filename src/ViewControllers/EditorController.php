@@ -81,22 +81,6 @@ final class EditorController extends ProjectController
         }
     }
     #[Outlet]
-    public ?Dictionary $graphViewPreferences {
-        get => UserDefaults::standard()->dictionary(GraphViewPreferencesKey) ?? $this->projects->reduce(new Dictionary(), function (Dictionary $initialResult, Project $project): Dictionary {
-            $initialResult[$project->name] = new Dictionary([
-                "zoom" => 0.1,
-                "pan" => new Dictionary([
-                    "x" => 0,
-                    "y" => 0
-                ])
-            ]);
-            return $initialResult;
-        });
-        set {
-            UserDefaults::standard()->setObject($value, GraphViewPreferencesKey);
-        }
-    }
-    #[Outlet]
     public bool $isTableViewSelected {
         get => $this->selectedView === self::tableViewValue;
     }
