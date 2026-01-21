@@ -28,7 +28,7 @@ use const App\EntityPositionsMappingPreferencesKey;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 /**
- * @property string $name
+ * @property string|null $name
  * @property URL|null $url
  * @property float $zoom
  * @property Dictionary<float> $coordinate
@@ -234,7 +234,7 @@ final class Model extends ManagedObject
     #[Override]
     public function awakeFromFetch(): void
     {
-        $this->name = $this->project->name;
+        $this->name = $this->project?->name;
     }
 
     private function newEntity(Dictionary $dictionary): Entity

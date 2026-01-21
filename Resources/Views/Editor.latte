@@ -417,7 +417,7 @@
             const graphModel = JSON.parse(document.getElementById("current-graph-data")?.dataset?.json) ?? {$project->model?->graph}
             if (!graphModel?.nodes?.length) {
                 /**
-                 * @type { HTMLDivElement }
+                 * @type { HTMLDivElement|undefined }
                  */
                 const emptyState = document.getElementById("graph-empty-state")
                 if (emptyState) {
