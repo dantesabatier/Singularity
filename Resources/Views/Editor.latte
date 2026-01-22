@@ -167,7 +167,11 @@
                 {include sourceList from "SourceList.latte"}
             </div>
             <div id="content" class="split-panel scroll-view p-2">
-                {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
+                {if $isTableViewSelected}
+                    {include content from "Content.latte"}
+                {else}
+                    {include graphView from "GraphView.latte"}
+                {/if}
             </div>
             <div id="sidebar" class="split-panel scroll-view border-start border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                 {include inspector from "Inspector.latte"}
@@ -381,7 +385,6 @@
         }
         const initializeGraphView = () => {
             let initialized = false
-            const zoomLabel = document.getElementById("graph-zoom-level")
             const switcher = document.getElementById("interactive-switcher")
             const buttons = switcher.querySelectorAll(".segmented-control-button")
             buttons.forEach(button => {
@@ -432,6 +435,7 @@
                 }
                 let saveTimer
                 const updateZoom = () => {
+                    const zoomLabel = document.getElementById("graph-zoom-level")
                     if (zoomLabel) {
                         zoomLabel.innerText = Math.round(cy.zoom() * 100) + "%"
                     }
@@ -449,7 +453,6 @@
                  */
                 const container = document.getElementById("graph-canvas")
                 if (!container || container.offsetWidth === 0 || container.offsetHeight === 0) {
-                    setTimeout(initGraph, 50)
                     return
                 }
                 if (typeof cytoscapeDagre !== "undefined") {
@@ -615,6 +618,7 @@
                         push(window.location.origin + href)
                     })
                     initialized = true
+                    const zoomLabel = document.getElementById("graph-zoom-level")
                     if (zoomLabel) {
                         zoomLabel.innerText = Math.round(cy.zoom() * 100) + "%"
                     }
@@ -629,7 +633,7 @@
             /**
              * @type { boolean }
              */
-            const isGraphViewSelected = {$isGraphViewSelected}
+            const isGraphViewSelected = document.querySelector('.segmented-control-button[data-target="graphView"]')?.classList.contains('active')
             if (isGraphViewSelected) {
                 requestAnimationFrame(() => initGraph())
             }
