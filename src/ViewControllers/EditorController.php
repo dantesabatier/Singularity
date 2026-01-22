@@ -50,7 +50,6 @@ use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\EditorTableViewValue;
-use const App\GraphViewPreferencesKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
