@@ -31,7 +31,7 @@ use const Sabatier\Foundation\kCFBundleNameKey;
  * @property string|null $name
  * @property URL|null $url
  * @property float $zoom
- * @property Dictionary<float> $coordinate
+ * @property Dictionary<float> $pan
  * @property Project|null $project
  * @property Set<Entity> $entities
  * @property Set<FetchRequestTemplate> $fetchRequestTemplates
@@ -224,7 +224,7 @@ final class Model extends ManagedObject
                 "id" => $this->objectID->referenceObject,
                 "name" => $this->name,
                 "zoom" => $this->zoom,
-                "coordinate" => $this->coordinate,
+                "pan" => $this->pan,
                 "nodes" => $nodes,
                 "edges" => $edges
             ]);

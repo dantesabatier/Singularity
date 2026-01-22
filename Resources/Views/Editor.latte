@@ -185,7 +185,8 @@
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Model} {varType App\Model\Model $item}
+                    {elseif $item instanceof App\Model\Model}
+                    {varType App\Model\Model $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -202,7 +203,8 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\Entity} {varType App\Model\Entity $item}
+                    {elseif $item instanceof App\Model\Entity}
+                    {varType App\Model\Entity $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -220,22 +222,26 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\FetchRequestTemplate} {varType App\Model\FetchRequestTemplate $item}
+                    {elseif $item instanceof App\Model\FetchRequestTemplate}
+                    {varType App\Model\FetchRequestTemplate $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\UniquenessConstraint} {varType App\Model\UniquenessConstraint $item}
+                    {elseif $item instanceof App\Model\UniquenessConstraint}
+                    {varType App\Model\UniquenessConstraint $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->stringValue}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Property} {varType App\Model\Property $item}
+                    {elseif $item instanceof App\Model\Property}
+                    {varType App\Model\Property $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndex} {varType App\Model\FetchIndex $item}
+                    {elseif $item instanceof App\Model\FetchIndex}
+                    {varType App\Model\FetchIndex $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <div class="dropup">
@@ -253,17 +259,39 @@
                                 </ul>
                             </div>
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndexElement} {varType App\Model\FetchIndexElement $item}
+                    {elseif $item instanceof App\Model\FetchIndexElement}
+                    {varType App\Model\FetchIndexElement $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->propertyName}</span>
                         </div>
-                    {elseif $item instanceof App\Model\AccessControl} {varType App\Model\AccessControl $item}
+                    {elseif $item instanceof App\Model\CompositeType}
+                    {varType App\Model\CompositeType $item}
+                        <div class="breadcrumb-link">
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
+                            <div class="dropup">
+                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {$item->name}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li n:foreach="$item->elements as $element">
+                                        <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$element->objectID->referenceObject}">
+                                            {var string $icon = img($element)}
+                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                            <span>{$element->name}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    {elseif $item instanceof App\Model\AccessControl}
+                    {varType App\Model\AccessControl $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Role} {varType App\Model\Role $item}
+                    {elseif $item instanceof App\Model\Role}
+                    {varType App\Model\Role $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
@@ -444,7 +472,7 @@
                         request("Model", {
                             objectID: graphModel?.id,
                             zoom: cy.zoom(),
-                            coordinate: cy.pan()
+                            pan: cy.pan()
                         }, "PATCH")
                     }, 500)
                 }
@@ -460,7 +488,7 @@
                 }
                 try {
                     const zoom = graphModel?.zoom ?? 0.1
-                    const pan = graphModel?.coordinate ?? {
+                    const pan = graphModel?.pan ?? {
                         x: 0,
                         y: 0
                     }

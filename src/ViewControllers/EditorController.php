@@ -382,17 +382,11 @@ final class EditorController extends ProjectController
     public function reorder(): void
     {
         $body = $this->request->parsedBody;
-        /** @var int<0, max> $fromIndex */
         $fromIndex = $body["fromIndex"] ?? throw new BadRequestException();
-        /** @var int<0, max> $toIndex */
         $toIndex = $body["toIndex"] ?? throw new BadRequestException();
-        /** @var string $key */
         $key = $body["key"] ?? throw new BadRequestException();
-        /** @var string $name */
         $name = $body["entity"] ?? throw new BadRequestException();
-        /** @var Model $model */
         $model = $this->project->model;
-        /** @var Entity $entity */
         $entity = $model->entitiesByName[$name] ?? throw new NotFoundException();
         if ($fromIndex === $toIndex) {
             $this->data = $entity;
@@ -400,23 +394,21 @@ final class EditorController extends ProjectController
         }
         /** @var ArrayClass<Property> $subset */
         $subset = $entity->valueForKey($key);
-        $subset = new ArrayClass($subset->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $subset = $subset->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]);
         /** @var Property $moved */
         $moved = $subset[$fromIndex];
         /** @var Property $target */
         $target = $subset[$toIndex];
         /** @var ArrayClass<Property> $properties */
-        $properties = new ArrayClass($entity->attributes->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $properties = $entity->attributes->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]);
         $properties->appendContentsOf($entity->relationships->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
         $properties->appendContentsOf($entity->fetchedProperties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
         $properties->remove($moved);
-        $max = $properties->indexBefore($subset->endIndex);
         /** @var int<0, max> $globalToIndex */
         $globalToIndex = $properties->indexOf($target);
         if ($toIndex > $fromIndex) {
             $globalToIndex += 1;
         }
-        $globalToIndex = max(min($globalToIndex, $max), 0);
         $properties->insertAt($moved, $globalToIndex);
         $properties = $properties->map(function (Property $property, int $idx): Property {
             $property->position = $idx;

@@ -74,7 +74,7 @@ final class LatteRenderer extends Renderer
             $object instanceof Project => "Project",
             $object instanceof Model => "Model",
             $object instanceof Entity => "E",
-            $object instanceof AccessControl => "Hash",
+            $object instanceof AccessControl => "Lock",
             $object instanceof Attribute => $this->name($object->type),
             $object instanceof Relationship => $object->isToMany ? "M" : "O",
             $object instanceof FetchedProperty, $object instanceof FetchRequestTemplate => "F",
