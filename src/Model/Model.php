@@ -162,9 +162,10 @@ final class Model extends ManagedObject
                         "deleteRule" => $relationship->deleteRule->name,
                     ];
                 }
-                $nodes[] = [
+                $node = [
                     "data" => [
                         "id" => $entity->name,
+                        "entityID" => $entity->objectID->referenceObject,
                         "label" => $entity->name,
                         "type" => $type,
                         "attributes" => $attributesData,
@@ -175,6 +176,11 @@ final class Model extends ManagedObject
                     ],
                     "classes" => $classes
                 ];
+                $position = $entity->position;
+                if (!empty($position["x"]) || !empty($position["y"])) {
+                    $node["position"] = $position;
+                }
+                $nodes[] = $node;
                 if ($parentName !== null) {
                     $edges[] = [
                         "data" => [

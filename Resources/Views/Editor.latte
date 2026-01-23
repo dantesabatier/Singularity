@@ -505,6 +505,19 @@
                         }, "PATCH")
                     }, 500)
                 }
+                const saveNodePosition = node => {
+                    const entityID = node.data("entityID")
+                    if (entityID) {
+                        const position = node.position()
+                        request("Entity", {
+                            objectID: entityID,
+                            position: {
+                                x: position.x,
+                                y: position.y
+                            }
+                        }, "PATCH")
+                    }
+                }
                 /**
                  * @type { HTMLDivElement|undefined }
                  */
@@ -520,6 +533,18 @@
                     const pan = graphModel?.pan ?? {
                         x: 0,
                         y: 0
+                    }
+                    const hasSavedPositions = elements.some(element => element.position !== undefined)
+                    const layout = hasSavedPositions ? {
+                        name: "preset"
+                    } : {
+                        name: "dagre",
+                        rankDir: "TB",
+                        nodeSep: 80,
+                        rankSep: 100,
+                        padding: 50,
+                        animate: false,
+                        fit: false
                     }
                     cy = cytoscape({
                         container: container,
@@ -587,15 +612,7 @@
                                 }
                             }
                         ],
-                        layout: {
-                            name: "dagre",
-                            rankDir: "TB",
-                            nodeSep: 80,
-                            rankSep: 100,
-                            padding: 50,
-                            animate: false,
-                            fit: false
-                        },
+                        layout: layout,
                     })
 
                     window.cy = cy
@@ -660,7 +677,12 @@
                             nodeSep: 80,
                             rankSep: 100,
                             padding: 50,
-                            animate: true
+                            animate: true,
+                            stop: () => {
+                                cy.nodes().forEach(node => {
+                                    saveNodePosition(node)
+                                })
+                            }
                         }).run()
                     }
                     cy.on("zoom pan", updateZoom)
@@ -673,6 +695,9 @@
                             return
                         }
                         push(window.location.origin + href)
+                    })
+                    cy.on("dragfree", "node", evt => {
+                        saveNodePosition(evt.target)
                     })
                     initialized = true
                     const zoomLabel = document.getElementById("graph-zoom-level")
