@@ -74,14 +74,14 @@ final class LatteRenderer extends Renderer
             $object instanceof Project => "Project",
             $object instanceof Model => "Model",
             $object instanceof Entity => "E",
-            $object instanceof AccessControl => "Lock",
+            $object instanceof AccessControl => "AccessControl",
+            $object instanceof Role => "Role",
             $object instanceof Attribute => $this->name($object->type),
             $object instanceof Relationship => $object->isToMany ? "M" : "O",
             $object instanceof FetchedProperty, $object instanceof FetchRequestTemplate => "F",
             $object instanceof FetchIndex => "I",
             $object instanceof FetchIndexElement => ($property = $object->property) ? $this->image($property) : $this->name(AttributeType::undefined),
             $object instanceof UniquenessConstraint => "U",
-            $object instanceof Role => $this->name(AttributeType::undefined),
             default => substring_to_index($object->entity->name, 1)
         };
     }
