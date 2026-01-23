@@ -16,6 +16,7 @@ use Sabatier\Foundation\SortDescriptor;
  * @property bool $isAbstract
  * @property bool $isExpanded
  * @property bool $isAuthorizable
+ * @property Dictionary<float> $position
  * @property-read int $subentitiesCount
  * @property-read int $indexesCount
  * @property-read bool $isLeaf
