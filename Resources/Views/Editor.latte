@@ -189,38 +189,46 @@
                     {varType App\Model\Model $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <div class="dropup">
-                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {$project->name}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li n:foreach="$item->entities as $entity">
-                                        <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
-                                            <img class="breadcrumb-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
-                                            <span>{$entity->name}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            {if $item->entities->isEmpty}
+                                <span>{$item->name}</span>
+                            {else}
+                                <div class="dropup">
+                                    <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {$project->name}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li n:foreach="$item->entities as $entity">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                                                <img class="breadcrumb-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
+                                                <span>{$entity->name}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {/if}
                         </div>
                     {elseif $item instanceof App\Model\Entity}
                     {varType App\Model\Entity $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <div class="dropup">
-                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {$item->name}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li n:foreach="$item->properties as $property">
-                                        <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">
-                                            {var string $icon = img($property)}
-                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
-                                            <span>{$property->name}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            {if $item->properties->isEmpty}
+                                <span>{$item->name}</span>
+                            {else}
+                                <div class="dropup">
+                                    <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {$item->name}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li n:foreach="$item->properties as $property">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">
+                                                {var string $icon = img($property)}
+                                                <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                                <span>{$property->name}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {/if}
                         </div>
                     {elseif $item instanceof App\Model\FetchRequestTemplate}
                     {varType App\Model\FetchRequestTemplate $item}
@@ -238,39 +246,47 @@
                     {varType App\Model\Property $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <div class="dropup">
-                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {$item->name}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li n:foreach="$item->accessControls as $accessControl">
-                                        <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$accessControl->objectID->referenceObject}">
-                                            {var string $icon = img($accessControl)}
-                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
-                                            <span>{$accessControl->name}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            {if $item->accessControls->isEmpty}
+                                <span>{$item->name}</span>
+                            {else}
+                                <div class="dropup">
+                                    <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {$item->name}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li n:foreach="$item->accessControls as $accessControl">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$selectedEntity?->objectID->referenceObject}&property={$item->objectID->referenceObject}&accessControl={$accessControl->objectID->referenceObject}">
+                                                {var string $icon = img($accessControl)}
+                                                <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                                <span>{$accessControl->name}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {/if}
                         </div>
                     {elseif $item instanceof App\Model\FetchIndex}
                     {varType App\Model\FetchIndex $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <div class="dropup">
-                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {$item->name}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li n:foreach="$item->elements as $element">
-                                        <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">
-                                            {var string $icon = img($element)}
-                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
-                                            <span>{$element->propertyName}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            {if $item->elements->isEmpty}
+                                <span>{$item->name}</span>
+                            {else}
+                                <div class="dropup">
+                                    <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {$item->name}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li n:foreach="$item->elements as $element">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">
+                                                {var string $icon = img($element)}
+                                                <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                                <span>{$element->propertyName}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {/if}
                         </div>
                     {elseif $item instanceof App\Model\FetchIndexElement}
                     {varType App\Model\FetchIndexElement $item}
@@ -282,39 +298,47 @@
                     {varType App\Model\CompositeType $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <div class="dropup">
-                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {$item->name}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li n:foreach="$item->elements as $element">
-                                        <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$element->objectID->referenceObject}">
-                                            {var string $icon = img($element)}
-                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
-                                            <span>{$element->name}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            {if $item->elements->isEmpty}
+                                <span>{$item->name}</span>
+                            {else}
+                                <div class="dropup">
+                                    <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {$item->name}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li n:foreach="$item->elements as $element">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&composite={$item->objectID->referenceObject}&property={$element->objectID->referenceObject}">
+                                                {var string $icon = img($element)}
+                                                <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                                <span>{$element->name}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {/if}
                         </div>
                     {elseif $item instanceof App\Model\AccessControl}
                     {varType App\Model\AccessControl $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            <div class="dropup">
-                                <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                                    {$item->name}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li n:foreach="$item->roles as $role">
-                                        <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$role->objectID->referenceObject}">
-                                            {var string $icon = img($role)}
-                                            <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
-                                            <span>{$role->name}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                            {if $item->roles->isEmpty}
+                                <span>{$item->name}</span>
+                            {else}
+                                <div class="dropup">
+                                    <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {$item->name}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li n:foreach="$item->roles as $role">
+                                            <div class="dropdown-item">
+                                                {var string $icon = img($role)}
+                                                <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
+                                                <span>{$role->name}</span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {/if}
                         </div>
                     {elseif $item instanceof App\Model\Role}
                     {varType App\Model\Role $item}
