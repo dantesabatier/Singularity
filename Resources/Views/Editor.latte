@@ -679,9 +679,22 @@
                             padding: 50,
                             animate: true,
                             stop: () => {
-                                cy.nodes().forEach(node => {
-                                    saveNodePosition(node)
-                                })
+                                const entities = cy.nodes().map(node => ({
+                                    objectID: node.data("entityID"),
+                                    name: node.data("label"),
+                                    position: {
+                                        x: node.position("x"),
+                                        y: node.position("y")
+                                    }
+                                }))
+                                if (entities.length > 0) {
+                                    request("Model", {
+                                        objectID: graphModel?.id,
+                                        zoom: cy.zoom(),
+                                        pan: cy.pan(),
+                                        entities: entities
+                                    }, "PATCH")
+                                }
                             }
                         }).run()
                     }
