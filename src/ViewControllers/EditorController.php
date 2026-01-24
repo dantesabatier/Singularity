@@ -387,6 +387,7 @@ final class EditorController extends ProjectController
         $key = $body["key"] ?? throw new BadRequestException();
         $name = $body["entity"] ?? throw new BadRequestException();
         $model = $this->project->model;
+        /** @var Entity $entity */
         $entity = $model->entitiesByName[$name] ?? throw new NotFoundException();
         if ($fromIndex === $toIndex) {
             $this->data = $entity;
