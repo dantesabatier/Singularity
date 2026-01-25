@@ -31,8 +31,6 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
-use Sabatier\Foundation\Predicates\ComparisonPredicate;
-use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
@@ -53,7 +51,6 @@ use const App\EditorTableViewValue;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
-use const Sabatier\Service\ServiceObjectIDKey;
 
 #[Endpoint("Editor")]
 final class EditorController extends ProjectController
@@ -281,9 +278,7 @@ final class EditorController extends ProjectController
                 "accessControl" => AccessControl::class,
                 "role" => Role::class,
             };
-            $fetchRequest = $managedObjectClass::fetchRequest();
-            $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(ServiceObjectIDKey), Expression::expressionForConstantValue($objectID));
-            if (!($selection = $this->managedObjectContext->fetch($fetchRequest)->first)) {
+            if (!($selection = $this->fetchByReference($managedObjectClass, $objectID))) {
                 break;
             }
             if ($selection instanceof Entity) {

@@ -9,9 +9,6 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 
-/**
- * @extends FetchController<Project>
- */
 abstract class ProjectController extends FetchController
 {
     #[Outlet]

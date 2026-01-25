@@ -1,7 +1,7 @@
 {templateType App\ViewControllers\EditorController}
 {define compositeTypes}
-    <div n:foreach="$project->model->compositeTypes as $compositeType" class="source-row{$compositeType->objectID->referenceObject === $selectedCompositeType?->objectID?->referenceObject ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$compositeType->objectID->referenceObject}" style="--level: 0">
-        <span style="width: 16px; display: inline-block;"></span>
+    <div n:foreach="$project->model->compositeTypes as $compositeType" class="source-row{$compositeType->isEqual($selectedCompositeType) ? ' active'}" data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$compositeType->objectID->referenceObject}" style="--level: 0">
+        <span class="tree-spacer"></span>
         <img class="source-icon" src="/Resources/Images/C@1x.png" srcset="/Resources/Images/C@2x.png 2x, /Resources/Images/C@3x.png 3x" alt="">
         <span class="source-label">{$compositeType->name}</span>
     </div>

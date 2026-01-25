@@ -13,23 +13,23 @@ use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Service\ViewController;
 use const Sabatier\Service\ServiceObjectIDKey;
 
-/**
- * @template ResultType of ManagedObject
- */
 abstract class FetchController extends ViewController
 {
     /**
+     * @template ResultType of ManagedObject
      * @param class-string<ResultType> $managedObjectClass
      * @param int $referenceObject
-     * @param Dictionary<mixed> $serialization
+     * @param Dictionary<mixed>|null $serialization
      * @return ResultType|null
      * @throws Exception
      */
-    protected function fetchByReference(string $managedObjectClass, int $referenceObject, Dictionary $serialization)
+    protected function fetchByReference(string $managedObjectClass, int $referenceObject, ?Dictionary $serialization = null)
     {
         $fetchRequest = $managedObjectClass::fetchRequest();
         $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass([ServiceObjectIDKey, $referenceObject]));
-        $fetchRequest->serialization = $serialization;
+        if ($serialization) {
+            $fetchRequest->serialization = $serialization;
+        }
         return $this->managedObjectContext->fetch($fetchRequest)->first ?? null;
     }
 

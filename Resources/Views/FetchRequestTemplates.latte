@@ -1,11 +1,7 @@
 {templateType App\ViewControllers\EditorController}
 {define fetchRequestTemplates}
-    <div n:foreach="$project->model->fetchRequestTemplates as $template"
-            class="source-row{$template->objectID->referenceObject === $selectedFetchRequestTemplate?->objectID?->referenceObject ? ' active'}"
-            data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$template->objectID->referenceObject}"
-            style="--level: 0">
-
-        <span style="width: 16px; display: inline-block;"></span>
+    <div n:foreach="$project->model->fetchRequestTemplates as $template" class="source-row{$template->isEqual($selectedFetchRequestTemplate) ? ' active'}"  data-href="/Editor?project={$project?->objectID?->referenceObject}&fetchRequest={$template->objectID->referenceObject}" style="--level: 0">
+        <span class="tree-spacer"></span>
         <img class="source-icon" src="/Resources/Images/F@1x.png" srcset="/Resources/Images/F@2x.png 2x, /Resources/Images/F@3x.png 3x" alt="">
         <span class="source-label">{$template->name}</span>
     </div>
