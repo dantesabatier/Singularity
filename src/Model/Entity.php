@@ -106,7 +106,7 @@ final class Entity extends ManagedObject
                 foreach ($this->subentities as $subentity) {
                     $attributeNames->appendContentsOf($subentity->attributes->map($transform));
                 }
-                $attributeNames[] = "Expression";
+                $attributeNames->append("Expression");
                 $this->attributeNames = $attributeNames;
             }
             return $this->attributeNames;

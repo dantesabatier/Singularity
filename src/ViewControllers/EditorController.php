@@ -257,8 +257,8 @@ final class EditorController extends ProjectController
     public function viewWillLoad(): void
     {
         $project = $this->project;
-        $this->breadcrumb[] = $project;
         $model = $project->model ?? throw new NotFoundException();
+        $this->breadcrumb[] = $project;
         $this->breadcrumb[] = $model;
         $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role"];
         foreach ($keys as $key) {

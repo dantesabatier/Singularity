@@ -3,7 +3,7 @@
 {block title}{$project->name}{/block}
 {block content}
     <div id="main" class="user-select-none">
-        <div id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
+        <div n:if="$isGraphViewSelected" id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
         <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
             <div class="container-fluid justify-content-start align-items-center px-2">
                 <div class="navbar-brand mb-0 me-2">
@@ -498,7 +498,7 @@
                 return headerH + attrH + extraH + 2
             }
             let cy = null
-            const graphModel = JSON.parse(document.getElementById("current-graph-data")?.dataset?.json) ?? {$project->model?->graph}
+            const graphModel = JSON.parse(document.getElementById("current-graph-data")?.dataset?.json ?? "{}")
             if (!graphModel?.nodes?.length) {
                 /**
                  * @type { HTMLDivElement|undefined }
