@@ -30,7 +30,7 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\random_color;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
-use const Sabatier\CoreData\ModelURLOption;
+use const Sabatier\CoreData\ManagedObjectModelURLOption;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint("/")]
@@ -158,9 +158,9 @@ final class WelcomeController extends ViewController
         $managedObjectModel = new ManagedObjectModel($sourceModelURL);
         $coordinator = new PersistentStoreCoordinator($managedObjectModel);
         $sourceURL = new URL("sql://$oldName");
-        $sourceOptions = new Dictionary([ModelURLOption => $sourceModelURL]);
+        $sourceOptions = new Dictionary([ManagedObjectModelURLOption => $sourceModelURL]);
         $destinationURL = new URL("sql://$newName");
-        $destinationOptions = new Dictionary([ModelURLOption => $destinationModelURL]);
+        $destinationOptions = new Dictionary([ManagedObjectModelURLOption => $destinationModelURL]);
         $coordinator->replacePersistentStore($destinationURL, $destinationOptions, $sourceURL, $sourceOptions, PersistentStoreType::sql);
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = $bundle->infoDictionary;
