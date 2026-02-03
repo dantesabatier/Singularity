@@ -4,6 +4,7 @@ namespace App\FileWriters\Generators;
 
 use App\Model\AccessControl;
 use App\Model\Property;
+use App\Model\Relationship;
 use App\Model\Role;
 use Sabatier\Foundation\Set;
 use Sabatier\Service\AuthorizationScope;
@@ -29,7 +30,7 @@ final readonly class PropertyAttributeGenerator
     {
         /** @var Set<string> $attributes */
         $attributes = new Set();
-        if ($property->isOwner) {
+        if ($property instanceof Relationship && $property->isOwner) {
             $attributes->insert("#[Owner]");
         }
         $attributes->formUnion($property->accessControls->map(function (AccessControl $accessControl) use ($uses): string {
@@ -42,6 +43,6 @@ final readonly class PropertyAttributeGenerator
 
     public function shouldGenerateAttributes(Property $property): bool
     {
-        return $property->isOwner && !$property->accessControls->isEmpty;
+        return ($property instanceof Relationship && $property->isOwner) || !$property->accessControls->isEmpty;
     }
 }

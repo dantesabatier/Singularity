@@ -20,7 +20,7 @@ use function Sabatier\Foundation\class_name;
 
 final readonly class PropertyDocBlockGenerator
 {
-    public function __construct(private PropertyAttributeGenerator $accessControlGenerator)
+    public function __construct(private PropertyAttributeGenerator $propertyAttributeGenerator)
     {
     }
 
@@ -65,7 +65,7 @@ final readonly class PropertyDocBlockGenerator
         if (!$type) {
             return null;
         }
-        if ($this->accessControlGenerator->shouldGenerateAttributes($attribute)) {
+        if ($this->propertyAttributeGenerator->shouldGenerateAttributes($attribute)) {
             return null;
         }
         if (str_contains($declaration, "\$$attribute->name")) {
@@ -137,7 +137,7 @@ final readonly class PropertyDocBlockGenerator
         if (in_array($relationship->name, $reservedPropertyNames)) {
             return null;
         }
-        if ($this->accessControlGenerator->shouldGenerateAttributes($relationship)) {
+        if ($this->propertyAttributeGenerator->shouldGenerateAttributes($relationship)) {
             return null;
         }
         if (str_contains($declaration, "\$$relationship->name")) {
@@ -166,7 +166,7 @@ final readonly class PropertyDocBlockGenerator
      */
     private function generateFetchedProperty(FetchedProperty $fetchedProperty, string $declaration, string $arrayClassName): ?GeneratedProperty
     {
-        if ($this->accessControlGenerator->shouldGenerateAttributes($fetchedProperty)) {
+        if ($this->propertyAttributeGenerator->shouldGenerateAttributes($fetchedProperty)) {
             return null;
         }
         if (str_contains($declaration, "\$$fetchedProperty->name")) {

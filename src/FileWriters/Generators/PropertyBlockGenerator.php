@@ -23,7 +23,7 @@ use function Sabatier\Foundation\class_name;
  */
 final readonly class PropertyBlockGenerator
 {
-    public function __construct(private PropertyAttributeGenerator $accessControlGenerator)
+    public function __construct(private PropertyAttributeGenerator $propertyAttributeGenerator)
     {
     }
 
@@ -58,7 +58,7 @@ final readonly class PropertyBlockGenerator
      */
     private function generateAttributeBlock(Attribute $attribute, Set $uses, string $declaration): ?PropertyBlock
     {
-        if (!$this->accessControlGenerator->shouldGenerateAttributes($attribute)) {
+        if (!$this->propertyAttributeGenerator->shouldGenerateAttributes($attribute)) {
             return null;
         }
         if (str_contains($declaration, "\$$attribute->name")) {
@@ -67,7 +67,7 @@ final readonly class PropertyBlockGenerator
         if (!($type = $this->getAttributeType($attribute))) {
             return null;
         }
-        return new PropertyBlock($attribute->name, $type, $attribute->isOptional && $type !== "mixed", $this->accessControlGenerator->generateAttributes($attribute, $uses));
+        return new PropertyBlock($attribute->name, $type, $attribute->isOptional && $type !== "mixed", $this->propertyAttributeGenerator->generateAttributes($attribute, $uses));
     }
 
     private function getAttributeType(Attribute $attribute): ?string
@@ -111,13 +111,13 @@ final readonly class PropertyBlockGenerator
      */
     private function generateRelationshipBlock(Relationship $relationship, Set $uses, string $declaration, string $setClassName): ?PropertyBlock
     {
-        if (!$this->accessControlGenerator->shouldGenerateAttributes($relationship)) {
+        if (!$this->propertyAttributeGenerator->shouldGenerateAttributes($relationship)) {
             return null;
         }
         if (str_contains($declaration, "\$$relationship->name")) {
             return null;
         }
-        return new PropertyBlock($relationship->name, $relationship->isToMany ? $setClassName : $relationship->lazyDestinationEntityName, $relationship->isOptional, $this->accessControlGenerator->generateAttributes($relationship, $uses));
+        return new PropertyBlock($relationship->name, $relationship->isToMany ? $setClassName : $relationship->lazyDestinationEntityName, $relationship->isOptional, $this->propertyAttributeGenerator->generateAttributes($relationship, $uses));
     }
 
     /**
@@ -137,12 +137,12 @@ final readonly class PropertyBlockGenerator
     private function generateFetchedPropertyBlock(FetchedProperty $fetchedProperty, Set $uses, string $declaration, string $arrayClassName
     ): ?PropertyBlock
     {
-        if (!$this->accessControlGenerator->shouldGenerateAttributes($fetchedProperty)) {
+        if (!$this->propertyAttributeGenerator->shouldGenerateAttributes($fetchedProperty)) {
             return null;
         }
         if (str_contains($declaration, "\$$fetchedProperty->name")) {
             return null;
         }
-        return new PropertyBlock($fetchedProperty->name, $arrayClassName, false, $this->accessControlGenerator->generateAttributes($fetchedProperty, $uses));
+        return new PropertyBlock($fetchedProperty->name, $arrayClassName, false, $this->propertyAttributeGenerator->generateAttributes($fetchedProperty, $uses));
     }
 }
