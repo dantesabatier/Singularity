@@ -68,6 +68,11 @@
                                                         </button>
                                                     </li>
                                                     <li>
+                                                        <button class="dropdown-item" onclick="rename({$project})">
+                                                            <i class="bi bi-folder"></i> <span>Rename Project...</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
                                                         <button class="dropdown-item" onclick="openPath('{$path}')">
                                                             <i class="bi bi-folder"></i> <span>Show in Explorer</span>
                                                         </button>
@@ -181,6 +186,29 @@
                         <span>Create Project</span>
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade ide-modal" id="editProject" tabindex="-1" aria-labelledby="editProjectLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="editProjectLabel">Rename Project</h6>
+                </div>
+                <form action="/Rename" method="POST">
+                    <div class="modal-body">
+                        <div class="modal-form-field">
+                            <label for="name" class="modal-form-label">Project Name</label>
+                            <input type="text" name="name" id="name" class="form-control" placeholder="Enter new project name" spellcheck="false" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                    <input type="hidden" name="objectID">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Rename</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -16,6 +16,11 @@
         <InternalMethod errorLevel="suppress"/>
         <InternalProperty errorLevel="suppress"/>
         <RiskyTruthyFalsyComparison errorLevel="suppress"/>
+        <UnresolvableInclude>
+            <errorLevel type="suppress">
+                <file name="src/ViewControllers/WelcomeController.php"/>
+            </errorLevel>
+        </UnresolvableInclude>
     </issueHandlers>
     <plugins>
         <pluginClass class="Sabatier\Foundation\Plugins\Psalm\Plugin"/>

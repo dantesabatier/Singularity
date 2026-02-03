@@ -21,6 +21,7 @@ use Sabatier\Foundation\KeyValueObservingOptions;
  * @property int|null $maxCount
  * @property bool $isMinCountBounded
  * @property bool $isMaxCountBounded
+ * @property bool $isOwner
  */
 final class Relationship extends Property
 {

@@ -26,7 +26,6 @@ use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
-use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
@@ -314,7 +313,6 @@ final class EditorController extends ProjectController
     public function save(): void
     {
         $project = $this->project;
-        $project->lastModifiedDate = new Date();
         $url = $project->url ?? throw new BadRequestException();
         $fileWriter = new ProjectFileWriter($url, $project);
         $fileWriter->save();
@@ -331,7 +329,6 @@ final class EditorController extends ProjectController
         /** @var string $path */
         $path = $body["path"] ?? throw new BadRequestException();
         $project = $this->project ?? throw new BadRequestException();
-        $project->lastModifiedDate = new Date();
         /** @var Model $model */
         $model = $project->model;
         $model->load(URL::fileURL($path));

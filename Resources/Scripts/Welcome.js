@@ -56,6 +56,29 @@ const openProject = async () => {
         })
     }
 }
+/**
+ * @param { object } project
+ */
+const rename = (project) => {
+    const element = document.getElementById("editProject")
+    /**
+     * @type { HTMLFormElement }
+     */
+    const form = element.querySelector(".modal-content form")
+    /**
+     * @type { HTMLInputElement }
+     */
+    const nameElement = form.querySelector("input[type=text]")
+    nameElement.value = project.name
+    /**
+     * @type { HTMLInputElement }
+     */
+    const projectElement = form.querySelector("input[name=objectID]")
+    projectElement.value = project.objectID
+    const modal = new bootstrap.Modal(element, {})
+    modal.show(undefined)
+    element.addEventListener("shown.bs.modal", () => nameElement.focus())
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("new-project-form")

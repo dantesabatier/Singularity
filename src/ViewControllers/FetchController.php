@@ -11,7 +11,7 @@ use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\URLComponents;
 use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Service\ViewController;
-use const Sabatier\Service\ServiceObjectIDKey;
+use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
 abstract class FetchController extends ViewController
 {
@@ -26,7 +26,7 @@ abstract class FetchController extends ViewController
     protected function fetchByReference(string $managedObjectClass, int $referenceObject, ?Dictionary $serialization = null)
     {
         $fetchRequest = $managedObjectClass::fetchRequest();
-        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass([ServiceObjectIDKey, $referenceObject]));
+        $fetchRequest->predicate = Predicate::format("%K == %s", new ArrayClass([ManagedObjectObjectIDKey, $referenceObject]));
         if ($serialization) {
             $fetchRequest->serialization = $serialization;
         }

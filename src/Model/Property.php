@@ -11,7 +11,6 @@ use Sabatier\Foundation\Set;
  * @property bool $isOptional
  * @property bool $isTransient
  * @property bool $isSensitive
- * @property bool $isOwner
  * @property string|null $renamingIdentifier
  * @property string|null $versionHashModifier
  * @property mixed $minValue

@@ -344,3 +344,72 @@ body.in-new-project #project-actions {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* ============================================
+   Modal Edit Project - IDE Integration
+   ============================================ */
+
+#editProject .modal-content {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    border-radius: 8px;
+}
+
+#editProject .modal-body {
+    padding: 16px;
+}
+
+#editProject .modal-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0;
+}
+
+#editProject .form-label {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+#editProject .form-control {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 6px 10px;
+}
+
+#editProject .form-control:focus {
+    background-color: var(--bg-primary);
+    border-color: var(--border-focus);
+    color: var(--text-bright);
+    box-shadow: 0 0 0 1px var(--border-focus);
+    outline: none;
+}
+
+#editProject .modal-footer {
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 0 0 8px 8px;
+}
+
+#editProject .modal-footer .btn {
+    min-width: 80px;
+}
+
+/* Fade animation */
+#editProject.fade .modal-dialog {
+    transform: scale(0.98) translateY(-4px);
+    opacity: 0;
+    transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), opacity 0.1s linear;
+}
+
+#editProject.show .modal-dialog {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}

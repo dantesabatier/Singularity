@@ -22,6 +22,12 @@ use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
  */
 final class Project extends ManagedObject
 {
+    #[Override]
+    public function willSave(): void
+    {
+        $this->lastModifiedDate = new Date();
+    }
+
     /**
      * @throws Exception
      */
