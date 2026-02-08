@@ -4,12 +4,11 @@
 
 namespace App\ViewControllers;
 
+use App\Bundles\ExportDatabaseTransaction;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
@@ -17,15 +16,7 @@ use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\JSONDecorator;
-use function Sabatier\Foundation\fatal_error;
-use function Sabatier\Foundation\parse_env_file;
 use const App\EntityPositionsMappingPreferencesKey;
-use const Sabatier\CoreData\SQLSchemaCredentialPassword;
-use const Sabatier\CoreData\SQLSchemaCredentialUser;
-use const Sabatier\CoreData\SQLSchemaCredentialUserDefault;
-use const Sabatier\CoreData\SQLSchemaHost;
-use const Sabatier\CoreData\SQLSchemaHostDefault;
-use const Sabatier\CoreData\SQLSchemaName;
 
 #[Endpoint("Viewer")]
 final class ViewerController extends ProjectController
@@ -50,24 +41,12 @@ final class ViewerController extends ProjectController
     {
         $body = $this->request->parsedBody;
         $directory = $body["directory"] ?? throw new BadRequestException();
-        $project = $this->project;
-        /** @var URL $projectURL */
-        $projectURL = $project->url;
-        $environmentURL = $projectURL->appendingPathComponent(".env");
-        $environmentPath = $environmentURL->path;
-        FileManager::default()->fileExists($environmentPath) ?: fatal_error("Unable to find the environment file");
-        $environment = Dictionary::dictionaryWithArray(parse_env_file($environmentPath));
-        $name = $environment[SQLSchemaName] ?? fatal_error("Unable to find the SQL schema name");
-        $user = $environment[SQLSchemaCredentialUser] ?? SQLSchemaCredentialUserDefault;
-        $password = $environment[SQLSchemaCredentialPassword];
-        $host = $environment[SQLSchemaHost] ?? SQLSchemaHostDefault;
-        $date = new Date()->format("Y-m-d_H-i-s");
-        $fileURL = URL::fileURL($directory)->appendingPathComponent("backup_{$name}_$date.sql");
-        $command = sprintf("mariadb-dump --user=%s --password=%s --host=%s %s > %s", escapeshellarg($user), escapeshellarg($password), escapeshellarg($host), escapeshellarg($name), escapeshellarg($fileURL->path));
-        exec($command, $output, $result);
-        $result === 0 ?: fatal_error("Database export failed: " . implode("\n", $output));
-        $this->data = ["url" => $fileURL];
+        $destinationDirectory = URL::fileURL($directory);
+        $transaction = new ExportDatabaseTransaction($this->project, $destinationDirectory);
+        $transaction->execute();
+        $this->data = ["url" => $transaction->fileURL];
     }
+
 
     /**
      * @throws Exception

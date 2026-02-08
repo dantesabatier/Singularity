@@ -5,13 +5,12 @@ namespace App\Bundles;
 use App\Model\Project;
 use Exception;
 use Override;
-use function Sabatier\Foundation\fatal_error;
 
-final class OpenBundleTransaction implements Transaction
+final readonly class OpenBundleTransaction implements Transaction
 {
-    private ?Project $project = null;
+    public Project $project;
 
-    public function __construct(private readonly ProjectBundleLoader $loader)
+    public function __construct(private ProjectBundleLoader $loader)
     {
     }
 
@@ -22,10 +21,5 @@ final class OpenBundleTransaction implements Transaction
     public function execute(): void
     {
         $this->project = $this->loader->load();
-    }
-
-    public function project(): Project
-    {
-        return $this->project ?? fatal_error("Transaction not executed");
     }
 }

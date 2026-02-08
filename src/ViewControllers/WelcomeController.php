@@ -100,9 +100,8 @@ final class WelcomeController extends ViewController
         $loader = new ProjectBundleLoader($url, $this->managedObjectContext);
         $transaction = new OpenBundleTransaction($loader);
         $transaction->execute();
-        $project = $transaction->project();
         $this->managedObjectContext->save();
-        $this->data = $project;
+        $this->data = $transaction->project;
     }
 
 
