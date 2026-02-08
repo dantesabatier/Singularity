@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Bundles;
+
+use App\Model\Project;
+use Exception;
+use Sabatier\CoreData\ManagedObjectModel;
+use Sabatier\CoreData\PersistentStoreCoordinator;
+use Sabatier\CoreData\PersistentStoreType;
+use Sabatier\Foundation\Bundle;
+use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\FileManager;
+use Sabatier\Foundation\PropertyListSerialization;
+use Sabatier\Foundation\URL;
+use const Sabatier\CoreData\ManagedObjectModelURLOption;
+use const Sabatier\Foundation\kCFBundleNameKey;
+
+final readonly class RenameBundleTransaction implements Transaction
+{
+    public function __construct(private Project $project, private string $newName)
+    {
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function execute(): void
+    {
+        $bundle = Bundle::bundleWithURL($this->project->url);
+        $oldName = $bundle->object(kCFBundleNameKey);
+        $oldName !== $this->newName ?: throw new Exception("Bundle already has this name");
+        $this->autoloadIfNeeded($bundle);
+        [$sourceModelURL, $destinationModelURL] = $this->resolveModelURLs($bundle, $oldName);
+        $this->migrateStore($oldName, $this->newName, $sourceModelURL, $destinationModelURL);
+        $this->updateInfoPlist($bundle);
+        $this->project->name = $this->newName;
+        FileManager::default()->removeItem($sourceModelURL);
+    }
+
+    private function autoloadIfNeeded(Bundle $bundle): void
+    {
+        $autoload = $bundle->bundleURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php")->path;
+        if (FileManager::default()->fileExists($autoload)) {
+            require_once $autoload;
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function resolveModelURLs(Bundle $bundle, string $oldName): array
+    {
+        $destination = $bundle->resourceURL?->appendingPathComponent($this->newName)?->appendingPathExtension("plist") ?? throw new Exception("Invalid destination model URL");
+        $source = $bundle->url($oldName) ?: throw new Exception("Source model not found");
+        FileManager::default()->copyItem($source, $destination);
+        return [$source, $destination];
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function migrateStore(string $oldName, string $newName, URL $sourceModelURL, URL $destinationModelURL): void
+    {
+        $model = new ManagedObjectModel($sourceModelURL);
+        $coordinator = new PersistentStoreCoordinator($model);
+        $coordinator->replacePersistentStore(new URL("sql://$newName"), new Dictionary([ManagedObjectModelURLOption => $destinationModelURL]), new URL("sql://$oldName"), new Dictionary([ManagedObjectModelURLOption => $sourceModelURL]), PersistentStoreType::sql);
+    }
+
+    private function updateInfoPlist(Bundle $bundle): void
+    {
+        $info = $bundle->infoDictionary;
+        $info[kCFBundleNameKey] = $this->newName;
+        PropertyListSerialization::writePropertyList($info, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
+    }
+}
