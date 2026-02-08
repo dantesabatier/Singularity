@@ -98,6 +98,7 @@ final class WelcomeController extends ViewController
         $url = URL::fileURL($path);
         $loader = new ProjectBundleLoader($url, $this->managedObjectContext);
         $project = $loader->load();
+        $this->managedObjectContext->save();
         $this->data = $project;
     }
 
