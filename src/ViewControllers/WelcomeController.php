@@ -3,6 +3,7 @@
 namespace App\ViewControllers;
 
 use App\Bundles\BundleGenerationOptions;
+use App\Bundles\BundleScaffolder;
 use App\Bundles\CreateBundleTransaction;
 use App\Bundles\ProjectBundleLoader;
 use App\Bundles\RenameBundleTransaction;
@@ -112,11 +113,13 @@ final class WelcomeController extends ViewController
         $options = new BundleGenerationOptions($body["generateWithSecurity"] ?? false, $body["generateWithCORS"] ?? false, $body["generateWithJWT"] ?? false);
         $url = URL::fileURL($path);
         $project = $this->createProjectFromURL($url);
-        $transaction = new CreateBundleTransaction($url, $project, $options);
+        $scaffolder = new BundleScaffolder($url, $project, $options);
+        $transaction = new CreateBundleTransaction($scaffolder, $url);
         $transaction->execute();
         $this->managedObjectContext->save();
         $this->data = $project;
     }
+
 
     /**
      * @throws Exception
