@@ -161,7 +161,7 @@
         const exportSchema = async () => {
             const directory = await browse()
             if (directory) {
-                await send("ExportSQL", {
+                await request("ExportSQL", {
                     directory: directory,
                     project: {$project->objectID}
                 })
@@ -295,7 +295,7 @@
                     once: true
                 })
                 viewer.addEventListener("tableMoveEnd", event => {
-                    send("Moved", {
+                    request("Moved", {
                         ...event.detail,
                         project: {$project->objectID}
                     })

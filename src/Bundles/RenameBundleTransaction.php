@@ -72,7 +72,7 @@ final readonly class RenameBundleTransaction implements Transaction
 
     private function updateInfoPlist(Bundle $bundle): void
     {
-        /** @var Dictionary<mixed> */
+        /** @var Dictionary<mixed> $info */
         $info = $bundle->infoDictionary;
         $info[kCFBundleNameKey] = $this->newName;
         PropertyListSerialization::writePropertyList($info, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
