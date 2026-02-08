@@ -161,7 +161,7 @@
         const exportSchema = async () => {
             const directory = await browse()
             if (directory) {
-                await request("ExportSQL", {
+                await request("Export", {
                     directory: directory,
                     project: {$project->objectID}
                 })
