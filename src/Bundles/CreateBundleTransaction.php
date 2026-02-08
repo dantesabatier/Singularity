@@ -11,6 +11,7 @@ use App\FileWriters\ModelFileWriter;
 use App\FileWriters\PlistFileWriter;
 use App\Model\Project;
 use Exception;
+use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
@@ -28,6 +29,7 @@ final class CreateBundleTransaction implements CompensableTransaction
     /**
      * @throws Exception
      */
+    #[Override]
     public function execute(): void
     {
         try {
@@ -44,6 +46,7 @@ final class CreateBundleTransaction implements CompensableTransaction
     /**
      * @throws Exception
      */
+    #[Override]
     public function rollback(): void
     {
         if (!$this->executed) {

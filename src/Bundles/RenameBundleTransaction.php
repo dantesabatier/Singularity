@@ -4,6 +4,7 @@ namespace App\Bundles;
 
 use App\Model\Project;
 use Exception;
+use Override;
 use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\PersistentStoreCoordinator;
 use Sabatier\CoreData\PersistentStoreType;
@@ -12,6 +13,7 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\URL;
+use function Sabatier\Foundation\fatal_error;
 use const Sabatier\CoreData\ManagedObjectModelURLOption;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
@@ -24,9 +26,11 @@ final readonly class RenameBundleTransaction implements Transaction
     /**
      * @throws Exception
      */
+    #[Override]
     public function execute(): void
     {
-        $bundle = Bundle::bundleWithURL($this->project->url);
+        $url = $this->project->url ?? fatal_error();
+        $bundle = Bundle::bundleWithURL($url);
         $oldName = $bundle->object(kCFBundleNameKey);
         $oldName !== $this->newName ?: throw new Exception("Bundle already has this name");
         $this->autoloadIfNeeded($bundle);
@@ -68,6 +72,7 @@ final readonly class RenameBundleTransaction implements Transaction
 
     private function updateInfoPlist(Bundle $bundle): void
     {
+        /** @var Dictionary<mixed> */
         $info = $bundle->infoDictionary;
         $info[kCFBundleNameKey] = $this->newName;
         PropertyListSerialization::writePropertyList($info, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
