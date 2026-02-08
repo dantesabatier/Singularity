@@ -50,6 +50,9 @@ final readonly class RenameBundleTransaction implements Transaction
     }
 
     /**
+     * @param Bundle $bundle
+     * @param string $oldName
+     * @return array{URL, URL}
      * @throws Exception
      */
     private function resolveModelURLs(Bundle $bundle, string $oldName): array
