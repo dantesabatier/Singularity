@@ -28,6 +28,11 @@ final class ViewerController extends ProjectController
         $this->title = "SQL Schema";
     }
 
+    #[Action(decorators: [JSONDecorator::class])]
+    public function export(): void
+    {
+    }
+
     /**
      * @throws Exception
      */

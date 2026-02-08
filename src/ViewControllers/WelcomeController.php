@@ -2,23 +2,20 @@
 
 namespace App\ViewControllers;
 
+use App\Bundles\BundleGenerationOptions;
+use App\Bundles\CreateBundleTransaction;
+use App\Bundles\ProjectBundleLoader;
+use App\Bundles\RenameBundleTransaction;
 use App\FileWriters\ProjectFileWriter;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
-use Sabatier\CoreData\ManagedObjectModel;
-use Sabatier\CoreData\PersistentStoreCoordinator;
-use Sabatier\CoreData\PersistentStoreType;
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
-use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Networking\HTTPStatusCode;
 use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
-use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
@@ -30,8 +27,6 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\random_color;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
-use const Sabatier\CoreData\ManagedObjectModelURLOption;
-use const Sabatier\Foundation\kCFBundleNameKey;
 
 #[Endpoint("/")]
 final class WelcomeController extends ViewController
@@ -101,9 +96,8 @@ final class WelcomeController extends ViewController
         $body = $this->request->parsedBody;
         $path = $body["directory"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
-        $project = $this->createProjectFromURL($url);
-        $fileWriter = new ProjectFileWriter($url, $project);
-        $fileWriter->save();
+        $loader = new ProjectBundleLoader($url, $this->managedObjectContext);
+        $project = $loader->load();
         $this->data = $project;
     }
 
@@ -115,13 +109,12 @@ final class WelcomeController extends ViewController
     {
         $body = $this->request->parsedBody;
         $path = $body["directory"] ?? throw new BadRequestException();
-        $generateWithSecurity = $body["generateWithSecurity"] ?? false;
-        $generateWithCORS = $body["generateWithCORS"] ?? false;
-        $generateWithJWT = $body["generateWithJWT"] ?? false;
+        $options = new BundleGenerationOptions($body["generateWithSecurity"] ?? false, $body["generateWithCORS"] ?? false, $body["generateWithJWT"] ?? false);
         $url = URL::fileURL($path);
         $project = $this->createProjectFromURL($url);
-        $fileWriter = new ProjectFileWriter($url, $project, $generateWithSecurity, $generateWithCORS, $generateWithJWT);
-        $fileWriter->save();
+        $transaction = new CreateBundleTransaction($url, $project, $options);
+        $transaction->execute();
+        $this->managedObjectContext->save();
         $this->data = $project;
     }
 
@@ -134,41 +127,10 @@ final class WelcomeController extends ViewController
         $body = $this->request->parsedBody;
         $newName = $body["name"] ?? throw new BadRequestException();
         $objectID = $body[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
-        $context = $this->managedObjectContext;
         $project = $this->projectWithID($objectID);
-        /** @var URL $url */
-        $url = $project->url;
-        $bundle = Bundle::bundleWithURL($url);
-        /** @var string $oldName */
-        $oldName = $bundle->object(kCFBundleNameKey);
-        if ($oldName === $newName) {
-            return;
-        }
-        $autoloadPath = $bundle->bundleURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php")->path;
-        if (FileManager::default()->fileExists($autoloadPath)) {
-            require_once $autoloadPath;
-        }
-        if (!($destinationModelURL = $bundle->resourceURL?->appendingPathComponent($newName)?->appendingPathExtension("plist"))) {
-            return;
-        }
-        if (!($sourceModelURL = $bundle->url($oldName))) {
-            return;
-        }
-        FileManager::default()->copyItem($sourceModelURL, $destinationModelURL);
-        $managedObjectModel = new ManagedObjectModel($sourceModelURL);
-        $coordinator = new PersistentStoreCoordinator($managedObjectModel);
-        $sourceURL = new URL("sql://$oldName");
-        $sourceOptions = new Dictionary([ManagedObjectModelURLOption => $sourceModelURL]);
-        $destinationURL = new URL("sql://$newName");
-        $destinationOptions = new Dictionary([ManagedObjectModelURLOption => $destinationModelURL]);
-        $coordinator->replacePersistentStore($destinationURL, $destinationOptions, $sourceURL, $sourceOptions, PersistentStoreType::sql);
-        /** @var Dictionary<mixed> $dictionary */
-        $dictionary = $bundle->infoDictionary;
-        $dictionary[kCFBundleNameKey] = $newName;
-        PropertyListSerialization::writePropertyList($dictionary, $bundle->bundleURL->appendingPathComponent("Info")->appendingPathExtension("plist"));
-        $project->name = $newName;
-        $context->save();
-        FileManager::default()->removeItem($sourceModelURL);
+        $transaction = new RenameBundleTransaction($project, $newName);
+        $transaction->execute();
+        $this->managedObjectContext->save();
         $this->data = $project;
     }
 
