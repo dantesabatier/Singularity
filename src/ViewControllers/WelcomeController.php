@@ -5,6 +5,7 @@ namespace App\ViewControllers;
 use App\Bundles\BundleGenerationOptions;
 use App\Bundles\BundleScaffolder;
 use App\Bundles\CreateBundleTransaction;
+use App\Bundles\OpenBundleTransaction;
 use App\Bundles\ProjectBundleLoader;
 use App\Bundles\RenameBundleTransaction;
 use App\Model\Model;
@@ -97,10 +98,13 @@ final class WelcomeController extends ViewController
         $path = $body["directory"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
         $loader = new ProjectBundleLoader($url, $this->managedObjectContext);
-        $project = $loader->load();
+        $transaction = new OpenBundleTransaction($loader);
+        $transaction->execute();
+        $project = $transaction->project();
         $this->managedObjectContext->save();
         $this->data = $project;
     }
+
 
     /**
      * @throws Exception
