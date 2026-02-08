@@ -6,7 +6,6 @@ use App\Bundles\BundleGenerationOptions;
 use App\Bundles\CreateBundleTransaction;
 use App\Bundles\ProjectBundleLoader;
 use App\Bundles\RenameBundleTransaction;
-use App\FileWriters\ProjectFileWriter;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
