@@ -158,7 +158,15 @@
             }
         }
 
-        const exportSchema = () => console.log("Export schema functionality to be implemented")
+        const exportSchema = async () => {
+            const directory = await browse()
+            if (directory) {
+                await send("ExportSQL", {
+                    directory: directory,
+                    project: {$project->objectID}
+                })
+            }
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             const loaded = () => {
@@ -166,14 +174,14 @@
                 const emptyState = document.getElementById("viewer-empty-state")
                 const applyTheme = () => {
                     const styles = getComputedStyle(document.documentElement)
-                    viewer.style.setProperty('--viewer-background-color', styles.getPropertyValue('--bg-primary').trim())
-                    viewer.style.setProperty('--relation-color', styles.getPropertyValue('--text-primary').trim())
-                    viewer.style.setProperty('--relation-color-highlight', styles.getPropertyValue('--accent-blue').trim())
-                    viewer.style.setProperty('--entity-background', styles.getPropertyValue('--bg-secondary').trim())
-                    viewer.style.setProperty('--entity-border', styles.getPropertyValue('--border-color').trim())
-                    viewer.style.setProperty('--entity-header-background', styles.getPropertyValue('--bg-tertiary').trim())
-                    viewer.style.setProperty('--entity-text', styles.getPropertyValue('--text-primary').trim())
-                    viewer.style.setProperty('--entity-text-secondary', styles.getPropertyValue('--text-secondary').trim())
+                    viewer.style.setProperty("--viewer-background-color", styles.getPropertyValue("--bg-primary").trim())
+                    viewer.style.setProperty("--relation-color", styles.getPropertyValue("--text-primary").trim())
+                    viewer.style.setProperty("--relation-color-highlight", styles.getPropertyValue("--accent-blue").trim())
+                    viewer.style.setProperty("--entity-background", styles.getPropertyValue("--bg-secondary").trim())
+                    viewer.style.setProperty("--entity-border", styles.getPropertyValue("--border-color").trim())
+                    viewer.style.setProperty("--entity-header-background", styles.getPropertyValue("--bg-tertiary").trim())
+                    viewer.style.setProperty("--entity-text", styles.getPropertyValue("--text-primary").trim())
+                    viewer.style.setProperty("--entity-text-secondary", styles.getPropertyValue("--text-secondary").trim())
                 }
                 applyTheme()
                 viewer.addEventListener("ready", event => {

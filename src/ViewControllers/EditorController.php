@@ -2,7 +2,8 @@
 
 namespace App\ViewControllers;
 
-use App\FileWriters\ProjectFileWriter;
+use App\Bundles\BundleGenerationOptions;
+use App\Bundles\CreateBundleTransaction;
 use App\FileWriters\SubclassFileWriter;
 use App\Model\AccessControl;
 use App\Model\CompositeType;
@@ -314,8 +315,10 @@ final class EditorController extends ProjectController
     {
         $project = $this->project;
         $url = $project->url ?? throw new BadRequestException();
-        $fileWriter = new ProjectFileWriter($url, $project);
-        $fileWriter->save();
+        $options = new BundleGenerationOptions(false, false, false);
+        $transaction = new CreateBundleTransaction($url, $project, $options);
+        $transaction->execute();
+        $this->managedObjectContext->save();
         $this->data = $project;
     }
 

@@ -365,13 +365,6 @@ const openURL = (url) => window.api?.openURL(url)
  */
 const browse = async (title = undefined, prompt = undefined, defaultButton = undefined, options = undefined) => (await window.api?.showOpenDialog(title ?? "Select folder", prompt, defaultButton ?? "OK", undefined, options ?? ["openDirectory", "promptToCreate"])).filePaths.find(Boolean)
 
-const showOpenPanel = async () => {
-    const filePath = await browse("Open Project", "Select the project file", "Open", ["openDirectory"])
-    if (filePath) {
-        await send(url("open"), {path: filePath})
-    }
-}
-
 /**
  * @param {string} messageText
  * @param {string} informativeText

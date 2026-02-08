@@ -25,7 +25,7 @@ abstract class ProjectController extends FetchController
     protected function loadProject(): Project
     {
         if (!($referenceObject = $this->referenceObject("project"))) {
-            throw new NotFoundException();
+            throw new NotFoundException("No project found.");
         }
         return $this->fetchByReference(Project::class, $referenceObject, new Dictionary([
             "name" => AttributeType::string,

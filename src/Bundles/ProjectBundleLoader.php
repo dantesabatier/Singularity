@@ -3,11 +3,11 @@
 namespace App\Bundles;
 
 use App\Model\Project;
-use Exception;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
+use function Sabatier\Foundation\fatal_error;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 final readonly class ProjectBundleLoader
@@ -16,9 +16,6 @@ final readonly class ProjectBundleLoader
     {
     }
 
-    /**
-     * @throws Exception
-     */
     public function load(): Project
     {
         $this->assertBundleIntegrity();
@@ -33,9 +30,6 @@ final readonly class ProjectBundleLoader
         return Bundle::bundleWithURL($this->url)->object(kCFBundleNameKey);
     }
 
-    /**
-     * @throws Exception
-     */
     private function assertBundleIntegrity(): void
     {
         $this->assertBundleExists();
@@ -43,35 +37,26 @@ final readonly class ProjectBundleLoader
         $this->assertModelExists();
     }
 
-    /**
-     * @throws Exception
-     */
     private function assertBundleExists(): void
     {
         if (!FileManager::default()->fileExists($this->url->path)) {
-            throw new Exception("Bundle does not exist");
+            fatal_error("Bundle does not exist");
         }
     }
 
-    /**
-     * @throws Exception
-     */
     private function assertInfoPlistExists(): void
     {
         $infoURL = $this->url->appendingPathComponent("Info")->appendingPathExtension("plist");
         if (!FileManager::default()->fileExists($infoURL->path)) {
-            throw new Exception("Missing Info.plist");
+            fatal_error("Missing Info.plist");
         }
     }
 
-    /**
-     * @throws Exception
-     */
     private function assertModelExists(): void
     {
         $resourcesURL = $this->url->appendingPathComponent("Resources");
         if (!FileManager::default()->fileExists($resourcesURL->path)) {
-            throw new Exception("Missing Resources directory");
+            fatal_error("Missing Resources directory");
         }
     }
 }
