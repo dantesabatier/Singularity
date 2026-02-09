@@ -12,6 +12,12 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
+use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
+use const App\CompanyNamePreferencesKey;
+use const App\EditorSelectedViewPreferencesKey;
+use const App\EditorSplitSizesPreferencesKey;
+use const App\ExportIncludeCommentsPreferencesKey;
+use const App\ExportIncludeDataPreferencesKey;
 
 #[Endpoint("Preferences")]
 final class PreferencesController extends ViewController
@@ -23,30 +29,44 @@ final class PreferencesController extends ViewController
     }
     #[Outlet]
     public ?string $companyName {
-        get => UserDefaults::standard()->string(__PROPERTY__);
+        get => UserDefaults::standard()->string(CompanyNamePreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, __PROPERTY__);
+            UserDefaults::standard()->setObject($value, CompanyNamePreferencesKey);
         }
     }
     #[Outlet]
     public bool $automaticallyDeleteProjectFolders {
-        get => UserDefaults::standard()->bool(__PROPERTY__);
+        get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFoldersPreferencesKey);
         set {
-            UserDefaults::standard()->setBool($value, __PROPERTY__);
+            UserDefaults::standard()->setBool($value, AutomaticallyDeleteProjectFoldersPreferencesKey);
         }
     }
     #[Outlet]
     public ?string $editorSelectedView {
-        get => UserDefaults::standard()->string(__PROPERTY__);
+        get => UserDefaults::standard()->string(EditorSelectedViewPreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, __PROPERTY__);
+            UserDefaults::standard()->setObject($value, EditorSelectedViewPreferencesKey);
         }
     }
     #[Outlet]
     public ?ArrayClass $editorSplitSizes {
-        get => UserDefaults::standard()->array(__PROPERTY__);
+        get => UserDefaults::standard()->array(EditorSplitSizesPreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, __PROPERTY__);
+            UserDefaults::standard()->setObject($value, EditorSplitSizesPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public bool $exportIncludeData {
+        get => UserDefaults::standard()->bool(ExportIncludeDataPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, ExportIncludeDataPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public bool $exportIncludeComments {
+        get => UserDefaults::standard()->bool(ExportIncludeCommentsPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, ExportIncludeCommentsPreferencesKey);
         }
     }
 

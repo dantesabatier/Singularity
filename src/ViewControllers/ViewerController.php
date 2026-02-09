@@ -4,6 +4,7 @@
 
 namespace App\ViewControllers;
 
+use App\Bundles\DatabaseExportationOptions;
 use App\Bundles\ExportDatabaseTransaction;
 use Exception;
 use Override;
@@ -16,7 +17,10 @@ use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\JSONDecorator;
+use Sabatier\Service\Outlet;
 use const App\EntityPositionsMappingPreferencesKey;
+use const App\ExportIncludeCommentsPreferencesKey;
+use const App\ExportIncludeDataPreferencesKey;
 
 #[Endpoint("Viewer")]
 final class ViewerController extends ProjectController
@@ -25,6 +29,20 @@ final class ViewerController extends ProjectController
     /** @var ArrayClass<string> */
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
+    }
+    #[Outlet]
+    public bool $exportIncludeData {
+        get => UserDefaults::standard()->bool(ExportIncludeDataPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, ExportIncludeDataPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public bool $exportIncludeComments {
+        get => UserDefaults::standard()->bool(ExportIncludeCommentsPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, ExportIncludeCommentsPreferencesKey);
+        }
     }
 
     #[Override]
@@ -42,11 +60,11 @@ final class ViewerController extends ProjectController
         $body = $this->request->parsedBody;
         $directory = $body["directory"] ?? throw new BadRequestException();
         $destinationDirectory = URL::fileURL($directory);
-        $transaction = new ExportDatabaseTransaction($this->project, $destinationDirectory);
+        $options = new DatabaseExportationOptions($this->exportIncludeData, $this->exportIncludeComments);
+        $transaction = new ExportDatabaseTransaction($this->project, $destinationDirectory, $options);
         $transaction->execute();
         $this->data = ["url" => $transaction->fileURL];
     }
-
 
     /**
      * @throws Exception

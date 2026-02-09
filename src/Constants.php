@@ -10,3 +10,5 @@ const EditorSplitSizesPreferencesKey = "editorSplitSizes";
 const EditorTableViewValue = "tableView";
 const EditorGraphViewValue = "graphView";
 const GraphViewPreferencesKey = "graphViewPreferences";
+const ExportIncludeDataPreferencesKey = "exportIncludeData";
+const ExportIncludeCommentsPreferencesKey = "exportIncludeComments";

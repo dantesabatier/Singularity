@@ -5,6 +5,7 @@ namespace App\Bundles;
 use App\Model\Project;
 use Exception;
 use Override;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
@@ -50,11 +51,14 @@ final class ExportDatabaseTransaction implements Transaction
     public URL $fileURL {
         get => $this->fileURL ??= $this->destinationDirectory->appendingPathComponent($this->filename);
     }
+    private string $flags {
+        get => $this->flags ??= new ArrayClass([$this->options->withData ? "" : "--no-data", $this->options->withComments ? "" : "--skip-comments"])->join(" ") |> trim(...);
+    }
     private string $command {
-        get => $this->command ??= sprintf("mariadb-dump --user=%s --password=%s --host=%s %s > %s", escapeshellarg($this->user), escapeshellarg($this->password), escapeshellarg($this->host), escapeshellarg($this->database), escapeshellarg($this->fileURL->path));
+        get => $this->command ??= sprintf("mariadb-dump --user=%s --password=%s --host=%s%s %s > %s", escapeshellarg($this->user), escapeshellarg($this->password), escapeshellarg($this->host), " $this->flags", escapeshellarg($this->database), escapeshellarg($this->fileURL->path));
     }
 
-    public function __construct(private readonly Project $project, private readonly URL $destinationDirectory)
+    public function __construct(private readonly Project $project, private readonly URL $destinationDirectory, private readonly DatabaseExportationOptions $options)
     {
     }
 
