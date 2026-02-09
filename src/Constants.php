@@ -12,3 +12,4 @@ const EditorGraphViewValue = "graphView";
 const GraphViewPreferencesKey = "graphViewPreferences";
 const ExportIncludeDataPreferencesKey = "exportIncludeData";
 const ExportIncludeCommentsPreferencesKey = "exportIncludeComments";
+const ExportLastDirectoryPreferencesKey = "exportLastDirectory";

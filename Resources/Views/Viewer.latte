@@ -121,10 +121,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="modal-form-field">
-                        <label for="exportDirectory" class="modal-form-label">
+                        <label for="exportLastDirectory" class="modal-form-label">
                             <i class="bi bi-folder"></i> Export Location </label>
                         <div class="input-group">
-                            <input type="text" id="exportDirectory" class="form-control" placeholder="Choose a folder to export the schema" readonly>
+                            <input type="text" id="exportLastDirectory" class="form-control" placeholder="Choose a folder to export the schema" value="{$exportLastDirectory}" readonly>
                             <button type="button" class="btn btn-secondary" onclick="chooseExportFolder()">
                                 <i class="bi bi-folder2-open"></i> <span>Browse...</span>
                             </button>
@@ -158,7 +158,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmExportBtn" onclick="confirmExport()" disabled>
+                    <button type="button" class="btn btn-primary" id="confirmExportBtn" onclick="confirmExport()">
                         <span>Export</span>
                     </button>
                 </div>
@@ -171,7 +171,7 @@
     <script>
         let currentViewer = null
         let exportModalInstance = null
-        let selectedExportDirectory = null
+        let selectedExportDirectory = {$exportLastDirectory}
         const updateZoomLevel = (zoom) => {
             const zoomElement = document.getElementById("viewer-zoom-level")
             if (zoomElement) {
@@ -207,19 +207,16 @@
             const directory = await browse()
             if (directory) {
                 selectedExportDirectory = directory
-                document.getElementById("exportDirectory").value = directory
-                document.getElementById("confirmExportBtn").disabled = false
+                document.getElementById("exportLastDirectory").value = directory
+                await request("Synchronize", {
+                    exportLastDirectory: directory
+                })
             }
         }
         const showExportModal = () => {
             if (!exportModalInstance) {
                 const modalElement = document.getElementById("exportModal")
                 exportModalInstance = new bootstrap.Modal(modalElement)
-                modalElement.addEventListener("hidden.bs.modal", () => {
-                    selectedExportDirectory = null
-                    document.getElementById("exportDirectory").value = ''
-                    document.getElementById("confirmExportBtn").disabled = true
-                })
             }
             exportModalInstance.show()
         }

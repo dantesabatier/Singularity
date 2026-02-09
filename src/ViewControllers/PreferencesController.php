@@ -18,6 +18,7 @@ use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
+use const App\ExportLastDirectoryPreferencesKey;
 
 #[Endpoint("Preferences")]
 final class PreferencesController extends ViewController
@@ -53,6 +54,13 @@ final class PreferencesController extends ViewController
         get => UserDefaults::standard()->array(EditorSplitSizesPreferencesKey);
         set {
             UserDefaults::standard()->setObject($value, EditorSplitSizesPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?string $exportLastDirectory {
+        get => UserDefaults::standard()->string(ExportLastDirectoryPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, ExportLastDirectoryPreferencesKey);
         }
     }
     #[Outlet]

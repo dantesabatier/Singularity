@@ -21,6 +21,7 @@ use Sabatier\Service\Outlet;
 use const App\EntityPositionsMappingPreferencesKey;
 use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
+use const App\ExportLastDirectoryPreferencesKey;
 
 #[Endpoint("Viewer")]
 final class ViewerController extends ProjectController
@@ -29,6 +30,13 @@ final class ViewerController extends ProjectController
     /** @var ArrayClass<string> */
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
+    }
+    #[Outlet]
+    public ?string $exportLastDirectory {
+        get => UserDefaults::standard()->string(ExportLastDirectoryPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, ExportLastDirectoryPreferencesKey);
+        }
     }
     #[Outlet]
     public bool $exportIncludeData {
