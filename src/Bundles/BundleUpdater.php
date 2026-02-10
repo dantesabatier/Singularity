@@ -45,7 +45,9 @@ final readonly class BundleUpdater
     {
         $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
         $envURL = $bundleURL->appendingPathComponent(".env");
-        new DotEnvFileWriter($envURL, false, false)->save();
+        if (!FileManager::default()->fileExists($envURL->path)) {
+            new DotEnvFileWriter($envURL, false, false)->save();
+        }
     }
 
     /**
@@ -55,7 +57,7 @@ final readonly class BundleUpdater
     {
         $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
         $delegateURL = $bundleURL->appendingPathComponent("src")->appendingPathComponent("Delegate")->appendingPathExtension("php");
-        if (FileManager::default()->fileExists($delegateURL->path)) {
+        if (!FileManager::default()->fileExists($delegateURL->path)) {
             new DelegateFileWriter($delegateURL, false)->save();
         }
     }
