@@ -10,12 +10,13 @@ use function Sabatier\Foundation\substring_from_index;
 use function Sabatier\Foundation\substring_to_index;
 
 /**
- * Parses existing class files to extract uses, properties, and declaration
+ * Parses existing class files to extract uses, PHPDoc properties,
+ * real class property slots, method signatures, and the full class declaration.
  */
 final class ExistingClassParser
 {
     /**
-     * @return array{uses: Set<string>, properties: Set<string>, declaration: string|null}
+     * @return array{uses: Set<string>, properties: Set<string>, classProperties: Set<string>, methods: Set<string>, declaration: string|null}
      * @throws Exception
      */
     public function parse(URL $fileURL): array
@@ -24,24 +25,52 @@ final class ExistingClassParser
         $uses = new Set();
         /** @var Set<string> $properties */
         $properties = new Set();
+        /** @var Set<string> $classProperties */
+        $classProperties = new Set();
+        /** @var Set<string> $methods */
+        $methods = new Set();
         $declaration = null;
         $path = $fileURL->path;
-        if (!FileManager::default()->fileExists($path)) {
-            return ["uses" => $uses, "properties" => $properties, "declaration" => $declaration];
-        }
-        if (!($contents = FileManager::default()->contents($path))) {
-            return ["uses" => $uses, "properties" => $properties, "declaration" => $declaration];
+        if (!FileManager::default()->fileExists($path) || !($contents = FileManager::default()->contents($path))) {
+            return $this->assemble($uses, $properties, $classProperties, $methods, $declaration);
         }
         $index = strpos($contents, "class");
         if ($index === false) {
-            return ["uses" => $uses, "properties" => $properties, "declaration" => $declaration];
+            return $this->assemble($uses, $properties, $classProperties, $methods, $declaration);
         }
         $beforeClass = substring_to_index($contents, $index);
-        if ($lines = preg_split(sprintf("/%s/", preg_quote("\n", "/")), $beforeClass, -1, PREG_SPLIT_NO_EMPTY)) {
+        if ($lines = preg_split("/\n/", $beforeClass, -1, PREG_SPLIT_NO_EMPTY)) {
             $uses->formUnion(array_map(rtrim(...), array_filter($lines, fn(string $e): bool => str_starts_with($e, "use"))));
             $properties->formUnion(array_map(rtrim(...), array_filter($lines, fn(string $e): bool => str_starts_with($e, " * @property"))));
         }
         $declaration = substring_from_index($contents, $index);
-        return ["uses" => $uses, "properties" => $properties, "declaration" => $declaration];
+        $propRegex = "/(?P<slot>(?:public|protected|private|var|readonly|static)\\s+[^;{]*?\\\$[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\\s*[;={]/s";
+        if (preg_match_all($propRegex, $declaration, $matches)) {
+            $classProperties->formUnion(array_map(trim(...), $matches["slot"]));
+        }
+        $methodRegex = "/(?P<slot>(?:(?:public|protected|private|static|final|abstract)\\s+)*function\\s+[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*\\s*\\(.*?\\)(?:\\s*:\\s*[a-zA-Z0-9_|\\?]+)?)\\s*[;{]/s";
+        if (preg_match_all($methodRegex, $declaration, $matches)) {
+            $methods->formUnion(array_map(trim(...), $matches["slot"]));
+        }
+        return $this->assemble($uses, $properties, $classProperties, $methods, $declaration);
+    }
+
+    /**
+     * @param Set<string> $uses
+     * @param Set<string> $properties
+     * @param Set<string> $classProperties
+     * @param Set<string> $methods
+     * @param string|null $declaration
+     * @return array{uses: Set<string>, properties: Set<string>, classProperties: Set<string>, methods: Set<string>, declaration: string|null}
+     */
+    private function assemble(Set $uses, Set $properties, Set $classProperties, Set $methods, ?string $declaration): array
+    {
+        return [
+            "uses" => $uses,
+            "properties" => $properties,
+            "classProperties" => $classProperties,
+            "methods" => $methods,
+            "declaration" => $declaration
+        ];
     }
 }

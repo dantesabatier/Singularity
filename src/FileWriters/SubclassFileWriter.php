@@ -2,11 +2,11 @@
 
 namespace App\FileWriters;
 
-use App\FileWriters\Generators\PropertyAttributeGenerator;
 use App\FileWriters\Generators\AuthorizableCodeGenerator;
 use App\FileWriters\Generators\ClassDeclarationInjector;
 use App\FileWriters\Generators\ClassFileAssembler;
 use App\FileWriters\Generators\MagicMethodDocGenerator;
+use App\FileWriters\Generators\PropertyAttributeGenerator;
 use App\FileWriters\Generators\PropertyBlockGenerator;
 use App\FileWriters\Generators\PropertyDocBlockGenerator;
 use App\FileWriters\Generators\UseStatementGenerator;
@@ -61,6 +61,8 @@ final class SubclassFileWriter extends FileWriter
             $parsed = $this->existingClassParser->parse($this->url);
             $existingUses = $parsed["uses"];
             $existingProperties = $parsed["properties"];
+            $existingClassProperties = $parsed["classProperties"];
+            $existingMethods = $parsed["methods"];
             $declaration = $parsed["declaration"] ?? $this->fileAssembler->createDefaultDeclaration($this->class, $this->entity);
             $reservedPropertyNames = $this->entity->isAuthorizable ? $this->authorizableCodeGenerator->getReservedPropertyNames() : [];
             $uses = $this->useStatementGenerator->generate($this->entity, $existingUses);
@@ -68,16 +70,18 @@ final class SubclassFileWriter extends FileWriter
             $methods = $this->magicMethodDocGenerator->generate($this->entity, $this->namespace);
             $propertyBlocks = $this->propertyBlockGenerator->generate($this->entity, $uses, $declaration, $reservedPropertyNames);
             if ($this->entity->isAuthorizable) {
-                $propertyBlocks->appendContentsOf($this->authorizableCodeGenerator->generatePropertyBlocks($this->entity, $uses));
-                $propertyBlocks->append(new class($this->authorizableCodeGenerator->generateDefaultRepresentationMethod()) extends ObjectClass {
-                    public string $description {
-                        get => $this->code;
-                    }
+                $propertyBlocks->appendContentsOf($this->authorizableCodeGenerator->generatePropertyBlocks($this->entity, $existingClassProperties, $uses));
+                if ($method = $this->authorizableCodeGenerator->generateDefaultRepresentationMethod($this->entity, $existingMethods)) {
+                    $propertyBlocks->append(new class($method) extends ObjectClass {
+                        public string $description {
+                            get => $this->code;
+                        }
 
-                    public function __construct(private readonly string $code)
-                    {
-                    }
-                });
+                        public function __construct(private readonly string $code)
+                        {
+                        }
+                    });
+                }
             }
             return $this->fileAssembler->assemble($this->namespace, $this->entity, $uses, $properties, $methods, $this->declarationInjector->inject($declaration, $propertyBlocks));
         }

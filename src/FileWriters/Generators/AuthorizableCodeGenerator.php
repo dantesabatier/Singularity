@@ -20,7 +20,7 @@ final readonly class AuthorizableCodeGenerator
     private const array authorizableProperties = [
         "username" => "string",
         "password" => "?string",
-        "version" => "int",
+        "refreshTokenVersion" => "int",
         "roles" => "Set",
     ];
 
@@ -29,16 +29,24 @@ final readonly class AuthorizableCodeGenerator
     }
 
     /**
+     * @param Set<string> $existingClassProperties
      * @param Set<string> $uses
      * @return ArrayClass<PropertyBlock>
      */
-    public function generatePropertyBlocks(Entity $entity, Set $uses): ArrayClass
+    public function generatePropertyBlocks(Entity $entity, Set $existingClassProperties, Set $uses): ArrayClass
     {
         if (!$entity->isAuthorizable) {
             return new ArrayClass();
         }
-        /** @var ArrayClass<PropertyBlock> */
-        return new Dictionary(self::authorizableProperties)->map(fn(string $type, string $name): PropertyBlock => $this->generatePropertyBlock($entity, $name, $type, $uses));
+        /** @var Dictionary<string> $authorizableProperties */
+        $authorizableProperties = new Dictionary(self::authorizableProperties);
+        if (!$existingClassProperties->isEmpty) {
+            $authorizableProperties = $authorizableProperties->filter(fn(string $type, string $name) => !$existingClassProperties->contains(fn(string $existing) => str_contains($existing, "\$$name")));
+        }
+        if ($authorizableProperties->isEmpty) {
+            return new ArrayClass();
+        }
+        return $authorizableProperties->map(fn(string $type, string $name): PropertyBlock => $this->generatePropertyBlock($entity, $name, $type, $uses));
     }
 
     /**
@@ -57,8 +65,19 @@ final readonly class AuthorizableCodeGenerator
         return new PropertyBlock($name, $cleanType, $isNullable, $phpAttributes);
     }
 
-    public function generateDefaultRepresentationMethod(): string
+    /**
+     * @param Entity $entity
+     * @param Set<string> $methods
+     * @return string|null
+     */
+    public function generateDefaultRepresentationMethod(Entity $entity, Set $methods): ?string
     {
+        if (!$entity->isAuthorizable) {
+            return null;
+        }
+        if ($methods->contains(fn(string $method) => str_contains($method, "defaultRepresentation"))) {
+            return null;
+        }
         $method = "\n";
         $method .= "    #[Override]\n";
         $method .= "    public static function defaultRepresentation(): Dictionary\n";
@@ -66,7 +85,6 @@ final readonly class AuthorizableCodeGenerator
         $method .= "        return Dictionary::dictionaryWithArray([\n";
         $method .= "            \"username\" => AttributeType::string,\n";
         $method .= "            \"password\" => AttributeType::string,\n";
-        $method .= "            \"version\" => AttributeType::integer64,\n";
         $method .= "            \"roles\" => [\n";
         $method .= "                \"name\" => AttributeType::string,\n";
         $method .= "            ]\n";
