@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\Model;
 
 use Sabatier\CoreData\AttributeType;
@@ -68,12 +66,7 @@ final class FetchIndexElement extends ManagedObject
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        /** @psalm-suppress UndefinedVariable */
-        $observation = $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change) use (&$observation): void {
-            if ($element->isSuppressingKVO || $element->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("propertyName", KeyValueObservingOptions::new, function (FetchIndexElement $element, KeyValueObservedChange $change): void {
             if ($change->newValue !== "Expression") {
                 $element->expressionFormat = null;
                 $element->expressionResultType = AttributeType::undefined;
