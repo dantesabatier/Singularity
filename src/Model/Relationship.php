@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\Model;
 
 use Sabatier\CoreData\DeleteRule;
@@ -65,30 +63,17 @@ final class Relationship extends Property
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        /** @psalm-suppress UndefinedVariable */
-        $observation = $this->observe("isToMany", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
-            if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("isToMany", KeyValueObservingOptions::new, function (/** @noinspection PhpUnusedParameterInspection */ Relationship $relationship, KeyValueObservedChange $change): void {
             $relationship->minCount = null;
             $relationship->maxCount = null;
             $relationship->isOrdered = false;
             $relationship->isMinCountBounded = false;
             $relationship->isMaxCountBounded = false;
         });
-        $observation = $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
-            if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("isMinCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
             $relationship->minCount = $change->newValue ? $this->minCount : null;
         });
-        $observation = $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change) use (&$observation): void {
-            if ($relationship->isSuppressingKVO || $relationship->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("isMaxCountBounded", KeyValueObservingOptions::new, function (Relationship $relationship, KeyValueObservedChange $change): void {
             $relationship->maxCount = $change->newValue ? $this->maxCount : null;
         });
     }

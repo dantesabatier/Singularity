@@ -55,8 +55,7 @@
                     <input type="text" name="derivationExpressionFormat" id="derivationExpressionFormat" placeholder="Expression" class="form-control form-control-sm text-truncate font-monospace" value="{$selectedProperty->derivationExpressionFormat}" autocomplete="off" spellcheck="false" style="font-size: 11px;" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="{$selectedProperty->derivationExpressionFormat}" required>
                 </div>
             </div>
-            {if !$selectedProperty->isDerived}
-                <div class="inspector-header">Configuration</div>
+            <div class="inspector-header">Configuration</div>
                 {switch $selectedProperty->type}
                     {case Sabatier\CoreData\AttributeType::integer16, Sabatier\CoreData\AttributeType::integer32, Sabatier\CoreData\AttributeType::integer64}
                     <div class="row mb-2">
@@ -216,7 +215,7 @@
                         </div>
                     </div>
                 </div>
-            {elseif ($selectedProperty->type === Sabatier\CoreData\AttributeType::transformable)}
+            {if ($selectedProperty->type === Sabatier\CoreData\AttributeType::transformable)}
                 <div class="inspector-header">Transformable Settings</div>
                 <div class="row mb-2">
                     <label for="attributeValueClassName" class="col-sm-4 inspector-label">Class</label>

@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\Model;
 
 use Sabatier\CoreData\AttributeType;
@@ -96,12 +94,7 @@ final class Attribute extends Property
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)
     {
         parent::__construct($managedObjectContext, $entity);
-        /** @psalm-suppress UndefinedVariable */
-        $observation = $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
-            if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             $parent = $attribute->entityProperty ?? $attribute->compositeType;
             $attribute->attributeValueClassName = match ($change->newValue) {
                 AttributeType::date => Date::class,
@@ -118,40 +111,24 @@ final class Attribute extends Property
             $attribute->isMinValueBounded = false;
             $attribute->maxValue = null;
         });
-        $observation = $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
-            if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("isMinValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             $attribute->minValue = match ($attribute->type) {
                 AttributeType::date => $change->newValue ? $attribute->minValue : null,
                 default => $attribute->minValue
             };
         });
-        $observation = $this->observe("isMaxValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
-            if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("isMaxValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             $attribute->maxValue = match ($attribute->type) {
                 AttributeType::date => $change->newValue ? $attribute->maxValue : null,
                 default => $attribute->maxValue
             };
         });
-        $observation = $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
-            if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             if ($change->newValue === "") {
                 $attribute->defaultValue = null;
             }
         });
-        $observation = $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change) use (&$observation): void {
-            if ($attribute->isSuppressingKVO || $attribute->isSuppressingChangeNotifications) {
-                return;
-            }
-            $observation->invalidate();
+        $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             if ($change->newValue) {
                 $attribute->isTransient = false;
                 $attribute->isDefaultValueBounded = false;
