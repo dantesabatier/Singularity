@@ -20,6 +20,7 @@ final readonly class AuthorizableCodeGenerator
     private const array authorizableProperties = [
         "username" => "string",
         "password" => "?string",
+        "isEnabled" => "bool",
         "refreshTokenVersion" => "int",
         "roles" => "Set",
     ];
@@ -85,6 +86,8 @@ final readonly class AuthorizableCodeGenerator
         $method .= "        return Dictionary::dictionaryWithArray([\n";
         $method .= "            \"username\" => AttributeType::string,\n";
         $method .= "            \"password\" => AttributeType::string,\n";
+        $method .= "            \"isEnabled\" => AttributeType::boolean,\n";
+        $method .= "            \"refreshTokenVersion\" => AttributeType::integer64,\n";
         $method .= "            \"roles\" => [\n";
         $method .= "                \"name\" => AttributeType::string,\n";
         $method .= "            ]\n";
