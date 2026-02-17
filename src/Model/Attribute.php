@@ -95,6 +95,9 @@ final class Attribute extends Property
     {
         parent::__construct($managedObjectContext, $entity);
         $this->observe("type", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+            if ($attribute->type === $change->newValue) {
+                return;
+            }
             $parent = $attribute->entityProperty ?? $attribute->compositeType;
             $attribute->attributeValueClassName = match ($change->newValue) {
                 AttributeType::date => Date::class,
@@ -131,14 +134,9 @@ final class Attribute extends Property
         $this->observe("isDerived", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             if ($change->newValue) {
                 $attribute->isTransient = false;
-                $attribute->isDefaultValueBounded = false;
-                $attribute->defaultValue = null;
-                $attribute->isMaxValueBounded = false;
-                $attribute->minValue = null;
-                $attribute->isMinValueBounded = false;
-                $attribute->maxValue = null;
+            } else {
+                $attribute->derivationExpressionFormat = null;
             }
-            $attribute->derivationExpressionFormat = null;
         });
     }
 
