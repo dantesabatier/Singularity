@@ -98,18 +98,23 @@ Code is written **only where behavior is needed** — not to move data around.
 ## 🧩 Core Components
 
 ### Visual Model Editor
+
 Design complex schemas, relationships, and constraints visually, with live feedback and structural guarantees.
 
 ### Core Data Port (`Sabatier\CoreData`)
+
 A full object-graph and persistence system, including snapshots, identity tracking, and fault handling.
 
 ### Foundation Layer (`Sabatier\Foundation`)
+
 A comprehensive base framework providing object lifecycles, collections, dictionaries, observation, and runtime behavior.
 
 ### Service Layer
+
 An application runtime inspired by AppKit and UIKit, adapted for web and service environments.
 
 ### Automatic Code & Schema Generation
+
 Managed object subclasses, SQL schemas, and migrations are generated from the model — not handwritten.
 
 ---
@@ -133,12 +138,14 @@ Built on `Sabatier\Foundation` and `Sabatier\CoreData`.
 ## 🎯 What Singularity Is — and Is Not
 
 ### Singularity *is*:
+
 - an application development environment
 - model-centric
 - lifecycle-aware
 - persistence-native
 
 ### Singularity *is not*:
+
 - a CRUD generator
 - a low-code tool
 - an MVC framework
