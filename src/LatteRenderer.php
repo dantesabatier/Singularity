@@ -37,26 +37,23 @@ final class LatteRenderer extends Renderer
         /**
          * @throws Exception
          */
-        get => $this->engine ??= $this->initializeEngine();
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function initializeEngine(): Engine
-    {
-        $engine = new Engine();
-        $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
-        $engine->addFilter("camelCase", fn(string $value): string => camelcase($value));
-        $engine->addFilter("firstLower", lcfirst(...));
-        $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
-        $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
-        $engine->addFilter("json", json_encode(...));
-        $engine->addFunction("img", $this->image(...));
-        $engine->addFunction("localized_string", fn(string $value): string => localized_string($value));
-        $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
-        $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
-        return $engine;
+        get {
+            if (isset($this->engine)) {
+                return $this->engine;
+            }
+            $engine = new Engine();
+            $engine->addFilter("readable", fn(mixed $value): string => human_readable_value($value));
+            $engine->addFilter("camelCase", fn(string $value): string => camelcase($value));
+            $engine->addFilter("firstLower", lcfirst(...));
+            $engine->addFilter("coerced", fn(mixed $value, int $type): mixed => ManagedObject::coercedValue($value, AttributeType::from($type)));
+            $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
+            $engine->addFilter("json", json_encode(...));
+            $engine->addFunction("img", $this->image(...));
+            $engine->addFunction("localized_string", fn(string $value): string => localized_string($value));
+            $engine->setTempDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
+            $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
+            return $this->engine = $engine;
+        }
     }
 
     private function name(AttributeType $type): string
