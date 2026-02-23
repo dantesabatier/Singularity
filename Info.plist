@@ -43,7 +43,7 @@
         <key>electronVersion</key>
         <string>38.0</string>
         <key>phpVersion</key>
-        <string>8.5.1</string>
+        <string>8.5.3</string>
         <key>websiteURL</key>
         <string>https://github.com/dantesabatier/Singularity</string>
         <key>githubURL</key>

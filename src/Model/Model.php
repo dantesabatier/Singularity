@@ -21,7 +21,6 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Progress;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
-use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
 use function Sabatier\Foundation\fatal_error;
