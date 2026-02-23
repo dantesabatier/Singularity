@@ -67,7 +67,7 @@ final class Model extends ManagedObject
 {
     /** @var Set<Entity> */
     private(set) Set $rootEntities {
-        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sorted([new SortDescriptor("name", false)]);
+        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
     }
     /** @var Dictionary<Entity> */
     private(set) Dictionary $entitiesByName {
