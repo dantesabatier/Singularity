@@ -2,8 +2,11 @@
 
 namespace App\FileWriters;
 
+use Override;
+
 final class ComposerJsonFileWriter extends FileWriter
 {
+    #[Override]
     public string $contents {
         get {
             $name = $this->name;

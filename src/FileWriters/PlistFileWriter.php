@@ -3,6 +3,7 @@
 namespace App\FileWriters;
 
 use App\Delegate;
+use Override;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\UserDefaults;
@@ -22,6 +23,7 @@ use const Sabatier\Foundation\kCFBundleVersionKey;
 
 final class PlistFileWriter extends FileWriter
 {
+    #[Override]
     public string $contents {
         get {
             $name = $this->name;

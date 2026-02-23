@@ -2,6 +2,7 @@
 
 namespace App\FileWriters;
 
+use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\URL;
@@ -12,9 +13,11 @@ use Throwable;
 
 final class DelegateFileWriter extends FileWriter
 {
+    #[Override]
     public string $name {
         get => $this->url->deletingPathExtension()->lastPathComponent;
     }
+    #[Override]
     public string $contents {
         get {
             $uses = new ArrayClass([

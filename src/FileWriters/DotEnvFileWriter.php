@@ -2,12 +2,14 @@
 
 namespace App\FileWriters;
 
+use Override;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\read_random;
 
 final class DotEnvFileWriter extends FileWriter
 {
+    #[Override]
     public string $contents {
         get {
             /** @var Dictionary<string> $dictionary */

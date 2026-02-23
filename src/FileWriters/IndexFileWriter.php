@@ -2,10 +2,12 @@
 
 namespace App\FileWriters;
 
+use Override;
 use Sabatier\Service\Application;
 
 final class IndexFileWriter extends FileWriter
 {
+    #[Override]
     public string $contents {
         get {
             $content = "<?php\n";

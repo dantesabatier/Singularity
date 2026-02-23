@@ -2,6 +2,7 @@
 
 namespace App\FileWriters\ValueObjects;
 
+use Override;
 use Sabatier\Foundation\ObjectClass;
 
 /**
@@ -9,6 +10,7 @@ use Sabatier\Foundation\ObjectClass;
  */
 final class GeneratedProperty extends ObjectClass
 {
+    #[Override]
     public string $description {
         get {
             $annotation = " * @property";

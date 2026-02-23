@@ -11,6 +11,7 @@ use App\Bundles\RenameBundleTransaction;
 use App\Model\Model;
 use App\Model\Project;
 use Exception;
+use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
@@ -32,8 +33,10 @@ use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 #[Endpoint("/")]
 final class WelcomeController extends ViewController
 {
+    #[Override]
     public string $name = "Welcome";
     /** @var ArrayClass<string> */
+    #[Override]
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post, HTTPRequestMethod::delete]);
     }

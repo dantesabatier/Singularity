@@ -14,6 +14,7 @@ use App\FileWriters\Parsers\ExistingClassParser;
 use App\Model\Entity;
 use Closure;
 use Exception;
+use Override;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\URL;
 
@@ -53,6 +54,7 @@ final class SubclassFileWriter extends FileWriter
         $this->fileAssembler = new ClassFileAssembler();
     }
 
+    #[Override]
     public string $contents {
         /**
          * @throws Exception

@@ -26,8 +26,10 @@ use const App\ExportLastDirectoryPreferencesKey;
 #[Endpoint("Viewer")]
 final class ViewerController extends ProjectController
 {
+    #[Override]
     public string $name = "Viewer";
     /** @var ArrayClass<string> */
+    #[Override]
     public ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }

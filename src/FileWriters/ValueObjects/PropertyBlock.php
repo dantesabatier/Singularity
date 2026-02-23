@@ -2,6 +2,7 @@
 
 namespace App\FileWriters\ValueObjects;
 
+use Override;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\Set;
 
@@ -10,6 +11,7 @@ use Sabatier\Foundation\Set;
  */
 final class PropertyBlock extends ObjectClass
 {
+    #[Override]
     public string $description {
         get {
             $code = "";

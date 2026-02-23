@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
@@ -34,6 +35,7 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
 final class Attribute extends Property
 {
     /** @var Dictionary<mixed> */
+    #[Override]
     public Dictionary $dictionaryRepresentation {
         get {
             /** @var Dictionary<mixed> $dictionary */
