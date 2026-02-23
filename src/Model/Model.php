@@ -21,6 +21,7 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Progress;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
+use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
 use function Sabatier\Foundation\fatal_error;
@@ -66,7 +67,7 @@ final class Model extends ManagedObject
 {
     /** @var Set<Entity> */
     private(set) Set $rootEntities {
-        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity);
+        get => $this->rootEntities ??= $this->entities->filter(fn(Entity $entity): bool => $entity->isRootEntity)->sorted([new SortDescriptor("name", false)]);
     }
     /** @var Dictionary<Entity> */
     private(set) Dictionary $entitiesByName {
