@@ -5,6 +5,7 @@
 namespace App;
 
 use Override;
+use Sabatier\CoreData\MergePolicy;
 use Sabatier\CoreData\SQLCore;
 use Sabatier\CoreData\SQLDebugLevel;
 use Sabatier\Foundation\ArrayClass;
@@ -44,6 +45,7 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     public function applicationWillFinishLaunching(Application $application): void
     {
         $application->accessPolicy = new PublicAccessPolicy();
+        $application->persistentContainer->viewContext->mergePolicy = MergePolicy::mergeByPropertyObjectTrump();
     }
 
     #[Override]
