@@ -24,10 +24,10 @@ use const App\ExportLastDirectoryPreferencesKey;
 final class PreferencesController extends ViewController
 {
     #[Override]
-    public string $name = "Preferences";
+    protected string $name = "Preferences";
     /** @var ArrayClass<string> */
     #[Override]
-    public ArrayClass $allowedMethods {
+    protected ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }
     #[Outlet]

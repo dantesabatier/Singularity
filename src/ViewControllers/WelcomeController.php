@@ -34,10 +34,10 @@ use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 final class WelcomeController extends ViewController
 {
     #[Override]
-    public string $name = "Welcome";
+    protected string $name = "Welcome";
     /** @var ArrayClass<string> */
     #[Override]
-    public ArrayClass $allowedMethods {
+    protected ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post, HTTPRequestMethod::delete]);
     }
     /** @var ArrayClass<Project> */

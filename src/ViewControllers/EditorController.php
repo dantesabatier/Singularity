@@ -58,10 +58,10 @@ final class EditorController extends ProjectController
     public const string tableViewValue = EditorTableViewValue;
     public const string graphViewValue = EditorGraphViewValue;
     #[Override]
-    public string $name = "Editor";
+    protected string $name = "Editor";
     /** @var ArrayClass<string> */
     #[Override]
-    public ArrayClass $allowedMethods {
+    protected ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get, HTTPRequestMethod::post]);
     }
     #[Outlet]

@@ -17,10 +17,10 @@ use const Sabatier\Foundation\kCFBundleVersionKey;
 final class AboutController extends ViewController
 {
     #[Override]
-    public string $name = "About";
+    protected string $name = "About";
     /** @var ArrayClass<string> */
     #[Override]
-    public ArrayClass $allowedMethods {
+    protected ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get]);
     }
     #[Outlet]
