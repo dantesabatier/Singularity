@@ -23,6 +23,7 @@ use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\HTMLDecorator;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
@@ -30,7 +31,7 @@ use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\random_color;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
-#[Endpoint("/")]
+#[Endpoint("/", decorators: [HTMLDecorator::class])]
 final class WelcomeController extends ViewController
 {
     #[Override]

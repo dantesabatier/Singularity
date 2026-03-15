@@ -14,6 +14,7 @@ use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\HTMLDecorator;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\Outlet;
 use const App\EntityPositionsMappingPreferencesKey;
@@ -21,7 +22,7 @@ use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
 
-#[Endpoint("Viewer")]
+#[Endpoint("Viewer", decorators: [HTMLDecorator::class])]
 final class ViewerController extends ProjectController
 {
     #[Override]

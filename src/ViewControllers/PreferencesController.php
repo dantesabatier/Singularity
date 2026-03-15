@@ -9,6 +9,7 @@ use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\HTMLDecorator;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
@@ -20,7 +21,7 @@ use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
 
-#[Endpoint("Preferences")]
+#[Endpoint("Preferences", decorators: [HTMLDecorator::class])]
 final class PreferencesController extends ViewController
 {
     #[Override]

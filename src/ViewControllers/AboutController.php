@@ -6,6 +6,7 @@ use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\HTMLDecorator;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const Sabatier\Foundation\kCFBundleHumanReadableCopyright;
@@ -13,7 +14,7 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 use const Sabatier\Foundation\kCFBundleShortVersionStringKey;
 use const Sabatier\Foundation\kCFBundleVersionKey;
 
-#[Endpoint("About")]
+#[Endpoint("About", decorators: [HTMLDecorator::class])]
 final class AboutController extends ViewController
 {
     #[Override]

@@ -39,6 +39,7 @@ use Sabatier\Service\Action;
 use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\HTMLDecorator;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
@@ -52,7 +53,7 @@ use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
 
-#[Endpoint("Editor")]
+#[Endpoint("Editor", decorators: [HTMLDecorator::class])]
 final class EditorController extends ProjectController
 {
     public const string tableViewValue = EditorTableViewValue;
