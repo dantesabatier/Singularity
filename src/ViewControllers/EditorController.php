@@ -40,6 +40,7 @@ use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLDecorator;
+use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\JSONDecorator;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
@@ -260,9 +261,9 @@ final class EditorController extends ProjectController
     public function viewWillLoad(): void
     {
         $project = $this->project;
-        $model = $project->model ?? throw new NotFoundException();
-        $this->breadcrumb[] = $project;
-        $this->breadcrumb[] = $model;
+        $model = $project->model ?? throw new InternalServerErrorException();
+        $this->breadcrumb->append($project);
+        $this->breadcrumb->append($model);
         $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
@@ -306,7 +307,7 @@ final class EditorController extends ProjectController
                 $this->selectedRole = $selection;
             }
             $this->selection = $selection;
-            $this->breadcrumb[] = $selection;
+            $this->breadcrumb->append($selection);
         }
     }
 
