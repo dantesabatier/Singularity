@@ -45,9 +45,6 @@ abstract class Property extends ManagedObject
             if ($isSensitive = $this->isSensitive) {
                 $dictionary["isSensitive"] = $isSensitive;
             }
-            if ($isOwner = $this->isOwner) {
-                $dictionary["isOwner"] = $isOwner;
-            }
             $dictionary["versionHashModifier"] = $this->versionHashModifier;
             $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
             if ($regex = $this->regex) {

@@ -47,13 +47,13 @@ final class WelcomeController extends ViewController
          * @throws Exception
          */
         get {
-            if (!isset($this->projects)) {
-                $fetchRequest = Project::fetchRequest();
-                $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
-                $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-                $this->projects = $this->managedObjectContext->fetch($fetchRequest);
+            if (isset($this->projects)) {
+                return $this->projects;
             }
-            return $this->projects;
+            $fetchRequest = Project::fetchRequest();
+            $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
+            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
+            return $this->projects = $this->managedObjectContext->fetch($fetchRequest);
         }
     }
     #[Outlet]

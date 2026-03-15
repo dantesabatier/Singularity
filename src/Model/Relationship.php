@@ -58,6 +58,9 @@ final class Relationship extends Property
             }
             $dictionary["lazyDestinationEntityName"] = $this->lazyDestinationEntityName;
             $dictionary["lazyInverseRelationshipName"] = $this->lazyInverseRelationshipName;
+            if ($isOwner = $this->isOwner) {
+                $dictionary["isOwner"] = $isOwner;
+            }
             return $dictionary;
         }
     }

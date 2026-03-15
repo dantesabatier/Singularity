@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App\ViewControllers;
 
 use App\Bundles\DatabaseExportationOptions;
