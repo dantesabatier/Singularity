@@ -350,6 +350,39 @@
                 </li>
             </ol>
         </nav>
+        <script>
+            (function () {
+                try {
+                    /** @type { HTMLElement } */
+                    const container = document.getElementById("split-container")
+                    let sizes = {$splitSizes->array ??[20, 60, 20]}
+                    if (typeof sizes === "string") {
+                        sizes = JSON.parse(sizes)
+                    }
+                    if (container && container.dataset.splitSizes) {
+                        const parsed = JSON.parse(container.dataset.splitSizes)
+                        if (Array.isArray(parsed) && parsed.length === 3) {
+                            sizes = parsed
+                        }
+                    }
+                    if (Array.isArray(sizes) && sizes.length === 3) {
+                        /** @type { HTMLElement } */
+                        const source = document.getElementById("source")
+                        /** @type { HTMLElement } */
+                        const content = document.getElementById("content")
+                        /** @type { HTMLElement } */
+                        const sidebar = document.getElementById("sidebar")
+                        if (source && content && sidebar) {
+                            source.style.width = sizes[0] + "%"
+                            content.style.width = sizes[1] + "%"
+                            sidebar.style.width = sizes[2] + "%"
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Failed to apply initial split sizes", e)
+                }
+            })()
+        </script>
     </div>
 {/block}
 {block scripts}
@@ -419,7 +452,27 @@
             if (!elSource || !elContent || !elSidebar || !container) {
                 return
             }
-            const savedSizes = JSON.parse(container.dataset.splitSizes) ?? {$splitSizes->array} ?? [20, 60, 20]
+            let savedSizes = {$splitSizes->array ?? [20, 60, 20]}
+            if (typeof savedSizes === "string") {
+                try {
+                    savedSizes = JSON.parse(savedSizes)
+                } catch (e) {
+                    savedSizes = [20, 60, 20]
+                }
+            }
+            try {
+                if (container.dataset.splitSizes) {
+                    const parsedSizes = JSON.parse(container.dataset.splitSizes)
+                    if (Array.isArray(parsedSizes) && parsedSizes.length === 3) {
+                        savedSizes = parsedSizes
+                    }
+                }
+            } catch (e) {
+                console.warn("Failed to parse split sizes", e)
+            }
+            if (!Array.isArray(savedSizes) || savedSizes.length !== 3) {
+                savedSizes = [20, 60, 20]
+            }
             splitInstance = Split(["#source", "#content", "#sidebar"], {
                 sizes: savedSizes,
                 minSize: [0, 400, 0],
@@ -446,7 +499,7 @@
                 } else {
                     splitInstance.collapse(0)
                 }
-            } else if (panel === 'sidebar') {
+            } else if (panel === "sidebar") {
                 if (sizes[2] < 2) {
                     splitInstance.setSizes([20, 60, 20])
                 } else {
@@ -608,7 +661,7 @@
                                 }
                             },
                             {
-                                selector: 'edge[type="inheritance"]',
+                                selector: "edge[type=\"inheritance\"]",
                                 style: {
                                     "target-arrow-shape": "triangle",
                                     "target-arrow-fill": "hollow",
@@ -618,19 +671,19 @@
                                 }
                             },
                             {
-                                selector: 'edge[type="relationship"]',
+                                selector: "edge[type=\"relationship\"]",
                                 style: {
                                     "target-arrow-shape": "none"
                                 }
                             },
                             {
-                                selector: 'edge[type="relationship"][?isToMany]',
+                                selector: "edge[type=\"relationship\"][?isToMany]",
                                 style: {
                                     "target-arrow-shape": "triangle"
                                 }
                             },
                             {
-                                selector: 'edge[type="relationship"][?inverseIsToMany]',
+                                selector: "edge[type=\"relationship\"][?inverseIsToMany]",
                                 style: {
                                     "source-arrow-shape": "triangle"
                                 }
@@ -771,4 +824,3 @@
         })
     </script>
 {/block}
-

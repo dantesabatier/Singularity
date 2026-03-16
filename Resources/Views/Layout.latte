@@ -8,12 +8,9 @@
     <title>{block title}{/block}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/Resources/Images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/Resources/Images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/Resources/Images/favicon-16x16.png">
-    <link rel="manifest" href="/Resources/site.webmanifest">
-    <link rel="mask-icon" href="/Resources/Images/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <link rel="stylesheet" type="text/css" href="/Resources/Styles/Layout.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/Resources/Styles/PredicateHighlighter.css" media="screen">
     {block head}{/block}
 </head>
 <body>
@@ -24,10 +21,12 @@
 <script src="https://cdn.jsdelivr.net/npm/db-viewer-component@4.4.9/dist/main.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.5.2/jscolor.min.js" integrity="sha512-qFhMEJrjI50TwLDGZ7Oi0ksTSWnFOqTNXhlqqUgWnE65S23rWUtQOv+tMNEybkMYSXKgAc3eg/SzkX+qrtJT/g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.33.1/dist/cytoscape.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape-node-html-label@1.2.2/dist/cytoscape-node-html-label.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.33.1/dist/cytoscape.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape-node-html-label@1.2.2/dist/cytoscape-node-html-label.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<script src="/Resources/Scripts/PredicateHighlighter.js" defer></script>
 <script type="text/javascript" src="../../electron/renderer.js" defer></script>
 <!--suppress JSCheckFunctionSignatures, JSUnresolvedReference -->
 <script>
@@ -119,6 +118,7 @@
             })
             e.addEventListener("click", () => tooltip.hide())
         })
+        initPopovers()
         initializeRolePopovers()
         document.querySelectorAll("table[data-project][data-entity][data-key]").forEach(e => {
             const body = e.querySelector("tbody")
@@ -152,6 +152,81 @@
                     color: picker.toHEXString()
                 }, "PATCH")
             }
+        })
+    }
+    const initPopovers = () => {
+        document.querySelectorAll("[data-popover]").forEach(trigger => {
+            const popId = trigger.dataset.popover
+            const pop = document.getElementById(popId)
+            if (!pop) {
+                return
+            }
+            trigger.addEventListener("click", e => {
+                e.stopPropagation()
+                const isOpen = pop.classList.contains("open")
+                document.querySelectorAll(".ide-popover.open").forEach(p => {
+                    p.classList.remove("open")
+                    p.setAttribute("aria-hidden", "true")
+                    const btn = document.querySelector(`[data-popover="${ p.id }"]`)
+                    btn?.setAttribute("aria-expanded", "false")
+                })
+
+                if (!isOpen) {
+                    const rect = trigger.getBoundingClientRect()
+                    const popW = 300
+                    let left = rect.right - popW
+                    let top = rect.bottom + 6
+                    if (left < 8) {
+                        left = 8
+                    }
+                    if (top + 400 > window.innerHeight) {
+                        top = rect.top - 400 - 6
+                    }
+                    pop.style.left = left + "px"
+                    pop.style.top = top + "px"
+                    pop.classList.add("open")
+                    pop.setAttribute("aria-hidden", "false")
+                    trigger.setAttribute("aria-expanded", "true")
+                }
+            })
+        })
+        document.querySelectorAll("[data-popover-close]").forEach(btn => {
+            btn.addEventListener("click", e => {
+                e.stopPropagation()
+                const pop = document.getElementById(btn.dataset.popoverClose)
+                pop?.classList.remove("open")
+                pop?.setAttribute("aria-hidden", "true")
+            })
+        })
+        document.addEventListener("click", () => {
+            document.querySelectorAll(".ide-popover.open").forEach(p => {
+                p.classList.remove("open")
+                p.setAttribute("aria-hidden", "true")
+            })
+            document.querySelectorAll("[data-popover]").forEach(t =>
+                t.setAttribute("aria-expanded", "false")
+            )
+        })
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") {
+                document.querySelectorAll(".ide-popover.open").forEach(p => p.classList.remove("open"))
+            }
+        })
+        document.querySelectorAll(".sp-chip").forEach(chip => {
+            chip.addEventListener("click", e => {
+                e.stopPropagation()
+                navigator.clipboard?.writeText(chip.dataset.copy ?? chip.textContent.trim())
+                chip.classList.add("copied")
+                setTimeout(() => chip.classList.remove("copied"), 900)
+            })
+        })
+        document.querySelectorAll(".sp-example").forEach(ex => {
+            ex.addEventListener("click", e => {
+                e.stopPropagation()
+                navigator.clipboard?.writeText(ex.dataset.copy)
+                ex.classList.add("copied")
+                setTimeout(() => ex.classList.remove("copied"), 900)
+            })
         })
     }
     const initializeRolePopovers = () => {

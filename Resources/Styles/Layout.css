@@ -1672,3 +1672,189 @@ a.breadcrumb-link:hover {
     display: inline-block;
     width: 24px;
 }
+
+/* ============================================
+   Popover base
+   ============================================ */
+
+.popover-anchor {
+    position: relative;
+}
+
+.ide-popover {
+    display: none;
+    position: fixed; /* fixed evita el clipping del padre */
+    width: 300px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: var(--shadow-lg);
+    z-index: 9999;
+    overflow: hidden;
+    animation: menuSnapIn 0.12s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.ide-popover.open {
+    display: block;
+}
+
+.ide-popover-header {
+    background-color: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ide-popover-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ide-popover-close {
+    background: transparent;
+    border: none;
+    color: var(--text-disabled);
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    font-size: 11px;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.1s, background-color 0.1s;
+}
+
+.ide-popover-close:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-elevated);
+}
+
+.ide-popover-body {
+    padding: 8px 0;
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg-active) var(--bg-secondary);
+}
+
+/* ── Syntax popover content ── */
+
+.sp-group {
+    padding: 4px 12px 6px;
+}
+
+.sp-group-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.sp-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 2px 0;
+}
+
+.sp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 2px 0;
+    min-height: 24px;
+}
+
+.sp-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    flex: 1;
+    min-width: 0;
+}
+
+.sp-chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-orange);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 1px 0;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    user-select: none;
+    transition: border-color 0.1s, color 0.1s;
+}
+
+.sp-chip:hover {
+    border-color: var(--border-focus);
+}
+
+.sp-chip.copied {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
+.sp-modifier-note {
+    font-size: 10px;
+    color: var(--text-disabled);
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.sp-modifier-note code {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent-orange);
+}
+
+.sp-alias {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-disabled);
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.sp-example {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 5px 8px;
+    margin-bottom: 3px;
+    cursor: pointer;
+    line-height: 1.5;
+    word-break: break-word;
+    transition: border-color 0.1s;
+}
+
+.sp-example:last-child {
+    margin-bottom: 0;
+}
+
+.sp-example:hover {
+    border-color: var(--border-focus);
+}
+
+.sp-example.copied {
+    border-color: var(--accent-green);
+}
+
+.sp-example b {
+    color: var(--accent-blue);
+    font-weight: 400;
+}

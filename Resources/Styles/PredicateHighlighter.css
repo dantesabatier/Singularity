@@ -1,0 +1,75 @@
+/* ============================================
+   Predicate Syntax Highlighting
+   ============================================ */
+
+.pred-highlight-wrapper {
+    position: relative;
+}
+
+.pred-highlight-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    border: 1px solid transparent;
+    overflow: hidden;
+    pointer-events: none;
+    box-sizing: border-box;
+    background: transparent !important;
+    /* Reset estilos de pre */
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    tab-size: inherit;
+    white-space: pre-wrap;
+    word-break: break-word;
+    z-index: 0;
+}
+
+.pred-highlight-wrapper textarea.code-editor::placeholder {
+    color: var(--text-disabled) !important;
+    -webkit-text-fill-color: var(--text-disabled) !important;
+    opacity: 0.7;
+}
+
+.pred-highlight-layer code,
+.pred-highlight-layer code.hljs,
+.pred-highlight-layer code[class*="language-"] {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    color: var(--text-bright) !important;
+
+    font-size: inherit !important;
+    font-family: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    word-spacing: inherit !important;
+}
+
+.pred-highlight-wrapper textarea.code-editor {
+    position: relative;
+    z-index: 1;
+    resize: vertical;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: transparent !important;
+    background: transparent !important;
+    caret-color: var(--text-bright) !important;
+}
+
+.pred-highlight-wrapper textarea.code-editor::selection {
+    background: rgba(74, 136, 199, 0.35);
+    color: transparent;
+}

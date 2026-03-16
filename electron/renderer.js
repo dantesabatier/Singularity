@@ -42,20 +42,30 @@ const request = async (url, body = undefined, method = "POST") => {
     })
 }
 
+const viewCache = new Map()
+
 /**
  * @param {string} url
  */
 const replace = async (url) => {
-    const response = await request(url, undefined, "GET")
-    if (!response.ok) {
-        await showErrorBox((await response.json())?.error)
-        return
+    let html
+    const cached = viewCache.get(url)
+    if (cached) {
+        html = cached
+    } else {
+        const response = await request(url, undefined, "GET")
+        if (!response.ok) {
+            await showErrorBox((await response.json())?.error)
+            return
+        }
+        html = await response.text()
+        viewCache.set(url, html)
     }
+
     const info = Array.from(document.querySelectorAll(`[class*="scroll-view"]`)).reduce((obj, e) => {
         obj[e.id] = e.scrollTop
         return obj
     }, {})
-    const html = await response.text()
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, "text/html")
     const e2 = doc.getElementById("main")
@@ -93,6 +103,7 @@ const push = async (url) => {
  * @param {string} method
  */
 const send = async (action, body = undefined, method = "POST") => {
+    viewCache.clear()
     const location = new URL(window.location ?? "/")
     setProgressBar(1.1)
     const response = await request(action, body, method)
