@@ -103,8 +103,42 @@ const push = async (url) => {
  * @param {string} method
  */
 const send = async (action, body = undefined, method = "POST") => {
-    viewCache.clear()
     const location = new URL(window.location ?? "/")
+    viewCache.forEach((_, cachedUrl) => {
+        const u = new URL(cachedUrl, window.location.origin)
+        const sameProject = u.searchParams.get("project") === location.searchParams.get("project")
+        const sameEntity = u.searchParams.get("entity") === location.searchParams.get("entity")
+        const shouldInvalidate = (() => {
+            switch (endpoint) {
+                case "Attribute":
+                case "Relationship":
+                case "FetchedProperty":
+                case "FetchIndex":
+                case "FetchIndexElement":
+                case "UniquenessConstraint":
+                case "AccessControl":
+                case "Role":
+                    return sameEntity
+                case "Entity":
+                case "FetchRequestTemplate":
+                case "Configuration":
+                case "CompositeType":
+                    return sameProject
+                case "Reorder":
+                    return sameEntity
+                case "Save":
+                case "Subclass":
+                case "import":
+                case "Synchronize":
+                    return sameProject
+                default:
+                    return true
+            }
+        })()
+        if (shouldInvalidate) {
+            viewCache.delete(cachedUrl)
+        }
+    })
     setProgressBar(1.1)
     const response = await request(action, body, method)
     if (!response.ok) {
