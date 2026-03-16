@@ -104,6 +104,17 @@ const push = async (url) => {
  */
 const send = async (action, body = undefined, method = "POST") => {
     const location = new URL(window.location ?? "/")
+    setProgressBar(1.1)
+    const response = await request(action, body, method)
+    if (!response.ok) {
+        await showErrorBox((await response.json())?.error)
+        await replace(location.href)
+        setProgressBar(-1)
+        return
+    }
+    const keys = []
+    const url = URL.canParse(action) ? new URL(action) : undefined
+    const endpoint = url?.pathname.replace("/", "") ?? action.replace("/", "")
     viewCache.forEach((_, cachedUrl) => {
         const u = new URL(cachedUrl, window.location.origin)
         const sameProject = u.searchParams.get("project") === location.searchParams.get("project")
@@ -139,17 +150,6 @@ const send = async (action, body = undefined, method = "POST") => {
             viewCache.delete(cachedUrl)
         }
     })
-    setProgressBar(1.1)
-    const response = await request(action, body, method)
-    if (!response.ok) {
-        await showErrorBox((await response.json())?.error)
-        await replace(location.href)
-        setProgressBar(-1)
-        return
-    }
-    const keys = []
-    const url = URL.canParse(action) ? new URL(action) : undefined
-    const endpoint = url?.pathname.replace("/", "") ?? action.replace("/", "")
     const m = method.toUpperCase()
     switch (m) {
         case "POST":
