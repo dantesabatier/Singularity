@@ -93,8 +93,8 @@ final class PreferencesController extends ViewController
     #[Action(decorators: [JSONDecorator::class])]
     public function synchronize(): void
     {
-        $body = $this->request->parsedBody;
-        foreach ($body as $key => $value) {
+        $parameters = $this->request->parameters;
+        foreach ($parameters as $key => $value) {
             $this->$key = $value;
         }
         $this->data = UserDefaults::standard()->dictionaryRepresentation();

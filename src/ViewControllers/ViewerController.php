@@ -66,8 +66,8 @@ final class ViewerController extends ProjectController
     #[Action(decorators: [JSONDecorator::class])]
     public function export(): void
     {
-        $body = $this->request->parsedBody;
-        $directory = $body["directory"] ?? throw new BadRequestException();
+        $parameters = $this->request->parameters;
+        $directory = $parameters["directory"] ?? throw new BadRequestException();
         $destinationDirectory = URL::fileURL($directory);
         $options = new DatabaseExportationOptions($this->exportIncludeData, $this->exportIncludeComments);
         $transaction = new ExportDatabaseTransaction($this->project, $destinationDirectory, $options);
@@ -82,12 +82,12 @@ final class ViewerController extends ProjectController
     public function moved(): void
     {
         $name = $this->project->name;
-        $body = $this->request->parsedBody;
+        $parameters = $this->request->parameters;
         /** @var Dictionary<mixed> $dictionary */
         $dictionary = UserDefaults::standard()->dictionary(EntityPositionsMappingPreferencesKey) ?? new Dictionary();
         /** @var Dictionary<mixed> $dictionary */
         $project = $dictionary[$name] ?? new Dictionary();
-        $project[$body["name"]] = $body["pos"];
+        $project[$parameters["name"]] = $parameters["pos"];
         $dictionary[$name] = $project;
         UserDefaults::standard()->setObject($dictionary, EntityPositionsMappingPreferencesKey);
         $this->data = [];

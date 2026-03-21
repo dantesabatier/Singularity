@@ -6,10 +6,7 @@ use Exception;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Predicates\Predicate;
-use Sabatier\Foundation\URLComponents;
-use Sabatier\Foundation\URLQueryItem;
 use Sabatier\Service\ViewController;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
@@ -35,7 +32,7 @@ abstract class FetchController extends ViewController
 
     protected function referenceObject(string $key): ?int
     {
-        $referenceObject = $this->request->httpMethod === HTTPRequestMethod::get ? new URLComponents($this->request->url->absoluteString)->queryItems?->first(fn(URLQueryItem $queryItem): bool => $queryItem->name === $key)?->value : $this->request->parsedBody[$key];
+        $referenceObject = $this->request->parameters[$key];
         return is_numeric($referenceObject) ? (int)$referenceObject : null;
     }
 }

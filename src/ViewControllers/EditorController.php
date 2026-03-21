@@ -331,9 +331,9 @@ final class EditorController extends ProjectController
     #[Action(decorators: [JSONDecorator::class])]
     public function import(): void
     {
-        $body = $this->request->parsedBody;
+        $parameters = $this->request->parameters;
         /** @var string $path */
-        $path = $body["path"] ?? throw new BadRequestException();
+        $path = $parameters["path"] ?? throw new BadRequestException();
         $project = $this->project ?? throw new BadRequestException();
         /** @var Model $model */
         $model = $project->model;
@@ -379,11 +379,11 @@ final class EditorController extends ProjectController
     #[Action(decorators: [JSONDecorator::class])]
     public function reorder(): void
     {
-        $body = $this->request->parsedBody;
-        $fromIndex = $body["fromIndex"] ?? throw new BadRequestException();
-        $toIndex = $body["toIndex"] ?? throw new BadRequestException();
-        $key = $body["key"] ?? throw new BadRequestException();
-        $name = $body["entity"] ?? throw new BadRequestException();
+        $parameters = $this->request->parameters;
+        $fromIndex = $parameters["fromIndex"] ?? throw new BadRequestException();
+        $toIndex = $parameters["toIndex"] ?? throw new BadRequestException();
+        $key = $parameters["key"] ?? throw new BadRequestException();
+        $name = $parameters["entity"] ?? throw new BadRequestException();
         $model = $this->project->model;
         /** @var Entity $entity */
         $entity = $model->entitiesByName[$name] ?? throw new NotFoundException();

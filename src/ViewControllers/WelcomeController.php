@@ -98,8 +98,8 @@ final class WelcomeController extends ViewController
     #[Action(decorators: [JSONDecorator::class])]
     public function open(): void
     {
-        $body = $this->request->parsedBody;
-        $path = $body["directory"] ?? throw new BadRequestException();
+        $parameters = $this->request->parameters;
+        $path = $parameters["directory"] ?? throw new BadRequestException();
         $url = URL::fileURL($path);
         $loader = new ProjectBundleLoader($url, $this->managedObjectContext);
         $transaction = new OpenBundleTransaction($loader);
@@ -115,9 +115,9 @@ final class WelcomeController extends ViewController
     #[Action(decorators: [JSONDecorator::class])]
     public function create(): void
     {
-        $body = $this->request->parsedBody;
-        $path = $body["directory"] ?? throw new BadRequestException();
-        $options = new BundleGenerationOptions($body["generateWithSecurity"] ?? false, $body["generateWithCORS"] ?? false, $body["generateWithJWT"] ?? false);
+        $parameters = $this->request->parameters;
+        $path = $parameters["directory"] ?? throw new BadRequestException();
+        $options = new BundleGenerationOptions($parameters["generateWithSecurity"] ?? false, $parameters["generateWithCORS"] ?? false, $parameters["generateWithJWT"] ?? false);
         $url = URL::fileURL($path);
         $project = $this->createProjectFromURL($url);
         $scaffolder = new BundleScaffolder($url, $project, $options);
@@ -134,9 +134,9 @@ final class WelcomeController extends ViewController
     #[Action(HTTPRequestMethod::patch, decorators: [JSONDecorator::class])]
     public function rename(): void
     {
-        $body = $this->request->parsedBody;
-        $newName = $body["name"] ?? throw new BadRequestException();
-        $objectID = $body[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
+        $parameters = $this->request->parameters;
+        $newName = $parameters["name"] ?? throw new BadRequestException();
+        $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
         $project = $this->projectWithID($objectID);
         $transaction = new RenameBundleTransaction($project, $newName);
         $transaction->execute();
@@ -150,7 +150,7 @@ final class WelcomeController extends ViewController
     #[Action(HTTPRequestMethod::delete)]
     public function remove(): void
     {
-        $objectID = $this->request->parsedBody[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
+        $objectID = $this->request->parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
         $context = $this->managedObjectContext;
         $project = $this->projectWithID($objectID);
         $context->delete($project);
