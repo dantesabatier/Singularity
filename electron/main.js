@@ -100,7 +100,6 @@ ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(Bro
     ...arg,
     icon: path.join(__dirname, "icon.png")
 }))
-
 ipcMain.handle("showErrorBox", async (event, error) => {
     error ??= error = {
         localizedDescription: "An unexpected error has occurred",
@@ -123,7 +122,6 @@ ipcMain.handle("showErrorBox", async (event, error) => {
     }
     return dialog.showErrorBox(title, content)
 })
-
 ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
 ipcMain.on("showAboutPanel", async (event, arg) => {
     app.setAboutPanelOptions({
@@ -132,7 +130,6 @@ ipcMain.on("showAboutPanel", async (event, arg) => {
     })
     app.showAboutPanel()
 })
-
 ipcMain.on("showWindow", (event, arg) => {
     const window = new BrowserWindow({
         ...options,
@@ -146,7 +143,6 @@ ipcMain.on("showWindow", (event, arg) => {
     // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
     window.loadURL(arg.url)
 })
-
 ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
 ipcMain.on("openPath", (event, path) => shell.openPath(path))
 ipcMain.handle("openURL", async (event, url) => shell.openExternal(url))

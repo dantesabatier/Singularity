@@ -25,6 +25,7 @@ final class Project extends ManagedObject
     #[Override]
     public function willSave(): void
     {
+        $this->name = $this->name |> trim(...);
         $this->lastModifiedDate = new Date();
     }
 

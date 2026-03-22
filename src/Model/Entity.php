@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
@@ -150,5 +151,11 @@ final class Entity extends ManagedObject
             }
             return $dictionary;
         }
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        $this->name = $this->name |> trim(...);
     }
 }

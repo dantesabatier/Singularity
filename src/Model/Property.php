@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
@@ -66,5 +67,11 @@ abstract class Property extends ManagedObject
             }
             return $dictionary;
         }
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        $this->name = $this->name |> trim(...);
     }
 }
