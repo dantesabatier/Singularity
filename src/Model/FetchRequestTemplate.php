@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
@@ -57,6 +58,13 @@ final class FetchRequestTemplate extends ManagedObject
             }
             return $dictionary;
         }
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        $this->name = $this->name |> trim(...);
+        $this->predicateString = $this->predicateString |> trim(...);
     }
 
     public function validateFetchResultType(FetchRequestResultType|int|null &$resultType): bool

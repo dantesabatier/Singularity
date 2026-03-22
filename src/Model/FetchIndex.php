@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
@@ -44,6 +45,12 @@ final class FetchIndex extends ManagedObject
         $this->observe("collationType", KeyValueObservingOptions::new, function (FetchIndex $index, KeyValueObservedChange $change): void {
             $index->elements->setValueForKey($change->newValue, "collationType");
         });
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        $this->name = $this->name |> trim(...);
     }
 
     public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool

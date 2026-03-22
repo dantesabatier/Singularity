@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
@@ -33,5 +34,11 @@ final class CompositeType extends ManagedObject
             }
             return $dictionary;
         }
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        $this->name = $this->name |> trim(...);
     }
 }

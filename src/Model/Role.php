@@ -2,11 +2,12 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Dictionary;
 
 /**
- * @property string|null $name
+ * @property string $name
  * @property int<0, max> $index
  * @property AccessControl|null $accessControl
  */
@@ -21,5 +22,11 @@ final class Role extends ManagedObject
             $dictionary["index"] = $this->index;
             return $dictionary;
         }
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        $this->name = $this->name |> trim(...);
     }
 }
