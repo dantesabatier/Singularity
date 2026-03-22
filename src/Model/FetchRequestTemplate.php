@@ -64,7 +64,9 @@ final class FetchRequestTemplate extends ManagedObject
     public function willSave(): void
     {
         $this->name = $this->name |> trim(...);
-        $this->predicateString = $this->predicateString |> trim(...);
+        if ($this->predicateString) {
+            $this->predicateString = $this->predicateString |> trim(...);
+        }
     }
 
     public function validateFetchResultType(FetchRequestResultType|int|null &$resultType): bool
