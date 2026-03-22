@@ -72,7 +72,6 @@ const setupWindowErrorHandling = (window) => {
         }
     })
 }
-
 const createWindow = () => {
     const mainWindow = new BrowserWindow({
         ...options,
