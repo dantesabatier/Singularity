@@ -132,7 +132,6 @@ final class Model extends ManagedObject
             return $dictionary;
         }
     }
-
     public Dictionary $graph {
         get {
             $nodes = [];
