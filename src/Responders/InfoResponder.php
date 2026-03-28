@@ -4,10 +4,11 @@ namespace App\Responders;
 
 use Override;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\HTMLDecorator;
 use Sabatier\Service\Responder;
 use Sabatier\Service\Response;
 
-#[Endpoint]
+#[Endpoint("Info", decorators: [HTMLDecorator::class])]
 final class InfoResponder extends Responder
 {
     #[Override]
@@ -16,7 +17,7 @@ final class InfoResponder extends Responder
     public Response $response {
         get {
             phpinfo();
-            return new Response($this->response->url);
+            return new Response($this->request->url);
         }
     }
 }
