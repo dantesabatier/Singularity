@@ -40,8 +40,12 @@ final class ExistingClassParser
         }
         $beforeClass = substring_to_index($contents, $index);
         if ($lines = preg_split("/\n/", $beforeClass, -1, PREG_SPLIT_NO_EMPTY)) {
-            $uses->formUnion(array_map(rtrim(...), array_filter($lines, fn(string $e): bool => str_starts_with($e, "use"))));
-            $properties->formUnion(array_map(rtrim(...), array_filter($lines, fn(string $e): bool => str_starts_with($e, " * @property"))));
+            array_filter($lines, fn(string $e): bool => str_starts_with($e, "use"))
+                |> (fn(array $x): array => array_map(rtrim(...), $x))
+                |> $uses->formUnion(...);
+            array_filter($lines, fn(string $e): bool => str_starts_with($e, " * @property"))
+                |> (fn(array $x): array => array_map(rtrim(...), $x))
+                |> $properties->formUnion(...);
         }
         $declaration = substring_from_index($contents, $index);
         $propRegex = "/(?P<slot>(?:public|protected|private|var|readonly|static)\\s+[^;{]*?\\\$[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\\s*[;={]/s";
