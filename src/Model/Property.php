@@ -24,10 +24,10 @@ use Sabatier\Foundation\Set;
  * @property Set<AccessControl> $accessControls
  * @method void addAccessControlsObject(AccessControl $object)
  * @method void removeAccessControlsObject(AccessControl $object)
- * @method void addAccessControls(Set $objects)
- * @method void removeAccessControls(Set $objects)
- * @method Set<AccessControl> intersectAccessControls(Set $objects)
- * @method void setAccessControls(Set $objects)
+ * @method void addAccessControls(Set<AccessControl> $objects)
+ * @method void removeAccessControls(Set<AccessControl> $objects)
+ * @method Set<AccessControl> intersectAccessControls(Set<AccessControl> $objects)
+ * @method void setAccessControls(Set<AccessControl> $objects)
  */
 abstract class Property extends ManagedObject
 {

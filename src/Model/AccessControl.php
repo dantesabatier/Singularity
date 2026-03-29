@@ -16,10 +16,10 @@ use Sabatier\Service\AuthorizationScope;
  * @property Set<Role> $roles
  * @method void addRolesObject(Role $object)
  * @method void removeRolesObject(Role $object)
- * @method void addRoles(Set $objects)
- * @method void removeRoles(Set $objects)
- * @method Set<Role> intersectRoles(Set $objects)
- * @method void setRoles(Set $objects)
+ * @method void addRoles(Set<Role> $objects)
+ * @method void removeRoles(Set<Role> $objects)
+ * @method Set<Role> intersectRoles(Set<Role> $objects)
+ * @method void setRoles(Set<Role> $objects)
  */
 final class AccessControl extends ManagedObject
 {

@@ -6,9 +6,6 @@ use Override;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\Set;
 
-/**
- * Value object representing a complete property block with attributes and getter/setter
- */
 final class PropertyBlock extends ObjectClass
 {
     #[Override]

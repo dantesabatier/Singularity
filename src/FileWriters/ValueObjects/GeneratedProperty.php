@@ -5,9 +5,6 @@ namespace App\FileWriters\ValueObjects;
 use Override;
 use Sabatier\Foundation\ObjectClass;
 
-/**
- * Value object representing a generated property doc-block annotation
- */
 final class GeneratedProperty extends ObjectClass
 {
     #[Override]

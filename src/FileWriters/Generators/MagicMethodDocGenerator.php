@@ -12,8 +12,6 @@ use Sabatier\Foundation\SortDescriptor;
 use function Sabatier\Foundation\class_name;
 
 /**
- * Generates @method doc-block annotations for relationship magic methods
- *
  * @psalm-type SubclassNameGenerator = Closure(Entity, string): string
  */
 final readonly class MagicMethodDocGenerator

@@ -9,10 +9,6 @@ use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\substring_from_index;
 use function Sabatier\Foundation\substring_to_index;
 
-/**
- * Parses existing class files to extract uses, PHPDoc properties,
- * real class property slots, method signatures, and the full class declaration.
- */
 final class ExistingClassParser
 {
     /**

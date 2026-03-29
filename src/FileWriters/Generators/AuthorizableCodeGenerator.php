@@ -11,9 +11,6 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 
-/**
- * Generates code specific to Authorizable entities
- */
 final readonly class AuthorizableCodeGenerator
 {
     /** @var array<string, string> */

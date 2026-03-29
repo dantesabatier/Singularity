@@ -7,9 +7,6 @@ use Sabatier\Foundation\ArrayClass;
 use function Sabatier\Foundation\substring_from_index;
 use function Sabatier\Foundation\substring_to_index;
 
-/**
- * Injects property blocks into class declarations
- */
 final class ClassDeclarationInjector
 {
     /**

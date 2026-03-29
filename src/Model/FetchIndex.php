@@ -20,10 +20,10 @@ use Sabatier\Foundation\Set;
  * @property Set<FetchIndexElement> $elements
  * @method void addElementsObject(FetchIndexElement $object)
  * @method void removeElementsObject(FetchIndexElement $object)
- * @method void addElements(Set $objects)
- * @method void removeElements(Set $objects)
- * @method Set<FetchIndexElement> intersectElements(Set $objects)
- * @method void setElements(Set $objects)
+ * @method void addElements(Set<FetchIndexElement> $objects)
+ * @method void removeElements(Set<FetchIndexElement> $objects)
+ * @method Set<FetchIndexElement> intersectElements(Set<FetchIndexElement> $objects)
+ * @method void setElements(Set<FetchIndexElement> $objects)
  */
 final class FetchIndex extends ManagedObject
 {

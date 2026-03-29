@@ -18,9 +18,6 @@ use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
 use function Sabatier\Foundation\class_name;
 
-/**
- * Generates property blocks (with getters/setters) for properties that have access controls
- */
 final readonly class PropertyBlockGenerator
 {
     public function __construct(private PropertyAttributeGenerator $propertyAttributeGenerator)

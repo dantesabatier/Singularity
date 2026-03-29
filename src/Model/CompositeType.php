@@ -14,10 +14,10 @@ use Sabatier\Foundation\Set;
  * @property Model|null $model
  * @method void addElementsObject(Attribute $object)
  * @method void removeElementsObject(Attribute $object)
- * @method void addElements(Set $objects)
- * @method void removeElements(Set $objects)
- * @method Set<Attribute> intersectElements(Set $objects)
- * @method void setElements(Set $objects)
+ * @method void addElements(Set<Attribute> $objects)
+ * @method void removeElements(Set<Attribute> $objects)
+ * @method Set<Attribute> intersectElements(Set<Attribute> $objects)
+ * @method void setElements(Set<Attribute> $objects)
  */
 final class CompositeType extends ManagedObject
 {

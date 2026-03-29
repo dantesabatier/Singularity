@@ -10,9 +10,6 @@ use Sabatier\Foundation\Set;
 use Sabatier\Service\AuthorizationScope;
 use function Sabatier\Foundation\class_name;
 
-/**
- * Generates PHP attributes for access control
- */
 final readonly class PropertyAttributeGenerator
 {
     private string $scopeClass;

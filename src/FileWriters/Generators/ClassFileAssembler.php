@@ -8,9 +8,6 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Set;
 use function Sabatier\Foundation\class_name;
 
-/**
- * Assembles the final class file content from generated components
- */
 final class ClassFileAssembler
 {
     /**
