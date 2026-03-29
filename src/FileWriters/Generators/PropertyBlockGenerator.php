@@ -50,7 +50,7 @@ final readonly class PropertyBlockGenerator
     private function generateFromAttributes(Entity $entity, Set $uses, string $declaration, array $reservedPropertyNames): ArrayClass
     {
         /** @var ArrayClass<PropertyBlock> */
-        return $entity->attributes->sorted([new SortDescriptor("position")])->compactMap(fn(Attribute $attribute): ?PropertyBlock => in_array($attribute->name, $reservedPropertyNames) ? null : $this->generateAttributeBlock($attribute, $uses, $declaration));
+        return $entity->attributes->sorted([new SortDescriptor("position", false)])->compactMap(fn(Attribute $attribute): ?PropertyBlock => in_array($attribute->name, $reservedPropertyNames) ? null : $this->generateAttributeBlock($attribute, $uses, $declaration));
     }
 
     /**
@@ -103,7 +103,7 @@ final readonly class PropertyBlockGenerator
     {
         $setClassName = class_name(Set::class);
         /** @var ArrayClass<PropertyBlock> */
-        return $entity->relationships->sorted([new SortDescriptor("position")])->compactMap(fn(Relationship $relationship): ?PropertyBlock => in_array($relationship->name, $reservedPropertyNames) ? null : $this->generateRelationshipBlock($relationship, $uses, $declaration, $setClassName));
+        return $entity->relationships->sorted([new SortDescriptor("position", false)])->compactMap(fn(Relationship $relationship): ?PropertyBlock => in_array($relationship->name, $reservedPropertyNames) ? null : $this->generateRelationshipBlock($relationship, $uses, $declaration, $setClassName));
     }
 
     /**
@@ -128,7 +128,7 @@ final readonly class PropertyBlockGenerator
     {
         $arrayClassName = class_name(ArrayClass::class);
         /** @var ArrayClass<PropertyBlock> */
-        return $entity->fetchedProperties->sorted([new SortDescriptor("position")])->compactMap(fn(FetchedProperty $property): ?PropertyBlock => $this->generateFetchedPropertyBlock($property, $uses, $declaration, $arrayClassName));
+        return $entity->fetchedProperties->sorted([new SortDescriptor("position", false)])->compactMap(fn(FetchedProperty $property): ?PropertyBlock => $this->generateFetchedPropertyBlock($property, $uses, $declaration, $arrayClassName));
     }
 
     /**

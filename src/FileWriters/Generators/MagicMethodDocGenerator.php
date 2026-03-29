@@ -34,7 +34,7 @@ final readonly class MagicMethodDocGenerator
      */
     public function generate(Entity $entity, string $namespace): ArrayClass
     {
-        $relationships = $entity->relationships->sorted([new SortDescriptor("position")]);
+        $relationships = $entity->relationships->sorted([new SortDescriptor("position", false)]);
         $className = class_name(Set::class);
         /** @var ArrayClass<string> */
         return $relationships->compactMap(fn(Relationship $relationship) => $this->generateMethodsForRelationship($relationship, $namespace, $className));
@@ -53,10 +53,10 @@ final readonly class MagicMethodDocGenerator
         return new ArrayClass([
             new GeneratedMethod("void add{$relationshipName}Object($entityClassName \$object)"),
             new GeneratedMethod("void remove{$relationshipName}Object($entityClassName \$object)"),
-            new GeneratedMethod("void add$relationshipName($setClassName \$objects)"),
-            new GeneratedMethod("void remove$relationshipName($setClassName \$objects)"),
-            new GeneratedMethod("$setClassName<$entityClassName> intersect$relationshipName($setClassName \$objects)"),
-            new GeneratedMethod("void set$relationshipName($setClassName \$objects)")
+            new GeneratedMethod("void add$relationshipName($setClassName<$entityClassName> \$objects)"),
+            new GeneratedMethod("void remove$relationshipName($setClassName<$entityClassName> \$objects)"),
+            new GeneratedMethod("$setClassName<$entityClassName> intersect$relationshipName($setClassName<$entityClassName> \$objects)"),
+            new GeneratedMethod("void set$relationshipName($setClassName<$entityClassName> \$objects)")
         ])->join("\n");
     }
 }
