@@ -10,8 +10,8 @@ use Sabatier\Foundation\Set;
 
 /**
  * @property string $name
- * @property Set<Attribute> $elements
  * @property Model|null $model
+ * @property Set<Attribute> $elements
  * @method void addElementsObject(Attribute $object)
  * @method void removeElementsObject(Attribute $object)
  * @method void addElements(Set<Attribute> $objects)
