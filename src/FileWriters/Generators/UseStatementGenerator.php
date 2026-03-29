@@ -28,7 +28,7 @@ final class UseStatementGenerator
         /** @var Set<string> $uses */
         $uses = new Set($existingUses);
         /** @var Set<Attribute> $attributes */
-        $attributes = new Set($entity->attributes->sorted([new SortDescriptor("position")]));
+        $attributes = new Set($entity->attributes);
         /** @var Set<string> $attributeUses */
         $attributeUses = $attributes->compactMap(function (Attribute $attribute): ?string {
             $attributeValueClassName = $this->getAttributeClassName($attribute);
@@ -56,7 +56,7 @@ final class UseStatementGenerator
             $uses->insert("use " . Set::class . ";");
             $uses->insert("use Override;");
         }
-        return $uses;
+        return $uses->sort();
     }
 
     private function getAttributeClassName(Attribute $attribute): ?string
