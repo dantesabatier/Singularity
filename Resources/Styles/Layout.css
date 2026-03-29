@@ -636,6 +636,87 @@ button {
 }
 
 /* ============================================
+   8.5 AI Copilot Panel
+   ============================================ */
+
+.ai-copilot-panel {
+    margin-bottom: 0;
+    margin-top: 8px;
+}
+
+.ai-copilot-header {
+    margin: 0 0 10px 0;
+    padding: 6px 8px;
+    border-top: none;
+    background-color: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.ai-copilot-header:first-child {
+    margin-top: 0;
+}
+
+.ai-copilot-preview {
+    font-size: 10px;
+    color: var(--text-disabled);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ai-copilot-body {
+    padding: 0;
+}
+
+.ai-copilot-prompt {
+    min-height: 92px;
+    resize: vertical;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.ai-copilot-actions .btn-outline-primary {
+    border-color: var(--border-light);
+    color: var(--text-primary);
+    background-color: transparent;
+}
+
+.ai-copilot-actions .btn-outline-primary:hover {
+    border-color: var(--accent-blue);
+    background-color: rgba(74, 136, 199, 0.16);
+    color: var(--text-bright);
+}
+
+.ai-copilot-section {
+    background-color: transparent;
+    border: 1px solid rgba(74, 136, 199, 0.16);
+    border-radius: 4px;
+    padding: 8px 10px;
+}
+
+.ai-copilot-label {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.ai-copilot-summary {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.ai-copilot-warnings {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* ============================================
    9. List Control Components (Tables)
    ============================================ */
 
@@ -1666,6 +1747,24 @@ a.breadcrumb-link:hover {
 .scroll-view {
     overflow: hidden;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s;
+}
+
+.scroll-view:hover {
+    scrollbar-color: var(--bg-active) transparent;
+}
+
+.scroll-view::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-color: transparent;
+    transition: background 0.3s;
+}
+
+.scroll-view:hover::-webkit-scrollbar-thumb {
+    background: var(--bg-active);
+    border: 3px solid var(--bg-secondary);
 }
 
 .space {

@@ -7,6 +7,7 @@ const AutomaticallyDeleteProjectFoldersPreferencesKey = "automaticallyDeleteProj
 const EntityPositionsMappingPreferencesKey = "entityPositionsMapping";
 const EditorSelectedViewPreferencesKey = "editorSelectedView";
 const EditorSplitSizesPreferencesKey = "editorSplitSizes";
+const EditorSidebarSplitSizesPreferencesKey = "editorSidebarSplitSizes";
 const EditorTableViewValue = "tableView";
 const EditorGraphViewValue = "graphView";
 const GraphViewPreferencesKey = "graphViewPreferences";

@@ -158,6 +158,13 @@
                             style="-webkit-app-region: no-drag;">
                         <i class="bi bi-layout-sidebar-reverse"></i>
                     </button>
+                    <button id="btn-toggle-copilot"
+                            class="btn btn-icon btn-pane-toggle btn-sm active"
+                            onclick="toggleCopilotPanel()"
+                            title="Toggle AI Copilot"
+                            style="-webkit-app-region: no-drag;">
+                        <i class="bi bi-robot"></i>
+                    </button>
                 </div>
                 <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
             </div>
@@ -167,14 +174,17 @@
                 {include sourceList from "SourceList.latte"}
             </div>
             <div id="content" class="split-panel scroll-view p-2">
-                {if $isTableViewSelected}
-                    {include content from "Content.latte"}
-                {else}
-                    {include graphView from "GraphView.latte"}
-                {/if}
+                {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
             </div>
-            <div id="sidebar" class="split-panel scroll-view border-start border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
-                {include inspector from "Inspector.latte"}
+            <div id="sidebar" class="split-panel border-start border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+                <div id="sidebar-split-container" data-split-sizes="{$sidebarSplitSizes->array ?? [65, 35]}" style="height: 100%; display: flex; flex-direction: column;">
+                    <div id="inspector-pane" class="scroll-view pe-1">
+                        {include inspector from "Inspector.latte"}
+                    </div>
+                    <div id="ai-copilot-pane" class="scroll-view ps-1">
+                        {include aiCopilot from "AICopilot.latte"}
+                    </div>
+                </div>
             </div>
         </div>
         <nav class="breadcrumb-nav" aria-label="breadcrumb">
@@ -185,13 +195,10 @@
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Model}
-                    {varType App\Model\Model $item}
+                    {elseif $item instanceof App\Model\Model} {varType App\Model\Model $item}
                         <div class="breadcrumb-link">
-                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            {if $item->entities->isEmpty}
-                                <span>{$item->name}</span>
-                            {else}
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->entities->isEmpty}
+                                <span>{$item->name}</span> {else}
                                 <div class="dropup">
                                     <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                         {$project->name}
@@ -207,13 +214,10 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\Entity}
-                    {varType App\Model\Entity $item}
+                    {elseif $item instanceof App\Model\Entity} {varType App\Model\Entity $item}
                         <div class="breadcrumb-link">
-                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            {if $item->properties->isEmpty}
-                                <span>{$item->name}</span>
-                            {else}
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->properties->isEmpty}
+                                <span>{$item->name}</span> {else}
                                 <div class="dropup">
                                     <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                         {$item->name}
@@ -230,25 +234,20 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\FetchRequestTemplate}
-                    {varType App\Model\FetchRequestTemplate $item}
+                    {elseif $item instanceof App\Model\FetchRequestTemplate} {varType App\Model\FetchRequestTemplate $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\UniquenessConstraint}
-                    {varType App\Model\UniquenessConstraint $item}
+                    {elseif $item instanceof App\Model\UniquenessConstraint} {varType App\Model\UniquenessConstraint $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->stringValue}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Property}
-                    {varType App\Model\Property $item}
+                    {elseif $item instanceof App\Model\Property} {varType App\Model\Property $item}
                         <div class="breadcrumb-link">
-                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            {if $item->accessControls->isEmpty}
-                                <span>{$item->name}</span>
-                            {else}
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->accessControls->isEmpty}
+                                <span>{$item->name}</span> {else}
                                 <div class="dropup">
                                     <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                         {$item->name}
@@ -265,13 +264,10 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndex}
-                    {varType App\Model\FetchIndex $item}
+                    {elseif $item instanceof App\Model\FetchIndex} {varType App\Model\FetchIndex $item}
                         <div class="breadcrumb-link">
-                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            {if $item->elements->isEmpty}
-                                <span>{$item->name}</span>
-                            {else}
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->elements->isEmpty}
+                                <span>{$item->name}</span> {else}
                                 <div class="dropup">
                                     <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                         {$item->name}
@@ -288,19 +284,15 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndexElement}
-                    {varType App\Model\FetchIndexElement $item}
+                    {elseif $item instanceof App\Model\FetchIndexElement} {varType App\Model\FetchIndexElement $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->propertyName}</span>
                         </div>
-                    {elseif $item instanceof App\Model\CompositeType}
-                    {varType App\Model\CompositeType $item}
+                    {elseif $item instanceof App\Model\CompositeType} {varType App\Model\CompositeType $item}
                         <div class="breadcrumb-link">
-                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            {if $item->elements->isEmpty}
-                                <span>{$item->name}</span>
-                            {else}
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->elements->isEmpty}
+                                <span>{$item->name}</span> {else}
                                 <div class="dropup">
                                     <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                         {$item->name}
@@ -317,13 +309,10 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\AccessControl}
-                    {varType App\Model\AccessControl $item}
+                    {elseif $item instanceof App\Model\AccessControl} {varType App\Model\AccessControl $item}
                         <div class="breadcrumb-link">
-                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
-                            {if $item->roles->isEmpty}
-                                <span>{$item->name}</span>
-                            {else}
+                            <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->roles->isEmpty}
+                                <span>{$item->name}</span> {else}
                                 <div class="dropup">
                                     <button type="button" class="breadcrumb-dropdown-btn" data-bs-toggle="dropdown" aria-expanded="false">
                                         {$item->name}
@@ -340,8 +329,7 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\Role}
-                    {varType App\Model\Role $item}
+                    {elseif $item instanceof App\Model\Role} {varType App\Model\Role $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
@@ -376,6 +364,28 @@
                             source.style.width = sizes[0] + "%"
                             content.style.width = sizes[1] + "%"
                             sidebar.style.width = sizes[2] + "%"
+                        }
+                    }
+                    /** @type { HTMLElement } */
+                    const sidebarContainer = document.getElementById("sidebar-split-container")
+                    let sidebarSizes = {$sidebarSplitSizes->array ?? [65, 35]}
+                    if (typeof sidebarSizes === "string") {
+                        sidebarSizes = JSON.parse(sidebarSizes)
+                    }
+                    if (sidebarContainer && sidebarContainer.dataset.splitSizes) {
+                        const parsedSidebar = JSON.parse(sidebarContainer.dataset.splitSizes)
+                        if (Array.isArray(parsedSidebar) && parsedSidebar.length === 2) {
+                            sidebarSizes = parsedSidebar
+                        }
+                    }
+                    if (Array.isArray(sidebarSizes) && sidebarSizes.length === 2) {
+                        /** @type { HTMLElement } */
+                        const inspectorPane = document.getElementById("inspector-pane")
+                        /** @type { HTMLElement } */
+                        const aiPane = document.getElementById("ai-copilot-pane")
+                        if (inspectorPane && aiPane) {
+                            inspectorPane.style.height = sidebarSizes[0] + "%"
+                            aiPane.style.height = sidebarSizes[1] + "%"
                         }
                     }
                 } catch (e) {
@@ -414,7 +424,9 @@
     <!--suppress JSUnresolvedReference, SpellCheckingInspection, JSUnusedAssignment -->
     <script>
         let splitInstance
+        let sidebarSplitInstance
         let splitSaveTimer
+        let sidebarSplitSaveTimer
         const saveSplitState = () => {
             if (!splitInstance) {
                 return
@@ -424,6 +436,18 @@
                 const sizes = splitInstance.getSizes()
                 request("Synchronize", {
                     editorSplitSizes: sizes
+                })
+            }, 500)
+        }
+        const saveSidebarSplitState = () => {
+            if (!sidebarSplitInstance) {
+                return
+            }
+            clearTimeout(sidebarSplitSaveTimer)
+            sidebarSplitSaveTimer = setTimeout(() => {
+                const sizes = sidebarSplitInstance.getSizes()
+                request("Synchronize", {
+                    editorSidebarSplitSizes: sizes
                 })
             }, 500)
         }
@@ -439,6 +463,11 @@
             const btnSidebar = document.getElementById("btn-toggle-sidebar")
             if (btnSidebar) {
                 btnSidebar.classList.toggle("active", sizes[2] > 2)
+            }
+            const btnCopilot = document.getElementById("btn-toggle-copilot")
+            if (btnCopilot && sidebarSplitInstance) {
+                const sidebarSizes = sidebarSplitInstance.getSizes()
+                btnCopilot.classList.toggle("active", sidebarSizes[1] > 2)
             }
         }
         const initSplitView = () => {
@@ -488,6 +517,128 @@
             })
             updateToggleButtons()
         }
+        const initSidebarSplitView = () => {
+            if (sidebarSplitInstance) {
+                sidebarSplitInstance.destroy()
+            }
+            const container = document.getElementById("sidebar-split-container")
+            const aiPane = document.getElementById("ai-copilot-pane")
+            const inspectorPane = document.getElementById("inspector-pane")
+            if (!container || !aiPane || !inspectorPane) {
+                return
+            }
+            let savedSizes = {$sidebarSplitSizes->array ?? [65, 35]}
+            if (typeof savedSizes === "string") {
+                try {
+                    savedSizes = JSON.parse(savedSizes)
+                } catch (e) {
+                    savedSizes = [65, 35]
+                }
+            }
+            try {
+                if (container.dataset.splitSizes) {
+                    const parsedSizes = JSON.parse(container.dataset.splitSizes)
+                    if (Array.isArray(parsedSizes) && parsedSizes.length === 2) {
+                        savedSizes = parsedSizes
+                    }
+                }
+            } catch (e) {
+                console.warn("Failed to parse sidebar split sizes", e)
+            }
+            if (!Array.isArray(savedSizes) || savedSizes.length !== 2) {
+                savedSizes = [65, 35]
+            }
+            sidebarSplitInstance = Split(["#inspector-pane", "#ai-copilot-pane"], {
+                direction: "vertical",
+                sizes: savedSizes,
+                minSize: [220, 0],
+                gutterSize: 1,
+                snapOffset: 20,
+                onDragEnd: () => {
+                    updateToggleButtons()
+                    saveSidebarSplitState()
+                }
+            })
+            updateToggleButtons()
+        }
+        const initAICopilot = () => {
+            const promptEl = document.getElementById("ai-prompt")
+            const proposeBtn = document.getElementById("ai-propose-btn")
+            const applyBtn = document.getElementById("ai-apply-btn")
+            const summaryEl = document.getElementById("ai-summary")
+            const warningsEl = document.getElementById("ai-warnings")
+            if (!promptEl) {
+                return
+            }
+            let pendingProposal = null
+            proposeBtn.addEventListener("click", async () => {
+                const prompt = promptEl.value.trim()
+                if (!prompt) {
+                    return
+                }
+
+                proposeBtn.disabled = true
+                applyBtn.disabled = true
+                summaryEl.textContent = "Thinking…"
+                warningsEl.innerHTML = "<li>—</li>"
+
+                const response = await request("propose", {
+                    objectID: {$project->objectID},
+                    prompt
+                })
+
+                if (!response.ok) {
+                    summaryEl.textContent = (await response.json())?.error ?? "Something went wrong."
+                    proposeBtn.disabled = false
+                    return
+                }
+
+                const data = await response.json()
+                pendingProposal = data
+                summaryEl.textContent = data.summary ?? "Ready to apply."
+                warningsEl.innerHTML = data.warnings?.length
+                    ? data.warnings.map(w => `<li>${ w.message ?? w }</li>`).join("")
+                    : "<li>No warnings</li>"
+
+                proposeBtn.disabled = false
+                applyBtn.disabled = !pendingProposal
+            })
+
+            applyBtn.addEventListener("click", async () => {
+                if (!pendingProposal) {
+                    return
+                }
+                applyBtn.disabled = true
+                proposeBtn.disabled = true
+
+                const response = await request("apply", {
+                    objectID: {$project->objectID},
+                    patch: pendingProposal
+                })
+                if (!response.ok) {
+                    summaryEl.textContent = (await response.json())?.error ?? "Something went wrong."
+                    proposeBtn.disabled = false
+                    return
+                }
+                pendingProposal = null
+                await push(window.location.href)
+            })
+        }
+
+        function toggleCopilotPanel() {
+            if (!sidebarSplitInstance) {
+                return
+            }
+            const sizes = sidebarSplitInstance.getSizes()
+            if (sizes[1] < 2) {
+                sidebarSplitInstance.setSizes([65, 35])
+            } else {
+                sidebarSplitInstance.setSizes([100, 0])
+            }
+            updateToggleButtons()
+            saveSidebarSplitState()
+        }
+
         const togglePanel = (panel) => {
             if (!splitInstance) {
                 return
@@ -812,13 +963,18 @@
         }
         document.addEventListener("DOMContentLoaded", () => {
             initSplitView()
+            initSidebarSplitView()
             initializeGraphView()
+            initAICopilot()
         }, {
             once: true
         })
+
         document.addEventListener("view:updated", () => {
             initSplitView()
+            initSidebarSplitView()
             initializeGraphView()
+            initAICopilot()
         }, {
             once: false
         })

@@ -16,6 +16,7 @@ use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use const App\CompanyNamePreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
+use const App\EditorSidebarSplitSizesPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
@@ -57,6 +58,13 @@ final class PreferencesController extends ViewController
         get => UserDefaults::standard()->array(EditorSplitSizesPreferencesKey);
         set {
             UserDefaults::standard()->setObject($value, EditorSplitSizesPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?ArrayClass $editorSidebarSplitSizes {
+        get => UserDefaults::standard()->array(EditorSidebarSplitSizesPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorSidebarSplitSizesPreferencesKey);
         }
     }
     #[Outlet]

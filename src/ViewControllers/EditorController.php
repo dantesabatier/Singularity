@@ -47,6 +47,7 @@ use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 use const App\EditorGraphViewValue;
+use const App\EditorSidebarSplitSizesPreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\EditorTableViewValue;
@@ -78,6 +79,13 @@ final class EditorController extends ProjectController
         get => UserDefaults::standard()->array(EditorSplitSizesPreferencesKey);
         set {
             UserDefaults::standard()->setObject($value, EditorSplitSizesPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?ArrayClass $sidebarSplitSizes {
+        get => UserDefaults::standard()->array(EditorSidebarSplitSizesPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorSidebarSplitSizesPreferencesKey);
         }
     }
     #[Outlet]

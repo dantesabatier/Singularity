@@ -1,0 +1,31 @@
+{templateType App\ViewControllers\EditorController}
+{define aiCopilot}
+    <div class="ai-copilot-panel mb-2">
+        <div class="inspector-header ai-copilot-header d-flex justify-content-between align-items-center">
+            <span class="d-inline-flex align-items-center gap-2">
+                <i class="bi bi-robot"></i>
+                <span>AI Copilot</span>
+            </span> <span class="ai-copilot-preview">Preview</span>
+        </div>
+        <div class="ai-copilot-body d-flex flex-column gap-2">
+            <div class="ai-copilot-section">
+                <label for="ai-prompt" class="ai-copilot-label">Prompt</label>
+                <textarea id="ai-prompt" class="form-control ai-copilot-prompt" rows="4" placeholder="create entity User"></textarea>
+            </div>
+            <div class="d-flex gap-2 ai-copilot-actions">
+                <button type="button" id="ai-propose-btn" class="btn btn-outline-primary btn-sm">Propose</button>
+                <button type="button" id="ai-apply-btn" class="btn btn-primary btn-sm" disabled>Apply</button>
+            </div>
+            <div class="ai-copilot-section">
+                <div class="ai-copilot-label">Summary</div>
+                <div id="ai-summary" class="ai-copilot-summary">No proposal yet.</div>
+            </div>
+            <div class="ai-copilot-section">
+                <div class="ai-copilot-label">Warnings</div>
+                <ul id="ai-warnings" class="ai-copilot-warnings mb-0 ps-3">
+                    <li>No warnings</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{/define}
