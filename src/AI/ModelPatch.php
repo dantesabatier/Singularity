@@ -15,12 +15,22 @@ final class ModelPatch extends ObjectClass
         }
     }
     /** @var ArrayClass<PatchOperation> */
-    public ArrayClass $operations {
+    private(set) ArrayClass $operations {
         get => $this->operations ??= new ArrayClass();
     }
     /** @var ArrayClass<PatchWarning> */
-    public ArrayClass $warnings {
+    private(set) ArrayClass $warnings {
         get => $this->warnings ??= new ArrayClass();
+    }
+
+    public function addOperation(PatchOperation $operation): void
+    {
+        $this->operations->append($operation);
+    }
+
+    public function addWarning(PatchWarning $warning): void
+    {
+        $this->warnings->append($warning);
     }
 
     #[Override]
