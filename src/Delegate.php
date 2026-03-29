@@ -26,7 +26,7 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public static function initialize(): void
     {
-        SQLCore::$debugLevel = SQLDebugLevel::none;
+        SQLCore::$debugLevel = SQLDebugLevel::prettyFormatSQL;
         SQLCore::$debugColorOutputDefault = true;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
@@ -36,6 +36,7 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
             CompanyNamePreferencesKey => full_user_name(),
             EditorSelectedViewPreferencesKey => EditorTableViewValue,
             EditorSplitSizesPreferencesKey => new ArrayClass([20, 60, 20]),
+            EditorCopilotEnabledPreferencesKey => false,
             ExportIncludeDataPreferencesKey => true,
             ExportIncludeCommentsPreferencesKey => false,
         ]));

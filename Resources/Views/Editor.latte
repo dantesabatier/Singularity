@@ -159,7 +159,7 @@
                         <i class="bi bi-layout-sidebar-reverse"></i>
                     </button>
                     <button id="btn-toggle-copilot"
-                            class="btn btn-icon btn-pane-toggle btn-sm active"
+                            class="btn btn-icon btn-pane-toggle btn-sm {$isCopilotEnabled ? 'active' : ''}"
                             onclick="toggleCopilotPanel()"
                             title="Toggle AI Copilot"
                             style="-webkit-app-region: no-drag;">
@@ -174,16 +174,18 @@
                 {include sourceList from "SourceList.latte"}
             </div>
             <div id="content" class="split-panel scroll-view p-2">
-                {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
+                {if $isTableViewSelected}
+                    {include content from "Content.latte"}
+                {else}
+                    {include graphView from "GraphView.latte"}
+                {/if}
             </div>
             <div id="sidebar" class="split-panel border-start border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
-                <div id="sidebar-split-container" data-split-sizes="{$sidebarSplitSizes->array ?? [65, 35]}" style="height: 100%; display: flex; flex-direction: column;">
-                    <div id="inspector-pane" class="scroll-view pe-1">
-                        {include inspector from "Inspector.latte"}
-                    </div>
-                    <div id="ai-copilot-pane" class="scroll-view ps-1">
-                        {include aiCopilot from "AICopilot.latte"}
-                    </div>
+                <div id="inspector-pane" class="scroll-view pe-1" style="height: 100%; display: {$isCopilotEnabled ? 'none' : 'block'};">
+                    {include inspector from "Inspector.latte"}
+                </div>
+                <div id="ai-copilot-pane" class="scroll-view ps-1" style="height: 100%; display: {$isCopilotEnabled ? 'block' : 'none'};">
+                    {include aiCopilot from "AICopilot.latte"}
                 </div>
             </div>
         </div>
@@ -366,28 +368,6 @@
                             sidebar.style.width = sizes[2] + "%"
                         }
                     }
-                    /** @type { HTMLElement } */
-                    const sidebarContainer = document.getElementById("sidebar-split-container")
-                    let sidebarSizes = {$sidebarSplitSizes->array ?? [65, 35]}
-                    if (typeof sidebarSizes === "string") {
-                        sidebarSizes = JSON.parse(sidebarSizes)
-                    }
-                    if (sidebarContainer && sidebarContainer.dataset.splitSizes) {
-                        const parsedSidebar = JSON.parse(sidebarContainer.dataset.splitSizes)
-                        if (Array.isArray(parsedSidebar) && parsedSidebar.length === 2) {
-                            sidebarSizes = parsedSidebar
-                        }
-                    }
-                    if (Array.isArray(sidebarSizes) && sidebarSizes.length === 2) {
-                        /** @type { HTMLElement } */
-                        const inspectorPane = document.getElementById("inspector-pane")
-                        /** @type { HTMLElement } */
-                        const aiPane = document.getElementById("ai-copilot-pane")
-                        if (inspectorPane && aiPane) {
-                            inspectorPane.style.height = sidebarSizes[0] + "%"
-                            aiPane.style.height = sidebarSizes[1] + "%"
-                        }
-                    }
                 } catch (e) {
                     console.warn("Failed to apply initial split sizes", e)
                 }
@@ -424,9 +404,8 @@
     <!--suppress JSUnresolvedReference, SpellCheckingInspection, JSUnusedAssignment -->
     <script>
         let splitInstance
-        let sidebarSplitInstance
         let splitSaveTimer
-        let sidebarSplitSaveTimer
+        let isCopilotEnabled = {$isCopilotEnabled}
         const saveSplitState = () => {
             if (!splitInstance) {
                 return
@@ -439,35 +418,29 @@
                 })
             }, 500)
         }
-        const saveSidebarSplitState = () => {
-            if (!sidebarSplitInstance) {
+        const updateSidebarMode = () => {
+            const inspectorPane = document.getElementById("inspector-pane")
+            const aiPane = document.getElementById("ai-copilot-pane")
+            if (!inspectorPane || !aiPane) {
                 return
             }
-            clearTimeout(sidebarSplitSaveTimer)
-            sidebarSplitSaveTimer = setTimeout(() => {
-                const sizes = sidebarSplitInstance.getSizes()
-                request("Synchronize", {
-                    editorSidebarSplitSizes: sizes
-                })
-            }, 500)
+            inspectorPane.style.display = isCopilotEnabled ? "none" : "block"
+            aiPane.style.display = isCopilotEnabled ? "block" : "none"
         }
         const updateToggleButtons = () => {
-            if (!splitInstance) {
-                return
-            }
-            const sizes = splitInstance.getSizes()
             const btnSource = document.getElementById("btn-toggle-source")
-            if (btnSource) {
+            if (btnSource && splitInstance) {
+                const sizes = splitInstance.getSizes()
                 btnSource.classList.toggle("active", sizes[0] > 2)
             }
             const btnSidebar = document.getElementById("btn-toggle-sidebar")
-            if (btnSidebar) {
+            if (btnSidebar && splitInstance) {
+                const sizes = splitInstance.getSizes()
                 btnSidebar.classList.toggle("active", sizes[2] > 2)
             }
             const btnCopilot = document.getElementById("btn-toggle-copilot")
-            if (btnCopilot && sidebarSplitInstance) {
-                const sidebarSizes = sidebarSplitInstance.getSizes()
-                btnCopilot.classList.toggle("active", sidebarSizes[1] > 2)
+            if (btnCopilot) {
+                btnCopilot.classList.toggle("active", isCopilotEnabled)
             }
         }
         const initSplitView = () => {
@@ -513,50 +486,6 @@
                     if (window.cy) {
                         window.cy.resize()
                     }
-                }
-            })
-            updateToggleButtons()
-        }
-        const initSidebarSplitView = () => {
-            if (sidebarSplitInstance) {
-                sidebarSplitInstance.destroy()
-            }
-            const container = document.getElementById("sidebar-split-container")
-            const aiPane = document.getElementById("ai-copilot-pane")
-            const inspectorPane = document.getElementById("inspector-pane")
-            if (!container || !aiPane || !inspectorPane) {
-                return
-            }
-            let savedSizes = {$sidebarSplitSizes->array ?? [65, 35]}
-            if (typeof savedSizes === "string") {
-                try {
-                    savedSizes = JSON.parse(savedSizes)
-                } catch (e) {
-                    savedSizes = [65, 35]
-                }
-            }
-            try {
-                if (container.dataset.splitSizes) {
-                    const parsedSizes = JSON.parse(container.dataset.splitSizes)
-                    if (Array.isArray(parsedSizes) && parsedSizes.length === 2) {
-                        savedSizes = parsedSizes
-                    }
-                }
-            } catch (e) {
-                console.warn("Failed to parse sidebar split sizes", e)
-            }
-            if (!Array.isArray(savedSizes) || savedSizes.length !== 2) {
-                savedSizes = [65, 35]
-            }
-            sidebarSplitInstance = Split(["#inspector-pane", "#ai-copilot-pane"], {
-                direction: "vertical",
-                sizes: savedSizes,
-                minSize: [220, 0],
-                gutterSize: 1,
-                snapOffset: 20,
-                onDragEnd: () => {
-                    updateToggleButtons()
-                    saveSidebarSplitState()
                 }
             })
             updateToggleButtons()
@@ -625,18 +554,13 @@
             })
         }
 
-        function toggleCopilotPanel() {
-            if (!sidebarSplitInstance) {
-                return
-            }
-            const sizes = sidebarSplitInstance.getSizes()
-            if (sizes[1] < 2) {
-                sidebarSplitInstance.setSizes([65, 35])
-            } else {
-                sidebarSplitInstance.setSizes([100, 0])
-            }
+        async function toggleCopilotPanel() {
+            isCopilotEnabled = !isCopilotEnabled
+            updateSidebarMode()
             updateToggleButtons()
-            saveSidebarSplitState()
+            await send("Synchronize", {
+                editorCopilotEnabled: isCopilotEnabled
+            })
         }
 
         const togglePanel = (panel) => {
@@ -963,7 +887,7 @@
         }
         document.addEventListener("DOMContentLoaded", () => {
             initSplitView()
-            initSidebarSplitView()
+            updateSidebarMode()
             initializeGraphView()
             initAICopilot()
         }, {
@@ -972,7 +896,7 @@
 
         document.addEventListener("view:updated", () => {
             initSplitView()
-            initSidebarSplitView()
+            updateSidebarMode()
             initializeGraphView()
             initAICopilot()
         }, {

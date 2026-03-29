@@ -46,8 +46,8 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
+use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorGraphViewValue;
-use const App\EditorSidebarSplitSizesPreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\EditorTableViewValue;
@@ -82,10 +82,10 @@ final class EditorController extends ProjectController
         }
     }
     #[Outlet]
-    public ?ArrayClass $sidebarSplitSizes {
-        get => UserDefaults::standard()->array(EditorSidebarSplitSizesPreferencesKey);
+    public bool $isCopilotEnabled {
+        get => UserDefaults::standard()->bool(EditorCopilotEnabledPreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, EditorSidebarSplitSizesPreferencesKey);
+            UserDefaults::standard()->setBool($value, EditorCopilotEnabledPreferencesKey);
         }
     }
     #[Outlet]
