@@ -2,6 +2,7 @@
 
 namespace App\AI;
 
+use App\Model\Model;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ObjectClass;
 use const App\UndefinedStringValue;
@@ -27,7 +28,7 @@ abstract class PatchOperation extends ObjectClass
             }
             $this->type = $value;
         }
-    }, public readonly PatchRuntimeContext $runtimeContext)
+    }, public readonly Model $model)
     {
     }
 }

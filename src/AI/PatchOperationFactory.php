@@ -2,6 +2,7 @@
 
 namespace App\AI;
 
+use App\Model\Model;
 use InvalidArgumentException;
 use Sabatier\Foundation\Dictionary;
 use function Sabatier\Foundation\human_readable_value;
@@ -30,7 +31,7 @@ final class PatchOperationFactory
                 PatchOperationType::addRelationship => AddRelationshipPatchOperation::class,
                 PatchOperationType::undefined => throw new InvalidArgumentException("Patch operation type \"undefined\" is not supported."),
             };
-            $operation = new $operationClass($this->runtimeContext);
+            $operation = new $operationClass($this->model);
             $operation->setValuesForKeys($this->rawOperation);
             return $this->operation = $operation;
         }
@@ -39,7 +40,7 @@ final class PatchOperationFactory
     /**
      * @param Dictionary<mixed> $rawOperation
      */
-    public function __construct(private readonly Dictionary $rawOperation, private readonly PatchRuntimeContext $runtimeContext)
+    public function __construct(private readonly Dictionary $rawOperation, private readonly Model $model)
     {
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\AI;
 
+use App\Model\Model;
 use Override;
 use const App\UndefinedStringValue;
 
@@ -9,7 +10,7 @@ final class AddRelationshipPatchOperation extends AddPropertyPatchOperation
 {
     #[Override]
     protected PatchObjectBuilder $builder {
-        get => $this->builder ??= new RelationshipBuilder($this, $this->runtimeContext->managedObjectContext, $this->runtimeContext->model);
+        get => $this->builder ??= new RelationshipBuilder($this);
     }
     public string $destinationEntityName = UndefinedStringValue {
         set {
@@ -19,9 +20,9 @@ final class AddRelationshipPatchOperation extends AddPropertyPatchOperation
     public string $inverseRelationshipName = UndefinedStringValue;
     public bool $isToMany = false;
 
-    public function __construct(PatchRuntimeContext $runtimeContext)
+    public function __construct(Model $model)
     {
-        parent::__construct(PatchOperationType::addRelationship, $runtimeContext);
+        parent::__construct(PatchOperationType::addRelationship, $model);
     }
 
     #[Override]

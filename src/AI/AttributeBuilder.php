@@ -4,10 +4,8 @@ namespace App\AI;
 
 use App\Model\Attribute;
 use App\Model\Entity;
-use App\Model\Model;
 use Override;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\ManagedObjectContext;
 
 final class AttributeBuilder extends PatchObjectBuilder
 {
@@ -20,7 +18,7 @@ final class AttributeBuilder extends PatchObjectBuilder
             /** @var AddAttributePatchOperation $operation */
             $operation = $this->operation;
             /** @var Entity $entity */
-            $entity = $this->model->entitiesByName[$operation->entityName];
+            $entity = $operation->model->entitiesByName[$operation->entityName];
             $attribute = new Attribute($this->managedObjectContext);
             $attribute->name = $operation->name;
             $attribute->type = $operation->attributeType;
@@ -30,8 +28,8 @@ final class AttributeBuilder extends PatchObjectBuilder
         }
     }
 
-    public function __construct(AddAttributePatchOperation $operation, ManagedObjectContext $managedObjectContext, Model $model)
+    public function __construct(AddAttributePatchOperation $operation)
     {
-        parent::__construct($operation, $managedObjectContext, $model);
+        parent::__construct($operation);
     }
 }

@@ -3,10 +3,8 @@
 namespace App\AI;
 
 use App\Model\Entity;
-use App\Model\Model;
 use Override;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\ManagedObjectContext;
 
 final class EntityBuilder extends PatchObjectBuilder
 {
@@ -20,14 +18,14 @@ final class EntityBuilder extends PatchObjectBuilder
             $operation = $this->operation;
             $entity = new Entity($this->managedObjectContext);
             $entity->name = $operation->name;
-            $this->model->addEntitiesObject($entity);
-            $this->model->entitiesByName[$operation->name] = $entity;
+            $operation->model->addEntitiesObject($entity);
+            $operation->model->entitiesByName[$operation->name] = $entity;
             return $this->object = $entity;
         }
     }
 
-    public function __construct(CreateEntityPatchOperation $operation, ManagedObjectContext $managedObjectContext, Model $model)
+    public function __construct(CreateEntityPatchOperation $operation)
     {
-        parent::__construct($operation, $managedObjectContext, $model);
+        parent::__construct($operation);
     }
 }

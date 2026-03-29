@@ -4,7 +4,6 @@ namespace App\Responders;
 
 use App\AI\ModelPatchBuilder;
 use App\AI\PatchOperationFactory;
-use App\AI\PatchRuntimeContext;
 use App\Model\Project;
 use Exception;
 use Override;
@@ -67,8 +66,7 @@ final class AIModelPatchResponder extends Responder
         $model = $project->model ?? throw new NotFoundException();
         /** @var ArrayClass<Dictionary<mixed>> $operations */
         $operations = $patch["operations"] ?? new ArrayClass();
-        $runtimeContext = new PatchRuntimeContext($model, $this->managedObjectContext);
-        $operations->forEach(fn(Dictionary $operation) => new PatchOperationFactory($operation, $runtimeContext)->operation->object);
+        $operations->forEach(fn(Dictionary $operation) => new PatchOperationFactory($operation, $model)->operation->object);
         $this->managedObjectContext->save();
         $this->data = $model;
     }

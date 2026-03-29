@@ -3,11 +3,9 @@
 namespace App\AI;
 
 use App\Model\Entity;
-use App\Model\Model;
 use App\Model\Relationship;
 use Override;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\CoreData\ManagedObjectContext;
 
 final class RelationshipBuilder extends PatchObjectBuilder
 {
@@ -20,7 +18,7 @@ final class RelationshipBuilder extends PatchObjectBuilder
             /** @var AddRelationshipPatchOperation $operation */
             $operation = $this->operation;
             /** @var Entity $entity */
-            $entity = $this->model->entitiesByName[$operation->entityName];
+            $entity = $operation->model->entitiesByName[$operation->entityName];
             $relationship = new Relationship($this->managedObjectContext);
             $relationship->name = $operation->name;
             $relationship->lazyDestinationEntityName = $operation->destinationEntityName;
@@ -32,8 +30,8 @@ final class RelationshipBuilder extends PatchObjectBuilder
         }
     }
 
-    public function __construct(AddRelationshipPatchOperation $operation, ManagedObjectContext $managedObjectContext, Model $model)
+    public function __construct(AddRelationshipPatchOperation $operation)
     {
-        parent::__construct($operation, $managedObjectContext, $model);
+        parent::__construct($operation);
     }
 }

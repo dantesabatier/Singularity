@@ -2,18 +2,19 @@
 
 namespace App\AI;
 
+use App\Model\Model;
 use Override;
 
 final class CreateEntityPatchOperation extends PatchOperation
 {
     #[Override]
     protected PatchObjectBuilder $builder {
-        get => $this->builder ??= new EntityBuilder($this, $this->runtimeContext->managedObjectContext, $this->runtimeContext->model);
+        get => $this->builder ??= new EntityBuilder($this);
     }
 
-    public function __construct(PatchRuntimeContext $runtimeContext)
+    public function __construct(Model $model)
     {
-        parent::__construct(PatchOperationType::createEntity, $runtimeContext);
+        parent::__construct(PatchOperationType::createEntity, $model);
     }
 
     #[Override]

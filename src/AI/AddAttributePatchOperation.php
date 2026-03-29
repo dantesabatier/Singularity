@@ -2,6 +2,7 @@
 
 namespace App\AI;
 
+use App\Model\Model;
 use Override;
 use Sabatier\CoreData\AttributeType;
 
@@ -9,7 +10,7 @@ final class AddAttributePatchOperation extends AddPropertyPatchOperation
 {
     #[Override]
     protected PatchObjectBuilder $builder {
-        get => $this->builder ??= new AttributeBuilder($this, $this->runtimeContext->managedObjectContext, $this->runtimeContext->model);
+        get => $this->builder ??= new AttributeBuilder($this);
     }
     public AttributeType $attributeType = AttributeType::undefined {
         set(AttributeType|int $value) {
@@ -20,9 +21,9 @@ final class AddAttributePatchOperation extends AddPropertyPatchOperation
         }
     }
 
-    public function __construct(PatchRuntimeContext $runtimeContext)
+    public function __construct(Model $model)
     {
-        parent::__construct(PatchOperationType::addAttribute, $runtimeContext);
+        parent::__construct(PatchOperationType::addAttribute, $model);
     }
 
     #[Override]
