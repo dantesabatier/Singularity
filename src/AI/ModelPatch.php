@@ -6,15 +6,10 @@ use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
-use const App\UndefinedStringValue;
 
 final class ModelPatch extends ObjectClass
 {
-    public string $summary = UndefinedStringValue {
-        set {
-            $this->summary = $value |> trim(...);
-        }
-    }
+    public string $summary = "";
     /** @var ArrayClass<PatchOperation> */
     private(set) ArrayClass $operations {
         get => $this->operations ??= new ArrayClass();

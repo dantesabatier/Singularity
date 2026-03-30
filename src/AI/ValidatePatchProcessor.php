@@ -147,8 +147,6 @@ final class ValidatePatchProcessor extends ModelPatchProcessor
 
     private function addWarning(string $message): void
     {
-        $warning = new PatchWarning();
-        $warning->message = $message;
-        $this->patch->addWarning($warning);
+        $this->patch->addWarning(new PatchWarning($message));
     }
 }
