@@ -66,7 +66,7 @@ final class AIModelPatchResponder extends Responder
         $model = $project->model ?? throw new NotFoundException();
         /** @var ArrayClass<Dictionary<mixed>> $operations */
         $operations = $patch["operations"] ?? new ArrayClass();
-        $operations->forEach(fn(Dictionary $operation) => new PatchOperationFactory($operation, $model)->operation->object);
+        $operations->forEach(fn(Dictionary $rawOperation) => new PatchOperationFactory($rawOperation, $model)->operation->object);
         $this->managedObjectContext->save();
         $this->data = $model;
     }
