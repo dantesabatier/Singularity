@@ -496,20 +496,64 @@
             const applyBtn = document.getElementById("ai-apply-btn")
             const summaryEl = document.getElementById("ai-summary")
             const warningsEl = document.getElementById("ai-warnings")
-            if (!promptEl) {
+            const operationsEl = document.getElementById("ai-operations")
+            const statusEl = document.getElementById("ai-status")
+            if (!promptEl || !proposeBtn || !applyBtn || !summaryEl || !warningsEl || !operationsEl || !statusEl) {
                 return
             }
+            const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                "\"": "&quot;",
+                "'": "&#39;",
+            }[char] ?? char))
+            const renderWarnings = warnings => {
+                if (!warnings?.length) {
+                    warningsEl.innerHTML = "<li>No warnings</li>"
+                    return
+                }
+                warningsEl.innerHTML = warnings.map(warning => {
+                    const title = warning.title ?? "Warning"
+                    const content = warning.content ?? warning.message ?? ""
+                    return `<li><strong>${ escapeHTML(title) }</strong>: ${ escapeHTML(content) }</li>`
+                }).join("")
+            }
+            const renderItems = items => {
+                if (!items?.length) {
+                    operationsEl.innerHTML = "<li>No operations</li>"
+                    return
+                }
+                operationsEl.innerHTML = items.map(item => `<li><strong>${ escapeHTML(item.title) }</strong>: ${ escapeHTML(item.content) }</li>`).join("")
+            }
             let pendingProposal = null
+            const setState = (state, label = null) => {
+                statusEl.classList.remove("is-idle", "is-thinking", "is-ready", "is-applying", "is-done", "is-error")
+                statusEl.classList.add(`is-${ state }`)
+                statusEl.textContent = label ?? ({
+                    idle: "Idle",
+                    thinking: "Thinking",
+                    ready: "Ready",
+                    applying: "Applying",
+                    done: "Done",
+                    error: "Error",
+                }[state] ?? "Idle")
+                const isBusy = state === "thinking" || state === "applying"
+                proposeBtn.disabled = isBusy
+                applyBtn.disabled = isBusy || !pendingProposal
+            }
+            setState("idle")
             proposeBtn.addEventListener("click", async () => {
                 const prompt = promptEl.value.trim()
                 if (!prompt) {
                     return
                 }
 
-                proposeBtn.disabled = true
-                applyBtn.disabled = true
+                pendingProposal = null
+                setState("thinking")
                 summaryEl.textContent = "Thinking…"
                 warningsEl.innerHTML = "<li>—</li>"
+                operationsEl.innerHTML = "<li>—</li>"
 
                 const response = await request("propose", {
                     objectID: {$project->objectID},
@@ -518,27 +562,25 @@
 
                 if (!response.ok) {
                     summaryEl.textContent = (await response.json())?.error ?? "Something went wrong."
-                    proposeBtn.disabled = false
+                    warningsEl.innerHTML = "<li>No warnings</li>"
+                    operationsEl.innerHTML = "<li>No operations</li>"
+                    setState("error")
                     return
                 }
 
                 const data = await response.json()
                 pendingProposal = data
                 summaryEl.textContent = data.summary ?? "Ready to apply."
-                warningsEl.innerHTML = data.warnings?.length
-                    ? data.warnings.map(w => `<li>${ w.message ?? w }</li>`).join("")
-                    : "<li>No warnings</li>"
-
-                proposeBtn.disabled = false
-                applyBtn.disabled = !pendingProposal
+                renderWarnings(data.warnings)
+                renderItems(data.items)
+                setState("ready")
             })
 
             applyBtn.addEventListener("click", async () => {
                 if (!pendingProposal) {
                     return
                 }
-                applyBtn.disabled = true
-                proposeBtn.disabled = true
+                setState("applying")
 
                 const response = await request("apply", {
                     objectID: {$project->objectID},
@@ -546,10 +588,11 @@
                 })
                 if (!response.ok) {
                     summaryEl.textContent = (await response.json())?.error ?? "Something went wrong."
-                    proposeBtn.disabled = false
+                    setState("error")
                     return
                 }
                 pendingProposal = null
+                setState("done")
                 await push(window.location.href)
             })
         }

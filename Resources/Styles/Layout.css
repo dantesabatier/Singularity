@@ -657,12 +657,41 @@ button {
     margin-top: 0;
 }
 
-.ai-copilot-preview {
+.ai-copilot-status {
     font-size: 10px;
-    color: var(--text-disabled);
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background-color: transparent;
+}
+
+.ai-copilot-status.is-idle {
+    border-color: var(--border-color);
+    color: var(--text-disabled);
+}
+
+.ai-copilot-status.is-thinking,
+.ai-copilot-status.is-applying {
+    border-color: rgba(74, 136, 199, 0.5);
+    color: #9dc6ed;
+    background-color: rgba(74, 136, 199, 0.12);
+}
+
+.ai-copilot-status.is-ready,
+.ai-copilot-status.is-done {
+    border-color: rgba(82, 171, 114, 0.45);
+    color: #a5dbb6;
+    background-color: rgba(82, 171, 114, 0.12);
+}
+
+.ai-copilot-status.is-error {
+    border-color: rgba(206, 93, 93, 0.45);
+    color: #f0a8a8;
+    background-color: rgba(206, 93, 93, 0.12);
 }
 
 .ai-copilot-body {
@@ -714,6 +743,12 @@ button {
 .ai-copilot-warnings {
     font-size: 11px;
     color: var(--text-secondary);
+}
+
+.ai-copilot-operations {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
 }
 
 /* ============================================
