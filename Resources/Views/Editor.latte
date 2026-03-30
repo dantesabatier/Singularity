@@ -197,7 +197,8 @@
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Model} {varType App\Model\Model $item}
+                    {elseif $item instanceof App\Model\Model}
+                    {varType App\Model\Model $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->entities->isEmpty}
                                 <span>{$item->name}</span> {else}
@@ -216,7 +217,8 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\Entity} {varType App\Model\Entity $item}
+                    {elseif $item instanceof App\Model\Entity}
+                    {varType App\Model\Entity $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->properties->isEmpty}
                                 <span>{$item->name}</span> {else}
@@ -236,17 +238,20 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\FetchRequestTemplate} {varType App\Model\FetchRequestTemplate $item}
+                    {elseif $item instanceof App\Model\FetchRequestTemplate}
+                    {varType App\Model\FetchRequestTemplate $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
-                    {elseif $item instanceof App\Model\UniquenessConstraint} {varType App\Model\UniquenessConstraint $item}
+                    {elseif $item instanceof App\Model\UniquenessConstraint}
+                    {varType App\Model\UniquenessConstraint $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->stringValue}</span>
                         </div>
-                    {elseif $item instanceof App\Model\Property} {varType App\Model\Property $item}
+                    {elseif $item instanceof App\Model\Property}
+                    {varType App\Model\Property $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->accessControls->isEmpty}
                                 <span>{$item->name}</span> {else}
@@ -266,7 +271,8 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndex} {varType App\Model\FetchIndex $item}
+                    {elseif $item instanceof App\Model\FetchIndex}
+                    {varType App\Model\FetchIndex $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->elements->isEmpty}
                                 <span>{$item->name}</span> {else}
@@ -286,12 +292,14 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\FetchIndexElement} {varType App\Model\FetchIndexElement $item}
+                    {elseif $item instanceof App\Model\FetchIndexElement}
+                    {varType App\Model\FetchIndexElement $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->propertyName}</span>
                         </div>
-                    {elseif $item instanceof App\Model\CompositeType} {varType App\Model\CompositeType $item}
+                    {elseif $item instanceof App\Model\CompositeType}
+                    {varType App\Model\CompositeType $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->elements->isEmpty}
                                 <span>{$item->name}</span> {else}
@@ -311,7 +319,8 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\AccessControl} {varType App\Model\AccessControl $item}
+                    {elseif $item instanceof App\Model\AccessControl}
+                    {varType App\Model\AccessControl $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt=""> {if $item->roles->isEmpty}
                                 <span>{$item->name}</span> {else}
@@ -331,7 +340,8 @@
                                 </div>
                             {/if}
                         </div>
-                    {elseif $item instanceof App\Model\Role} {varType App\Model\Role $item}
+                    {elseif $item instanceof App\Model\Role}
+                    {varType App\Model\Role $item}
                         <div class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
@@ -548,7 +558,6 @@
                 if (!prompt) {
                     return
                 }
-
                 pendingProposal = null
                 setState("thinking")
                 summaryEl.textContent = "Thinking…"
@@ -559,7 +568,6 @@
                     objectID: {$project->objectID},
                     prompt
                 })
-
                 if (!response.ok) {
                     summaryEl.textContent = (await response.json())?.error ?? "Something went wrong."
                     warningsEl.innerHTML = "<li>No warnings</li>"
@@ -567,7 +575,6 @@
                     setState("error")
                     return
                 }
-
                 const data = await response.json()
                 pendingProposal = data
                 summaryEl.textContent = data.summary ?? "Ready to apply."
@@ -581,7 +588,6 @@
                     return
                 }
                 setState("applying")
-
                 const response = await request("apply", {
                     objectID: {$project->objectID},
                     patch: pendingProposal
@@ -596,8 +602,7 @@
                 await push(window.location.href)
             })
         }
-
-        async function toggleCopilotPanel() {
+        const toggleCopilotPanel = async () => {
             isCopilotEnabled = !isCopilotEnabled
             updateSidebarMode()
             updateToggleButtons()
@@ -605,7 +610,6 @@
                 editorCopilotEnabled: isCopilotEnabled
             })
         }
-
         const togglePanel = (panel) => {
             if (!splitInstance) {
                 return
