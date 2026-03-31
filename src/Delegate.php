@@ -1,13 +1,9 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 namespace App;
 
 use Override;
 use Sabatier\CoreData\MergePolicy;
-use Sabatier\CoreData\SQLCore;
-use Sabatier\CoreData\SQLDebugLevel;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
@@ -26,8 +22,6 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public static function initialize(): void
     {
-        SQLCore::$debugLevel = SQLDebugLevel::none;
-        SQLCore::$debugColorOutputDefault = true;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
             PersistentHistoryTrackingKey => false,
