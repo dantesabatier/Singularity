@@ -15,3 +15,4 @@ const ExportIncludeDataPreferencesKey = "exportIncludeData";
 const ExportIncludeCommentsPreferencesKey = "exportIncludeComments";
 const ExportLastDirectoryPreferencesKey = "exportLastDirectory";
 const UndefinedStringValue = "UndefinedStringValue";
+const ViteDevServerEnvironmentKey = "VITE_DEV_SERVER";

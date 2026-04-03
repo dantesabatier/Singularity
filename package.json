@@ -1,0 +1,29 @@
+{
+  "name": "singularity",
+  "version": "1.0.0",
+  "description": "**The authoring environment of the Sabatier stack.**",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
+    "@types/node": "^25.5.2",
+    "@types/sortablejs": "^1.15.9",
+    "sass": "^1.99.0",
+    "typescript": "^6.0.2",
+    "vite": "^6.4.1"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.8",
+    "jscolor": "^0.3.0",
+    "sortablejs": "^1.15.7"
+  }
+}

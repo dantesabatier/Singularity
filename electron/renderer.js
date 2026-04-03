@@ -445,3 +445,36 @@ const showAboutPanel = () => window.api?.showWindow({
  * @param {number} progress
  */
 const setProgressBar = (progress) => window.api?.setProgressBar(progress)
+
+window.Singularity = {
+    request,
+    replace,
+    push,
+    send,
+    submit,
+    showErrorBox,
+}
+
+Object.assign(window, {
+    url,
+    request,
+    replace,
+    push,
+    send,
+    submit,
+    show,
+    view,
+    save,
+    subclass,
+    model,
+    add,
+    remove,
+    openPath,
+    openURL,
+    browse,
+    showMessageBox,
+    showErrorBox,
+    showPreferences,
+    showAboutPanel,
+    setProgressBar,
+})
