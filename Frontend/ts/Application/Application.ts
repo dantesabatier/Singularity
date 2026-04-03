@@ -4,6 +4,7 @@ import {HistoryFeature} from "@/Features/HistoryFeature"
 import {ModalResetFeature} from "@/Features/ModalResetFeature"
 import {NavigationFeature} from "@/Features/NavigationFeature"
 import {PopoverFeature} from "@/Features/PopoverFeature"
+import {PredicateHighlighterFeature} from "@/Features/PredicateHighlighterFeature"
 import {ColorPickerFeature} from "@/Features/ColorPickerFeature"
 import {RolePopoverFeature} from "@/Features/RolePopoverFeature"
 import {SortableTableFeature} from "@/Features/SortableTableFeature"
@@ -26,6 +27,7 @@ export class Application {
         new ModalResetFeature(this.context),
         new TooltipFeature(this.context),
         new PopoverFeature(this.context),
+        new PredicateHighlighterFeature(this.context),
         new RolePopoverFeature(this.context),
         new SortableTableFeature(this.context),
         new ColorPickerFeature(this.context),
