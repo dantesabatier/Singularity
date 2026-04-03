@@ -63,7 +63,10 @@
                             <button type="button" class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
-                            <button type="button" class="btn btn-sm icon" onclick="remove({$selectedUniquenessConstraint})" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
+                            <button type="button"
+                                    class="btn btn-sm icon"
+                                    data-editor-action="removeSelection"
+                                    data-item="{$selectedUniquenessConstraint|json}" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
                                 <i class="bi bi-dash-lg"></i>
                             </button>
                         </div>

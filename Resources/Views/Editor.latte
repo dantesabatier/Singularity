@@ -2,6 +2,7 @@
 {templateType App\ViewControllers\EditorController}
 {block title}{$project->name}{/block}
 {block content}
+    {var $initialSplitSizes = $splitSizes?->array ?? [20, 60, 20]}
     <div id="main" class="user-select-none">
         <div n:if="$isGraphViewSelected" id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
         <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
@@ -15,7 +16,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button class="dropdown-item" type="button" onclick="showAboutPanel()">
+                            <button class="dropdown-item" type="button" data-editor-action="showAboutPanel">
                                 <i class="bi bi-info-circle"></i> <span>About</span>
                             </button>
                         </li>
@@ -23,7 +24,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="showPreferences()">
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="showPreferences">
                                 <i class="bi bi-sliders"></i> <span>Preferences</span>
                             </button>
                         </li>
@@ -32,22 +33,34 @@
                         </li>
                         <li><h6 class="dropdown-header">Add Element</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Entity::entity()->name}, {App\Model\Entity::entity()->name}, {$project->model}, {$project->model?->entities?->count})">
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addEntity"
+                                    data-parent="{$project->model|json}">
                                 <i class="bi bi-plus-circle"></i> <span>Add Entity</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\CompositeType::entity()->name}, {App\Model\CompositeType::entity()->name}, {$project->model}, {$project->model?->compositeTypes?->count})">
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addCompositeType"
+                                    data-parent="{$project->model|json}">
                                 <i class="bi bi-diagram-3"></i> <span>Add Composite Type</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchRequestTemplate::entity()->name}, {App\Model\FetchRequestTemplate::entity()->name|firstLower}, {$project->model}, {$project->model?->fetchRequestTemplates?->count})">
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addFetchRequestTemplate"
+                                    data-parent="{$project->model|json}">
                                 <i class="bi bi-search"></i> <span>Add Fetch Request</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Configuration::entity()->name}, {App\Model\Configuration::entity()->name}, {$project->model}, {$project->model?->configurations?->count})">
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addConfiguration"
+                                    data-parent="{$project->model|json}">
                                 <i class="bi bi-gear"></i> <span>Add Configuration</span>
                             </button>
                         </li>
@@ -56,17 +69,26 @@
                         </li>
                         <li><h6 class="dropdown-header">Entity Properties</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addAttribute"
+                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-tag"></i> <span>Add Attribute</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchedProperty::entity()->name}, {App\Model\FetchedProperty::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->fetchedProperties?->count})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addFetchedProperty"
+                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-box-arrow-in-down"></i> <span>Add Fetched Property</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\Relationship::entity()->name}, {App\Model\Relationship::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->relationships?->count})" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addRelationship"
+                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-arrow-left-right"></i> <span>Add Relationship</span>
                             </button>
                         </li>
@@ -74,7 +96,10 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="add({App\Model\FetchIndex::entity()->name}, {App\Model\FetchIndex::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->indexes?->count})" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2"
+                                    type="button"
+                                    data-editor-action="addFetchIndex"
+                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                                 <i class="bi bi-lightning"></i> <span>Add Fetch Index</span>
                             </button>
                         </li>
@@ -82,7 +107,9 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item text-danger d-flex align-items-center gap-2" onclick="remove({$selection})" {!$selection ? disabled}>
+                            <button class="dropdown-item text-danger d-flex align-items-center gap-2"
+                                    data-editor-action="removeSelection"
+                                    data-item="{$selection|json}" {!$selection ? disabled}>
                                 <i class="bi bi-trash"></i> <span>Remove</span>
                             </button>
                         </li>
@@ -91,22 +118,22 @@
                         </li>
                         <li><h6 class="dropdown-header">Project Actions</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="save({$project})">
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="saveProject" data-project-id="{$project->objectID->referenceObject}">
                                 <i class="bi bi-floppy"></i> <span>Save</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="view({$project})" {!$isSQLViewerEnabled ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="openSQLViewer" data-project-id="{$project->objectID->referenceObject}" {!$isSQLViewerEnabled ? disabled}>
                                 <i class="bi bi-file-earmark-code"></i> <span>Show SQL Schema...</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="subclass({$project})">
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="createSubclass" data-project-id="{$project->objectID->referenceObject}">
                                 <i class="bi bi-file-earmark-plus"></i> <span>Create ManagedObject Subclass...</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" onclick="model({$project}, {$project->model?->url})">
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="importModel" data-project-id="{$project->objectID->referenceObject}" data-model-path="{$project->model?->url?->path}">
                                 <i class="bi bi-upload"></i> <span>Import...</span>
                             </button>
                         </li>
@@ -123,7 +150,7 @@
                         <li><h6 class="dropdown-header">Switch Project</h6></li>
                         {foreach $projects as $i => $e}
                             <li>
-                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" onclick="load({$e})">
+                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-editor-action="openEditorProject" data-project-id="{$e->objectID->referenceObject}">
                                     <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold flex-shrink-0" style="width: 20px; height: 20px; background-color: {$e->color|noescape}; font-size: 11px;">
                                         {$e->name|first}
                                     </span> <span class="text-truncate">{$e->name}</span>
@@ -146,21 +173,21 @@
                 <div class="d-flex align-items-center justify-content-center ms-auto ps-2 ms-2 gap-1" style="border-left: 1px solid var(--border-color); height: 24px;">
                     <button id="btn-toggle-source"
                             class="btn btn-icon btn-pane-toggle btn-sm active"
-                            onclick="togglePanel('source')"
+                            data-editor-action="toggleSourcePanel"
                             title="Toggle Navigator"
                             style="-webkit-app-region: no-drag;">
                         <i class="bi bi-layout-sidebar"></i>
                     </button>
                     <button id="btn-toggle-sidebar"
                             class="btn btn-icon btn-pane-toggle btn-sm active"
-                            onclick="togglePanel('sidebar')"
+                            data-editor-action="toggleSidebarPanel"
                             title="Toggle Inspector"
                             style="-webkit-app-region: no-drag;">
                         <i class="bi bi-layout-sidebar-reverse"></i>
                     </button>
                     <button id="btn-toggle-copilot"
                             class="btn btn-icon btn-pane-toggle btn-sm {$isCopilotEnabled ? 'active' : ''}"
-                            onclick="toggleCopilotPanel()"
+                            data-editor-action="toggleCopilotPanel"
                             title="Toggle AI Copilot"
                             style="-webkit-app-region: no-drag;">
                         <i class="bi bi-robot"></i>
@@ -169,18 +196,19 @@
                 <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
             </div>
         </nav>
-        <div id="split-container" class="split-container" data-split-sizes="{$splitSizes->array}" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
-            <div id="source" class="split-panel scroll-view border-end border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+        <div id="editor-runtime" data-project-object-id="{$project->objectID}" hidden></div>
+        <div id="split-container" class="split-container" data-split-sizes="{$splitSizes->array}" data-copilot-enabled="{$isCopilotEnabled ? 'true' : 'false'}" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
+            <div id="source" class="split-panel scroll-view border-end border-black p-2" style="width: {$initialSplitSizes[0]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                 {include sourceList from "SourceList.latte"}
             </div>
-            <div id="content" class="split-panel scroll-view p-2">
+            <div id="content" class="split-panel scroll-view p-2" style="width: {$initialSplitSizes[1]}%;">
                 {if $isTableViewSelected}
                     {include content from "Content.latte"}
                 {else}
                     {include graphView from "GraphView.latte"}
                 {/if}
             </div>
-            <div id="sidebar" class="split-panel border-start border-black p-2" style="background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+            <div id="sidebar" class="split-panel border-start border-black p-2" style="width: {$initialSplitSizes[2]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                 <div id="inspector-pane" class="scroll-view pe-1" style="height: 100%; display: {$isCopilotEnabled ? 'none' : 'block'};">
                     {include inspector from "Inspector.latte"}
                 </div>
@@ -189,11 +217,13 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript" src="/Resources/Scripts/EditorInitialSplitState.js"></script>
         <nav class="breadcrumb-nav" aria-label="breadcrumb">
             <ol class="breadcrumb-list">
                 <li n:foreach="$breadcrumb as $item" class="breadcrumb-item-wrapper">
-                    {var string $img = img($item)} {if $item instanceof App\Model\Project}
-                    {varType App\Model\Project $item}
+                    {var string $img = img($item)}
+                    {if $item instanceof App\Model\Project}
+                        {varType App\Model\Project $item}
                         <div data-href="/Editor?project={$item->objectID->referenceObject}" class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
@@ -351,604 +381,6 @@
                 </li>
             </ol>
         </nav>
-        <script>
-            (function () {
-                try {
-                    /** @type { HTMLElement } */
-                    const container = document.getElementById("split-container")
-                    let sizes = {$splitSizes->array ??[20, 60, 20]}
-                    if (typeof sizes === "string") {
-                        sizes = JSON.parse(sizes)
-                    }
-                    if (container && container.dataset.splitSizes) {
-                        const parsed = JSON.parse(container.dataset.splitSizes)
-                        if (Array.isArray(parsed) && parsed.length === 3) {
-                            sizes = parsed
-                        }
-                    }
-                    if (Array.isArray(sizes) && sizes.length === 3) {
-                        /** @type { HTMLElement } */
-                        const source = document.getElementById("source")
-                        /** @type { HTMLElement } */
-                        const content = document.getElementById("content")
-                        /** @type { HTMLElement } */
-                        const sidebar = document.getElementById("sidebar")
-                        if (source && content && sidebar) {
-                            source.style.width = sizes[0] + "%"
-                            content.style.width = sizes[1] + "%"
-                            sidebar.style.width = sizes[2] + "%"
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Failed to apply initial split sizes", e)
-                }
-            })()
-        </script>
     </div>
 {/block}
-{block scripts}
-    <script>
-        /**
-         * @param { Object } project
-         */
-        const load = (project) => push(url("Editor", {
-            project: project.objectID
-        }))
 
-        /**
-         * @param { HTMLSelectElement } sender
-         */
-        const setType = sender => {
-            /**
-             * @type { HTMLFormElement }
-             */
-            const form = sender.form
-            /**
-             * @type { HTMLInputElement }
-             */
-            const element = form.querySelector("input[name=attributeValueClassName]")
-            element.value = sender.value === "2100" ? sender.options[sender.selectedIndex].text : ""
-            submit(form)
-        }
-        const setScope = sender => submit(sender.form)
-    </script>
-    <!--suppress JSUnresolvedReference, SpellCheckingInspection, JSUnusedAssignment -->
-    <script>
-        let splitInstance
-        let splitSaveTimer
-        let isCopilotEnabled = {$isCopilotEnabled}
-        const saveSplitState = () => {
-            if (!splitInstance) {
-                return
-            }
-            clearTimeout(splitSaveTimer)
-            splitSaveTimer = setTimeout(() => {
-                const sizes = splitInstance.getSizes()
-                request("Synchronize", {
-                    editorSplitSizes: sizes
-                })
-            }, 500)
-        }
-        const updateSidebarMode = () => {
-            const inspectorPane = document.getElementById("inspector-pane")
-            const aiPane = document.getElementById("ai-copilot-pane")
-            if (!inspectorPane || !aiPane) {
-                return
-            }
-            inspectorPane.style.display = isCopilotEnabled ? "none" : "block"
-            aiPane.style.display = isCopilotEnabled ? "block" : "none"
-        }
-        const updateToggleButtons = () => {
-            const btnSource = document.getElementById("btn-toggle-source")
-            if (btnSource && splitInstance) {
-                const sizes = splitInstance.getSizes()
-                btnSource.classList.toggle("active", sizes[0] > 2)
-            }
-            const btnSidebar = document.getElementById("btn-toggle-sidebar")
-            if (btnSidebar && splitInstance) {
-                const sizes = splitInstance.getSizes()
-                btnSidebar.classList.toggle("active", sizes[2] > 2)
-            }
-            const btnCopilot = document.getElementById("btn-toggle-copilot")
-            if (btnCopilot) {
-                btnCopilot.classList.toggle("active", isCopilotEnabled)
-            }
-        }
-        const initSplitView = () => {
-            if (splitInstance) {
-                splitInstance.destroy()
-            }
-            const elSource = document.getElementById("source")
-            const elContent = document.getElementById("content")
-            const elSidebar = document.getElementById("sidebar")
-            const container = document.getElementById("split-container")
-            if (!elSource || !elContent || !elSidebar || !container) {
-                return
-            }
-            let savedSizes = {$splitSizes->array ?? [20, 60, 20]}
-            if (typeof savedSizes === "string") {
-                try {
-                    savedSizes = JSON.parse(savedSizes)
-                } catch (e) {
-                    savedSizes = [20, 60, 20]
-                }
-            }
-            try {
-                if (container.dataset.splitSizes) {
-                    const parsedSizes = JSON.parse(container.dataset.splitSizes)
-                    if (Array.isArray(parsedSizes) && parsedSizes.length === 3) {
-                        savedSizes = parsedSizes
-                    }
-                }
-            } catch (e) {
-                console.warn("Failed to parse split sizes", e)
-            }
-            if (!Array.isArray(savedSizes) || savedSizes.length !== 3) {
-                savedSizes = [20, 60, 20]
-            }
-            splitInstance = Split(["#source", "#content", "#sidebar"], {
-                sizes: savedSizes,
-                minSize: [0, 400, 0],
-                gutterSize: 1,
-                snapOffset: 20,
-                onDragEnd: () => {
-                    updateToggleButtons()
-                    saveSplitState()
-                    if (window.cy) {
-                        window.cy.resize()
-                    }
-                }
-            })
-            updateToggleButtons()
-        }
-        const initAICopilot = () => {
-            const promptEl = document.getElementById("ai-prompt")
-            const proposeBtn = document.getElementById("ai-propose-btn")
-            const applyBtn = document.getElementById("ai-apply-btn")
-            const summaryEl = document.getElementById("ai-summary")
-            const warningsEl = document.getElementById("ai-warnings")
-            const operationsEl = document.getElementById("ai-operations")
-            const statusEl = document.getElementById("ai-status")
-            if (!promptEl || !proposeBtn || !applyBtn || !summaryEl || !warningsEl || !operationsEl || !statusEl) {
-                return
-            }
-            const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                "\"": "&quot;",
-                "'": "&#39;",
-            }[char] ?? char))
-            const renderWarnings = warnings => {
-                if (!warnings?.length) {
-                    warningsEl.innerHTML = "<li>No warnings</li>"
-                    return
-                }
-                warningsEl.innerHTML = warnings.map(warning => {
-                    const title = warning.title ?? "Warning"
-                    const content = warning.content ?? warning.message ?? ""
-                    return `<li><strong>${ escapeHTML(title) }</strong>: ${ escapeHTML(content) }</li>`
-                }).join("")
-            }
-            const renderItems = items => {
-                if (!items?.length) {
-                    operationsEl.innerHTML = "<li>No operations</li>"
-                    return
-                }
-                operationsEl.innerHTML = items.map(item => `<li><strong>${ escapeHTML(item.title) }</strong>: ${ escapeHTML(item.content) }</li>`).join("")
-            }
-            let pendingProposal = null
-            const setState = (state, label = null) => {
-                statusEl.classList.remove("is-idle", "is-thinking", "is-ready", "is-applying", "is-done", "is-error")
-                statusEl.classList.add(`is-${ state }`)
-                statusEl.textContent = label ?? ({
-                    idle: "Idle",
-                    thinking: "Thinking",
-                    ready: "Ready",
-                    applying: "Applying",
-                    done: "Done",
-                    error: "Error",
-                }[state] ?? "Idle")
-                const isBusy = state === "thinking" || state === "applying"
-                proposeBtn.disabled = isBusy
-                applyBtn.disabled = isBusy || !pendingProposal
-            }
-            setState("idle")
-            proposeBtn.addEventListener("click", async () => {
-                const prompt = promptEl.value.trim()
-                if (!prompt) {
-                    return
-                }
-                pendingProposal = null
-                setState("thinking")
-                summaryEl.textContent = "Thinking…"
-                warningsEl.innerHTML = "<li>—</li>"
-                operationsEl.innerHTML = "<li>—</li>"
-
-                const response = await request("propose", {
-                    objectID: {$project->objectID},
-                    prompt
-                })
-                if (!response.ok) {
-                    summaryEl.textContent = (await response.json())?.error ?? "Something went wrong."
-                    warningsEl.innerHTML = "<li>No warnings</li>"
-                    operationsEl.innerHTML = "<li>No operations</li>"
-                    setState("error")
-                    return
-                }
-                const data = await response.json()
-                pendingProposal = data
-                summaryEl.textContent = data.summary ?? "Ready to apply."
-                renderWarnings(data.warnings)
-                renderItems(data.items)
-                setState("ready")
-            })
-
-            applyBtn.addEventListener("click", async () => {
-                if (!pendingProposal) {
-                    return
-                }
-                setState("applying")
-                const response = await request("apply", {
-                    objectID: {$project->objectID},
-                    patch: pendingProposal
-                })
-                if (!response.ok) {
-                    summaryEl.textContent = (await response.json())?.error ?? "Something went wrong."
-                    setState("error")
-                    return
-                }
-                pendingProposal = null
-                setState("done")
-                await push(window.location.href)
-            })
-        }
-        const toggleCopilotPanel = async () => {
-            isCopilotEnabled = !isCopilotEnabled
-            updateSidebarMode()
-            updateToggleButtons()
-            await send("Synchronize", {
-                editorCopilotEnabled: isCopilotEnabled
-            })
-        }
-        const togglePanel = (panel) => {
-            if (!splitInstance) {
-                return
-            }
-            const sizes = splitInstance.getSizes()
-            if (panel === "source") {
-                if (sizes[0] < 2) {
-                    splitInstance.setSizes([20, 60, 20])
-                } else {
-                    splitInstance.collapse(0)
-                }
-            } else if (panel === "sidebar") {
-                if (sizes[2] < 2) {
-                    splitInstance.setSizes([20, 60, 20])
-                } else {
-                    splitInstance.collapse(2)
-                }
-            }
-            updateToggleButtons()
-            saveSplitState()
-            setTimeout(() => {
-                if (window.cy) {
-                    window.cy.resize()
-                }
-            }, 150)
-        }
-        const initializeGraphView = () => {
-            let initialized = false
-            const switcher = document.getElementById("interactive-switcher")
-            const buttons = switcher.querySelectorAll(".segmented-control-button")
-            buttons.forEach(button => {
-                button.addEventListener("click", () => {
-                    if (button.classList.contains("active")) {
-                        return
-                    }
-                    const target = button.dataset.target
-                    buttons.forEach(b => b.classList.remove("active"))
-                    button.classList.add("active")
-                    if (target === {App\ViewControllers\EditorController::graphViewValue}) {
-                        requestAnimationFrame(() => {
-                            if (!initialized) {
-                                initGraph()
-                            }
-                        })
-                    }
-                    send("Synchronize", {
-                        editorSelectedView: target
-                    })
-                })
-            })
-            const calculateNodeHeight = attrs => {
-                if (!attrs?.length) {
-                    return 60
-                }
-                const headerH = 28
-                const rowH = 24
-                const maxAttrs = 10
-                const displayAttrs = Math.min(attrs.length, maxAttrs)
-                const attrH = displayAttrs * rowH
-                const extraH = (attrs.length > maxAttrs ? rowH : 0)
-                return headerH + attrH + extraH + 2
-            }
-            let cy = null
-            const graphModel = JSON.parse(document.getElementById("current-graph-data")?.dataset?.json ?? "{}")
-            if (!graphModel?.nodes?.length) {
-                /**
-                 * @type { HTMLDivElement|undefined }
-                 */
-                const emptyState = document.getElementById("graph-empty-state")
-                if (emptyState) {
-                    emptyState.style.display = "block"
-                }
-            }
-            graphModel?.nodes?.forEach(node => node.data.height = calculateNodeHeight(node.data.attributes ?? []))
-            const elements = graphModel?.nodes?.concat(graphModel?.edges ?? [])
-            const initGraph = () => {
-                if (initialized) {
-                    return
-                }
-                let saveTimer
-                const updateZoom = () => {
-                    const zoomLabel = document.getElementById("graph-zoom-level")
-                    if (zoomLabel) {
-                        zoomLabel.innerText = Math.round(cy.zoom() * 100) + "%"
-                    }
-                    clearTimeout(saveTimer)
-                    saveTimer = setTimeout(() => {
-                        request("Model", {
-                            objectID: graphModel?.id,
-                            zoom: cy.zoom(),
-                            pan: cy.pan()
-                        }, "PATCH")
-                    }, 500)
-                }
-                const saveNodePosition = node => {
-                    const entityID = node.data("entityID")
-                    if (entityID) {
-                        const position = node.position()
-                        request("Entity", {
-                            objectID: entityID,
-                            position: {
-                                x: position.x,
-                                y: position.y
-                            }
-                        }, "PATCH")
-                    }
-                }
-                /**
-                 * @type { HTMLDivElement|undefined }
-                 */
-                const container = document.getElementById("graph-canvas")
-                if (!container || container.offsetWidth === 0 || container.offsetHeight === 0) {
-                    return
-                }
-                if (typeof cytoscapeDagre !== "undefined") {
-                    cytoscape.use(cytoscapeDagre)
-                }
-                try {
-                    const zoom = graphModel?.zoom ?? 0.1
-                    const pan = graphModel?.pan ?? {
-                        x: 0,
-                        y: 0
-                    }
-                    const hasSavedPositions = elements.some(element => element.position !== undefined)
-                    const layout = hasSavedPositions ? {
-                        name: "preset"
-                    } : {
-                        name: "dagre",
-                        rankDir: "TB",
-                        nodeSep: 80,
-                        rankSep: 100,
-                        padding: 50,
-                        animate: false,
-                        fit: false
-                    }
-                    cy = cytoscape({
-                        container: container,
-                        elements: elements,
-                        zoom: zoom,
-                        pan: pan,
-                        minZoom: 0.1,
-                        maxZoom: 3,
-                        style: [
-                            {
-                                selector: "node",
-                                style: {
-                                    "shape": "rectangle",
-                                    "width": 200,
-                                    "height": "data(height)",
-                                    "background-opacity": 0,
-                                    "border-width": 0
-                                }
-                            },
-                            {
-                                selector: "edge",
-                                style: {
-                                    "width": 2,
-                                    "curve-style": "taxi",
-                                    "taxi-direction": "vertical",
-                                    "taxi-turn": 20,
-                                    "line-color": "#6c757d",
-                                    "target-arrow-color": "#6c757d",
-                                    "source-arrow-color": "#6c757d",
-                                    "arrow-scale": 1.2,
-                                    "color": "#adb5bd",
-                                    "font-size": 10,
-                                    "text-background-color": "#1e1f22",
-                                    "text-background-opacity": 0.8,
-                                    "text-background-padding": 2,
-                                    "label": ""
-                                }
-                            },
-                            {
-                                selector: "edge[type=\"inheritance\"]",
-                                style: {
-                                    "target-arrow-shape": "triangle",
-                                    "target-arrow-fill": "hollow",
-                                    "line-style": "dashed",
-                                    "line-color": "#c7a651",
-                                    "target-arrow-color": "#c7a651"
-                                }
-                            },
-                            {
-                                selector: "edge[type=\"relationship\"]",
-                                style: {
-                                    "target-arrow-shape": "none"
-                                }
-                            },
-                            {
-                                selector: "edge[type=\"relationship\"][?isToMany]",
-                                style: {
-                                    "target-arrow-shape": "triangle"
-                                }
-                            },
-                            {
-                                selector: "edge[type=\"relationship\"][?inverseIsToMany]",
-                                style: {
-                                    "source-arrow-shape": "triangle"
-                                }
-                            }
-                        ],
-                        layout: layout,
-                    })
-
-                    window.cy = cy
-
-                    if (typeof cy.nodeHtmlLabel === "function") {
-                        cy.nodeHtmlLabel([{
-                            query: "node",
-                            halign: "center",
-                            valign: "center",
-                            halignBox: "center",
-                            valignBox: "center",
-                            tpl: data => {
-                                const attrs = data.attributes || []
-                                const totalH = data.height || 60
-                                const borderColor = (data.type === "abstract") ? "#c7a651" : "#5a98d7"
-                                const headerBg = (data.type === "abstract") ? "#3a3530" : "#313335"
-
-                                let html = "<div style=\"width:200px; height:" + totalH + 'px; background:#2b2d30; border:1px solid ' + borderColor + '; border-radius:4px; overflow:hidden; display:flex; flex-direction:column; box-sizing:border-box;">'
-                                html += "<div style=\"height:28px; background:" + headerBg + '; color:#e8eaed; font-weight:600; padding:0 8px; display:flex; align-items:center; border-bottom:1px solid ' + borderColor + '; font-size:12px;">' + (data.label || data.id) + '</div>'
-                                html += "<div style=\"flex:1; display:flex; flex-direction:column; overflow:hidden;\">"
-                                if (attrs.length === 0) {
-                                    html += "<div style=\"flex:1; display:flex; align-items:center; justify-content:center; color:#868991; font-style:italic; font-size:11px;\">No attributes</div>"
-                                } else {
-                                    const maxAttrs = 10
-                                    const displayAttrs = attrs.slice(0, maxAttrs)
-                                    displayAttrs.forEach(a => {
-                                        html += "<div style=\"height:24px; display:flex; justify-content:space-between; align-items:center; padding:0 8px; border-bottom:1px solid #3d3f41; font-size:11px;\">";
-                                        html += "<span style=\"color:#bcbec4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\">" + a.name + '</span>';
-                                        html += "<span style=\"color:#868991; font-size:10px; margin-left:8px;\">" + a.type + '</span>'
-                                        html += "</div>"
-                                    })
-                                    if (attrs.length > maxAttrs) {
-                                        html += "<div style=\"height:24px; display:flex; justify-content:center; align-items:center; color:#868991; font-style:italic; font-size:10px;\">+ " + (attrs.length - maxAttrs) + " more</div>"
-                                    }
-                                }
-                                html += "</div></div>"
-                                return html
-                            }
-                        }])
-                    }
-                    document.getElementById("graph-zoom-in").onclick = () => {
-                        cy.zoom(cy.zoom() * 1.2)
-                        cy.center()
-                        updateZoom()
-                    }
-                    document.getElementById("graph-zoom-out").onclick = () => {
-                        cy.zoom(cy.zoom() * 0.8)
-                        cy.center()
-                        updateZoom()
-                    }
-                    document.getElementById("graph-fit").onclick = () => {
-                        cy.fit(50)
-                        updateZoom()
-                    }
-                    document.getElementById("graph-center").onclick = () => {
-                        cy.center()
-                    }
-                    document.getElementById("graph-layout").onclick = () => {
-                        cy.layout({
-                            name: "dagre",
-                            rankDir: "TB",
-                            nodeSep: 80,
-                            rankSep: 100,
-                            padding: 50,
-                            animate: true,
-                            stop: () => {
-                                const entities = cy.nodes().map(node => ({
-                                    objectID: node.data("entityID"),
-                                    name: node.data("label"),
-                                    position: {
-                                        x: node.position("x"),
-                                        y: node.position("y")
-                                    }
-                                }))
-                                if (entities.length > 0) {
-                                    request("Model", {
-                                        objectID: graphModel?.id,
-                                        zoom: cy.zoom(),
-                                        pan: cy.pan(),
-                                        entities: entities
-                                    }, "PATCH")
-                                }
-                            }
-                        }).run()
-                    }
-                    cy.on("zoom pan", updateZoom)
-                    cy.on("mouseover", "node", () => cy.container().style.cursor = "pointer")
-                    cy.on("mouseout", "node", () => cy.container().style.cursor = "default")
-                    cy.on("tap", "node", evt => {
-                        const node = evt.target
-                        const href = node.data("href")
-                        if (!href) {
-                            return
-                        }
-                        push(window.location.origin + href)
-                    })
-                    cy.on("dragfree", "node", evt => {
-                        saveNodePosition(evt.target)
-                    })
-                    initialized = true
-                    const zoomLabel = document.getElementById("graph-zoom-level")
-                    if (zoomLabel) {
-                        zoomLabel.innerText = Math.round(cy.zoom() * 100) + "%"
-                    }
-                } catch (error) {
-                    console.error("Error al inicializar Cytoscape:", error)
-                }
-            }
-            const container = document.getElementById("graph-view-container")
-            if (container) {
-                resizeObserver.observe(container)
-            }
-            /**
-             * @type { boolean }
-             */
-            const isGraphViewSelected = document.querySelector('.segmented-control-button[data-target="graphView"]')?.classList.contains('active')
-            if (isGraphViewSelected) {
-                requestAnimationFrame(() => initGraph())
-            }
-        }
-        document.addEventListener("DOMContentLoaded", () => {
-            initSplitView()
-            updateSidebarMode()
-            initializeGraphView()
-            initAICopilot()
-        }, {
-            once: true
-        })
-
-        document.addEventListener("view:updated", () => {
-            initSplitView()
-            updateSidebarMode()
-            initializeGraphView()
-            initAICopilot()
-        }, {
-            once: false
-        })
-    </script>
-{/block}

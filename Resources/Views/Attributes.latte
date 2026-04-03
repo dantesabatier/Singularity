@@ -27,7 +27,7 @@
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                             <input type="hidden" name="objectID" value="{$attribute->objectID->referenceObject}">
                             <input type="hidden" name="attributeValueClassName" value="{$attribute->attributeValueClassName}">
-                            <select name="type" aria-label="Type" class="form-select transparent" onchange="setType(this)">
+                            <select name="type" aria-label="Type" class="form-select transparent" data-editor-change="attributeType">
                                 <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $attribute->type->value ? selected}>
                                     {$attributeType->name}
                                 </option>
@@ -44,10 +44,16 @@
             </table>
         </div>
         <div class="list-control-toolbar">
-            <button class="btn btn-icon" title="Add Attribute" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedEntity}, {$selectedEntity?->attributes?->count})">
+            <button class="btn btn-icon"
+                    title="Add Attribute"
+                    data-editor-action="addAttribute"
+                    data-parent="{$selectedEntity|json}">
                 <i class="bi bi-plus-lg"></i>
             </button>
-            <button class="btn btn-icon" title="Remove Attribute" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
+            <button class="btn btn-icon"
+                    title="Remove Attribute"
+                    data-editor-action="removeSelection"
+                    data-item="{$selectedProperty|json}" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
                 <i class="bi bi-dash-lg"></i>
             </button>
         </div>

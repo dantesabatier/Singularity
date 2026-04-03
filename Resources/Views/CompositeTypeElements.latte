@@ -39,10 +39,16 @@
             </table>
         </div>
         <div class="list-control-toolbar">
-            <button class="btn btn-icon" title="Add Attribute" onclick="add({App\Model\Attribute::entity()->name}, {App\Model\Attribute::entity()->name|firstLower}, {$selectedCompositeType}, {$selectedCompositeType?->elements?->count})">
+            <button class="btn btn-icon"
+                    title="Add Attribute"
+                    data-editor-action="addAttribute"
+                    data-parent="{$selectedCompositeType|json}">
                 <i class="bi bi-plus-lg"></i>
             </button>
-            <button class="btn btn-icon" title="Remove Attribute" onclick="remove({$selectedProperty})" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
+            <button class="btn btn-icon"
+                    title="Remove Attribute"
+                    data-editor-action="removeSelection"
+                    data-item="{$selectedProperty|json}" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
                 <i class="bi bi-dash-lg"></i>
             </button>
         </div>

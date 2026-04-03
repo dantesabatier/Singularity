@@ -12,7 +12,11 @@ import {TooltipFeature} from "@/Features/TooltipFeature"
 import {TreeToggleFeature} from "@/Features/TreeToggleFeature"
 import {ValidationFeature} from "@/Features/ValidationFeature"
 import {ApplicationContext} from "@/Application/ApplicationContext"
+import {WelcomeController} from "@/Controllers/WelcomeController"
+import {ViewerController} from "@/Controllers/ViewerController"
+import {EditorController} from "@/Controllers/EditorController"
 import {Feature} from "@/Application/Feature"
+import {ViewController} from "@/Application/ViewController"
 
 export class Application {
     private readonly context = new ApplicationContext()
@@ -32,6 +36,11 @@ export class Application {
         new SortableTableFeature(this.context),
         new ColorPickerFeature(this.context),
     ]
+    private readonly controllers: readonly ViewController[] = [
+        new WelcomeController(this.context),
+        new ViewerController(this.context),
+        new EditorController(this.context),
+    ]
 
     public start(): void {
         const initialize = (): void => {
@@ -40,12 +49,16 @@ export class Application {
             }
             this.isStarted = true
             this.features.forEach((feature) => feature.start())
+            this.controllers.forEach((controller) => controller.initialize())
         }
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", initialize, {once: true})
         } else {
             initialize()
         }
-        document.addEventListener("view:updated", () => this.features.forEach((feature) => feature.refresh()))
+        document.addEventListener("view:updated", () => {
+            this.features.forEach((feature) => feature.refresh())
+            this.controllers.forEach((controller) => controller.initialize())
+        })
     }
 }

@@ -11,7 +11,7 @@
                     <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block">
                     <span class="fs-6 fw-medium">{$title}</span>
                 </div>
-                <button class="btn btn-icon p-1" onclick="window.close()" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Close (ESC)">
+                <button class="btn btn-icon p-1" data-about-action="close" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Close (ESC)">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -38,16 +38,16 @@
                     {$bundleHumanReadableCopyright}
                 </p>
                 <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="openURL({$websiteURL})">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="openURL" data-about-url="{$websiteURL}">
                         <i class="bi bi-globe"></i> <span>Website</span>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="openURL({$githubURL})">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="openURL" data-about-url="{$githubURL}">
                         <i class="bi bi-github"></i> <span>GitHub</span>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="openURL({$licenseURL})">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="openURL" data-about-url="{$licenseURL}">
                         <i class="bi bi-file-text"></i> <span>Licenses</span>
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" onclick="copyVersionInfo(this)" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Copy version info">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="copyVersionInfo" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Copy version info">
                         <i class="bi bi-clipboard"></i> <span>Copy Info</span>
                     </button>
                 </div>

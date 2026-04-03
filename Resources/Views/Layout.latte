@@ -16,7 +16,6 @@
 <body>
 {block content}{/block}
 <script n:if="$viteAsset['client']" type="module" src="{$viteAsset['client']}"></script>
-<script type="text/javascript" src="../../electron/renderer.js" defer></script>
 <script n:foreach="$viteAsset['js'] as $src" type="module" src="{$src}" defer></script>
 {block scripts}{/block}
 </body>

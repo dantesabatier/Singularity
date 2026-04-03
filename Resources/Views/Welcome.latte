@@ -23,10 +23,10 @@
                             <p>Get started by creating a new project or opening an existing one.</p>
                         </div>
                         <div class="action-buttons">
-                            <button class="action-btn" onclick="showNewProjectView()">
+                            <button class="action-btn" data-welcome-action="showNewProjectView">
                                 <i class="bi bi-plus-circle"></i> <span>Create New Project</span>
                             </button>
-                            <button class="action-btn" onclick="openProject()">
+                            <button class="action-btn" data-welcome-action="openProject">
                                 <i class="bi bi-folder2-open"></i> <span>Open Existing Project</span>
                             </button>
                         </div>
@@ -49,7 +49,7 @@
                                             <span class="project-avatar color-picker cursor-pointer" style="background-color: {$project?->color|noescape};" data-jscolor="{ value: '{$project?->color|noescape}', preset: 'dark'}" data-project="{$project->objectID->referenceObject}">
                                                 {$project->name|first|upper}
                                             </span>
-                                            <div class="project-info cursor-pointer" onclick="show({$project})">
+                                            <div class="project-info cursor-pointer" data-welcome-action="openEditor" data-project-id="{$project->objectID->referenceObject}">
                                                 <div class="project-name text-truncate">
                                                     {$project->name}
                                                 </div>
@@ -63,17 +63,17 @@
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <button class="dropdown-item" onclick="show({$project})">
+                                                        <button class="dropdown-item" data-welcome-action="openEditor" data-project-id="{$project->objectID->referenceObject}">
                                                             <i class="bi bi-folder2-open"></i> <span>Open Project</span>
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        <button class="dropdown-item" onclick="rename({$project})">
+                                                        <button class="dropdown-item" data-welcome-action="renameProject" data-project-id="{$project->objectID->referenceObject}" data-project-name="{$project->name}">
                                                             <i class="bi bi-folder"></i> <span>Rename Project...</span>
                                                         </button>
                                                     </li>
                                                     <li>
-                                                        <button class="dropdown-item" onclick="openPath('{$path}')">
+                                                        <button class="dropdown-item" data-welcome-action="openPath" data-project-path="{$path}">
                                                             <i class="bi bi-folder"></i> <span>Show in Explorer</span>
                                                         </button>
                                                     </li>
@@ -81,7 +81,7 @@
                                                         <hr class="dropdown-divider">
                                                     </li>
                                                     <li>
-                                                        <button class="dropdown-item text-danger" onclick="remove({$project})">
+                                                        <button class="dropdown-item text-danger" data-welcome-action="removeProject" data-project-id="{$project->objectID->referenceObject}" data-project-name="{$project->name}">
                                                             <i class="bi bi-trash"></i> <span>Remove from List</span>
                                                         </button>
                                                     </li>
@@ -110,7 +110,7 @@
                                     <span>Project Folder</span> </label>
                                 <div class="input-group">
                                     <input type="text" name="directory" id="directory" placeholder="Choose a folder for your new project" class="form-control" value="{$directory}" readonly>
-                                    <button type="button" class="btn btn-secondary" onclick="chooseProjectFolder()">
+                                    <button type="button" class="btn btn-secondary" data-welcome-action="chooseProjectFolder">
                                         <i class="bi bi-folder2-open"></i> <span>Browse...</span>
                                     </button>
                                 </div>
@@ -164,7 +164,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button class="dropdown-item" type="button" onclick="showAboutPanel()">
+                            <button class="dropdown-item" type="button" data-welcome-action="showAboutPanel">
                                 <i class="bi bi-info-circle"></i> <span>About</span>
                             </button>
                         </li>
@@ -172,14 +172,14 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <button class="dropdown-item" onclick="showPreferences()">
+                            <button class="dropdown-item" data-welcome-action="showPreferences">
                                 <i class="bi bi-sliders"></i> <span>Preferences</span>
                             </button>
                         </li>
                     </ul>
                 </div>
                 <div id="project-actions">
-                    <button type="button" class="btn btn-secondary" onclick="showWelcomeView()">
+                    <button type="button" class="btn btn-secondary" data-welcome-action="showWelcomeView">
                         <span>Cancel</span>
                     </button>
                     <button type="submit" id="create-project-btn" form="new-project-form" class="btn btn-primary" disabled>
@@ -212,7 +212,4 @@
             </div>
         </div>
     </div>
-{/block}
-{block scripts}
-    <script src="/Resources/Scripts/Welcome.js"></script>
 {/block}

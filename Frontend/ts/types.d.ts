@@ -16,6 +16,10 @@ interface BootstrapTooltip {
 }
 
 interface BootstrapStatic {
+    Modal: new (element: Element, options?: object) => {
+        show(): void
+        hide(): void
+    }
     Popover: new (element: Element, options?: object) => BootstrapPopover
     Tooltip: new (element: Element, options?: object) => BootstrapTooltip
 }

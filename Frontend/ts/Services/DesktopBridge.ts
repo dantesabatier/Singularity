@@ -38,6 +38,7 @@ export interface HostApi {
 }
 
 declare global {
+    // noinspection JSUnusedGlobalSymbols
     interface Window {
         api?: HostApi
     }
@@ -50,6 +51,34 @@ export class DesktopBridge {
 
     public async showWindow(options: ShowWindowOptions): Promise<void> {
         await this.api?.showWindow?.(options)
+    }
+
+    public async showPreferences(): Promise<void> {
+        await this.showWindow({
+            url: `${window.location.origin}/Preferences`,
+            overrideBrowserWindowOptions: {
+                width: 600,
+                height: 400,
+                modal: true,
+            },
+        })
+    }
+
+    public async showAboutPanel(): Promise<void> {
+        await this.showWindow({
+            url: `${window.location.origin}/About`,
+            overrideBrowserWindowOptions: {
+                width: 380,
+                height: 380,
+                modal: true,
+                titleBarOverlay: false,
+            },
+        })
+    }
+
+    public async browse(title = "Select folder", prompt: string | undefined = undefined, defaultButton = "OK", options: readonly string[] = ["openDirectory", "promptToCreate"]): Promise<string | undefined> {
+        const result = await this.showOpenDialog(title, prompt, defaultButton, undefined, options)
+        return result?.filePaths.find(Boolean)
     }
 
     public async showOpenDialog(title: string, prompt: string | undefined, defaultButton: string, path: string | undefined, properties: readonly string[], filters?: readonly OpenDialogFilter[]): Promise<OpenDialogResult | undefined> {

@@ -15,7 +15,7 @@
             <div class="row mb-2">
                 <label for="type" class="col-sm-4 inspector-label">Type</label>
                 <div class="col-sm-8">
-                    <select name="type" id="type" class="form-select form-select-sm" onchange="setType(this)">
+                    <select name="type" id="type" class="form-select form-select-sm" data-editor-change="attributeType">
                         <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $selectedProperty->type->value ? selected}>
                             {$attributeType->name}
                         </option>

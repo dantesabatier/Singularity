@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeTooltips()
     initializeKeyboardShortcuts()
     initializeEasterEgg()
+    initializeActions()
 })
 
 /**
@@ -55,6 +56,40 @@ const initializeEasterEgg = () => {
     })
 }
 
+const initializeActions = () => {
+    document.addEventListener("click", (event) => {
+        const target = event.target
+        if (!(target instanceof Element)) {
+            return
+        }
+        const button = target.closest("[data-about-action]")
+        if (!button) {
+            return
+        }
+        const action = button.getAttribute("data-about-action")
+        switch (action) {
+            case "close":
+                window.close()
+                return
+            case "openURL": {
+                const url = button.getAttribute("data-about-url")
+                if (!url) {
+                    return
+                }
+                window.api?.openURL(url)
+                return
+            }
+            case "copyVersionInfo":
+                if (button instanceof HTMLButtonElement) {
+                    copyVersionInfo(button)
+                }
+                return
+            default:
+                return
+        }
+    })
+}
+
 /**
  * Show Easter egg message
  */
@@ -67,7 +102,7 @@ const showEasterEgg = () => {
         "💻 Code is poetry in motion"
     ]
     const randomMessage = messages[Math.floor(Math.random() * messages.length)]
-    showMessageBox("Alert", randomMessage, ["OK"])
+    window.api?.showMessageBox("Alert", randomMessage, ["OK"])
 }
 
 /**

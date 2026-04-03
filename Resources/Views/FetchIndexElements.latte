@@ -92,13 +92,16 @@
             {var ?App\Model\Attribute $attribute = $selectedEntity?->attributes?->filter(fn(App\Model\Attribute $attribute): bool => !$attribute->isDerived)?->first(fn(App\Model\Attribute $attribute): bool => !$selectedIndex?->elements?->contains(fn(App\Model\FetchIndexElement $element): bool => $element->property?->name === $attribute->name))}
             <button class="btn btn-icon"
                     title="Add Element"
-                    onclick="add({App\Model\FetchIndexElement::entity()->name}, {$attribute?->name}, {$selectedIndex}, {$selectedIndex?->elements?->count})"
+                    data-editor-action="addFetchIndexElement"
+                    data-parent="{$selectedIndex|json}"
+                    data-property-name="{$attribute?->name}"
                     {!$attribute instanceof App\Model\Attribute ? disabled}>
                 <i class="bi bi-plus-lg"></i>
             </button>
             <button class="btn btn-icon"
                     title="Remove Element"
-                    onclick="remove({$selectedIndexElement})"
+                    data-editor-action="removeSelection"
+                    data-item="{$selectedIndexElement|json}"
                     {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
                 <i class="bi bi-dash-lg"></i>
             </button>
