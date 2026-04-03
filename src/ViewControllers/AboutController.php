@@ -41,14 +41,6 @@ final class AboutController extends ViewController
         get => $this->bundle->object(kCFBundleShortVersionStringKey);
     }
     #[Outlet]
-    public ?string $electronVersion {
-        get => $this->bundle->object(__PROPERTY__);
-    }
-    #[Outlet]
-    public ?string $phpVersion {
-        get => $this->bundle->object(__PROPERTY__);
-    }
-    #[Outlet]
     public ?string $websiteURL {
         get => $this->bundle->object(__PROPERTY__);
     }
