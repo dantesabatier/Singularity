@@ -24,8 +24,14 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "cytoscape": "^3.33.1",
+    "cytoscape-dagre": "^2.5.0",
+    "cytoscape-node-html-label": "^1.2.2",
+    "dagre": "^0.8.5",
+    "db-viewer-component": "^4.3.7",
     "highlight.js": "^11.11.1",
     "jscolor": "^0.3.0",
-    "sortablejs": "^1.15.7"
+    "sortablejs": "^1.15.7",
+    "split.js": "^1.6.5"
   }
 }

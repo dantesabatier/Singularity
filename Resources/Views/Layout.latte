@@ -16,12 +16,6 @@
 <body>
 {block content}{/block}
 <script n:if="$viteAsset['client']" type="module" src="{$viteAsset['client']}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.5/split.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/db-viewer-component@4.4.9/dist/main.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.33.1/dist/cytoscape.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/dagre@0.8.5/dist/dagre.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape-dagre@2.5.0/cytoscape-dagre.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape-node-html-label@1.2.2/dist/cytoscape-node-html-label.min.js" defer></script>
 <script type="text/javascript" src="../../electron/renderer.js" defer></script>
 <script n:foreach="$viteAsset['js'] as $src" type="module" src="{$src}" defer></script>
 {block scripts}{/block}

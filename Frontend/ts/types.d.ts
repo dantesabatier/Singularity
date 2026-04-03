@@ -22,4 +22,9 @@ interface BootstrapStatic {
 
 interface Window {
     bootstrap: BootstrapStatic
+    Split: typeof import("split.js").default
+    cytoscape: typeof import("cytoscape").default
+    cytoscapeDagre: unknown
+    dagre: unknown
+    cy?: unknown
 }
