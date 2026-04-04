@@ -43,3 +43,19 @@ That is what the Sabatier stack was built for. Singularity is where it becomes u
 ---
 
 Built for engineers who want applications with **structure**, **memory**, and **identity**.
+
+---
+
+## Frontend Workflow (Vite + Latte)
+
+Singularity keeps **server-side rendering with Latte** and uses Vite for modern frontend assets.
+
+- Dev mode (`VITE_DEV_SERVER=http://127.0.0.1:5173`): assets are served by Vite with live updates.
+- Prod mode (without `VITE_DEV_SERVER`): assets are loaded from `Build/.vite/manifest.json`.
+
+Commands:
+
+```bash
+npm run dev
+npm run build
+```
