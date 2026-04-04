@@ -1,4 +1,5 @@
 import {Application} from "@/Application/Application"
+import {ColorPickerFeature} from "@/Features/ColorPickerFeature"
 import {FormSubmissionFeature} from "@/Features/FormSubmissionFeature"
 import {HistoryFeature} from "@/Features/HistoryFeature"
 import {ModalResetFeature} from "@/Features/ModalResetFeature"
@@ -16,6 +17,7 @@ export const bootstrapWelcome = (): void => {
             new ValidationFeature(context),
             new ModalResetFeature(context),
             new TooltipFeature(context),
+            new ColorPickerFeature(context),
         ],
         (context) => [new WelcomeController(context)],
     ).start()
