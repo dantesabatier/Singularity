@@ -31,6 +31,10 @@ export class HttpClient {
         return await this.request(url, {method: "POST", body})
     }
 
+    public async patch(url: string, body?: unknown): Promise<Response> {
+        return await this.request(url, {method: "PATCH", body})
+    }
+
     public async delete(url: string, body?: unknown): Promise<Response> {
         return await this.request(url, {method: "DELETE", body})
     }
