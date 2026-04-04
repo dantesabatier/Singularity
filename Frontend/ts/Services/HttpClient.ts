@@ -7,6 +7,7 @@ export interface ErrorResponse {
     readonly error?: string
 }
 
+// noinspection JSUnusedGlobalSymbols
 export class HttpClient {
     public async request(url: string, options: RequestOptions = {}): Promise<Response> {
         const headers: Record<string, string> = {

@@ -3,11 +3,7 @@ import {HttpClient} from "@/Services/HttpClient"
 import {ViewCache} from "@/Services/ViewCache"
 
 export class ViewNavigator {
-    public constructor(
-        private readonly httpClient: HttpClient,
-        private readonly viewCache: ViewCache,
-        private readonly desktopBridge: DesktopBridge
-    ) {
+    public constructor(private readonly httpClient: HttpClient, private readonly viewCache: ViewCache, private readonly desktopBridge: DesktopBridge) {
     }
 
     public async replace(url: string): Promise<boolean> {
