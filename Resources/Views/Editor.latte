@@ -3,7 +3,7 @@
 {block title}{$project->name}{/block}
 {block content}
     {var $initialSplitSizes = $splitSizes?->array ?? [20, 60, 20]}
-    <div id="main" class="user-select-none">
+    <div id="main" data-view="editor" class="user-select-none">
         <div n:if="$isGraphViewSelected" id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
         <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
             <div class="container-fluid justify-content-start align-items-center px-2">

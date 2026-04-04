@@ -32,3 +32,7 @@ This frontend uses Vite + TypeScript with **view-based bootstraps**.
 - `npm run build`
 
 After major changes, check generated chunk sizes in build output.
+
+## Contracts
+
+See `Frontend/CONTRACTS.md` for template-to-controller `data-*` contracts.

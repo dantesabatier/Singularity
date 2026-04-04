@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 declare module "dagre" {
     const dagre: unknown
     export default dagre
