@@ -21,4 +21,11 @@ export default defineConfig(({command}) => ({
             input: path.resolve(process.cwd(), "Frontend/ts/main.ts"),
         },
     },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                api: "modern-compiler",
+            },
+        },
+    },
 }))
