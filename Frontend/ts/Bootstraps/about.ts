@@ -1,4 +1,3 @@
-import "../../scss/about.scss"
 import {Application} from "@/Application/Application"
 import {TooltipFeature} from "@/Features/TooltipFeature"
 import {AboutController} from "@/Controllers/AboutController"

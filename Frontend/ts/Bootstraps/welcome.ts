@@ -1,4 +1,3 @@
-import "../../scss/welcome.scss"
 import {Application} from "@/Application/Application"
 import {FormSubmissionFeature} from "@/Features/FormSubmissionFeature"
 import {HistoryFeature} from "@/Features/HistoryFeature"

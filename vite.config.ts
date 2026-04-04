@@ -1,7 +1,8 @@
 import path from "node:path"
 import {defineConfig} from "vite"
 
-export default defineConfig({
+export default defineConfig(({command}) => ({
+    base: command === "build" ? "/Build/" : "/",
     server: {
         host: "127.0.0.1",
         port: 5173,
@@ -20,4 +21,4 @@ export default defineConfig({
             input: path.resolve(process.cwd(), "Frontend/ts/main.ts"),
         },
     },
-})
+}))

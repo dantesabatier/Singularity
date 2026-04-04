@@ -1,4 +1,3 @@
-import "../../scss/viewer.scss"
 import "db-viewer-component"
 import {Application} from "@/Application/Application"
 import {HistoryFeature} from "@/Features/HistoryFeature"
