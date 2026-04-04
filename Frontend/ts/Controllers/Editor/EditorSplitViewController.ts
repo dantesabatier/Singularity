@@ -14,6 +14,7 @@ export class EditorSplitViewController {
     private splitInstance: SplitInstance | null = null
     private isCopilotEnabled = false
     private currentContainer: HTMLElement | null = null
+
     public constructor(private readonly context: ApplicationContext) {
     }
 
@@ -73,6 +74,7 @@ export class EditorSplitViewController {
         }
         const savedSizes = this.parseSplitSizes(container.dataset.splitSizes)
         this.applyPanelWidths(savedSizes)
+        // noinspection JSUnusedGlobalSymbols
         this.splitInstance = window.Split([source, content, sidebar], {
             sizes: savedSizes,
             minSize: 0,
