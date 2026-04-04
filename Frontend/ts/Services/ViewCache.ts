@@ -1,3 +1,4 @@
+// noinspection JSUnusedGlobalSymbols
 export class ViewCache {
     private readonly views = new Map<string, string>()
 
