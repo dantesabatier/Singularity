@@ -1,11 +1,9 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\PreferencesController}
 {block title}{$title}{/block}
-{block head}
-    <link rel="stylesheet" type="text/css" href="/Resources/Styles/Preferences.css" media="screen">
-{/block}
+{block head}{/block}
 {block content}
-    <div id="main" class="user-select-none">
+    <div id="main" data-view="preferences" class="user-select-none">
         <nav class="navbar sticky-top bg-dark border-bottom border-black p-0 h-navbar">
             <div class="container-fluid justify-content-start">
                 <div class="navbar-brand d-flex align-items-center gap-2 mb-0">
@@ -79,6 +77,4 @@
         </div>
     </div>
 {/block}
-{block scripts}
-    <script src="/Resources/Scripts/Preferences.js"></script>
-{/block}
+{block scripts}{/block}

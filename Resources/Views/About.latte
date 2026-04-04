@@ -1,10 +1,8 @@
 {layout "Layout.latte"}
 {templateType App\ViewControllers\AboutController}
-{block head}
-    <link rel="stylesheet" href="/Resources/Styles/About.css">
-{/block}
+{block head}{/block}
 {block content}
-    <div id="main" class="vh-100 d-flex flex-column user-select-none">
+    <div id="main" data-view="about" class="vh-100 d-flex flex-column user-select-none">
         <div class="navbar sticky-top border-bottom p-0">
             <div class="container-fluid px-3 d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
@@ -59,7 +57,4 @@
         </div>
     </div>
 {/block}
-
-{block scripts}
-    <script src="/Resources/Scripts/About.js"></script>
-{/block}
+{block scripts}{/block}

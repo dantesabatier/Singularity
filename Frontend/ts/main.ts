@@ -1,18 +1,35 @@
 import "../scss/main.scss"
 import * as bootstrap from "bootstrap"
-import cytoscape from "cytoscape"
-import cytoscapeDagre from "cytoscape-dagre"
-import registerNodeHtmlLabel from "cytoscape-node-html-label"
-import "db-viewer-component"
-import Split from "split.js"
-import * as dagre from "dagre"
-import {Application} from "./Application/Application"
-
-cytoscape.use(cytoscapeDagre)
-registerNodeHtmlLabel(cytoscape)
-window.cytoscape = cytoscape
-window.cytoscapeDagre = cytoscapeDagre
-window.dagre = dagre
 window.bootstrap = bootstrap
-window.Split = Split
-new Application().start()
+
+const initializeApp = async (): Promise<void> => {
+    if (document.getElementById("split-container")) {
+        const module = await import("@/Bootstraps/editor")
+        module.bootstrapEditor()
+        return
+    }
+    if (document.querySelector("db-viewer")) {
+        const module = await import("@/Bootstraps/viewer")
+        module.bootstrapViewer()
+        return
+    }
+    if (document.getElementById("welcome-view")) {
+        const module = await import("@/Bootstraps/welcome")
+        module.bootstrapWelcome()
+        return
+    }
+    if (document.querySelector('#main[data-view="about"]')) {
+        const module = await import("@/Bootstraps/about")
+        module.bootstrapAbout()
+        return
+    }
+    if (document.querySelector('#main[data-view="preferences"]')) {
+        const module = await import("@/Bootstraps/preferences")
+        module.bootstrapPreferences()
+        return
+    }
+    const module = await import("@/Bootstraps/default")
+    module.bootstrapDefault()
+}
+
+void initializeApp()

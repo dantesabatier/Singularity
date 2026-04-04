@@ -1,46 +1,17 @@
-import {AutosaveFeature} from "@/Features/AutosaveFeature"
-import {FormSubmissionFeature} from "@/Features/FormSubmissionFeature"
-import {HistoryFeature} from "@/Features/HistoryFeature"
-import {ModalResetFeature} from "@/Features/ModalResetFeature"
-import {NavigationFeature} from "@/Features/NavigationFeature"
-import {PopoverFeature} from "@/Features/PopoverFeature"
-import {PredicateHighlighterFeature} from "@/Features/PredicateHighlighterFeature"
-import {ColorPickerFeature} from "@/Features/ColorPickerFeature"
-import {RolePopoverFeature} from "@/Features/RolePopoverFeature"
-import {SortableTableFeature} from "@/Features/SortableTableFeature"
-import {TooltipFeature} from "@/Features/TooltipFeature"
-import {TreeToggleFeature} from "@/Features/TreeToggleFeature"
-import {ValidationFeature} from "@/Features/ValidationFeature"
 import {ApplicationContext} from "@/Application/ApplicationContext"
-import {WelcomeController} from "@/Controllers/WelcomeController"
-import {ViewerController} from "@/Controllers/ViewerController"
-import {EditorController} from "@/Controllers/EditorController"
 import {Feature} from "@/Application/Feature"
 import {ViewController} from "@/Application/ViewController"
 
 export class Application {
     private readonly context = new ApplicationContext()
     private isStarted = false
-    private readonly features: readonly Feature[] = [
-        new HistoryFeature(this.context),
-        new NavigationFeature(this.context),
-        new TreeToggleFeature(this.context),
-        new AutosaveFeature(this.context),
-        new FormSubmissionFeature(this.context),
-        new ValidationFeature(this.context),
-        new ModalResetFeature(this.context),
-        new TooltipFeature(this.context),
-        new PopoverFeature(this.context),
-        new PredicateHighlighterFeature(this.context),
-        new RolePopoverFeature(this.context),
-        new SortableTableFeature(this.context),
-        new ColorPickerFeature(this.context),
-    ]
-    private readonly controllers: readonly ViewController[] = [
-        new WelcomeController(this.context),
-        new ViewerController(this.context),
-        new EditorController(this.context),
-    ]
+    private readonly features: readonly Feature[]
+    private readonly controllers: readonly ViewController[]
+
+    public constructor(featureFactory: (context: ApplicationContext) => readonly Feature[], controllerFactory: (context: ApplicationContext) => readonly ViewController[]) {
+        this.features = featureFactory(this.context)
+        this.controllers = controllerFactory(this.context)
+    }
 
     public start(): void {
         const initialize = (): void => {
