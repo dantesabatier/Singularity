@@ -381,13 +381,10 @@ export class EditorGraphController {
             window.clearTimeout(this.saveTimer)
         }
         this.saveTimer = window.setTimeout(() => {
-            void this.context.httpClient.request("Model", {
-                method: "PATCH",
-                body: {
-                    objectID: model.id,
-                    zoom: this.cy?.zoom(),
-                    pan: this.cy?.pan(),
-                },
+            void this.context.httpClient.patch("Model", {
+                objectID: model.id,
+                zoom: this.cy?.zoom(),
+                pan: this.cy?.pan(),
             })
         }, 500)
     }
@@ -406,14 +403,11 @@ export class EditorGraphController {
             return
         }
         const position = node.position()
-        await this.context.httpClient.request("Entity", {
-            method: "PATCH",
-            body: {
-                objectID: entityID,
-                position: {
-                    x: position.x,
-                    y: position.y,
-                },
+        await this.context.httpClient.patch("Entity", {
+            objectID: entityID,
+            position: {
+                x: position.x,
+                y: position.y,
             },
         })
     }
@@ -442,14 +436,11 @@ export class EditorGraphController {
                 if (entities.length === 0) {
                     return
                 }
-                void this.context.httpClient.request("Model", {
-                    method: "PATCH",
-                    body: {
-                        objectID: model.id,
-                        zoom: this.cy?.zoom(),
-                        pan: this.cy?.pan(),
-                        entities,
-                    },
+                void this.context.httpClient.patch("Model", {
+                    objectID: model.id,
+                    zoom: this.cy?.zoom(),
+                    pan: this.cy?.pan(),
+                    entities,
                 })
             },
         }).run()
