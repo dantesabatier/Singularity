@@ -124,10 +124,7 @@ export class EditorSplitViewController {
         if (container instanceof HTMLElement) {
             container.dataset.splitSizes = JSON.stringify(sizes)
         }
-        void this.context.httpClient.request("Synchronize", {
-            method: "POST",
-            body: {editorSplitSizes: sizes},
-        })
+        void this.context.httpClient.patch("Synchronize", {editorSplitSizes: sizes})
     }
 
     private updateSidebarMode(): void {
