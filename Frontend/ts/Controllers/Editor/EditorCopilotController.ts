@@ -120,12 +120,9 @@ export class EditorCopilotController {
         this.pendingProposal = null
         this.setState("thinking")
         this.renderThinkingState()
-        const response = await this.context.httpClient.request("propose", {
-            method: "POST",
-            body: {
-                objectID: this.projectObjectID,
-                prompt,
-            },
+        const response = await this.context.httpClient.post("propose", {
+            objectID: this.projectObjectID,
+            prompt,
         })
         if (!response.ok) {
             const error = await this.context.httpClient.tryGetErrorMessage(response)
@@ -149,12 +146,9 @@ export class EditorCopilotController {
             return
         }
         this.setState("applying")
-        const response = await this.context.httpClient.request("apply", {
-            method: "POST",
-            body: {
-                objectID: this.projectObjectID,
-                patch: this.pendingProposal,
-            },
+        const response = await this.context.httpClient.post("apply", {
+            objectID: this.projectObjectID,
+            patch: this.pendingProposal,
         })
         if (!response.ok) {
             const error = await this.context.httpClient.tryGetErrorMessage(response)
