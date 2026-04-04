@@ -46,7 +46,9 @@ type CytoscapeInstance = {
         data(name: string): string | undefined
         position(axis: "x" | "y"): number
     }>
-    on(event: string, selectorOrHandler: string | ((event: { target: CytoscapeNode }) => void), handler?: (event: { target: CytoscapeNode }) => void): void
+    on(event: string, selectorOrHandler: string | ((event: { target: CytoscapeNode }) => void), handler?: (event: {
+        target: CytoscapeNode
+    }) => void): void
     container(): HTMLElement
     nodeHtmlLabel?(options: Array<Record<string, unknown>>): void
 }
@@ -308,6 +310,7 @@ export class EditorGraphController {
         if (!this.cy?.nodeHtmlLabel) {
             return
         }
+        // noinspection JSUnusedGlobalSymbols
         this.cy.nodeHtmlLabel([{
             query: "node",
             halign: "center",
@@ -419,6 +422,7 @@ export class EditorGraphController {
         if (!this.cy) {
             return
         }
+        // noinspection JSUnusedGlobalSymbols
         this.cy.layout({
             name: "dagre",
             rankDir: "TB",
