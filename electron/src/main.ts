@@ -1,11 +1,24 @@
-if (require("electron-squirrel-startup")) {
-    return
+import started from "electron-squirrel-startup"
+import {app, BrowserWindow, dialog, ipcMain, shell} from "electron"
+import path from "node:path"
+import type {ErrorBoxPayload, ShowWindowPayload} from "./window-api"
+
+if (started) {
+    app.quit()
 }
-const {app, ipcMain, dialog, shell, BrowserWindow} = require("electron")
-const path = require("path")
 
 const ENTRY_URL = "http://localhost:8001/"
-const options = {
+
+interface BackendErrorBody {
+    error?: {
+        localizedDescription?: string
+        localizedFailureReason?: string
+        localizedRecoverySuggestion?: string
+        userInfo?: unknown
+    }
+}
+
+const options: Electron.BrowserWindowConstructorOptions = {
     webPreferences: {
         webSecurity: false,
         allowRunningInsecureContent: true,
@@ -25,7 +38,7 @@ const options = {
 }
 
 let isNetworkInterceptorSet = false
-const setupWindowErrorHandling = (window) => {
+const setupWindowErrorHandling = (window: BrowserWindow) => {
     if (!isNetworkInterceptorSet && window.webContents.session) {
         window.webContents.session.webRequest.onHeadersReceived(
             {urls: [ENTRY_URL + "*"]},
@@ -37,17 +50,17 @@ const setupWindowErrorHandling = (window) => {
         isNetworkInterceptorSet = true
     }
 
-    window.webContents.on("did-fail-load", async (event, errorCode, errorDescription, validatedURL) => {
+    window.webContents.on("did-fail-load", async (_event, errorCode, _errorDescription, validatedURL) => {
         if (errorCode === -3) {
             return
         }
         try {
             const targetUrl = validatedURL || ENTRY_URL
             const response = await fetch(targetUrl)
-            const json = await response.json()
+            const json = (await response.json()) as BackendErrorBody
             if (json.error) {
                 const error = json.error
-                let message = error.localizedDescription ?? "Unexpected error"
+                const message = error.localizedDescription ?? "Unexpected error"
                 let detail = error.localizedFailureReason ?? ""
                 if (error.localizedRecoverySuggestion) {
                     detail += detail ? `\n${error.localizedRecoverySuggestion}` : error.localizedRecoverySuggestion
@@ -62,7 +75,7 @@ const setupWindowErrorHandling = (window) => {
                     buttons: ["OK"]
                 })
             }
-        } catch (e) {
+        } catch {
             await dialog.showMessageBox(window, {
                 type: "error",
                 title: "Failed to load",
@@ -72,7 +85,8 @@ const setupWindowErrorHandling = (window) => {
         }
     })
 }
-const createWindow = () => {
+
+const createWindow = async () => {
     const mainWindow = new BrowserWindow({
         ...options,
         width: 600,
@@ -84,64 +98,78 @@ const createWindow = () => {
             ...options
         }
     }))
-
     setupWindowErrorHandling(mainWindow)
-
-    mainWindow.on("ready-to-show", async () => mainWindow.show())
-    // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
-    mainWindow.loadURL(ENTRY_URL)
+    mainWindow.on("ready-to-show", () => mainWindow.show())
+    await mainWindow.loadURL(ENTRY_URL)
 }
 
 app.whenReady().then(() => createWindow())
 app.on("window-all-closed", () => app.quit())
 
-ipcMain.handle("showMessageBox", async (event, arg) => dialog.showMessageBox(BrowserWindow.fromWebContents(event.sender), {
-    ...arg,
-    icon: path.join(__dirname, "icon.png")
-}))
-ipcMain.handle("showErrorBox", async (event, error) => {
-    error ??= error = {
+ipcMain.handle("showMessageBox", async (event, arg: Electron.MessageBoxOptions) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const merged: Electron.MessageBoxOptions = {
+        ...arg,
+        icon: path.join(__dirname, "icon.png")
+    }
+    return win ? dialog.showMessageBox(win, merged) : dialog.showMessageBox(merged)
+})
+
+ipcMain.handle("showErrorBox", async (_event, error?: ErrorBoxPayload) => {
+    const err: ErrorBoxPayload = error ?? {
         localizedDescription: "An unexpected error has occurred",
         localizedFailureReason: undefined,
         localizedRecoverySuggestion: undefined
     }
-    const title = error.localizedDescription ?? error.message ?? "An unexpected error has occurred"
-    let content = error.localizedFailureReason ?? error.localizedRecoverySuggestion ?? ""
-    if (!!content && error.localizedRecoverySuggestion && content !== error.localizedRecoverySuggestion) {
+    const title = err.localizedDescription ?? err.message ?? "An unexpected error has occurred"
+    let content = err.localizedFailureReason ?? err.localizedRecoverySuggestion ?? ""
+    if (content && err.localizedRecoverySuggestion && content !== err.localizedRecoverySuggestion) {
         if (!content.endsWith(".")) {
             content += "."
         }
-        content += `\n${error.localizedRecoverySuggestion}`
+        content += `\n${err.localizedRecoverySuggestion}`
     }
-    if (!!error.userInfo) {
-        content += `\n${JSON.stringify(error.userInfo, null, 4)}`
+    if (err.userInfo) {
+        content += `\n${JSON.stringify(err.userInfo, null, 4)}`
     }
-    if (!!content && !content.endsWith(".")) {
+    if (content && !content.endsWith(".")) {
         content += "."
     }
-    return dialog.showErrorBox(title, content)
+    dialog.showErrorBox(title, content)
 })
-ipcMain.handle("showOpenDialog", async (event, arg) => await dialog.showOpenDialog(arg))
-ipcMain.on("showAboutPanel", async (event, arg) => {
+
+ipcMain.handle("showOpenDialog", async (_event, arg: Electron.OpenDialogOptions) => dialog.showOpenDialog(arg))
+
+ipcMain.on("showAboutPanel", (_event, arg: Electron.AboutPanelOptionsOptions) => {
     app.setAboutPanelOptions({
         ...arg,
         iconPath: path.join(__dirname, "icon.png")
     })
     app.showAboutPanel()
 })
-ipcMain.on("showWindow", (event, arg) => {
+
+ipcMain.on("showWindow", (event, arg: ShowWindowPayload) => {
+    const parent = arg.overrideBrowserWindowOptions?.modal
+        ? BrowserWindow.fromWebContents(event.sender) ?? undefined
+        : undefined
     const window = new BrowserWindow({
         ...options,
         ...arg.overrideBrowserWindowOptions,
-        parent: arg.overrideBrowserWindowOptions?.modal ? BrowserWindow.fromWebContents(event.sender) : undefined
+        parent
     })
 
     setupWindowErrorHandling(window)
 
     window.on("ready-to-show", () => window.show())
-    // noinspection JSIgnoredPromiseFromCall, JSUnresolvedReference
-    window.loadURL(arg.url)
+    void window.loadURL(arg.url)
 })
-ipcMain.on("setProgressBar", (event, arg) => BrowserWindow.fromWebContents(event.sender).setProgressBar(arg))
-ipcMain.on("openPath", (event, path) => shell.openPath(path))
-ipcMain.handle("openURL", async (event, url) => shell.openExternal(url))
+
+ipcMain.on("setProgressBar", (event, arg: Parameters<BrowserWindow["setProgressBar"]>[0]) => {
+    BrowserWindow.fromWebContents(event.sender)?.setProgressBar(arg)
+})
+
+ipcMain.on("openPath", (_event, filePath: string) => {
+    void shell.openPath(filePath)
+})
+
+ipcMain.handle("openURL", async (_event, url: string) => shell.openExternal(url))

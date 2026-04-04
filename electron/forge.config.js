@@ -7,7 +7,7 @@ module.exports = {
         name: "Singularity",
         appName: "Singularity",
         appBundleId: "com.sabatiersoftware.singularity",
-        appCopyright: "Copyright © 2024 Dante Sabatier. All rights reserved.",
+        appCopyright: "Copyright © 2026 Dante Sabatier. All rights reserved.",
         icon: "icon",
         asar: true,
     },
@@ -39,8 +39,29 @@ module.exports = {
             name: "@electron-forge/plugin-auto-unpack-natives",
             config: {},
         },
-        // Fuses are used to enable/disable various Electron functionality
-        // at package time, before code signing the application
+        {
+            name: "@electron-forge/plugin-vite",
+            config: {
+                build: [
+                    {
+                        entry: "src/main.ts",
+                        config: "vite.main.config.ts",
+                        target: "main",
+                    },
+                    {
+                        entry: "src/preload.ts",
+                        config: "vite.preload.config.ts",
+                        target: "preload",
+                    },
+                ],
+                renderer: [
+                    {
+                        name: "main_window",
+                        config: "vite.renderer.config.ts",
+                    },
+                ],
+            },
+        },
         new FusesPlugin({
             version: FuseVersion.V1,
             [FuseV1Options.RunAsNode]: false,
