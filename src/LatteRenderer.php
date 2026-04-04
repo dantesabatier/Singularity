@@ -76,7 +76,7 @@ final class LatteRenderer extends Renderer
         if ($devServer !== "") {
             return [
                 "client" => "$devServer/@vite/client",
-                "css" => [],
+                "css" => ["$devServer/Frontend/scss/main.scss"],
                 "js" => ["$devServer/$entry"],
             ];
         }
