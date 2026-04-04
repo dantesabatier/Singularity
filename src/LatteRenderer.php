@@ -28,6 +28,7 @@ use Sabatier\Foundation\SearchPathDirectory;
 use Sabatier\Foundation\SearchPathDomainMask;
 use Sabatier\Service\Renderer;
 use function Sabatier\Foundation\camelcase;
+use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\human_readable_value;
 use function Sabatier\Foundation\localized_string;
 use function Sabatier\Foundation\substring_to_index;
@@ -89,7 +90,7 @@ final class LatteRenderer extends Renderer
                 "js" => [],
             ];
         }
-        /** @var array<string, array{file: string, css?: list<string>}>|null $manifest */
+        /** @var array<string, array{file: string, css?: list<string>|null}>|null $manifest */
         $manifest = json_decode($fileManager->contents($manifestURL->path) ?? "[]", true);
         $item = $manifest[$entry] ?? null;
         if (!is_array($item) || !isset($item["file"])) {
@@ -100,7 +101,7 @@ final class LatteRenderer extends Renderer
             ];
         }
         /** @var list<string> $css */
-        $css = isset($item["css"]) && is_array($item["css"]) ? array_values($item["css"]) : [];
+        $css = $item["css"] ?? [];
         return [
             "client" => null,
             "css" => array_map(fn(string $file): string => "/Build/$file", $css),
@@ -119,18 +120,15 @@ final class LatteRenderer extends Renderer
 
     private function image(ManagedObject $object): string
     {
-        return match (true) {
-            $object instanceof Project => "Project",
-            $object instanceof Model => "Model",
-            $object instanceof Entity => "E",
-            $object instanceof AccessControl => "AccessControl",
-            $object instanceof Role => "Role",
-            $object instanceof Attribute => $this->name($object->type),
-            $object instanceof Relationship => $object->isToMany ? "M" : "O",
-            $object instanceof FetchedProperty, $object instanceof FetchRequestTemplate => "F",
-            $object instanceof FetchIndex => "I",
-            $object instanceof FetchIndexElement => ($property = $object->property) ? $this->image($property) : $this->name(AttributeType::undefined),
-            $object instanceof UniquenessConstraint => "U",
+        return match ($object::class) {
+            Project::class, Model::class, AccessControl::class, Role::class => class_name($object::class),
+            Entity::class => "E",
+            Attribute::class => $this->name($object->type),
+            Relationship::class => $object->isToMany ? "M" : "O",
+            FetchedProperty::class, FetchRequestTemplate::class => "F",
+            FetchIndex::class => "I",
+            FetchIndexElement::class => ($property = $object->property) ? $this->image($property) : $this->name(AttributeType::undefined),
+            UniquenessConstraint::class => "U",
             default => substring_to_index($object->entity->name, 1)
         };
     }

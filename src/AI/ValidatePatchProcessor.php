@@ -139,9 +139,7 @@ final class ValidatePatchProcessor extends ModelPatchProcessor
      */
     private function rememberName(Dictionary $plannedNamesByEntity, string $entityName, string $name): void
     {
-        if (!$plannedNamesByEntity->offsetExists($entityName)) {
-            $plannedNamesByEntity[$entityName] = new Dictionary();
-        }
+        $plannedNamesByEntity[$entityName] ??= new Dictionary();
         $plannedNamesByEntity[$entityName][$name] = true;
     }
 
