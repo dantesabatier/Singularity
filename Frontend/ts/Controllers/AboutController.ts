@@ -1,4 +1,5 @@
 import {ViewController} from "@/Application/ViewController"
+import {Tooltip} from "bootstrap"
 
 export class AboutController extends ViewController {
     private clickCount = 0
@@ -61,9 +62,7 @@ export class AboutController extends ViewController {
     }
 
     private initializeTooltips(): void {
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
-            new window.bootstrap.Tooltip(element)
-        })
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => new Tooltip(element))
     }
 
     private initializeEasterEgg(): void {
