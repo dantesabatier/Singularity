@@ -19,6 +19,23 @@ export default defineConfig(({command}) => ({
         emptyOutDir: true,
         rollupOptions: {
             input: path.resolve(process.cwd(), "Frontend/ts/main.ts"),
+            output: {
+                manualChunks(id: string): string | undefined {
+                    if (!id.includes("node_modules")) {
+                        return undefined
+                    }
+                    if (id.includes("cytoscape") || id.includes("dagre")) {
+                        return "vendor-graph"
+                    }
+                    if (id.includes("db-viewer-component")) {
+                        return "vendor-viewer"
+                    }
+                    if (id.includes("bootstrap") || id.includes("@popperjs")) {
+                        return "vendor-ui"
+                    }
+                    return "vendor"
+                },
+            },
         },
     },
     css: {
