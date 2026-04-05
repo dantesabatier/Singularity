@@ -92,6 +92,8 @@ export class ViewerController extends ViewController {
         this.updateEmptyState(this.isSchemaEmpty(runtime.schema))
         if (element.viewer) {
             this.currentViewer = element.viewer
+            this.currentViewer.setZoom(0.25)
+            this.updateZoomLevel(0.25)
         }
         if (this.initializedViewers.has(element)) {
             return
