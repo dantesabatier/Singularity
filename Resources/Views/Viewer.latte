@@ -63,10 +63,7 @@
             </div>
         </nav>
         <div class="viewer-container" style="height: calc(100vh - 68px); position: relative;">
-            <div id="viewer-runtime"
-                 data-project-id="{$project->objectID->referenceObject}"
-                 data-export-last-directory="{$exportLastDirectory}"
-                 style="display: none;"></div>
+            <div id="viewer-runtime" data-project-id="{$project->objectID->referenceObject}" data-export-last-directory="{$exportLastDirectory}" style="display: none;"></div>
             <script id="viewer-schema-json" type="application/json">{$project->model?->schema|json|noescape}</script>
             <div class="viewer-toolbar">
                 <div class="viewer-toolbar-section">
@@ -128,7 +125,7 @@
                             <i class="bi bi-folder"></i> Export Location </label>
                         <div class="input-group">
                             <input type="text" id="exportLastDirectory" class="form-control" placeholder="Choose a folder to export the schema" value="{$exportLastDirectory}" readonly>
-                                    <button type="button" class="btn btn-secondary" data-viewer-action="chooseExportFolder">
+                            <button type="button" class="btn btn-secondary" data-viewer-action="chooseExportFolder">
                                 <i class="bi bi-folder2-open"></i> <span>Browse...</span>
                             </button>
                         </div>
