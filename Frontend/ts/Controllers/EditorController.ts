@@ -232,7 +232,7 @@ export class EditorController extends ViewController {
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,
                     model: parent,
-                }, "POST")
+                })
                 return
             case "Attribute": {
                 const body: Record<string, unknown> = {name}
