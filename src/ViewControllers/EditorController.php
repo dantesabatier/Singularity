@@ -421,7 +421,7 @@ final class EditorController extends ProjectController
         }
         $properties->insertAt($moved, $globalToIndex);
         $properties = $properties->map(function (Property $property, int $idx): Property {
-            $property->position = $idx;
+            $property->position = max($idx, 0);
             return $property;
         });
         $entity->properties = new Set($properties);
