@@ -3,16 +3,22 @@
 namespace App\Model;
 
 use Override;
+use Sabatier\CoreData\AttributeDescription;
 use Sabatier\CoreData\AttributeType;
+use Sabatier\CoreData\CompositeAttributeDescription;
+use Sabatier\CoreData\DerivedAttributeDescription;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\CoreData\ManagedObjectID;
+use Sabatier\CoreData\PropertyDescription;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Error;
 use Sabatier\Foundation\InternalInconsistencyException;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
+use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
 use const Sabatier\CoreData\ManagedObjectValidationError;
@@ -34,63 +40,63 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
  */
 final class Attribute extends Property
 {
-    /** @var Dictionary<mixed> */
-    #[Override]
-    public Dictionary $dictionaryRepresentation {
+    /** @var list<string> */
+    private const array attributeDescriptionKeys = ["name", "defaultValue", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "regex", "minValue", "maxValue", "valueTransformerName", "attributeValueClassName", "allowsExternalBinaryDataStorage", "preservesValueInHistoryOnDeletion"];
+    /** @var ArrayClass<string> */
+    private(set) ArrayClass $attributeDescriptionKeys {
+        get => $this->attributeDescriptionKeys ??= new ArrayClass(self::attributeDescriptionKeys);
+    }
+    protected ?DerivedAttributeDescription $derivedAttributeDescription {
         get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = parent::$dictionaryRepresentation::get();
-            $type = $this->type;
-            if ($type !== AttributeType::undefined) {
-                $dictionary["type"] = $type;
+            if (!($derivationExpressionFormat = (string)$this->derivationExpressionFormat |> trim(...))) {
+                return null;
             }
-            $isDefaultValueBounded = $this->isDefaultValueBounded;
-            if ($isDefaultValueBounded) {
-                $dictionary["isDefaultValueBounded"] = $isDefaultValueBounded;
-            }
-            if ($this->isDerived) {
-                $dictionary["derivationExpressionFormat"] = $this->derivationExpressionFormat;
-            } else {
-                $dictionary["defaultValue"] = match ($type) {
-                    AttributeType::string, AttributeType::date => $isDefaultValueBounded ? $this->defaultValue : null,
-                    default => $this->defaultValue
-                };
-                $isMinValueBounded = $this->isMinValueBounded;
-                if ($isMinValueBounded) {
-                    $dictionary["isMinValueBounded"] = $isMinValueBounded;
-                }
-                $isMaxValueBounded = $this->isMaxValueBounded;
-                if ($isMaxValueBounded) {
-                    $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
-                }
-                $dictionary["minValue"] = match ($type) {
-                    AttributeType::date => $isMinValueBounded ? $this->minValue : null,
-                    default => $this->minValue
-                };
-                $dictionary["maxValue"] = match ($type) {
-                    AttributeType::date => $isMaxValueBounded ? $this->maxValue : null,
-                    default => $this->maxValue
-                };
-            }
-            $attributeValueClassName = $this->attributeValueClassName;
-            $dictionary["attributeValueClassName"] = match ($attributeValueClassName) {
-                Date::class, UUID::class, URL::class, ManagedObjectID::class => null,
-                default => $attributeValueClassName
-            };
-            if ($valueTransformerName = $this->valueTransformerName) {
-                $dictionary["valueTransformerName"] = $valueTransformerName;
-            }
-            if ($allowsExternalBinaryDataStorage = $this->allowsExternalBinaryDataStorage) {
-                $dictionary["allowsExternalBinaryDataStorage"] = $allowsExternalBinaryDataStorage;
-            }
-            if ($preservesValueInHistoryOnDeletion = $this->preservesValueInHistoryOnDeletion) {
-                $dictionary["preservesValueInHistoryOnDeletion"] = $preservesValueInHistoryOnDeletion;
-            }
-            if ($attributeValueClassName && $this->entityProperty?->model->compositeTypesByName->offsetExists($attributeValueClassName)) {
-                $dictionary["elements"] = $this->entityProperty->model->compositeTypesByName->valueForKey($attributeValueClassName)->elements->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation);
-            }
-            return $dictionary;
+            $derivedAttributeDescription = new DerivedAttributeDescription();
+            $derivedAttributeDescription->name = $this->name;
+            $derivedAttributeDescription->type = $this->type;
+            $derivedAttributeDescription->derivationExpression = Expression::expressionWithFormat($derivationExpressionFormat);
+            return $derivedAttributeDescription;
         }
+    }
+    protected ?CompositeAttributeDescription $compositeAttributeDescription {
+        get {
+            if (!($attributeValueClassName = $this->attributeValueClassName)) {
+                return null;
+            }
+            if (!($compositeTypesByName = $this->entityProperty?->model->compositeTypesByName)) {
+                return null;
+            }
+            if (!($compositeType = $compositeTypesByName[$attributeValueClassName])) {
+                return null;
+            }
+            $compositeAttributeDescription = new CompositeAttributeDescription();
+            $compositeAttributeDescription->name = $this->name;
+            $compositeAttributeDescription->type = AttributeType::compositeAttributeType;
+            $compositeAttributeDescription->elements = new ArrayClass($compositeType->elements->map(fn(Attribute $attribute): AttributeDescription => $attribute->attributeDescription));
+            return $compositeAttributeDescription;
+        }
+    }
+    private(set) AttributeDescription $attributeDescription {
+        get {
+            if (isset($this->attributeDescription)) {
+                return $this->attributeDescription;
+            }
+            if ($derivedAttributeDescription = $this->derivedAttributeDescription) {
+                return $this->attributeDescription = $derivedAttributeDescription;
+            }
+            if ($compositeAttributeDescription = $this->compositeAttributeDescription) {
+                return $this->attributeDescription = $compositeAttributeDescription;
+            }
+            $attributeDescription = new AttributeDescription();
+            $attributeDescription->name = $this->name;
+            $attributeDescription->type = $this->type;
+            $attributeDescription->setValuesForKeys($this->dictionaryWithValues($this->attributeDescriptionKeys));
+            return $this->attributeDescription = $attributeDescription;
+        }
+    }
+    #[Override]
+    public PropertyDescription $propertyDescription {
+        get => $this->attributeDescription;
     }
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)

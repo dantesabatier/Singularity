@@ -6,7 +6,9 @@ use Override;
 use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObjectContext;
-use Sabatier\Foundation\Dictionary;
+use Sabatier\CoreData\PropertyDescription;
+use Sabatier\CoreData\RelationshipDescription;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
 
@@ -16,8 +18,8 @@ use Sabatier\Foundation\KeyValueObservingOptions;
  * @property bool $isToMany
  * @property bool $isOrdered
  * @property DeleteRule $deleteRule
- * @property int|null $minCount
- * @property int|null $maxCount
+ * @property int<0, max>|null $minCount
+ * @property int<0, max>|null $maxCount
  * @property bool $isMinCountBounded
  * @property bool $isMaxCountBounded
  * @property bool $isOwner
@@ -30,39 +32,25 @@ final class Relationship extends Property
     private(set) ?Relationship $inverseRelationship {
         get => $this->inverseRelationship ??= $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
     }
-    /** @var Dictionary<mixed> */
-    #[Override]
-    public Dictionary $dictionaryRepresentation {
+    /** @var list<string> */
+    private const array relationshipDescriptionKeys = ["name", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "lazyDestinationEntityName", "lazyInverseRelationshipName", "isToMany", "isOrdered", "deleteRule", "minCount", "maxCount"];
+    /** @var ArrayClass<string> */
+    private(set) ArrayClass $relationshipDescriptionKeys {
+        get => $this->relationshipDescriptionKeys ??= new ArrayClass(self::relationshipDescriptionKeys);
+    }
+    private(set) RelationshipDescription $relationshipDescription {
         get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = parent::$dictionaryRepresentation::get();
-            if ($isToMany = $this->isToMany) {
-                $dictionary["isToMany"] = $isToMany;
-                if ($isOrdered = $this->isOrdered) {
-                    $dictionary["isOrdered"] = $isOrdered;
-                }
-                $isMinCountBounded = $this->isMinCountBounded;
-                if ($isMinCountBounded) {
-                    $dictionary["isMinCountBounded"] = $isMinCountBounded;
-                }
-                $isMaxCountBounded = $this->isMaxCountBounded;
-                if ($isMaxCountBounded) {
-                    $dictionary["isMaxCountBounded"] = $isMaxCountBounded;
-                }
-                $dictionary["minCount"] = $isMinCountBounded ? $this->minCount : null;
-                $dictionary["maxCount"] = $isMaxCountBounded ? $this->maxCount : null;
+            if (isset($this->relationshipDescription)) {
+                return $this->relationshipDescription;
             }
-            $deleteRule = $this->deleteRule;
-            if ($deleteRule !== DeleteRule::nullifyDeleteRule) {
-                $dictionary["deleteRule"] = $deleteRule;
-            }
-            $dictionary["lazyDestinationEntityName"] = $this->lazyDestinationEntityName;
-            $dictionary["lazyInverseRelationshipName"] = $this->lazyInverseRelationshipName;
-            if ($isOwner = $this->isOwner) {
-                $dictionary["isOwner"] = $isOwner;
-            }
-            return $dictionary;
+            $relationshipDescription = new RelationshipDescription();
+            $relationshipDescription->setValuesForKeys($this->dictionaryWithValues($this->relationshipDescriptionKeys));
+            return $this->relationshipDescription = $relationshipDescription;
         }
+    }
+    #[Override]
+    public PropertyDescription $propertyDescription {
+        get => $this->relationshipDescription;
     }
 
     public function __construct(ManagedObjectContext $managedObjectContext, ?EntityDescription $entity = null)

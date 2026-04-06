@@ -4,10 +4,15 @@
 
 namespace App\Model;
 
-use Exception;
 use Override;
+use Sabatier\CoreData\AttributeDescription;
+use Sabatier\CoreData\CompositeAttributeDescription;
+use Sabatier\CoreData\DerivedAttributeDescription;
+use Sabatier\CoreData\EntityDescription;
+use Sabatier\CoreData\ExpressionDescription;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
+use Sabatier\CoreData\RelationshipDescription;
 use Sabatier\CoreData\SQLColumn;
 use Sabatier\CoreData\SQLEntity;
 use Sabatier\CoreData\SQLForeignKey;
@@ -18,12 +23,9 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
-use Sabatier\Foundation\Progress;
-use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use function Sabatier\Foundation\fatal_error;
 use const App\EntityPositionsMappingPreferencesKey;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
@@ -70,30 +72,29 @@ final class Model extends ManagedObject
     }
     /** @var Dictionary<Entity> */
     private(set) Dictionary $entitiesByName {
-        get => $this->entitiesByName ??= $this->entities->reduce(new Dictionary(), function (Dictionary $result, Entity $entity): Dictionary {
-            $result[$entity->name] = $entity;
-            return $result;
-        });
+        get => $this->entitiesByName ??= $this->entities->reduce(new Dictionary(),
+            /**
+             * @param Dictionary<Entity> $result
+             * @param Entity $entity
+             * @return Dictionary<Entity>
+             */
+            function (Dictionary $result, Entity $entity): Dictionary {
+                $result[$entity->name] = $entity;
+                return $result;
+            });
     }
     /** @var Dictionary<CompositeType> */
     private(set) Dictionary $compositeTypesByName {
-        get => $this->compositeTypesByName ??= $this->compositeTypes->reduce(new Dictionary(), function (Dictionary $result, CompositeType $compositeType): Dictionary {
-            $result[$compositeType->name] = $compositeType;
-            return $result;
-        });
-    }
-    private(set) Progress $progress {
-        get => $this->progress ??= new Progress();
-    }
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
-        get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["entities"] = $this->rootEntities->map(fn(Entity $entity): Dictionary => $entity->dictionaryRepresentation);
-            $dictionary["fetchRequests"] = $this->fetchRequestTemplates->map(fn(FetchRequestTemplate $fetchRequestTemplate): Dictionary => $fetchRequestTemplate->dictionaryRepresentation);
-            return $dictionary;
-        }
+        get => $this->compositeTypesByName ??= $this->compositeTypes->reduce(new Dictionary(),
+            /**
+             * @param Dictionary<CompositeType> $result
+             * @param CompositeType $compositeType
+             * @return Dictionary<CompositeType>
+             */
+            function (Dictionary $result, CompositeType $compositeType): Dictionary {
+                $result[$compositeType->name] = $compositeType;
+                return $result;
+            });
     }
     public Dictionary $schema {
         get {
@@ -235,173 +236,126 @@ final class Model extends ManagedObject
             ]);
         }
     }
+    public ManagedObjectModel $managedObjectModel {
+        get {
+            if (isset($this->managedObjectModel)) {
+                return $this->managedObjectModel;
+            }
+            $managedObjectModel = new ManagedObjectModel();
+            $managedObjectModel->entities = new ArrayClass($this->rootEntities->map(fn(Entity $entity) => $entity->entityDescription));
+            $this->fetchRequestTemplates->forEach(function (FetchRequestTemplate $fetchRequestTemplate) use ($managedObjectModel) {
+                if ($fetchRequest = $fetchRequestTemplate->fetchRequest) {
+                    $managedObjectModel->setFetchRequestTemplate($fetchRequest, $fetchRequestTemplate->name);
+                }
+            });
+            $this->configurations->forEach(function (Configuration $configuration) use ($managedObjectModel) {
+                $managedObjectModel->setEntities(new ArrayClass($configuration->entities), $configuration->name);
+            });
+            return $this->managedObjectModel = $managedObjectModel;
+        }
+        set {
+            $this->managedObjectModel = $value;
+            $context = $this->managedObjectContext;
+            /** @var Dictionary<Entity> $entityMap */
+            $entityMap = new Dictionary();
+            /** @var Dictionary<CompositeType> $compositeTypeMap */
+            $compositeTypeMap = new Dictionary();
+            foreach ($this->managedObjectModel->entities as $entityDescription) {
+                $entity = new Entity($context);
+                $entity->name = $entityDescription->name;
+                $entity->managedObjectClassName = $entityDescription->managedObjectClassName;
+                $entity->renamingIdentifier = $entityDescription->renamingIdentifier;
+                $entity->versionHashModifier = $entityDescription->versionHashModifier;
+                $entity->isAbstract = $entityDescription->isAbstract;
+                $this->addEntitiesObject($entity);
+                $entityMap[$entityDescription->name] = $entity;
+            }
+            foreach ($this->managedObjectModel->entities as $entityDescription) {
+                $entity = $entityMap[$entityDescription->name];
+                if ($superName = $entityDescription->superentity?->name) {
+                    $entity->superentity = $entityMap[$superName];
+                }
+                foreach ($entityDescription->properties as $propertyDescription) {
+                    if ($propertyDescription instanceof CompositeAttributeDescription) {
+                        $property = new Attribute($context);
+                        $property->setValuesForKeys($propertyDescription->dictionaryWithValues($property->attributeDescriptionKeys));
+                        if (!$compositeTypeMap->offsetExists($propertyDescription->attributeValueClassName)) {
+                            $compositeType = new CompositeType($context);
+                            $compositeType->name = $propertyDescription->attributeValueClassName;
+                            foreach ($propertyDescription->elements as $elementDescription) {
+                                $element = new Attribute($context);
+                                $element->setValuesForKeys($elementDescription->dictionaryWithValues($element->attributeDescriptionKeys));
+                                $compositeType->addElementsObject($element);
+                            }
+                            $this->addCompositeTypesObject($compositeType);
+                            $compositeTypeMap[$propertyDescription->attributeValueClassName] = $compositeType;
+                        }
+                        $property->compositeType = $compositeTypeMap[$propertyDescription->attributeValueClassName];
+                    } elseif ($propertyDescription instanceof AttributeDescription) {
+                        $property = new Attribute($context);
+                        $property->setValuesForKeys($propertyDescription->dictionaryWithValues($property->attributeDescriptionKeys));
+                    } elseif ($propertyDescription instanceof RelationshipDescription) {
+                        $property = new Relationship($context);
+                        $property->setValuesForKeys($propertyDescription->dictionaryWithValues($property->relationshipDescriptionKeys));
+                    } else {
+                        $property = new FetchedProperty($context);
+                        $property->setValuesForKeys($propertyDescription->dictionaryWithValues($property->fetchedPropertyDescriptionKeys));
+                    }
+                    $entity->addPropertiesObject($property);
+                    if ($property instanceof Attribute && $propertyDescription instanceof DerivedAttributeDescription) {
+                        $property->derivationExpressionFormat = $propertyDescription->derivationExpression?->format;
+                    }
+                }
+                /** @var ArrayClass<AttributeDescription|string> $uniquenessConstraints */
+                foreach ($entityDescription->uniquenessConstraints as $uniquenessConstraints) {
+                    $uniquenessConstraint = new UniquenessConstraint($context);
+                    $uniquenessConstraint->stringValue = $uniquenessConstraints->map(fn(AttributeDescription|string $attribute): string => $attribute instanceof AttributeDescription ? $attribute->name : $attribute)->join(",");
+                    $entity->addUniquenessConstraintsObject($uniquenessConstraint);
+                }
+                foreach ($entityDescription->indexes as $fetchIndexDescription) {
+                    $index = new FetchIndex($context);
+                    $index->name = $fetchIndexDescription->name;
+                    $index->partialIndexPredicateFormat = $fetchIndexDescription->partialIndexPredicate?->predicateFormat;
+                    $entity->addIndexesObject($index);
+                    foreach ($fetchIndexDescription->elements as $fetchIndexElementDescription) {
+                        $element = new FetchIndexElement($context);
+                        $element->propertyName = $fetchIndexElementDescription->property->name;
+                        $element->collationType = $fetchIndexElementDescription->collationType;
+                        $element->isAscending = $fetchIndexElementDescription->isAscending;
+                        if ($fetchIndexElementDescription->property instanceof ExpressionDescription) {
+                            $element->expressionFormat = $fetchIndexElementDescription->property->expression?->predicateFormat;
+                        }
+                        $index->addElementsObject($element);
+                    }
+                }
+            }
+            foreach ($this->managedObjectModel->configurations as $configuration) {
+                $config = new Configuration($context);
+                $config->name = $configuration;
+                $config->entities = new Set($this->managedObjectModel->entities($configuration)->map(fn(EntityDescription $entityDescription) => $entityMap[$entityDescription->name]));
+                $this->addConfigurationsObject($config);
+            }
+            foreach ($this->managedObjectModel->fetchRequestTemplatesByName as $name => $fetchRequest) {
+                $template = new FetchRequestTemplate($context);
+                $template->name = $name;
+                $template->fetchEntityName = $fetchRequest->entity->name;
+                $template->predicateString = $fetchRequest->predicate?->predicateFormat;
+                $template->fetchLimit = $fetchRequest->fetchLimit;
+                $template->fetchBatchSize = $fetchRequest->fetchBatchSize;
+                $template->fetchResultType = $fetchRequest->resultType;
+                $template->includesSubentities = $fetchRequest->includesSubentities;
+                $template->includesPropertyValues = $fetchRequest->includesPropertyValues;
+                $template->returnsObjectsAsFaults = $fetchRequest->returnsObjectsAsFaults;
+                $template->includesPendingChanges = $fetchRequest->includesPendingChanges;
+                $template->returnsDistinctResults = $fetchRequest->returnsDistinctResults;
+                $this->addFetchRequestTemplatesObject($template);
+            }
+        }
+    }
 
     #[Override]
     public function awakeFromFetch(): void
     {
         $this->name = $this->project?->name;
-    }
-
-    private function newEntity(Dictionary $dictionary): Entity
-    {
-        $context = $this->managedObjectContext;
-        /** @var string $name */
-        $name = $dictionary["name"] ?? fatal_error("Invalid argument, entity name cannot be null");
-        $entity = $this->entitiesByName[$name];
-        if (!$entity instanceof Entity) {
-            $entity = new Entity($context);
-            $entity->name = $name;
-            $entity->managedObjectClassName = $dictionary["managedObjectClassName"];
-            if ($isAbstract = $dictionary["isAbstract"]) {
-                $entity->isAbstract = $isAbstract;
-            }
-            $entity->renamingIdentifier = $dictionary["renamingIdentifier"];
-            /** @var Set<Property> $properties */
-            $properties = new Set();
-            /** @var ArrayClass<Dictionary<mixed>>|null $attributes */
-            $attributes = $dictionary["attributes"];
-            if ($attributes) {
-                $properties->formUnion($attributes->map(function (Dictionary $description) use ($context, $entity): Attribute {
-                    $attribute = new Attribute($context);
-                    $attribute->entityProperty = $entity;
-                    $attribute->isDerived = !empty($description["derivationExpressionFormat"]);
-                    if ($description["elements"]) {
-                        if (($attributeValueClassName = $description["attributeValueClassName"]) && !$this->compositeTypesByName[$attributeValueClassName]) {
-                            /** @var ArrayClass<Dictionary<mixed>> $elements */
-                            $elements = $description["elements"];
-                            $compositeType = new CompositeType($context);
-                            $compositeType->name = $attributeValueClassName;
-                            $compositeType->elements = new Set($elements->map(function (Dictionary $element): Attribute {
-                                $attribute = new Attribute($this->managedObjectContext);
-                                $attribute->setValuesForKeys($element);
-                                return $attribute;
-                            }));
-                            $this->compositeTypesByName[$attributeValueClassName] = $compositeType;
-                        }
-                        $description->removeValueForKey("elements");
-                    }
-                    $attribute->setValuesForKeys($description);
-                    return $attribute;
-                }));
-            }
-            /** @var ArrayClass<Dictionary<mixed>>|null $relationships */
-            $relationships = $dictionary["relationships"];
-            if ($relationships) {
-                $properties->formUnion($relationships->map(function (Dictionary $description) use ($context, $entity): Relationship {
-                    $relationship = new Relationship($context);
-                    $relationship->entityProperty = $entity;
-                    $relationship->setValuesForKeys($description);
-                    return $relationship;
-                }));
-            }
-            /** @var ArrayClass<Dictionary<mixed>>|null $fetchedProperties */
-            $fetchedProperties = $dictionary["fetchedProperties"];
-            if ($fetchedProperties) {
-                $properties->formUnion($fetchedProperties->map(function (Dictionary $description) use ($context, $entity): FetchedProperty {
-                    $fetchedProperty = new FetchedProperty($context);
-                    $fetchedProperty->entityProperty = $entity;
-                    $fetchedProperty->setValuesForKeys($description);
-                    return $fetchedProperty;
-                }));
-            }
-            $entity->properties = $properties;
-            /** @var Dictionary|null $superentity */
-            $superentity = $dictionary["superentity"];
-            if ($superentity) {
-                $entity->superentity = $this->newEntity($superentity);
-            }
-            /** @var ArrayClass<Dictionary<mixed>>|null $subentities */
-            $subentities = $dictionary["subentities"];
-            if ($subentities) {
-                $entity->subentities = new Set($subentities->map(function (Dictionary $description) use ($entity): Entity {
-                    $subentity = $this->newEntity($description);
-                    $subentity->superentity = $entity;
-                    return $subentity;
-                }));
-            }
-            /** @var ArrayClass<ArrayClass<string>> $uniquenessConstraints */
-            $uniquenessConstraints = $dictionary["uniquenessConstraints"] ?? new ArrayClass();
-            $entity->uniquenessConstraints = new Set($uniquenessConstraints->map(function (ArrayClass $array) use ($context): UniquenessConstraint {
-                $uniquenessConstraint = new UniquenessConstraint($context);
-                $uniquenessConstraint->stringValue = $array->join(",");
-                return $uniquenessConstraint;
-            }));
-            /** @var ArrayClass<Dictionary<mixed>> $indexes */
-            $indexes = $dictionary["indexes"] ?? new ArrayClass();
-            $entity->indexes = new Set($indexes->map(function (Dictionary $description) use ($context, $entity): FetchIndex {
-                /** @var ArrayClass<Dictionary<mixed>> $elements */
-                $elements = $description["elements"] ?? new ArrayClass();
-                $fetchIndex = new FetchIndex($context);
-                $fetchIndex->name = $description["name"];
-                $fetchIndex->entityProperty = $entity;
-                $fetchIndex->elements = new Set($elements->map(function (Dictionary $description) use ($context): FetchIndexElement {
-                    $fetchIndexElement = new FetchIndexElement($context);
-                    $fetchIndexElement->setValuesForKeys($description);
-                    return $fetchIndexElement;
-                }));
-                return $fetchIndex;
-            }));
-            $entity->model = $this;
-            $this->entitiesByName[$name] = $entity;
-        }
-        return $entity;
-    }
-
-    private function newFetchRequest(Dictionary $dictionary): FetchRequestTemplate
-    {
-        $fetchRequest = new FetchRequestTemplate($this->managedObjectContext);
-        $fetchRequest->setValuesForKeys($dictionary);
-        return $fetchRequest;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function load(URL $url): void
-    {
-        $propertyList = PropertyListSerialization::propertyListWithURL($url);
-        if (!$propertyList instanceof Dictionary) {
-            return;
-        }
-        $context = $this->managedObjectContext;
-        $entities = $this->entities;
-        $progress = $this->progress;
-        if (!$entities->isEmpty) {
-            foreach ($entities as $entity) {
-                if ($entity->isRootEntity) {
-                    $context->delete($entity);
-                }
-            }
-            $context->save();
-        }
-        $fetchRequestTemplates = $this->fetchRequestTemplates;
-        if (!$fetchRequestTemplates->isEmpty) {
-            foreach ($fetchRequestTemplates as $fetchRequestTemplate) {
-                $context->delete($fetchRequestTemplate);
-            }
-            $context->save();
-        }
-        /** @var ArrayClass<Dictionary<mixed>>|null $representations */
-        $representations = $propertyList["entities"];
-        if ($representations) {
-            /** @var Set<Entity> $entities */
-            $entities = new Set();
-            $progress->totalUnitCount = $representations->count;
-            foreach ($representations as $index => $representation) {
-                if ($progress->isCancelled) {
-                    break;
-                }
-                $entities->insert($this->newEntity($representation));
-                $progress->completedUnitCount = $index + 1;
-            }
-            $this->entities = $entities->sort(fn(Entity $e1, Entity $e2): int => $e1->name <=> $e2->name);
-        }
-        $this->compositeTypes = new Set($this->compositeTypesByName->values);
-        /** @var ArrayClass<Dictionary<mixed>>|null $representations */
-        $representations = $propertyList["fetchRequests"];
-        if ($representations) {
-            $this->fetchRequestTemplates = new Set($representations->map($this->newFetchRequest(...)));
-        }
-        $context->save();
     }
 }

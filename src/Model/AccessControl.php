@@ -4,14 +4,13 @@ namespace App\Model;
 
 use Override;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 use Sabatier\Service\AuthorizationScope;
 
 /**
  * @property string $name
  * @property AuthorizationScope $scope
- * @property bool|null $isEnabled
+ * @property bool $isEnabled
  * @property Property|null $property
  * @property Set<Role> $roles
  * @method void addRolesObject(Role $object)
@@ -23,20 +22,6 @@ use Sabatier\Service\AuthorizationScope;
  */
 final class AccessControl extends ManagedObject
 {
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
-        get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["name"] = $this->name;
-            if ($isEnabled = $this->isEnabled) {
-                $dictionary["isEnabled"] = $isEnabled;
-            }
-            $dictionary["roles"] = $this->roles->map(fn(Role $role): Dictionary => $role->dictionaryRepresentation);
-            return $dictionary;
-        }
-    }
-
     #[Override]
     public function willSave(): void
     {

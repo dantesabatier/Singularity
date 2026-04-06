@@ -30,6 +30,7 @@ use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
+use Sabatier\Foundation\KeyedUnarchiver;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
@@ -342,10 +343,12 @@ final class EditorController extends ProjectController
         $parameters = $this->request->parameters;
         /** @var string $path */
         $path = $parameters["path"] ?? throw new BadRequestException();
-        $project = $this->project ?? throw new BadRequestException();
-        /** @var Model $model */
-        $model = $project->model;
-        $model->load(URL::fileURL($path));
+        $project = $this->project;
+        $model = $project->model ?? throw new InternalServerErrorException();
+        $fileManager = FileManager::default();
+        $fileManager->fileExists($path) ?: throw new BadRequestException("File $path does not exist");
+        $data = $fileManager->contents($path) ?? throw new InternalServerErrorException();
+        $model->managedObjectModel = KeyedUnarchiver::unarchiveTopLevelObjectWithData($data);
         $this->data = $project;
     }
 

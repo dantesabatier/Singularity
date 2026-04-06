@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\ManagedObject;
 
 /**
@@ -10,4 +11,9 @@ use Sabatier\CoreData\ManagedObject;
  */
 final class UniquenessConstraint extends ManagedObject
 {
+    #[Override]
+    public function willSave(): void
+    {
+        $this->stringValue = $this->stringValue |> trim(...);
+    }
 }

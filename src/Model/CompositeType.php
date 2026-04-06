@@ -5,7 +5,6 @@ namespace App\Model;
 use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 
 /**
@@ -22,19 +21,6 @@ use Sabatier\Foundation\Set;
 final class CompositeType extends ManagedObject
 {
     public AttributeType $type = AttributeType::compositeAttributeType;
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
-        get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["name"] = $this->name;
-            $elements = $this->elements;
-            if (!$elements->isEmpty) {
-                $dictionary["elements"] = $elements->map(fn(Attribute $element) => $element->dictionaryRepresentation);
-            }
-            return $dictionary;
-        }
-    }
 
     #[Override]
     public function willSave(): void

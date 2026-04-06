@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Override;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\Foundation\Dictionary;
+use Sabatier\CoreData\PropertyDescription;
 use Sabatier\Foundation\Set;
 
 /**
@@ -19,7 +19,7 @@ use Sabatier\Foundation\Set;
  * @property bool $isMinValueBounded
  * @property bool $isMaxValueBounded
  * @property string|null $regex
- * @property int $position
+ * @property int<0, max> $position
  * @property Entity|null $entityProperty
  * @property Set<AccessControl> $accessControls
  * @method void addAccessControlsObject(AccessControl $object)
@@ -31,47 +31,16 @@ use Sabatier\Foundation\Set;
  */
 abstract class Property extends ManagedObject
 {
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
-        get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["name"] = $this->name;
-            if (!($isOptional = $this->isOptional)) {
-                $dictionary["isOptional"] = $isOptional;
-            }
-            if ($isTransient = $this->isTransient) {
-                $dictionary["isTransient"] = $isTransient;
-            }
-            if ($isSensitive = $this->isSensitive) {
-                $dictionary["isSensitive"] = $isSensitive;
-            }
-            $dictionary["versionHashModifier"] = $this->versionHashModifier;
-            $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
-            if ($regex = $this->regex) {
-                $dictionary["regex"] = $regex;
-            }
-            $isMinValueBounded = $this->isMinValueBounded;
-            if ($isMinValueBounded) {
-                $dictionary["isMinValueBounded"] = $isMinValueBounded;
-            }
-            $isMaxValueBounded = $this->isMaxValueBounded;
-            if ($isMaxValueBounded) {
-                $dictionary["isMaxValueBounded"] = $isMaxValueBounded;
-            }
-            $dictionary["minValue"] = $isMinValueBounded ? $this->minValue : null;
-            $dictionary["maxValue"] = $isMaxValueBounded ? $this->maxValue : null;
-            $accessControls = $this->accessControls;
-            if (!$accessControls->isEmpty) {
-                $dictionary["accessControls"] = $accessControls->map(fn(AccessControl $accessControl): Dictionary => $accessControl->dictionaryRepresentation);
-            }
-            return $dictionary;
-        }
+    abstract public PropertyDescription $propertyDescription {
+        get;
     }
 
     #[Override]
     public function willSave(): void
     {
         $this->name = $this->name |> trim(...);
+        if ($this->regex) {
+            $this->regex = $this->regex |> trim(...);
+        }
     }
 }

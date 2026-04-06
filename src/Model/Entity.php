@@ -3,11 +3,11 @@
 namespace App\Model;
 
 use Override;
+use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
-use Sabatier\Foundation\SortDescriptor;
 
 /**
  * @property string $name
@@ -22,6 +22,7 @@ use Sabatier\Foundation\SortDescriptor;
  * @property-read int $indexesCount
  * @property-read bool $isLeaf
  * @property-read bool $isFinal
+ * @property Configuration|null $configuration
  * @property Model|null $model
  * @property Entity|null $superentity
  * @property Set<Entity> $subentities
@@ -113,43 +114,26 @@ final class Entity extends ManagedObject
             return $this->attributeNames;
         }
     }
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
+    public EntityDescription $entityDescription {
         get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["name"] = $this->name;
-            $dictionary["managedObjectClassName"] = $this->managedObjectClassName;
-            if ($this->isAbstract) {
-                $dictionary["isAbstract"] = $this->isAbstract;
+            if (isset($this->entityDescription)) {
+                return $this->entityDescription;
             }
-            $dictionary["versionHashModifier"] = $this->versionHashModifier;
-            $dictionary["renamingIdentifier"] = $this->renamingIdentifier;
-            $attributes = $this->attributes->sorted([new SortDescriptor("position", false)])->map(fn(Attribute $attribute): Dictionary => $attribute->dictionaryRepresentation);
-            if (!$attributes->isEmpty) {
-                $dictionary["attributes"] = $attributes;
-            }
-            $relationships = $this->relationships->sorted([new SortDescriptor("position", false)])->map(fn(Relationship $relationship): Dictionary => $relationship->dictionaryRepresentation);
-            if (!$relationships->isEmpty) {
-                $dictionary["relationships"] = $relationships;
-            }
-            $fetchedProperties = $this->fetchedProperties->sorted([new SortDescriptor("position", false)])->map(fn(FetchedProperty $property): Dictionary => $property->dictionaryRepresentation);
-            if (!$fetchedProperties->isEmpty) {
-                $dictionary["fetchedProperties"] = $fetchedProperties;
-            }
-            $uniquenessConstraints = $this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => new ArrayClass(explode(",", $uniquenessConstraint->stringValue))->map(trim(...)));
-            if (!$uniquenessConstraints->isEmpty) {
-                $dictionary["uniquenessConstraints"] = $uniquenessConstraints;
-            }
-            $indexes = $this->indexes->map(fn(FetchIndex $index): Dictionary => $index->dictionaryRepresentation);
-            if (!$indexes->isEmpty) {
-                $dictionary["indexes"] = $indexes;
-            }
-            $subentities = $this->subentities->map(fn(Entity $subentity): Dictionary => $subentity->dictionaryRepresentation);
-            if (!$subentities->isEmpty) {
-                $dictionary["subentities"] = $subentities;
-            }
-            return $dictionary;
+            $entityDescription = new EntityDescription();
+            $entityDescription->name = $this->name;
+            $entityDescription->managedObjectClassName = $this->managedObjectClassName;
+            $entityDescription->renamingIdentifier = $this->renamingIdentifier ?? $this->name;
+            $entityDescription->versionHashModifier = $this->versionHashModifier;
+            $entityDescription->isAbstract = $this->isAbstract;
+            $entityDescription->subentities = new ArrayClass($this->subentities->map(function (Entity $entity) use ($entityDescription) {
+                $subentityDescription = $entity->entityDescription;
+                $subentityDescription->superentity = $entityDescription;
+                return $subentityDescription;
+            }));
+            $entityDescription->properties = new ArrayClass(new Set($this->attributes->map(fn(Attribute $attribute) => $attribute->attributeDescription))->union($this->relationships->map(fn(Relationship $relationship) => $relationship->relationshipDescription))->union($this->fetchedProperties->map(fn(FetchedProperty $fetchedProperty) => $fetchedProperty->fetchedPropertyDescription)));
+            $entityDescription->indexes = new ArrayClass($this->indexes->map(fn(FetchIndex $index) => $index->fetchIndexDescription));
+            $entityDescription->uniquenessConstraints = new ArrayClass($this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => new ArrayClass(explode(",", $uniquenessConstraint->stringValue))->map(trim(...))));
+            return $this->entityDescription = $entityDescription;
         }
     }
 
@@ -157,5 +141,14 @@ final class Entity extends ManagedObject
     public function willSave(): void
     {
         $this->name = $this->name |> trim(...);
+        if ($this->managedObjectClassName) {
+            $this->managedObjectClassName = $this->managedObjectClassName |> trim(...);
+        }
+        if ($this->renamingIdentifier) {
+            $this->renamingIdentifier = $this->renamingIdentifier |> trim(...);
+        }
+        if ($this->versionHashModifier) {
+            $this->versionHashModifier = $this->versionHashModifier |> trim(...);
+        }
     }
 }

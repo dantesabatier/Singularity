@@ -2,15 +2,18 @@
 
 namespace App\Model;
 
+use Override;
 use Sabatier\CoreData\AttributeType;
 use Sabatier\CoreData\EntityDescription;
+use Sabatier\CoreData\ExpressionDescription;
+use Sabatier\CoreData\FetchIndexElementDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
+use Sabatier\Foundation\Predicates\Expression;
 
 /**
  * @property string $propertyName
@@ -24,42 +27,39 @@ final class FetchIndexElement extends ManagedObject
 {
     private(set) ?Property $property {
         get {
-            if (!isset($this->property)) {
-                /** @var ArrayClass<Attribute> $attributes */
-                $attributes = new ArrayClass();
-                $entity = $this->index->entityProperty;
-                if ($entity) {
-                    $attributes->appendContentsOf($entity->attributes);
-                    $superentity = $entity->superentity;
-                    while ($superentity) {
-                        $attributes->appendContentsOf($superentity->attributes);
-                        $superentity = $superentity->superentity;
-                    }
-                }
-                $this->property = $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
+            if (isset($this->property)) {
+                return $this->property;
             }
-            return $this->property;
+            /** @var ArrayClass<Attribute> $attributes */
+            $attributes = new ArrayClass();
+            $entity = $this->index->entityProperty;
+            if ($entity) {
+                $attributes->appendContentsOf($entity->attributes);
+                $superentity = $entity->superentity;
+                while ($superentity) {
+                    $attributes->appendContentsOf($superentity->attributes);
+                    $superentity = $superentity->superentity;
+                }
+            }
+            return $this->property = $attributes->first(fn(Attribute $attribute): bool => $attribute->name === $this->propertyName);
         }
     }
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
+    private(set) FetchIndexElementDescription $fetchIndexElementDescription {
         get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["propertyName"] = $this->propertyName;
-            $collationType = $this->collationType;
-            if ($collationType !== FetchIndexElementType::bTree) {
-                $dictionary["collationType"] = $collationType;
+            if (isset($this->fetchIndexElementDescription)) {
+                return $this->fetchIndexElementDescription;
             }
-            if (!($isAscending = $this->isAscending)) {
-                $dictionary["isAscending"] = $isAscending;
+            if ($expressionFormat = $this->expressionFormat) {
+                $propertyDescription = new ExpressionDescription();
+                $propertyDescription->name = $this->index->name;
+                $propertyDescription->expression = Expression::expressionWithFormat($expressionFormat);
+                $propertyDescription->resultType = $this->expressionResultType;
+            } else {
+                $propertyDescription = $this->property->propertyDescription;
             }
-            $expressionResultType = $this->expressionResultType;
-            if ($expressionResultType !== AttributeType::undefined) {
-                $dictionary["expressionResultType"] = $expressionResultType;
-            }
-            $dictionary["expressionFormat"] = $this->expressionFormat;
-            return $dictionary;
+            $fetchIndexElementDescription = new FetchIndexElementDescription($propertyDescription, $this->collationType);
+            $fetchIndexElementDescription->isAscending = $this->isAscending;
+            return $this->fetchIndexElementDescription = $fetchIndexElementDescription;
         }
     }
 
@@ -72,6 +72,15 @@ final class FetchIndexElement extends ManagedObject
                 $element->expressionResultType = AttributeType::undefined;
             }
         });
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        $this->propertyName = $this->propertyName |> trim(...);
+        if ($this->expressionFormat) {
+            $this->expressionFormat = $this->expressionFormat |> trim(...);
+        }
     }
 
     public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool

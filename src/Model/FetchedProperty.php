@@ -3,7 +3,12 @@
 namespace App\Model;
 
 use Override;
-use Sabatier\Foundation\Dictionary;
+use Sabatier\CoreData\FetchedPropertyDescription;
+use Sabatier\CoreData\FetchRequest;
+use Sabatier\CoreData\PropertyDescription;
+use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Predicates\Predicate;
+use Sabatier\Foundation\SortDescriptor;
 
 /**
  * @property string|null $fetchRequestEntityName
@@ -13,20 +18,40 @@ use Sabatier\Foundation\Dictionary;
  */
 final class FetchedProperty extends Property
 {
-    /** @var Dictionary<mixed> */
-    #[Override]
-    public Dictionary $dictionaryRepresentation {
+    /** @var list<string> */
+    private const array fetchedPropertyDescriptionKeys = ["name", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier"];
+    /** @var ArrayClass<string> */
+    private(set) ArrayClass $fetchedPropertyDescriptionKeys {
+        get => $this->fetchedPropertyDescriptionKeys ??= new ArrayClass(self::fetchedPropertyDescriptionKeys);
+    }
+    private(set) FetchedPropertyDescription $fetchedPropertyDescription {
         get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = parent::$dictionaryRepresentation::get();
-            $dictionary["fetchRequestEntityName"] = $this->fetchRequestEntityName;
-            $dictionary["fetchRequestPredicateFormat"] = $this->fetchRequestPredicateFormat;
-            $dictionary["fetchRequestSortDescriptorKey"] = $this->fetchRequestSortDescriptorKey;
-            $fetchRequestSortDescriptorIsAscending = $this->fetchRequestSortDescriptorIsAscending;
-            if (!$fetchRequestSortDescriptorIsAscending) {
-                $dictionary["fetchRequestSortDescriptorIsAscending"] = $fetchRequestSortDescriptorIsAscending;
+            if (isset($this->fetchedPropertyDescription)) {
+                return $this->fetchedPropertyDescription;
             }
-            return $dictionary;
+            $fetchedPropertyDescription = new FetchedPropertyDescription();
+            $fetchedPropertyDescription->setValuesForKeys($this->dictionaryWithValues($this->fetchedPropertyDescriptionKeys));
+            if (($fetchRequestEntityName = $this->fetchRequestEntityName) && ($fetchRequestPredicateFormat = $this->fetchRequestPredicateFormat)) {
+                $fetchRequest = new FetchRequest($fetchRequestEntityName);
+                $fetchRequest->predicate = Predicate::format($fetchRequestPredicateFormat);
+                if ($fetchRequestSortDescriptorKey = $this->fetchRequestSortDescriptorKey) {
+                    $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor($fetchRequestSortDescriptorKey, $this->fetchRequestSortDescriptorIsAscending)]);
+                }
+                $fetchedPropertyDescription->fetchRequest = $fetchRequest;
+            }
+            return $this->fetchedPropertyDescription = $fetchedPropertyDescription;
+        }
+    }
+    #[Override]
+    public PropertyDescription $propertyDescription {
+        get => $this->fetchedPropertyDescription;
+    }
+
+    #[Override]
+    public function willSave(): void
+    {
+        if ($this->fetchRequestPredicateFormat) {
+            $this->fetchedPropertyDescription = $this->fetchRequestPredicateFormat |> trim(...);
         }
     }
 }

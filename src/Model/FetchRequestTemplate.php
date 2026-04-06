@@ -3,17 +3,18 @@
 namespace App\Model;
 
 use Override;
+use Sabatier\CoreData\FetchRequest;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
-use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Predicates\Predicate;
 
 /**
  * @property string $name
  * @property string|null $predicateString
  * @property string|null $fetchEntityName
  * @property FetchRequestResultType $fetchResultType
- * @property int $fetchLimit
- * @property int $fetchBatchSize
+ * @property int<0, max> $fetchLimit
+ * @property int<0, max> $fetchBatchSize
  * @property bool $includesSubentities
  * @property bool $includesPropertyValues
  * @property bool $returnsObjectsAsFaults
@@ -23,40 +24,33 @@ use Sabatier\Foundation\Dictionary;
  */
 final class FetchRequestTemplate extends ManagedObject
 {
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
+    private bool $isFetchRequestResolved = false;
+    private(set) ?FetchRequest $fetchRequest {
         get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["name"] = $this->name;
-            $dictionary["fetchEntityName"] = $this->fetchEntityName;
-            $dictionary["predicateString"] = $this->predicateString;
-            $fetchResultType = $this->fetchResultType;
-            if ($fetchResultType !== FetchRequestResultType::managedObjectResultType) {
-                $dictionary["fetchResultType"] = $fetchResultType;
+            if ($this->isFetchRequestResolved) {
+                return $this->fetchRequest;
             }
-            if ($fetchLimit = $this->fetchLimit) {
-                $dictionary["fetchLimit"] = $fetchLimit;
+            $this->isFetchRequestResolved = true;
+            if (!($fetchEntityName = $this->fetchEntityName)) {
+                return $this->fetchRequest = null;
             }
-            if ($fetchBatchSize = $this->fetchBatchSize) {
-                $dictionary["fetchBatchSize"] = $fetchBatchSize;
+            if (!($entity = $this->model->entitiesByName[$fetchEntityName])) {
+                return $this->fetchRequest = null;
             }
-            if ($includesSubentities = $this->includesSubentities) {
-                $dictionary["includesSubentities"] = $includesSubentities;
+            $fetchRequest = new FetchRequest();
+            if ($predicateString = $this->predicateString) {
+                $fetchRequest->predicate = Predicate::format($predicateString);
             }
-            if ($includesPropertyValues = $this->includesPropertyValues) {
-                $dictionary["includesPropertyValues"] = $includesPropertyValues;
-            }
-            if ($returnsObjectsAsFaults = $this->returnsObjectsAsFaults) {
-                $dictionary["returnsObjectsAsFaults"] = $returnsObjectsAsFaults;
-            }
-            if ($includesPendingChanges = $this->includesPendingChanges) {
-                $dictionary["includesPendingChanges"] = $includesPendingChanges;
-            }
-            if ($returnsDistinctResults = $this->returnsDistinctResults) {
-                $dictionary["returnsDistinctResults"] = $returnsDistinctResults;
-            }
-            return $dictionary;
+            $fetchRequest->entity = $entity->entityDescription;
+            $fetchRequest->resultType = $this->fetchResultType;
+            $fetchRequest->fetchLimit = $this->fetchLimit;
+            $fetchRequest->fetchBatchSize = $this->fetchBatchSize;
+            $fetchRequest->includesSubentities = $this->includesSubentities;
+            $fetchRequest->includesPropertyValues = $this->includesPropertyValues;
+            $fetchRequest->returnsObjectsAsFaults = $this->returnsObjectsAsFaults;
+            $fetchRequest->includesPendingChanges = $this->includesPendingChanges;
+            $fetchRequest->returnsDistinctResults = $this->returnsDistinctResults;
+            return $this->fetchRequest = $fetchRequest;
         }
     }
 
@@ -71,7 +65,7 @@ final class FetchRequestTemplate extends ManagedObject
 
     public function validateFetchResultType(FetchRequestResultType|int|null &$resultType): bool
     {
-        if (is_int(value: $resultType)) {
+        if (is_int($resultType)) {
             $resultType = FetchRequestResultType::from($resultType);
         }
         return true;

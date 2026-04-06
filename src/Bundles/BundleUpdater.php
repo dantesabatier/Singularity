@@ -33,7 +33,7 @@ final readonly class BundleUpdater
         $model = $this->project->model;
         if ($model) {
             $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
-            $modelURL = $bundleURL->appendingPathComponent("Resources")->appendingPathComponent($bundleURL->lastPathComponent)->appendingPathExtension("plist");
+            $modelURL = $bundleURL->appendingPathComponent("Resources")->appendingPathComponent($bundleURL->lastPathComponent)->appendingPathExtension("mom");
             new ModelFileWriter($modelURL, $model)->save();
         }
     }

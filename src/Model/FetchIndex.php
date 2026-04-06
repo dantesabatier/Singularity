@@ -4,12 +4,14 @@ namespace App\Model;
 
 use Override;
 use Sabatier\CoreData\EntityDescription;
+use Sabatier\CoreData\FetchIndexDescription;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectContext;
-use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\KeyValueObservedChange;
 use Sabatier\Foundation\KeyValueObservingOptions;
+use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Foundation\Set;
 
 /**
@@ -27,15 +29,16 @@ use Sabatier\Foundation\Set;
  */
 final class FetchIndex extends ManagedObject
 {
-    /** @var Dictionary<mixed> */
-    public Dictionary $dictionaryRepresentation {
+    private(set) FetchIndexDescription $fetchIndexDescription {
         get {
-            /** @var Dictionary<mixed> $dictionary */
-            $dictionary = new Dictionary();
-            $dictionary["name"] = $this->name;
-            $dictionary["partialIndexPredicateFormat"] = $this->partialIndexPredicateFormat;
-            $dictionary["elements"] = $this->elements->map(fn(FetchIndexElement $element): Dictionary => $element->dictionaryRepresentation);
-            return $dictionary;
+            if (isset($this->fetchIndexDescription)) {
+                return $this->fetchIndexDescription;
+            }
+            $fetchIndexDescription = new FetchIndexDescription($this->name, new ArrayClass($this->elements->map(fn(FetchIndexElement $element) => $element->fetchIndexElementDescription)));
+            if ($partialIndexPredicateFormat = $this->partialIndexPredicateFormat) {
+                $fetchIndexDescription->partialIndexPredicate = Predicate::format($partialIndexPredicateFormat);
+            }
+            return $this->fetchIndexDescription = $fetchIndexDescription;
         }
     }
 
@@ -51,6 +54,9 @@ final class FetchIndex extends ManagedObject
     public function willSave(): void
     {
         $this->name = $this->name |> trim(...);
+        if ($this->partialIndexPredicateFormat) {
+            $this->partialIndexPredicateFormat = $this->partialIndexPredicateFormat |> trim(...);
+        }
     }
 
     public function validateCollationType(FetchIndexElementType|int|null &$collationType): bool
