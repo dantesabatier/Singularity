@@ -270,7 +270,7 @@ final class EditorController extends ProjectController
     public function viewWillLoad(): void
     {
         $project = $this->project;
-        $model = $project->model ?? throw new InternalServerErrorException();
+        $model = $project->model ?? throw new NotFoundException("Model not found");
         $this->breadcrumb->append($project);
         $this->breadcrumb->append($model);
         $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role"];
@@ -349,6 +349,8 @@ final class EditorController extends ProjectController
         $fileManager->fileExists($path) ?: throw new BadRequestException("File $path does not exist");
         $data = $fileManager->contents($path) ?? throw new InternalServerErrorException();
         $model->managedObjectModel = KeyedUnarchiver::unarchiveTopLevelObjectWithData($data);
+        $model->url = URL::fileURL($path);
+        $project->model = $model;
         $this->data = $project;
     }
 

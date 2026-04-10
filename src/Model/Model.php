@@ -4,6 +4,7 @@
 
 namespace App\Model;
 
+use Exception;
 use Override;
 use Sabatier\CoreData\AttributeDescription;
 use Sabatier\CoreData\CompositeAttributeDescription;
@@ -253,6 +254,9 @@ final class Model extends ManagedObject
             });
             return $this->managedObjectModel = $managedObjectModel;
         }
+        /**
+         * @throws Exception
+         */
         set {
             $this->managedObjectModel = $value;
             $context = $this->managedObjectContext;
@@ -279,18 +283,18 @@ final class Model extends ManagedObject
                     if ($propertyDescription instanceof CompositeAttributeDescription) {
                         $property = new Attribute($context);
                         $property->setValuesForKeys($propertyDescription->dictionaryWithValues($property->attributeDescriptionKeys));
-                        if (!$compositeTypeMap->offsetExists($propertyDescription->attributeValueClassName)) {
+                        if (!$compositeTypeMap->offsetExists($propertyDescription->name)) {
                             $compositeType = new CompositeType($context);
-                            $compositeType->name = $propertyDescription->attributeValueClassName;
+                            $compositeType->name = $propertyDescription->name;
                             foreach ($propertyDescription->elements as $elementDescription) {
                                 $element = new Attribute($context);
                                 $element->setValuesForKeys($elementDescription->dictionaryWithValues($element->attributeDescriptionKeys));
                                 $compositeType->addElementsObject($element);
                             }
                             $this->addCompositeTypesObject($compositeType);
-                            $compositeTypeMap[$propertyDescription->attributeValueClassName] = $compositeType;
+                            $compositeTypeMap[$propertyDescription->name] = $compositeType;
                         }
-                        $property->compositeType = $compositeTypeMap[$propertyDescription->attributeValueClassName];
+                        $property->compositeType = $compositeTypeMap[$propertyDescription->name];
                     } elseif ($propertyDescription instanceof AttributeDescription) {
                         $property = new Attribute($context);
                         $property->setValuesForKeys($propertyDescription->dictionaryWithValues($property->attributeDescriptionKeys));
@@ -303,7 +307,7 @@ final class Model extends ManagedObject
                     }
                     $entity->addPropertiesObject($property);
                     if ($property instanceof Attribute && $propertyDescription instanceof DerivedAttributeDescription) {
-                        $property->derivationExpressionFormat = $propertyDescription->derivationExpression?->format;
+                        $property->derivationExpressionFormat = $propertyDescription->derivationExpression?->predicateFormat;
                     }
                 }
                 /** @var ArrayClass<AttributeDescription|string> $uniquenessConstraints */
@@ -349,6 +353,9 @@ final class Model extends ManagedObject
                 $template->includesPendingChanges = $fetchRequest->includesPendingChanges;
                 $template->returnsDistinctResults = $fetchRequest->returnsDistinctResults;
                 $this->addFetchRequestTemplatesObject($template);
+            }
+            if ($context->hasChanges) {
+                $context->save();
             }
         }
     }

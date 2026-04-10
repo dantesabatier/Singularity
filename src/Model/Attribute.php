@@ -41,7 +41,7 @@ use const Sabatier\Foundation\LocalizedFailureReasonErrorKey;
 final class Attribute extends Property
 {
     /** @var list<string> */
-    private const array attributeDescriptionKeys = ["name", "defaultValue", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "regex", "minValue", "maxValue", "valueTransformerName", "attributeValueClassName", "allowsExternalBinaryDataStorage", "preservesValueInHistoryOnDeletion"];
+    private const array attributeDescriptionKeys = ["name", "defaultValue", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "regex", "minValue", "maxValue", "valueTransformerName", "attributeValueClassName", "allowsExternalBinaryDataStorage", "preservesValueInHistoryOnDeletion", "isSensitive"];
     /** @var ArrayClass<string> */
     private(set) ArrayClass $attributeDescriptionKeys {
         get => $this->attributeDescriptionKeys ??= new ArrayClass(self::attributeDescriptionKeys);

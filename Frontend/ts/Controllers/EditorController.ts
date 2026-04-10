@@ -186,8 +186,8 @@ export class EditorController extends ViewController {
             modelPath,
             ["openFile"],
             [{
-                name: "Property list",
-                extensions: ["plist"],
+                name: "Managed Object Model",
+                extensions: ["mom"],
             }],
         )
         const filePath = result?.filePaths.find(Boolean)

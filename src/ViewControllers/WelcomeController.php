@@ -82,7 +82,7 @@ final class WelcomeController extends ViewController
         $name = $url->lastPathComponent;
         $context = $this->managedObjectContext;
         $model = new Model($context);
-        $model->url = $url->appendingPathComponent("Resources")->appendingPathComponent($name)->appendingPathExtension("plist");
+        $model->url = $url->appendingPathComponent("Resources")->appendingPathComponent($name)->appendingPathExtension("mom");
         $project = new Project($context);
         $project->creationDate = new Date();
         $project->name = $name;

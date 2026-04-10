@@ -33,7 +33,7 @@ final class Relationship extends Property
         get => $this->inverseRelationship ??= $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
     }
     /** @var list<string> */
-    private const array relationshipDescriptionKeys = ["name", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "lazyDestinationEntityName", "lazyInverseRelationshipName", "isToMany", "isOrdered", "deleteRule", "minCount", "maxCount"];
+    private const array relationshipDescriptionKeys = ["name", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "lazyDestinationEntityName", "lazyInverseRelationshipName", "isToMany", "isOrdered", "deleteRule", "minCount", "maxCount", "isSensitive"];
     /** @var ArrayClass<string> */
     private(set) ArrayClass $relationshipDescriptionKeys {
         get => $this->relationshipDescriptionKeys ??= new ArrayClass(self::relationshipDescriptionKeys);

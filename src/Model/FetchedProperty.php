@@ -19,7 +19,7 @@ use Sabatier\Foundation\SortDescriptor;
 final class FetchedProperty extends Property
 {
     /** @var list<string> */
-    private const array fetchedPropertyDescriptionKeys = ["name", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier"];
+    private const array fetchedPropertyDescriptionKeys = ["name", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "isSensitive"];
     /** @var ArrayClass<string> */
     private(set) ArrayClass $fetchedPropertyDescriptionKeys {
         get => $this->fetchedPropertyDescriptionKeys ??= new ArrayClass(self::fetchedPropertyDescriptionKeys);
