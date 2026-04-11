@@ -8,7 +8,6 @@ use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
-use Sabatier\Foundation\SortDescriptor;
 
 /**
  * @property string $name
@@ -96,23 +95,23 @@ final class Entity extends ManagedObject
     /** @var ArrayClass<string> */
     private(set) ArrayClass $attributeNames {
         get {
-            if (!isset($this->attributeNames)) {
-                /** @var ArrayClass<string> $attributeNames */
-                $attributeNames = new ArrayClass();
-                $transform = fn(Attribute $attribute): string => $attribute->name;
-                $superentity = $this->superentity;
-                while ($superentity) {
-                    $attributeNames->appendContentsOf($superentity->attributes->map($transform));
-                    $superentity = $superentity->superentity;
-                }
-                $attributeNames->appendContentsOf($this->attributes->map($transform));
-                foreach ($this->subentities as $subentity) {
-                    $attributeNames->appendContentsOf($subentity->attributes->map($transform));
-                }
-                $attributeNames->append("Expression");
-                $this->attributeNames = $attributeNames;
+            if (isset($this->attributeNames)) {
+                return $this->attributeNames;
             }
-            return $this->attributeNames;
+            /** @var ArrayClass<string> $attributeNames */
+            $attributeNames = new ArrayClass();
+            $transform = fn(Attribute $attribute): string => $attribute->name;
+            $superentity = $this->superentity;
+            while ($superentity) {
+                $attributeNames->appendContentsOf($superentity->attributes->map($transform));
+                $superentity = $superentity->superentity;
+            }
+            $attributeNames->appendContentsOf($this->attributes->map($transform));
+            foreach ($this->subentities as $subentity) {
+                $attributeNames->appendContentsOf($subentity->attributes->map($transform));
+            }
+            $attributeNames->append("Expression");
+            return $this->attributeNames = $attributeNames;
         }
     }
     public EntityDescription $entityDescription {
