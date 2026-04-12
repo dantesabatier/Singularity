@@ -343,14 +343,14 @@ final class EditorController extends ProjectController
     {
         $parameters = $this->request->parameters;
         /** @var string $path */
-        $path = $parameters["path"] ?? throw new BadRequestException();
+        $path = $parameters["path"] ?? throw new BadRequestException("`path` is required");
         $project = $this->project;
-        $model = $project->model ?? throw new InternalServerErrorException();
+        $model = $project->model ?? throw new InternalServerErrorException("Project model is missing");
         $fileManager = FileManager::default();
         $fileManager->fileExists($path) ?: throw new BadRequestException("File $path does not exist");
-        $data = $fileManager->contents($path) ?? throw new InternalServerErrorException();
+        $data = $fileManager->contents($path) ?? throw new InternalServerErrorException("Unable to read model file at `$path`");
         $managedObjectModel = KeyedUnarchiver::unarchiveTopLevelObjectWithData($data);
-        $managedObjectModel instanceof ManagedObjectModel ?: throw new InternalServerErrorException();
+        $managedObjectModel instanceof ManagedObjectModel ?: throw new InternalServerErrorException("Imported file does not contain a valid ManagedObjectModel");
         $model->managedObjectModel = $managedObjectModel;
         $model->url = URL::fileURL($path);
         $project->model = $model;
@@ -396,13 +396,13 @@ final class EditorController extends ProjectController
     public function reorder(): void
     {
         $parameters = $this->request->parameters;
-        $fromIndex = $parameters["fromIndex"] ?? throw new BadRequestException();
-        $toIndex = $parameters["toIndex"] ?? throw new BadRequestException();
-        $key = $parameters["key"] ?? throw new BadRequestException();
-        $name = $parameters["entity"] ?? throw new BadRequestException();
+        $fromIndex = $parameters["fromIndex"] ?? throw new BadRequestException("`fromIndex` is required");
+        $toIndex = $parameters["toIndex"] ?? throw new BadRequestException("`toIndex` is required");
+        $key = $parameters["key"] ?? throw new BadRequestException("`key` is required");
+        $name = $parameters["entity"] ?? throw new BadRequestException("`entity` is required");
         $model = $this->project->model;
         /** @var Entity $entity */
-        $entity = $model->entitiesByName[$name] ?? throw new NotFoundException();
+        $entity = $model->entitiesByName[$name] ?? throw new NotFoundException("Entity `$name` was not found");
         if ($fromIndex === $toIndex) {
             $this->data = $entity;
             return;

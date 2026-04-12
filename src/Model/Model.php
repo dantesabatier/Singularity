@@ -260,6 +260,13 @@ final class Model extends ManagedObject
         set {
             $this->managedObjectModel = $value;
             $context = $this->managedObjectContext;
+            $this->entities->forEach(fn(Entity $entity) => $context->delete($entity));
+            $this->fetchRequestTemplates->forEach(fn(FetchRequestTemplate $template) => $context->delete($template));
+            $this->configurations->forEach(fn(Configuration $configuration) => $context->delete($configuration));
+            $this->compositeTypes->forEach(fn(CompositeType $compositeType) => $context->delete($compositeType));
+            if ($context->hasChanges) {
+                $context->save();
+            }
             /** @var Dictionary<Entity> $entityMap */
             $entityMap = new Dictionary();
             /** @var Dictionary<CompositeType> $compositeTypeMap */

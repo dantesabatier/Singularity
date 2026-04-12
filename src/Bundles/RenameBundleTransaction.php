@@ -29,7 +29,7 @@ final readonly class RenameBundleTransaction implements Transaction
     #[Override]
     public function execute(): void
     {
-        $url = $this->project->url ?? fatal_error();
+        $url = $this->project->url ?? fatal_error("Project URL is required to rename a bundle");
         $bundle = Bundle::bundleWithURL($url);
         $oldName = $bundle->object(kCFBundleNameKey);
         $oldName !== $this->newName ?: throw new Exception("Bundle already has this name");

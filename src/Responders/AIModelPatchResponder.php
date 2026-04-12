@@ -34,7 +34,7 @@ final class AIModelPatchResponder extends Responder
     {
         $fetchRequest = Project::fetchRequest();
         $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(ManagedObjectObjectIDKey), Expression::expressionForConstantValue($objectID));
-        return $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
+        return $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException("Project with objectID `$objectID` was not found");
     }
 
     /**
@@ -44,11 +44,11 @@ final class AIModelPatchResponder extends Responder
     public function propose(): void
     {
         $parameters = $this->request->parameters;
-        $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
+        $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException("`objectID` is required");
         /** @var string $prompt */
-        $prompt = $parameters["prompt"] ?? throw new BadRequestException();
+        $prompt = $parameters["prompt"] ?? throw new BadRequestException("`prompt` is required");
         $project = $this->projectWithID($objectID);
-        $model = $project->model ?? throw new NotFoundException();
+        $model = $project->model ?? throw new NotFoundException("Project model is missing");
         $this->data = new ModelPatchBuilder($model, $prompt)->patch;
     }
 
@@ -59,11 +59,11 @@ final class AIModelPatchResponder extends Responder
     public function apply(): void
     {
         $parameters = $this->request->parameters;
-        $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
+        $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException("`objectID` is required");
         /** @var Dictionary<mixed> $patch */
-        $patch = $parameters["patch"] ?? throw new BadRequestException();
+        $patch = $parameters["patch"] ?? throw new BadRequestException("`patch` is required");
         $project = $this->projectWithID($objectID);
-        $model = $project->model ?? throw new NotFoundException();
+        $model = $project->model ?? throw new NotFoundException("Project model is missing");
         /** @var ArrayClass<Dictionary<mixed>> $operations */
         $operations = $patch["operations"] ?? new ArrayClass();
         $operations->forEach(fn(Dictionary $rawOperation) => new PatchOperationFactory($rawOperation, $model)->operation->object);

@@ -73,7 +73,7 @@ final class WelcomeController extends ViewController
     {
         $fetchRequest = Project::fetchRequest();
         $fetchRequest->predicate = new ComparisonPredicate(Expression::expressionForKeyPath(ManagedObjectObjectIDKey), Expression::expressionForConstantValue($objectID));
-        return $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException();
+        return $this->managedObjectContext->fetch($fetchRequest)->first ?? throw new NotFoundException("Project with objectID `$objectID` was not found");
 
     }
 
@@ -99,7 +99,7 @@ final class WelcomeController extends ViewController
     public function open(): void
     {
         $parameters = $this->request->parameters;
-        $path = $parameters["directory"] ?? throw new BadRequestException();
+        $path = $parameters["directory"] ?? throw new BadRequestException("`directory` is required");
         $url = URL::fileURL($path);
         $loader = new ProjectBundleLoader($url, $this->managedObjectContext);
         $transaction = new OpenBundleTransaction($loader);
@@ -116,7 +116,7 @@ final class WelcomeController extends ViewController
     public function create(): void
     {
         $parameters = $this->request->parameters;
-        $path = $parameters["directory"] ?? throw new BadRequestException();
+        $path = $parameters["directory"] ?? throw new BadRequestException("`directory` is required");
         $options = new BundleGenerationOptions($parameters["generateWithSecurity"] ?? false, $parameters["generateWithCORS"] ?? false, $parameters["generateWithJWT"] ?? false);
         $url = URL::fileURL($path);
         $project = $this->createProjectFromURL($url);
@@ -135,8 +135,8 @@ final class WelcomeController extends ViewController
     public function rename(): void
     {
         $parameters = $this->request->parameters;
-        $newName = $parameters["name"] ?? throw new BadRequestException();
-        $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
+        $newName = $parameters["name"] ?? throw new BadRequestException("`name` is required");
+        $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException("`objectID` is required");
         $project = $this->projectWithID($objectID);
         $transaction = new RenameBundleTransaction($project, $newName);
         $transaction->execute();
@@ -150,7 +150,7 @@ final class WelcomeController extends ViewController
     #[Action(HTTPRequestMethod::delete)]
     public function remove(): void
     {
-        $objectID = $this->request->parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException();
+        $objectID = $this->request->parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException("`objectID` is required");
         $context = $this->managedObjectContext;
         $project = $this->projectWithID($objectID);
         $context->delete($project);
