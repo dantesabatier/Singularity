@@ -67,7 +67,7 @@ final readonly class BundleScaffolder
     {
         $model = $this->project->model;
         if ($model && $model->isInserted) {
-            $modelURL = $this->bundleURL->appendingPathComponent("Resources")->appendingPathComponent($this->bundleURL->lastPathComponent)->appendingPathExtension("plist");
+            $modelURL = $this->bundleURL->appendingPathComponent("Resources")->appendingPathComponent($this->bundleURL->lastPathComponent)->appendingPathExtension("mom");
             new ModelFileWriter($modelURL, $model)->save();
         }
     }

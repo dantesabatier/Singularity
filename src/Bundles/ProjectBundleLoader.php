@@ -34,7 +34,7 @@ final readonly class ProjectBundleLoader
     {
         $this->assertBundleExists();
         $this->assertInfoPlistExists();
-        $this->assertModelExists();
+        $this->assertModelExists($this->readBundleName());
     }
 
     private function assertBundleExists(): void
@@ -52,11 +52,15 @@ final readonly class ProjectBundleLoader
         }
     }
 
-    private function assertModelExists(): void
+    private function assertModelExists(string $bundleName): void
     {
         $resourcesURL = $this->url->appendingPathComponent("Resources");
         if (!FileManager::default()->fileExists($resourcesURL->path)) {
             fatal_error("Missing Resources directory");
+        }
+        $modelURL = $resourcesURL->appendingPathComponent($bundleName)->appendingPathExtension("mom");
+        if (!FileManager::default()->fileExists($modelURL->path)) {
+            fatal_error("Missing model file $bundleName.mom");
         }
     }
 }

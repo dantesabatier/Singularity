@@ -57,8 +57,12 @@ final readonly class RenameBundleTransaction implements Transaction
      */
     private function resolveModelURLs(Bundle $bundle, string $oldName): array
     {
-        $destination = $bundle->resourceURL?->appendingPathComponent($this->newName)?->appendingPathExtension("plist") ?? throw new Exception("Invalid destination model URL");
-        $source = $bundle->url($oldName) ?: throw new Exception("Source model not found");
+        $resourceURL = $bundle->resourceURL ?? throw new Exception("Invalid resources URL");
+        $destination = $resourceURL->appendingPathComponent($this->newName)->appendingPathExtension("mom");
+        $source = $resourceURL->appendingPathComponent($oldName)->appendingPathExtension("mom");
+        if (!FileManager::default()->fileExists($source->path)) {
+            throw new Exception("Source model not found");
+        }
         FileManager::default()->copyItem($source, $destination);
         return [$source, $destination];
     }
