@@ -25,6 +25,7 @@ use Sabatier\CoreData\DeleteRule;
 use Sabatier\CoreData\FetchIndexElementType;
 use Sabatier\CoreData\FetchRequestResultType;
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
@@ -348,7 +349,9 @@ final class EditorController extends ProjectController
         $fileManager = FileManager::default();
         $fileManager->fileExists($path) ?: throw new BadRequestException("File $path does not exist");
         $data = $fileManager->contents($path) ?? throw new InternalServerErrorException();
-        $model->managedObjectModel = KeyedUnarchiver::unarchiveTopLevelObjectWithData($data);
+        $managedObjectModel = KeyedUnarchiver::unarchiveTopLevelObjectWithData($data);
+        $managedObjectModel instanceof ManagedObjectModel ?: throw new InternalServerErrorException();
+        $model->managedObjectModel = $managedObjectModel;
         $model->url = URL::fileURL($path);
         $project->model = $model;
         $this->data = $project;

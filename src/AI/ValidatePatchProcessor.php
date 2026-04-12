@@ -97,7 +97,10 @@ final class ValidatePatchProcessor extends ModelPatchProcessor
      */
     private function entityExists(string $entityName, Dictionary $plannedEntities): bool
     {
-        return $this->model->entitiesByName->offsetExists($entityName) || $plannedEntities->offsetExists($entityName);
+        if ($this->model->entitiesByName->offsetExists($entityName)) {
+            return true;
+        }
+        return $plannedEntities->offsetExists($entityName);
     }
 
     /**

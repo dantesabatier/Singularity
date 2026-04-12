@@ -17,11 +17,11 @@ use Sabatier\Foundation\Set;
  * @property bool $isAbstract
  * @property bool $isExpanded
  * @property bool $isAuthorizable
+ * @property bool $isLeaf
+ * @property bool $isFinal
  * @property Dictionary<float> $position
  * @property-read int $subentitiesCount
  * @property-read int $indexesCount
- * @property-read bool $isLeaf
- * @property-read bool $isFinal
  * @property Configuration|null $configuration
  * @property Model|null $model
  * @property Entity|null $superentity
@@ -140,6 +140,9 @@ final class Entity extends ManagedObject
     #[Override]
     public function willSave(): void
     {
+        if ($this->isDeleted) {
+            return;
+        }
         $this->name = $this->name |> trim(...);
         if ($this->managedObjectClassName) {
             $this->managedObjectClassName = $this->managedObjectClassName |> trim(...);
@@ -150,5 +153,7 @@ final class Entity extends ManagedObject
         if ($this->versionHashModifier) {
             $this->versionHashModifier = $this->versionHashModifier |> trim(...);
         }
+        $this->isLeaf = (bool)$this->subentitiesCount;
+        $this->isFinal = (bool)$this->subentitiesCount;
     }
 }
