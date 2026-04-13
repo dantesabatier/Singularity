@@ -1,6 +1,5 @@
 import {DesktopBridge} from "@/Services/DesktopBridge"
 import {HttpClient} from "@/Services/HttpClient"
-import {ViewCache} from "@/Services/ViewCache"
 import {ViewNavigator} from "@/Services/ViewNavigator"
 
 type Endpoint =
@@ -23,7 +22,7 @@ type Endpoint =
     | "import"
 
 export class ActionDispatcher {
-    public constructor(private readonly httpClient: HttpClient, private readonly viewCache: ViewCache, private readonly desktopBridge: DesktopBridge, private readonly viewNavigator: ViewNavigator) {
+    public constructor(private readonly httpClient: HttpClient, private readonly desktopBridge: DesktopBridge, private readonly viewNavigator: ViewNavigator) {
     }
 
     public async dispatch(action: string, body?: unknown, method = "POST"): Promise<boolean> {
@@ -51,7 +50,6 @@ export class ActionDispatcher {
         }
         const normalizedMethod = method.toUpperCase()
         const endpoint = this.resolveEndpoint(action)
-        this.invalidateCache(endpoint, location)
         await this.applyRedirect(response, normalizedMethod, endpoint, location)
         await this.viewNavigator.push(location.href)
         await this.desktopBridge.setProgressBar(-1)
@@ -62,37 +60,6 @@ export class ActionDispatcher {
         const url = URL.canParse(action) ? new URL(action, window.location.origin) : undefined
         const endpoint = url?.pathname.replace(/^\//, "") ?? action.replace(/^\//, "")
         return endpoint as Endpoint
-    }
-
-    private invalidateCache(endpoint: Endpoint | undefined, location: URL): void {
-        this.viewCache.invalidate((cachedUrl) => {
-            const cached = new URL(cachedUrl, window.location.origin)
-            const sameProject = cached.searchParams.get("project") === location.searchParams.get("project")
-            const sameEntity = cached.searchParams.get("entity") === location.searchParams.get("entity")
-            switch (endpoint) {
-                case "Attribute":
-                case "Relationship":
-                case "FetchedProperty":
-                case "FetchIndex":
-                case "FetchIndexElement":
-                case "UniquenessConstraint":
-                case "AccessControl":
-                case "Role":
-                case "Reorder":
-                    return sameEntity
-                case "Entity":
-                case "FetchRequestTemplate":
-                case "Configuration":
-                case "CompositeType":
-                case "Save":
-                case "Subclass":
-                case "import":
-                case "Synchronize":
-                    return sameProject
-                default:
-                    return true
-            }
-        })
     }
 
     private async applyRedirect(response: Response, method: string, endpoint: Endpoint | undefined, location: URL): Promise<void> {

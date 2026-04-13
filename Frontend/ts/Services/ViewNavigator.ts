@@ -1,9 +1,8 @@
 import {DesktopBridge} from "@/Services/DesktopBridge"
 import {HttpClient} from "@/Services/HttpClient"
-import {ViewCache} from "@/Services/ViewCache"
 
 export class ViewNavigator {
-    public constructor(private readonly httpClient: HttpClient, private readonly viewCache: ViewCache, private readonly desktopBridge: DesktopBridge) {
+    public constructor(private readonly httpClient: HttpClient, private readonly desktopBridge: DesktopBridge) {
     }
 
     public async replace(url: string): Promise<boolean> {
@@ -42,10 +41,6 @@ export class ViewNavigator {
     }
 
     private async load(url: string): Promise<string | undefined> {
-        const cached = this.viewCache.get(url)
-        if (cached !== undefined) {
-            return cached
-        }
         let response: Response
         try {
             response = await this.httpClient.get(url)
@@ -58,9 +53,7 @@ export class ViewNavigator {
             await this.desktopBridge.showErrorBox(message)
             return undefined
         }
-        const html = await response.text()
-        this.viewCache.set(url, html)
-        return html
+        return await response.text()
     }
 
     private captureScrollPositions(): Record<string, number> {
