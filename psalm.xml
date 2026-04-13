@@ -31,6 +31,7 @@
                 <file name="src/AI/ValidatePatchProcessor.php"/>
             </errorLevel>
         </InvalidArgument>
+        <InvalidAttribute errorLevel="suppress"/>
     </issueHandlers>
     <plugins>
         <pluginClass class="Sabatier\Foundation\Plugins\Psalm\Plugin"/>
