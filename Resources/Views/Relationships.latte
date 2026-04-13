@@ -59,7 +59,8 @@
             <button class="btn btn-icon"
                     title="Add Relationship"
                     data-editor-action="addRelationship"
-                    data-parent="{$selectedEntity|json}">
+                    data-parent="{$selectedEntity|json}"
+                    data-position="{$selectedEntity->relationships->count}">
                 <i class="bi bi-plus-lg"></i>
             </button>
             <button class="btn btn-icon"

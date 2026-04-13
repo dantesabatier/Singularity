@@ -219,8 +219,17 @@ export class EditorController extends ViewController {
         }
     }
 
+    private parsePosition(raw: string | undefined): number | undefined {
+        if (raw === undefined) {
+            return undefined
+        }
+        const position = Number(raw)
+        return Number.isInteger(position) && position >= 0 ? position : undefined
+    }
+
     private async add(entity: string, name: string, element: HTMLElement): Promise<void> {
         const parent = this.parseJSON<ManagedReference>(element.dataset.parent)
+        const position = this.parsePosition(element.dataset.position)
         if (!parent) {
             return
         }
@@ -232,10 +241,11 @@ export class EditorController extends ViewController {
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,
                     model: parent,
+                    position,
                 })
                 return
             case "Attribute": {
-                const body: Record<string, unknown> = {name}
+                const body: Record<string, unknown> = {name, position}
                 if (parent.entityName === "Entity") {
                     body.entityProperty = parent
                 } else if (parent.entityName === "CompositeType") {
@@ -248,12 +258,14 @@ export class EditorController extends ViewController {
             case "FetchedProperty":
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,
+                    position,
                     entityProperty: parent,
                 })
                 return
             case "FetchIndex":
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,
+                    position,
                     entityProperty: parent,
                 })
                 return

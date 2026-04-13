@@ -36,7 +36,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addEntity"
-                                    data-parent="{$project->model|json}">
+                                    data-parent="{$project->model|json}"
+                                    data-position="{$project->model?->entities?->count}">
                                 <i class="bi bi-plus-circle"></i> <span>Add Entity</span>
                             </button>
                         </li>
@@ -44,7 +45,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addCompositeType"
-                                    data-parent="{$project->model|json}">
+                                    data-parent="{$project->model|json}"
+                                    data-position="{$project->model?->compositeTypes?->count}">
                                 <i class="bi bi-diagram-3"></i> <span>Add Composite Type</span>
                             </button>
                         </li>
@@ -52,7 +54,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addFetchRequestTemplate"
-                                    data-parent="{$project->model|json}">
+                                    data-parent="{$project->model|json}"
+                                    data-position="{$project->model?->fetchRequestTemplates?->count}">
                                 <i class="bi bi-search"></i> <span>Add Fetch Request</span>
                             </button>
                         </li>
@@ -60,7 +63,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addConfiguration"
-                                    data-parent="{$project->model|json}">
+                                    data-parent="{$project->model|json}"
+                                    data-position="{$project->model?->configurations?->count}">
                                 <i class="bi bi-gear"></i> <span>Add Configuration</span>
                             </button>
                         </li>
@@ -72,7 +76,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addAttribute"
-                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    data-parent="{$selectedEntity|json}"
+                                    data-position="{$selectedEntity?->attributes?->count}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-tag"></i> <span>Add Attribute</span>
                             </button>
                         </li>
@@ -80,7 +85,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addFetchedProperty"
-                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    data-parent="{$selectedEntity|json}"
+                                    data-position="{$selectedEntity?->fetchedProperties?->count}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-box-arrow-in-down"></i> <span>Add Fetched Property</span>
                             </button>
                         </li>
@@ -88,7 +94,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addRelationship"
-                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+                                    data-parent="{$selectedEntity|json}"
+                                    data-position="{$selectedEntity?->relationships?->count}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
                                 <i class="bi bi-arrow-left-right"></i> <span>Add Relationship</span>
                             </button>
                         </li>
@@ -99,7 +106,8 @@
                             <button class="dropdown-item d-flex align-items-center gap-2"
                                     type="button"
                                     data-editor-action="addFetchIndex"
-                                    data-parent="{$selectedEntity|json}" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+                                    data-parent="{$selectedEntity|json}"
+                                    data-position="{$selectedEntity?->indexes?->count}" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
                                 <i class="bi bi-lightning"></i> <span>Add Fetch Index</span>
                             </button>
                         </li>
