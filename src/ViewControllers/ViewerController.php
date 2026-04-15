@@ -14,15 +14,15 @@ use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
-use Sabatier\Service\HTMLDecorator;
-use Sabatier\Service\JSONDecorator;
+use Sabatier\Service\HTMLTransformer;
+use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\Outlet;
 use const App\EntityPositionsMappingPreferencesKey;
 use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
 
-#[Endpoint("Viewer", decorators: [HTMLDecorator::class])]
+#[Endpoint("Viewer", transformers: [HTMLTransformer::class])]
 final class ViewerController extends ProjectController
 {
     #[Override]
@@ -63,7 +63,7 @@ final class ViewerController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function export(): void
     {
         $parameters = $this->request->parameters;
@@ -78,7 +78,7 @@ final class ViewerController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function moved(): void
     {
         $name = $this->project->name;

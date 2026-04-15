@@ -4,11 +4,11 @@ namespace App\Responders;
 
 use Override;
 use Sabatier\Service\Endpoint;
-use Sabatier\Service\HTMLDecorator;
+use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\Responder;
 use Sabatier\Service\Response;
 
-#[Endpoint("Info", decorators: [HTMLDecorator::class])]
+#[Endpoint("Info", transformers: [HTMLTransformer::class])]
 final class InfoResponder extends Responder
 {
     #[Override]

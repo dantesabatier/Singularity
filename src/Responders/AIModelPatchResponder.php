@@ -14,7 +14,7 @@ use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
-use Sabatier\Service\JSONDecorator;
+use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Responder;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
@@ -40,7 +40,7 @@ final class AIModelPatchResponder extends Responder
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function propose(): void
     {
         $parameters = $this->request->parameters;
@@ -55,7 +55,7 @@ final class AIModelPatchResponder extends Responder
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function apply(): void
     {
         $parameters = $this->request->parameters;

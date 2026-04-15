@@ -41,9 +41,9 @@ use Sabatier\Service\Action;
 use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
-use Sabatier\Service\HTMLDecorator;
+use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\InternalServerErrorException;
-use Sabatier\Service\JSONDecorator;
+use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
@@ -57,7 +57,7 @@ use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
 
-#[Endpoint("Editor", decorators: [HTMLDecorator::class])]
+#[Endpoint("Editor", transformers: [HTMLTransformer::class])]
 final class EditorController extends ProjectController
 {
     public const string tableViewValue = EditorTableViewValue;
@@ -324,7 +324,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function save(): void
     {
         $project = $this->project;
@@ -338,7 +338,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function import(): void
     {
         $parameters = $this->request->parameters;
@@ -360,7 +360,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function subclass(): void
     {
         $project = $this->project;
@@ -392,7 +392,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function reorder(): void
     {
         $parameters = $this->request->parameters;

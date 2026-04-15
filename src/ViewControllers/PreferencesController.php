@@ -9,8 +9,8 @@ use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
-use Sabatier\Service\HTMLDecorator;
-use Sabatier\Service\JSONDecorator;
+use Sabatier\Service\HTMLTransformer;
+use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
@@ -22,7 +22,7 @@ use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
 
-#[Endpoint("Preferences", decorators: [HTMLDecorator::class])]
+#[Endpoint("Preferences", transformers: [HTMLTransformer::class])]
 final class PreferencesController extends ViewController
 {
     #[Override]
@@ -98,7 +98,7 @@ final class PreferencesController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function synchronize(): void
     {
         $parameters = $this->request->parameters;

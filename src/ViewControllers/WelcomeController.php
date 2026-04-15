@@ -23,15 +23,15 @@ use Sabatier\Foundation\URL;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
-use Sabatier\Service\HTMLDecorator;
-use Sabatier\Service\JSONDecorator;
+use Sabatier\Service\HTMLTransformer;
+use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\random_color;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
-#[Endpoint("/", decorators: [HTMLDecorator::class])]
+#[Endpoint("/", transformers: [HTMLTransformer::class])]
 final class WelcomeController extends ViewController
 {
     #[Override]
@@ -95,7 +95,7 @@ final class WelcomeController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function open(): void
     {
         $parameters = $this->request->parameters;
@@ -112,7 +112,7 @@ final class WelcomeController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(decorators: [JSONDecorator::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function create(): void
     {
         $parameters = $this->request->parameters;
@@ -131,7 +131,7 @@ final class WelcomeController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(HTTPRequestMethod::patch, decorators: [JSONDecorator::class])]
+    #[Action(HTTPRequestMethod::patch, transformers: [JSONTransformer::class])]
     public function rename(): void
     {
         $parameters = $this->request->parameters;
