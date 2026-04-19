@@ -5,9 +5,9 @@
 namespace App;
 
 use Override;
+use Sabatier\CoreData\APCuRowCache;
 use Sabatier\CoreData\MergePolicy;
-use Sabatier\CoreData\SQLCore;
-use Sabatier\CoreData\SQLDebugLevel;
+use Sabatier\CoreData\PersistentStore;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
@@ -26,8 +26,7 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public static function initialize(): void
     {
-        SQLCore::$debugLevel = SQLDebugLevel::none;
-        SQLCore::$debugColorOutputDefault = true;
+        PersistentStore::$rowCacheClass = APCuRowCache::class;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([
             PersistentHistoryTrackingKey => false,
