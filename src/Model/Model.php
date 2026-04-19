@@ -97,6 +97,7 @@ final class Model extends ManagedObject
                 return $result;
             });
     }
+    /** @var Dictionary<mixed> */
     public Dictionary $schema {
         get {
             /** @var Project $project */
@@ -134,6 +135,7 @@ final class Model extends ManagedObject
             return $dictionary;
         }
     }
+    /** @var Dictionary<mixed> */
     public Dictionary $graph {
         get {
             $nodes = [];
