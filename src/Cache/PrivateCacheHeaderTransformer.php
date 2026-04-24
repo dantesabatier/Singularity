@@ -5,11 +5,12 @@ namespace App\Cache;
 use Sabatier\Service\CacheHeaderTransformer;
 use Sabatier\Service\HTTPCachePolicy;
 use Sabatier\Service\Response;
+use Sabatier\Service\ResponseTransformerContext;
 
 final class PrivateCacheHeaderTransformer extends CacheHeaderTransformer
 {
-    public function __construct(Response $response)
+    public function __construct(Response $response, ResponseTransformerContext $context = new ResponseTransformerContext())
     {
-        parent::__construct($response, new HTTPCachePolicy(maxAge: 60, visibility: 'private'));
+        parent::__construct($response, new ResponseTransformerContext(cachePolicy: new HTTPCachePolicy(maxAge: 60, visibility: 'private')));
     }
 }
