@@ -7,10 +7,12 @@ use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\UserDefaults;
+use App\Cache\PrivateCacheHeaderTransformer;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
+use Sabatier\Service\NoCacheHeaderTransformer;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
@@ -22,7 +24,7 @@ use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
 
-#[Endpoint("Preferences", transformers: [HTMLTransformer::class])]
+#[Endpoint("Preferences", transformers: [HTMLTransformer::class, PrivateCacheHeaderTransformer::class])]
 final class PreferencesController extends ViewController
 {
     #[Override]
@@ -98,7 +100,7 @@ final class PreferencesController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
     public function synchronize(): void
     {
         $parameters = $this->request->parameters;

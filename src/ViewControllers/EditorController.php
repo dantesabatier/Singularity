@@ -37,6 +37,7 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
+use App\Cache\PrivateCacheHeaderTransformer;
 use Sabatier\Service\Action;
 use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
@@ -44,6 +45,7 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\JSONTransformer;
+use Sabatier\Service\NoCacheHeaderTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
@@ -57,7 +59,7 @@ use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
 
-#[Endpoint("Editor", transformers: [HTMLTransformer::class])]
+#[Endpoint("Editor", transformers: [HTMLTransformer::class, PrivateCacheHeaderTransformer::class])]
 final class EditorController extends ProjectController
 {
     public const string tableViewValue = EditorTableViewValue;
@@ -324,7 +326,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
     public function save(): void
     {
         $project = $this->project;
@@ -338,7 +340,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
     public function import(): void
     {
         $parameters = $this->request->parameters;
@@ -360,7 +362,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
     public function subclass(): void
     {
         $project = $this->project;
@@ -392,7 +394,7 @@ final class EditorController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
     public function reorder(): void
     {
         $parameters = $this->request->parameters;

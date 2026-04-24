@@ -5,6 +5,7 @@ namespace App\ViewControllers;
 use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
+use Sabatier\Service\CacheHeaderTransformer;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\Outlet;
@@ -14,7 +15,7 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 use const Sabatier\Foundation\kCFBundleShortVersionStringKey;
 use const Sabatier\Foundation\kCFBundleVersionKey;
 
-#[Endpoint("About", transformers: [HTMLTransformer::class])]
+#[Endpoint("About", transformers: [HTMLTransformer::class, CacheHeaderTransformer::class])]
 final class AboutController extends ViewController
 {
     #[Override]

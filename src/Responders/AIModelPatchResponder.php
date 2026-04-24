@@ -15,6 +15,7 @@ use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\JSONTransformer;
+use Sabatier\Service\NoCacheHeaderTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Responder;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
@@ -40,7 +41,7 @@ final class AIModelPatchResponder extends Responder
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
     public function propose(): void
     {
         $parameters = $this->request->parameters;
@@ -55,7 +56,7 @@ final class AIModelPatchResponder extends Responder
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
     public function apply(): void
     {
         $parameters = $this->request->parameters;
