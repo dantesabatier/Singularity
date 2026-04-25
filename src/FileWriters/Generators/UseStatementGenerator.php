@@ -12,7 +12,6 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
-use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
 use Sabatier\Service\Authorizable;

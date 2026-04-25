@@ -17,6 +17,7 @@
     "ext-json": "*",
     "ext-gettext": "*",
     "ext-intl": "*",
+    "ext-redis": "*",
     "latte/latte": "^3.0",
     "sabatier/foundation": "@dev",
     "sabatier/coredata": "@dev",
