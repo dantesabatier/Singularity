@@ -5,8 +5,8 @@ export class ViewNavigator {
     public constructor(private readonly httpClient: HttpClient, private readonly desktopBridge: DesktopBridge) {
     }
 
-    public async replace(url: string): Promise<boolean> {
-        const html = await this.load(url)
+    public async replace(url: string, cache?: RequestCache): Promise<boolean> {
+        const html = await this.load(url, cache)
         if (html === undefined) {
             return false
         }
@@ -27,8 +27,8 @@ export class ViewNavigator {
         return true
     }
 
-    public async push(url: string): Promise<boolean> {
-        const replaced = await this.replace(url)
+    public async push(url: string, cache?: RequestCache): Promise<boolean> {
+        const replaced = await this.replace(url, cache)
         if (!replaced) {
             return false
         }
@@ -40,10 +40,10 @@ export class ViewNavigator {
         return true
     }
 
-    private async load(url: string): Promise<string | undefined> {
+    private async load(url: string, cache?: RequestCache): Promise<string | undefined> {
         let response: Response
         try {
-            response = await this.httpClient.get(url)
+            response = await this.httpClient.get(url, cache)
         } catch (error) {
             await this.desktopBridge.showErrorBox(error)
             return undefined

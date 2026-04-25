@@ -1,6 +1,7 @@
 export interface RequestOptions {
     readonly method?: string
     readonly body?: unknown
+    readonly cache?: RequestCache
 }
 
 export interface ErrorResponse {
@@ -20,11 +21,12 @@ export class HttpClient {
             method: options.method ?? "POST",
             headers,
             body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+            cache: options.cache,
         })
     }
 
-    public async get(url: string): Promise<Response> {
-        return await this.request(url, {method: "GET"})
+    public async get(url: string, cache?: RequestCache): Promise<Response> {
+        return await this.request(url, {method: "GET", cache})
     }
 
     public async post(url: string, body?: unknown): Promise<Response> {

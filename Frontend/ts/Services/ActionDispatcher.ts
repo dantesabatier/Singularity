@@ -36,7 +36,7 @@ export class ActionDispatcher {
             })
         } catch (error) {
             await this.desktopBridge.showErrorBox(error)
-            await this.viewNavigator.replace(location.href)
+            await this.viewNavigator.replace(location.href, "reload")
             await this.desktopBridge.setProgressBar(-1)
             return false
         }
@@ -44,14 +44,14 @@ export class ActionDispatcher {
         if (!response.ok) {
             const message = await this.httpClient.tryGetErrorMessage(response)
             await this.desktopBridge.showErrorBox(message)
-            await this.viewNavigator.replace(location.href)
+            await this.viewNavigator.replace(location.href, "reload")
             await this.desktopBridge.setProgressBar(-1)
             return false
         }
         const normalizedMethod = method.toUpperCase()
         const endpoint = this.resolveEndpoint(action)
         await this.applyRedirect(response, normalizedMethod, endpoint, location)
-        await this.viewNavigator.push(location.href)
+        await this.viewNavigator.push(location.href, "reload")
         await this.desktopBridge.setProgressBar(-1)
         return true
     }
