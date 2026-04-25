@@ -5,6 +5,7 @@
 namespace App;
 
 use Override;
+use Redis;
 use Sabatier\CoreData\MergePolicy;
 use Sabatier\CoreData\PersistentStore;
 use Sabatier\CoreData\RedisRowCache;
@@ -15,6 +16,7 @@ use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 use Sabatier\Service\PublicAccessPolicy;
+use Sabatier\Service\RedisIdempotencyStore;
 use Sabatier\Service\ViewController;
 use Throwable;
 use function Sabatier\Foundation\full_user_name;
@@ -46,6 +48,9 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     {
         $application->accessPolicy = new PublicAccessPolicy();
         $application->persistentContainer->viewContext->mergePolicy = MergePolicy::mergeByPropertyObjectTrump();
+        $redis = new Redis();
+        $redis->pconnect("127.0.0.1", 6379);
+        $application->idempotencyStore = new RedisIdempotencyStore($redis);
     }
 
     #[Override]
