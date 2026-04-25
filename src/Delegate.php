@@ -49,7 +49,7 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
         $application->accessPolicy = new PublicAccessPolicy();
         $application->persistentContainer->viewContext->mergePolicy = MergePolicy::mergeByPropertyObjectTrump();
         $redis = new Redis();
-        $redis->pconnect("127.0.0.1", 6379);
+        $redis->pconnect("127.0.0.1");
         $application->idempotencyStore = new RedisIdempotencyStore($redis);
     }
 
