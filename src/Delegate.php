@@ -43,8 +43,8 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public function applicationWillFinishLaunching(Application $application): void
     {
-        $application->accessPolicy = new PublicAccessPolicy();
         $application->persistentContainer->viewContext->mergePolicy = MergePolicy::mergeByPropertyObjectTrump();
+        $application->accessPolicy = new PublicAccessPolicy();
         $application->idempotencyStore = new RedisIdempotencyStore();
     }
 
