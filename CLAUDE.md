@@ -49,7 +49,7 @@ Three sibling packages (loaded via `../Foundation`, `../CoreData`, `../Service` 
 - **`sabatier/service`** — HTTP framework: `Application`, `ViewController`, attribute-based routing, responder pipeline, transformers
 
 ### Routing & Controllers
-Routing is **attribute-based**, not URL-pattern based. The framework reflects on PHP attributes to build routes:
+Routing is **attribute-based**, not URL-pattern-based. The framework reflects on PHP attributes to build routes:
 
 ```php
 #[Endpoint("Editor", transformers: [HTMLTransformer::class])]
