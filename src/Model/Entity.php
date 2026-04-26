@@ -59,20 +59,22 @@ use Sabatier\Foundation\Set;
  */
 final class Entity extends ManagedObject
 {
+    private bool $isRootEntityResolved = false;
     private(set) ?Entity $rootEntity {
         get {
-            if (!isset($this->rootEntity)) {
-                $superentity = $this->superentity;
-                $rootEntity = $superentity;
-                while ($superentity) {
-                    $superentity = $superentity->superentity;
-                    if ($superentity) {
-                        $rootEntity = $superentity;
-                    }
-                }
-                $this->rootEntity = $rootEntity;
+            if ($this->isRootEntityResolved) {
+                return $this->rootEntity;
             }
-            return $this->rootEntity;
+            $this->isRootEntityResolved = true;
+            $superentity = $this->superentity;
+            $rootEntity = $superentity;
+            while ($superentity) {
+                $superentity = $superentity->superentity;
+                if ($superentity) {
+                    $rootEntity = $superentity;
+                }
+            }
+            return $this->rootEntity = $rootEntity;
         }
     }
     private(set) bool $isRootEntity {

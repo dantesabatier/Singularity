@@ -4,6 +4,7 @@ namespace App\ViewControllers;
 
 use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
+use App\Cache\PrivateCacheHeaderTransformer;
 use App\FileWriters\SubclassFileWriter;
 use App\Model\AccessControl;
 use App\Model\CompositeType;
@@ -37,7 +38,6 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use App\Cache\PrivateCacheHeaderTransformer;
 use Sabatier\Service\Action;
 use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
@@ -121,20 +121,20 @@ final class EditorController extends ProjectController
          * @throws Exception
          */
         get {
-            if (!isset($this->projects)) {
-                $fetchRequest = Project::fetchRequest();
-                $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
-                $fetchRequest->serialization = Dictionary::dictionaryWithArray([
-                    "name" => AttributeType::string,
-                    "color" => AttributeType::string
-                ]);
-                $projects = $this->managedObjectContext->fetch($fetchRequest);
-                if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
-                    $projects->insertAt($projects->removeAt($index), 0);
-                }
-                $this->projects = $projects;
+            if (isset($this->projects)) {
+                return $this->projects;
             }
-            return $this->projects;
+            $fetchRequest = Project::fetchRequest();
+            $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
+            $fetchRequest->serialization = Dictionary::dictionaryWithArray([
+                "name" => AttributeType::string,
+                "color" => AttributeType::string
+            ]);
+            $projects = $this->managedObjectContext->fetch($fetchRequest);
+            if ($projects->count > 1 && ($index = $projects->firstIndex(fn(Project $project): bool => $project->isEqual($this->project)))) {
+                $projects->insertAt($projects->removeAt($index), 0);
+            }
+            return $this->projects = $projects;
         }
     }
     #[Outlet]
@@ -240,14 +240,14 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) Set $allRoles {
         get {
-            if (!isset($this->allRoles)) {
-                /** @var Set<string> $allRoles */
-                $allRoles = $this->selectedAccessControl?->roles?->map(fn(Role $role): string => $role->name) ?? new Set();
-                $allRoles->formUnion($this->defaultRoles);
-                $allRoles->insert("Custom...");
-                $this->allRoles = $allRoles;
+            if (isset($this->allRoles)) {
+return $this->allRoles;
             }
-            return $this->allRoles;
+            /** @var Set<string> $allRoles */
+            $allRoles = $this->selectedAccessControl?->roles?->map(fn(Role $role): string => $role->name) ?? new Set();
+            $allRoles->formUnion($this->defaultRoles);
+            $allRoles->insert("Custom...");
+            return $this->allRoles = $allRoles;
         }
     }
     #[Outlet]
