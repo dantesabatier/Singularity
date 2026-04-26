@@ -88,7 +88,7 @@ final class LatteRenderer extends Renderer
         }
         /** @var list<string> $css */
         $css = $item["css"] ?? [];
-        return new ViteAsset(css: array_map(fn(string $file): string => "/Build/$file", $css), js: ["/Build/" . $item["file"]]);
+        return new ViteAsset(css: array_map(fn(string $file): string => "/Build/$file", $css), js: ["/Build/{$item["file"]}"]);
     }
 
     private function name(AttributeType $type): string
