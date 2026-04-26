@@ -63,7 +63,7 @@
             </div>
         </nav>
         <div class="viewer-container" style="height: calc(100vh - 68px); position: relative;">
-            <div id="viewer-runtime" data-project-id="{$project->objectID->referenceObject}" data-export-last-directory="{$exportLastDirectory}" style="display: none;"></div>
+            <div id="viewer-runtime" data-project-id="{$project->objectID|json}" data-export-last-directory="{$exportLastDirectory}" style="display: none;"></div>
             <script id="viewer-schema-json" type="application/json">{$project->model?->schema|json|noescape}</script>
             <div class="viewer-toolbar">
                 <div class="viewer-toolbar-section">

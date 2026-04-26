@@ -8,7 +8,7 @@
 
         <!-- Table -->
         <div class="list-control-content">
-            <table class="list-control-table" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="fetchedProperties">
+            <table class="list-control-table" data-project="{$project->objectID|json}" data-entity="{$selectedEntity->name}" data-key="fetchedProperties">
                 <thead>
                 <tr>
                     <th class="col-name">Name</th>
@@ -17,9 +17,9 @@
                 </thead>
                 <tbody>
                 <tr n:foreach="$selectedEntity->fetchedProperties as $fetchedProperty"
-                        id="property-{$fetchedProperty->objectID->referenceObject}"
-                        data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$fetchedProperty->objectID->referenceObject}"
-                        n:class="$fetchedProperty->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
+                        id="property-{$fetchedProperty->objectID|json}"
+                        data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$fetchedProperty->objectID|json}"
+                        n:class="$fetchedProperty->isEqual($selectedProperty) ? active">
 
                     <!-- Name Column -->
                     <td class="col-name">

@@ -2,7 +2,7 @@
 {define configuration}
     <div class="px-3 pb-4">
         <form action="/Configuration" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedConfiguration->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedConfiguration->objectID|json}">
             <div class="inspector-header">Configuration</div>
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>

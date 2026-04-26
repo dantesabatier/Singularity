@@ -2,7 +2,7 @@
 {define fetchIndexElement}
     <div class="px-3 pb-4">
         <form action="/FetchIndexElement" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedIndexElement->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedIndexElement->objectID|json}">
 
             <div class="inspector-header">Fetch Index Element</div>
 

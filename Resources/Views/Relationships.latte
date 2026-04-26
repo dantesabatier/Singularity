@@ -5,7 +5,7 @@
             <span class="list-control-title">Relationships</span>
         </div>
         <div class="list-control-content">
-            <table class="list-control-table" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="relationships">
+            <table class="list-control-table" data-project="{$project->objectID|json}" data-entity="{$selectedEntity->name}" data-key="relationships">
                 <thead>
                 <tr>
                     <th class="col-name">Name</th>
@@ -15,7 +15,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedEntity->relationships as $relationship" id="property-{$relationship->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$relationship->objectID->referenceObject}"  n:class="$relationship->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
+                <tr n:foreach="$selectedEntity->relationships as $relationship" id="property-{$relationship->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$relationship->objectID|json}"  n:class="$relationship->isEqual($selectedProperty) ? active">
                     <td class="col-name">
                         <div class="cell-content">
                             {var string $img = img($relationship)}
@@ -26,7 +26,7 @@
                     <td class="col-destination">
                         <form action="/Relationship" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$relationship->objectID|json}">
                             <select name="lazyDestinationEntityName" aria-label="Destination" class="form-select transparent" data-autosave="true">
                                 <option value="">No Value</option>
                                 <option n:foreach="$project->model->entities as $entity" value="{$entity->name}" {$entity->name === $relationship->lazyDestinationEntityName ? selected}>
@@ -38,7 +38,7 @@
                     <td class="col-inverse">
                         <form action="/Relationship" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$relationship->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$relationship->objectID|json}">
                             <select name="lazyInverseRelationshipName" aria-label="Inverse" class="form-select transparent" data-autosave="true">
                                 <option value="">No Inverse</option>
                                 {var App\Model\Entity $destinationEntity = $relationship->destinationEntity}

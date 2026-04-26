@@ -3,7 +3,7 @@
 {define fetchedProperty}
     <div class="px-3 pb-4">
         <form action="/FetchedProperty" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedProperty->objectID|json}">
             <div class="inspector-header">Fetch Property</div>
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>

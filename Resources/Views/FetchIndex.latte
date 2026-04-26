@@ -3,7 +3,7 @@
 {define fetchIndex}
     <div class="px-3 pb-4">
         <form action="/FetchIndex" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedIndex->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedIndex->objectID|json}">
             <div class="inspector-header">Fetch Index</div>
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>

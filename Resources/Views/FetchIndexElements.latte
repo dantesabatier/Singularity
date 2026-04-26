@@ -19,15 +19,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedIndex->elements as $element"
-                        id="element-{$element->objectID->referenceObject}"
-                        data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$selectedIndex->objectID->referenceObject}&element={$element->objectID->referenceObject}"
-                        n:class="$element->objectID->referenceObject === $selectedIndexElement?->objectID?->referenceObject ? active">
-
+                <tr n:foreach="$selectedIndex->elements as $element" id="element-{$element->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&index={$selectedIndex->objectID|json}&element={$element->objectID|json}" n:class="$element->isEqual($selectedIndexElement) ? active">
                     <!-- Property Column -->
                     <td class="col-property">
                         <form action="/FetchIndexElement" method="POST" class="cell-form">
-                            <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$element->objectID|json}">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                             <select name="propertyName" aria-label="Property" class="form-select transparent" data-autosave="true">
                                 <option n:foreach="$selectedEntity->attributeNames as $attributeName"
@@ -43,7 +39,7 @@
                     <td class="col-type">
                         <form action="/FetchIndexElement" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$element->objectID|json}">
                             <select name="expressionResultType"
                                     aria-label="Expression Result Type"
                                     class="form-select transparent"
@@ -68,7 +64,7 @@
                     <!-- Ascending Column -->
                     <td class="col-ascending">
                         <form action="/FetchIndexElement" method="POST" class="cell-form cell-form-checkbox">
-                            <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$element->objectID|json}">
                             <input type="hidden" name="propertyName" value="{$element->propertyName}">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
                             <input class="form-check-input"

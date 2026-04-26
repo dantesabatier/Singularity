@@ -5,7 +5,7 @@
             <span class="list-control-title">Attributes</span>
         </div>
         <div class="list-control-content">
-            <table class="list-control-table" data-project="{$project->objectID->referenceObject}" data-entity="{$selectedEntity->name}" data-key="attributes">
+            <table class="list-control-table" data-project="{$project->objectID|json}" data-entity="{$selectedEntity->name}" data-key="attributes">
                 <thead>
                 <tr>
                     <th class="col-name">Name</th>
@@ -14,7 +14,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedEntity->attributes as $attribute" id="property-{$attribute->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$attribute->objectID->referenceObject}" n:class="$attribute->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
+                <tr n:foreach="$selectedEntity->attributes as $attribute" id="property-{$attribute->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$attribute->objectID|json}" n:class="$attribute->isEqual($selectedProperty) ? active">
                     <td class="col-name">
                         <div class="cell-content">
                             {var string $img = img($attribute)}
@@ -25,7 +25,7 @@
                     <td class="col-type">
                         <form action="/Attribute" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$attribute->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$attribute->objectID|json}">
                             <input type="hidden" name="attributeValueClassName" value="{$attribute->attributeValueClassName}">
                             <select name="type" aria-label="Type" class="form-select transparent" data-editor-change="attributeType">
                                 <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $attribute->type->value ? selected}>

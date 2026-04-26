@@ -14,11 +14,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedProperty?->accessControls ?? [] as $accessControl" id="accessControl-{$accessControl->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&property={$selectedProperty->objectID->referenceObject}&accessControl={$accessControl->objectID->referenceObject}" n:class="$accessControl->objectID->referenceObject === $selectedAccessControl?->objectID?->referenceObject ? active">
+                <tr n:foreach="$selectedProperty?->accessControls ?? [] as $accessControl" id="accessControl-{$accessControl->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$selectedProperty->objectID|json}&accessControl={$accessControl->objectID|json}" n:class="$accessControl->isEqual($selectedAccessControl) ? active">
                     <td class="col-accessControl-enabled">
                         <form action="/AccessControl" method="POST" class="cell-form cell-form-checkbox">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$accessControl->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$accessControl->objectID|json}">
                             <input class="form-check-input" type="checkbox" name="isEnabled" value="{$accessControl->isEnabled|json}" aria-label="Enabled" {$accessControl->isEnabled ? checked}>
                         </form>
                     </td>
@@ -29,7 +29,7 @@
                         {if !$accessControl->roles->isEmpty}
                             <span class="roles-badge-list">
                                     <span n:foreach="$accessControl->roles as $role" class="role-badge-wrapper">
-                                        <span class="role-badge" data-bs-toggle="popover" data-bs-html="true" data-bs-content="" data-bs-custom-class="role-popover" data-role="{$role->objectID->referenceObject}">
+                                        <span class="role-badge" data-bs-toggle="popover" data-bs-html="true" data-bs-content="" data-bs-custom-class="role-popover" data-role="{$role->objectID|json}">
                                             {$role->name}
                                         </span>
                                         <button type="button"
@@ -49,7 +49,7 @@
                     <td class="col-accessControl-scope">
                         <form action="/AccessControl" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$accessControl->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$accessControl->objectID|json}">
                             <input type="hidden" name="scope" value="{$accessControl->scope->value}">
                             <select name="scope" aria-label="Scope" class="form-select transparent" data-editor-change="accessControlScope">
                                 <option n:foreach="$scopes as $scope" value="{$scope->value}" {$accessControl->scope->value === $scope->value ? selected}>

@@ -51,15 +51,14 @@ final class LatteRenderer extends Renderer
             $engine->addFilter("nonempty", fn(string $value): ?string => $value === "" ? null : $value);
             $engine->addFilter("json", json_encode(...));
             $engine->addFunction("img", $this->image(...));
-            $engine->addFunction("vite_asset", fn(): array => $this->viteAsset);
+            $engine->addFunction("vite_asset", fn(): ViteAsset => $this->viteAsset);
             $engine->addFunction("localized_string", fn(string $value): string => localized_string($value));
             $engine->setCacheDirectory(FileManager::default()->url(SearchPathDirectory::cachesDirectory, SearchPathDomainMask::local, null, true)->path);
             $engine->setLoader(new FileLoader($this->bundle->resourceURL?->appendingPathComponent("Views")?->path));
             return $this->engine = $engine;
         }
     }
-    /** @var array{client: ?string, css: list<string>, js: list<string>} */
-    private array $viteAsset {
+    private ViteAsset $viteAsset {
         /**
          * @throws Exception
          */
@@ -67,46 +66,29 @@ final class LatteRenderer extends Renderer
     }
 
     /**
-     * @return array{client: ?string, css: list<string>, js: list<string>}
      * @throws Exception
      */
-    private function resolveViteAsset(string $entry): array
+    private function resolveViteAsset(string $entry): ViteAsset
     {
         /** @var string $devServer */
         $devServer = ProcessInfo::processInfo()->environment[ViteDevServerEnvironmentKey] ?? "";
         if ($devServer !== "") {
-            return [
-                "client" => "$devServer/@vite/client",
-                "css" => ["$devServer/Frontend/scss/main.scss"],
-                "js" => ["$devServer/$entry"],
-            ];
+            return new ViteAsset("$devServer/@vite/client", ["$devServer/Frontend/scss/main.scss"], ["$devServer/$entry"]);
         }
         $fileManager = FileManager::default();
         $manifestURL = $fileManager->documentRootDirectory->appendingPathComponent("Build")->appendingPathComponent(".vite")->appendingPathComponent("manifest.json");
         if (!$fileManager->fileExists($manifestURL->path, $isDirectory) || $isDirectory || !$fileManager->isReadableFile($manifestURL->path)) {
-            return [
-                "client" => null,
-                "css" => [],
-                "js" => [],
-            ];
+            return new ViteAsset();
         }
         /** @var array<string, array{file: string, css?: list<string>|null}>|null $manifest */
         $manifest = json_decode($fileManager->contents($manifestURL->path) ?? "[]", true);
         $item = $manifest[$entry] ?? null;
         if (!is_array($item) || !isset($item["file"])) {
-            return [
-                "client" => null,
-                "css" => [],
-                "js" => [],
-            ];
+            return new ViteAsset();
         }
         /** @var list<string> $css */
         $css = $item["css"] ?? [];
-        return [
-            "client" => null,
-            "css" => array_map(fn(string $file): string => "/Build/$file", $css),
-            "js" => ["/Build/" . $item["file"]],
-        ];
+        return new ViteAsset(css: array_map(fn(string $file): string => "/Build/$file", $css), js: ["/Build/" . $item["file"]]);
     }
 
     private function name(AttributeType $type): string

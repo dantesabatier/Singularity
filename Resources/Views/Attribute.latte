@@ -3,7 +3,7 @@
 {define attribute}
     <div class="px-3 pb-4">
         <form action="/Attribute" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedProperty->objectID|json}">
             <input type="hidden" name="attributeValueClassName" value="{$selectedProperty->attributeValueClassName}">
             <div class="inspector-header">Attribute</div>
             <div class="row mb-2">

@@ -154,7 +154,7 @@
                 </div>
             </div>
 
-            <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID|json}">
             <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
     </div>

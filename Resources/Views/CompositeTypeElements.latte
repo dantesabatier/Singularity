@@ -14,7 +14,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedCompositeType->elements as $element" id="property-{$element->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&composite={$selectedCompositeType->objectID->referenceObject}&property={$element->objectID->referenceObject}" n:class="$element->objectID->referenceObject === $selectedProperty?->objectID?->referenceObject ? active">
+                <tr n:foreach="$selectedCompositeType->elements as $element" id="property-{$element->objectID|json}" data-href="/Editor?project={$project->objectID|json}&composite={$selectedCompositeType->objectID|json}&property={$element->objectID|json}" n:class="$element->isEqual($selectedProperty) ? active">
                     <td class="col-name">
                         <div class="cell-content">
                             {var string $img = img($element)}
@@ -25,7 +25,7 @@
                     <td class="col-type">
                         <form action="/Attribute" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                            <input type="hidden" name="objectID" value="{$element->objectID->referenceObject}">
+                            <input type="hidden" name="objectID" value="{$element->objectID|json}">
                             <select name="type" aria-label="Type" class="form-select transparent" data-autosave="true">
                                 <option n:foreach="$attributeTypes as $attributeType" value="{$attributeType->value}" {$attributeType->value === $element->type->value ? selected}>
                                     {$attributeType->name}

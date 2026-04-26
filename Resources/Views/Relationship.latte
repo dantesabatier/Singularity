@@ -3,7 +3,7 @@
 {define relationship}
     <div class="px-3 pb-4">
         <form action="/Relationship" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedProperty->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedProperty->objectID|json}">
             <div class="inspector-header">Relationship</div>
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>

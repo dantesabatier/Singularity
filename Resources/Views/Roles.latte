@@ -5,7 +5,7 @@
         <div class="role-popover-container">
             <form action="/Role" method="POST" class="role-popover-form">
                 <input type="hidden" name="X-Http-Method-Override" value="PATCH">
-                <input type="hidden" name="objectID" value="{$selectedRole?->objectID?->referenceObject}">
+                <input type="hidden" name="objectID" value="{$selectedRole->objectID|json}">
                 <div class="role-popover-field">
                     <label for="scopeSelect" class="role-popover-label">Role</label>
                     <select name="name" id="scopeSelect" class="form-select form-select-sm role-select" data-current-value="{$selectedRole?->name}">

@@ -3,18 +3,18 @@
     {varType Sabatier\Foundation\Set $entities}
     <div n:foreach="$entities ?? $project->model->rootEntities as $entity">
         {varType App\Model\Entity $entity}
-        <div class="source-row{!$selectedIndex && $entity->isEqual($selectedEntity) ? ' active'}" id="entity-{$entity->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}" title="{$entity->name}" style="--level: {$level}">
+        <div class="source-row{!$selectedIndex && $entity->isEqual($selectedEntity) ? ' active'}" id="entity-{$entity->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$entity->objectID|json}" title="{$entity->name}" style="--level: {$level}">
             {if !$entity->isLeaf}
-                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID->referenceObject}" data-id="{$entity->objectID->referenceObject}" data-expanded="{!$entity->isExpanded|json}" aria-controls="group-{$entity->objectID->referenceObject}" aria-expanded="{$entity->isExpanded|json}"></button>
+                <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID|json}" data-id="{$entity->objectID|json}" data-expanded="{!$entity->isExpanded|json}" aria-controls="group-{$entity->objectID|json}" aria-expanded="{$entity->isExpanded|json}"></button>
             {else}
                 <span class="tree-spacer"></span>
             {/if}
             <img class="source-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
             <span class="source-label flex-grow-1">{$entity->name}</span>
         </div>
-        <div class="collapse {$entity->isExpanded || $entity->isLeaf ? show}" id="group-{$entity->objectID->referenceObject}">
+        <div class="collapse {$entity->isExpanded || $entity->isLeaf ? show}" id="group-{$entity->objectID|json}">
             <div n:if="$entity->indexesCount">
-                <div n:foreach="$entity->indexes as $index" class="source-row{$index->objectID->referenceObject === $selectedIndex?->objectID?->referenceObject ? ' active'}" id="index-{$index->objectID->referenceObject}" data-href="/Editor?project={$project?->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}&index={$index->objectID->referenceObject}" title="{$index->name}" style="--level: {$level + 1}">
+                <div n:foreach="$entity->indexes as $index" class="source-row{$index->isEqual($selectedIndex) ? ' active'}" id="index-{$index->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$entity->objectID|json}&index={$index->objectID|json}" title="{$index->name}" style="--level: {$level + 1}">
                     <span class="tree-spacer"></span>
                     <img class="source-icon" src="/Resources/Images/I@1x.png" srcset="/Resources/Images/I@2x.png 2x, /Resources/Images/I@3x.png 3x" alt="">
                     <span class="source-label flex-grow-1">{$index->name}</span>

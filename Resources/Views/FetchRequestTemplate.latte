@@ -2,7 +2,7 @@
 {define fetchRequestTemplate}
     <div class="px-3 pb-4">
         <form action="/FetchRequestTemplate" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedFetchRequestTemplate->objectID|json}">
 
             <div class="inspector-header">Fetch Request</div>
 

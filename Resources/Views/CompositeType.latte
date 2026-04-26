@@ -2,7 +2,7 @@
 {define compositeType}
     <div class="px-3 pb-4">
         <form action="/CompositeType" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedCompositeType->objectID->referenceObject}">
+            <input type="hidden" name="objectID" value="{$selectedCompositeType->objectID|json}">
             <div class="inspector-header">Composite Attribute</div>
             <div class="row mb-2">
                 <label for="name" class="col-sm-4 inspector-label">Name</label>

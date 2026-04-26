@@ -126,22 +126,22 @@
                         </li>
                         <li><h6 class="dropdown-header">Project Actions</h6></li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="saveProject" data-project-id="{$project->objectID->referenceObject}">
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="saveProject" data-project-id="{$project->objectID|json}">
                                 <i class="bi bi-floppy"></i> <span>Save</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="openSQLViewer" data-project-id="{$project->objectID->referenceObject}" {!$isSQLViewerEnabled ? disabled}>
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="openSQLViewer" data-project-id="{$project->objectID|json}" {!$isSQLViewerEnabled ? disabled}>
                                 <i class="bi bi-file-earmark-code"></i> <span>Show SQL Schema...</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="createSubclass" data-project-id="{$project->objectID->referenceObject}">
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="createSubclass" data-project-id="{$project->objectID|json}">
                                 <i class="bi bi-file-earmark-plus"></i> <span>Create ManagedObject Subclass...</span>
                             </button>
                         </li>
                         <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="importModel" data-project-id="{$project->objectID->referenceObject}" data-model-path="{$project->model?->url?->path}">
+                            <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="importModel" data-project-id="{$project->objectID|json}" data-model-path="{$project->model?->url?->path}">
                                 <i class="bi bi-upload"></i> <span>Import...</span>
                             </button>
                         </li>
@@ -158,7 +158,7 @@
                         <li><h6 class="dropdown-header">Switch Project</h6></li>
                         {foreach $projects as $i => $e}
                             <li>
-                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-editor-action="openEditorProject" data-project-id="{$e->objectID->referenceObject}">
+                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-editor-action="openEditorProject" data-project-id="{$e->objectID|json}">
                                     <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold flex-shrink-0" style="width: 20px; height: 20px; background-color: {$e->color|noescape}; font-size: 11px;">
                                         {$e->name|first}
                                     </span> <span class="text-truncate">{$e->name}</span>
@@ -232,7 +232,7 @@
                     {var string $img = img($item)}
                     {if $item instanceof App\Model\Project}
                         {varType App\Model\Project $item}
-                        <div data-href="/Editor?project={$item->objectID->referenceObject}" class="breadcrumb-link">
+                        <div data-href="/Editor?project={$item->objectID|json}" class="breadcrumb-link">
                             <img n:if="$img" class="breadcrumb-icon" src="/Resources/Images/{$img}@1x.png" srcset="/Resources/Images/{$img}@2x.png 2x, /Resources/Images/{$img}@3x.png 3x" alt="">
                             <span>{$item->name}</span>
                         </div>
@@ -247,7 +247,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li n:foreach="$item->entities as $entity">
-                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$entity->objectID->referenceObject}">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID|json}&entity={$entity->objectID|json}">
                                                 <img class="breadcrumb-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
                                                 <span>{$entity->name}</span>
                                             </div>
@@ -267,7 +267,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li n:foreach="$item->properties as $property">
-                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&property={$property->objectID->referenceObject}">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID|json}&entity={$item->objectID|json}&property={$property->objectID|json}">
                                                 {var string $icon = img($property)}
                                                 <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
                                                 <span>{$property->name}</span>
@@ -300,7 +300,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li n:foreach="$item->accessControls as $accessControl">
-                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$selectedEntity?->objectID->referenceObject}&property={$item->objectID->referenceObject}&accessControl={$accessControl->objectID->referenceObject}">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$item->objectID|json}&accessControl={$accessControl->objectID|json}">
                                                 {var string $icon = img($accessControl)}
                                                 <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
                                                 <span>{$accessControl->name}</span>
@@ -321,7 +321,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li n:foreach="$item->elements as $element">
-                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$selectedEntity->objectID->referenceObject}&index={$item->objectID->referenceObject}&element={$element->objectID->referenceObject}">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&index={$item->objectID|json}&element={$element->objectID|json}">
                                                 {var string $icon = img($element)}
                                                 <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
                                                 <span>{$element->propertyName}</span>
@@ -348,7 +348,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li n:foreach="$item->elements as $element">
-                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID?->referenceObject}&entity={$item->objectID->referenceObject}&composite={$item->objectID->referenceObject}&property={$element->objectID->referenceObject}">
+                                            <div class="dropdown-item" data-href="/Editor?project={$project->objectID|json}&entity={$item->objectID|json}&composite={$item->objectID|json}&property={$element->objectID|json}">
                                                 {var string $icon = img($element)}
                                                 <img n:if="$icon" class="breadcrumb-icon" src="/Resources/Images/{$icon}@1x.png" srcset="/Resources/Images/{$icon}@2x.png 2x, /Resources/Images/{$icon}@3x.png 3x" alt="">
                                                 <span>{$element->name}</span>
