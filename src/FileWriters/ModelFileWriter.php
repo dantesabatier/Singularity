@@ -9,6 +9,7 @@ use Sabatier\Foundation\URL;
 
 final class ModelFileWriter extends FileWriter
 {
+    #[\Override]
     public string $contents {
         get => KeyedArchiver::archivedData($this->model->managedObjectModel);
     }

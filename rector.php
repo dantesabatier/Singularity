@@ -43,7 +43,7 @@ try {
             ],
             RemoveUnusedPrivatePropertyRector::class => [
                 __DIR__ . "/src/FileWriters/SubclassFileWriter.php"
-            ]
+            ],
         ])->withPreparedSets(deadCode: true, codeQuality: true, earlyReturn: true);
 } catch (InvalidConfigurationException $e) {
     error_log($e->getMessage());

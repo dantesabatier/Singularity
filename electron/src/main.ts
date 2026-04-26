@@ -20,7 +20,7 @@ interface BackendErrorBody {
 
 const options: Electron.BrowserWindowConstructorOptions = {
     webPreferences: {
-        webSecurity: false,
+        webSecurity: true,
         allowRunningInsecureContent: true,
         nodeIntegration: true,
         contextIsolation: true,
