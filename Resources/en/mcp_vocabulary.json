@@ -1,0 +1,234 @@
+{
+  "entities": {
+    "Project": {
+      "description": "project",
+      "aliases": ["app", "application", "service", "sabatier project"]
+    },
+    "Model": {
+      "description": "data model",
+      "aliases": ["model", "schema", "data schema", "object graph"]
+    },
+    "Entity": {
+      "description": "entity",
+      "aliases": ["class", "table", "object type", "managed object"]
+    },
+    "Attribute": {
+      "description": "attribute",
+      "aliases": ["property", "field", "column"]
+    },
+    "Relationship": {
+      "description": "relationship",
+      "aliases": ["association", "reference", "link", "connection"]
+    },
+    "FetchedProperty": {
+      "description": "fetched property",
+      "aliases": ["derived property", "computed property", "fetch-based property"]
+    },
+    "FetchRequestTemplate": {
+      "description": "fetch request template",
+      "aliases": ["fetch request", "named query", "predefined query", "fetch template"]
+    },
+    "Configuration": {
+      "description": "model configuration",
+      "aliases": ["configuration", "config", "entity subset"]
+    },
+    "CompositeType": {
+      "description": "composite type",
+      "aliases": ["struct", "value type", "custom type", "composite attribute type"]
+    },
+    "UniquenessConstraint": {
+      "description": "uniqueness constraint",
+      "aliases": ["unique constraint", "unique key", "composite unique"]
+    },
+    "FetchIndex": {
+      "description": "fetch index",
+      "aliases": ["index", "database index", "entity index"]
+    },
+    "FetchIndexElement": {
+      "description": "fetch index element",
+      "aliases": ["index element", "indexed field", "index column"]
+    },
+    "AccessControl": {
+      "description": "access control",
+      "aliases": ["permission", "authorization", "ACL", "access rule"]
+    },
+    "Role": {
+      "description": "access role",
+      "aliases": ["role", "permission level", "access profile"]
+    }
+  },
+  "attributes": {
+    "Project.name": {
+      "description": "project name",
+      "aliases": ["name", "project title"]
+    },
+    "Project.color": {
+      "description": "project color",
+      "aliases": ["color", "identifier color"]
+    },
+    "Project.creationDate": {
+      "description": "creation date",
+      "aliases": ["created at", "when was it created"]
+    },
+    "Project.lastModifiedDate": {
+      "description": "last modified date",
+      "aliases": ["last modified", "updated at", "when was it last changed"]
+    },
+    "Project.url": {
+      "description": "project path on disk",
+      "aliases": ["path", "directory", "folder", "file system path"]
+    },
+    "Model.name": {
+      "description": "model name",
+      "aliases": ["name", "schema name"]
+    },
+    "Entity.name": {
+      "description": "entity name",
+      "aliases": ["name", "class name", "table name"]
+    },
+    "Entity.isAbstract": {
+      "description": "abstract entity",
+      "aliases": ["abstract", "is abstract", "base class", "cannot be instantiated"]
+    },
+    "Entity.isFinal": {
+      "description": "final entity (no subentities)",
+      "aliases": ["final", "leaf class", "no subclasses"]
+    },
+    "Entity.isLeaf": {
+      "description": "leaf entity",
+      "aliases": ["leaf", "has no children"]
+    },
+    "Entity.isAuthorizable": {
+      "description": "entity with access control",
+      "aliases": ["authorizable", "has permissions", "has ACL", "access-controlled"]
+    },
+    "Entity.managedObjectClassName": {
+      "description": "custom PHP class name",
+      "aliases": ["class name", "PHP class", "custom class name"]
+    },
+    "Entity.renamingIdentifier": {
+      "description": "renaming identifier for migrations",
+      "aliases": ["renaming identifier", "migration alias"]
+    },
+    "Entity.subentitiesCount": {
+      "description": "number of subentities",
+      "aliases": ["how many subentities", "subclasses count"]
+    },
+    "Attribute.name": {
+      "description": "attribute name",
+      "aliases": ["name", "field name", "property name"]
+    },
+    "Attribute.type": {
+      "description": "attribute data type",
+      "aliases": ["type", "data type", "what type is it"]
+    },
+    "Attribute.isOptional": {
+      "description": "optional attribute (nullable)",
+      "aliases": ["optional", "nullable", "can be null"]
+    },
+    "Attribute.isTransient": {
+      "description": "transient attribute (not persisted)",
+      "aliases": ["transient", "not persisted", "in-memory only"]
+    },
+    "Attribute.isDerived": {
+      "description": "derived attribute (expression-based)",
+      "aliases": ["derived", "computed", "expression attribute"]
+    },
+    "Attribute.defaultValue": {
+      "description": "default value",
+      "aliases": ["default", "initial value", "fallback value"]
+    },
+    "Attribute.isSensitive": {
+      "description": "sensitive attribute (masked)",
+      "aliases": ["sensitive", "confidential", "hidden", "masked"]
+    },
+    "Attribute.allowsExternalBinaryDataStorage": {
+      "description": "external binary data storage",
+      "aliases": ["binary storage", "external storage", "stores files externally"]
+    },
+    "Relationship.name": {
+      "description": "relationship name",
+      "aliases": ["name", "association name"]
+    },
+    "Relationship.isToMany": {
+      "description": "to-many relationship (collection)",
+      "aliases": ["to-many", "one to many", "collection", "multiple destinations"]
+    },
+    "Relationship.isOptional": {
+      "description": "optional relationship",
+      "aliases": ["optional", "can be null"]
+    },
+    "Relationship.isOrdered": {
+      "description": "ordered relationship",
+      "aliases": ["ordered", "has explicit order"]
+    },
+    "Relationship.deleteRule": {
+      "description": "delete rule",
+      "aliases": ["cascade rule", "what happens on delete", "on delete"]
+    },
+    "Relationship.lazyDestinationEntityName": {
+      "description": "destination entity",
+      "aliases": ["destination", "target entity", "points to", "related entity"]
+    },
+    "Relationship.isOwner": {
+      "description": "owner relationship",
+      "aliases": ["owner", "owning side", "primary relationship"]
+    },
+    "FetchRequestTemplate.name": {
+      "description": "fetch request name",
+      "aliases": ["name", "query name", "named query"]
+    },
+    "FetchRequestTemplate.fetchEntityName": {
+      "description": "entity being queried",
+      "aliases": ["queried entity", "what entity it queries"]
+    },
+    "FetchRequestTemplate.predicateString": {
+      "description": "filter predicate",
+      "aliases": ["predicate", "filter", "where clause", "search condition"]
+    },
+    "FetchRequestTemplate.fetchLimit": {
+      "description": "result limit",
+      "aliases": ["limit", "max results", "maximum number of results"]
+    },
+    "FetchRequestTemplate.includesSubentities": {
+      "description": "includes subentities in results",
+      "aliases": ["includes subentities", "searches subclasses"]
+    },
+    "Configuration.name": {
+      "description": "configuration name",
+      "aliases": ["name", "subset name"]
+    },
+    "CompositeType.name": {
+      "description": "composite type name",
+      "aliases": ["name", "struct name"]
+    },
+    "UniquenessConstraint.stringValue": {
+      "description": "unique fields (comma-separated)",
+      "aliases": ["unique fields", "which fields are unique", "composite key fields"]
+    },
+    "FetchIndex.name": {
+      "description": "index name",
+      "aliases": ["name", "index name"]
+    },
+    "FetchIndex.partialIndexPredicateFormat": {
+      "description": "partial index predicate",
+      "aliases": ["index predicate", "partial index filter"]
+    },
+    "AccessControl.name": {
+      "description": "access control name",
+      "aliases": ["name", "permission name"]
+    },
+    "AccessControl.scope": {
+      "description": "authorization scope",
+      "aliases": ["scope", "access level", "authorization level"]
+    },
+    "AccessControl.isEnabled": {
+      "description": "access control enabled",
+      "aliases": ["enabled", "active", "is active"]
+    },
+    "Role.name": {
+      "description": "role name",
+      "aliases": ["role", "access profile name"]
+    }
+  }
+}

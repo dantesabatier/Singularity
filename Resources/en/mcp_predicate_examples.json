@@ -1,0 +1,10 @@
+[
+    "\"%K CONTAINS[cd] %s\", [\"name\", \"Order\"]",
+    "\"%K = %s\", [\"isAbstract\", true]",
+    "\"%K = %s AND %K = %s\", [\"isAbstract\", false, \"isFinal\", true]",
+    "\"%K = %s\", [\"isOptional\", false]",
+    "\"%K = %s\", [\"isToMany\", true]",
+    "\"%K CONTAINS[cd] %s AND %K = %s\", [\"name\", \"Date\", \"isOptional\", false]",
+    "\"%K CONTAINS[cd] %s\", [\"entityProperty.name\", \"Order\"]",
+    "\"NOT %K IN %s\", [\"deleteRule\", [0, 1]]"
+]

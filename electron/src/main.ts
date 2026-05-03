@@ -7,7 +7,7 @@ if (started) {
     app.quit()
 }
 
-const ENTRY_URL = "http://localhost:8001/"
+const ENTRY_URL = "http://localhost:8002/"
 
 interface BackendErrorBody {
     error?: {

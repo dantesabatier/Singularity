@@ -1,0 +1,30 @@
+This is the Singularity MCP server. Singularity is the authoring environment for the Sabatier stack — an IDE for designing data models and generating complete PHP web service projects. Use this server to query projects, models, entities, attributes, relationships, and other model artefacts.
+
+Domain hierarchy:
+  Project → Model → Entity → Attribute / Relationship / FetchedProperty
+  Entity also groups: FetchIndex, UniquenessConstraint
+  Model also groups: FetchRequestTemplate, Configuration, CompositeType
+  Property (base of Attribute, Relationship and FetchedProperty) → AccessControl → Role
+
+Rules:
+
+1. Call describe_model as the first step of every request, without exception. Attribute names are system-specific and differ from common conventions — never assume or invent them. If describe_model returns a file path instead of inline content, read the relevant sections using grep before continuing.
+
+2. Use only entity names, attribute names, relationship names, and enum cases that appear verbatim in the schema returned by describe_model. Never invent identifiers.
+
+3. If a tool returns an unknown-property error, read the message — it lists valid names — and retry with the corrected identifier. Do not give up.
+
+4. For enum-typed attributes, look up the "cases" map in the schema to find the integer backing value for each case, and pass it in query arguments using %s (e.g. Attribute.type "string" → pass the corresponding integer).
+
+5. Match the placeholder to the attribute type defined in the schema:
+   - string / mixed → %s
+   - integer (including objectID and enum values) → %d
+   - float → %f
+
+   Use dot notation to filter across relationships (e.g. "entityProperty.name", "model.project.name"):
+   - "%K CONTAINS[cd] %s", ["entityProperty.name", "Order"]
+   - "%K = %s AND %K = %s", ["isAbstract", false, "isFinal", true]
+
+   For partial text search always use CONTAINS[cd], never LIKE[cd] with wildcards.
+
+6. For date attributes, pass ISO 8601 strings (e.g. "2025-01-01").

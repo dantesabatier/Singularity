@@ -120,16 +120,11 @@ export class EditorCopilotController {
         this.pendingProposal = null
         this.setState("thinking")
         this.renderThinkingState()
-        const response = await this.context.httpClient.post("propose", {
-            objectID: this.projectObjectID,
-            prompt,
-        })
-        if (!response.ok) {
-            const error = await this.context.httpClient.tryGetErrorMessage(response)
-            this.renderError(error ?? "Something went wrong.")
-            return
+        const data = {
+            summary: undefined,
+            warnings: undefined,
+            items: undefined
         }
-        const data = await this.safeJson<PatchPreview>(response)
         if (!data) {
             this.renderError("Invalid response from propose endpoint.")
             return
@@ -146,15 +141,6 @@ export class EditorCopilotController {
             return
         }
         this.setState("applying")
-        const response = await this.context.httpClient.post("apply", {
-            objectID: this.projectObjectID,
-            patch: this.pendingProposal,
-        })
-        if (!response.ok) {
-            const error = await this.context.httpClient.tryGetErrorMessage(response)
-            this.renderError(error ?? "Something went wrong.")
-            return
-        }
         this.pendingProposal = null
         this.setState("done")
         await this.context.viewNavigator.push(window.location.href)
@@ -223,13 +209,5 @@ export class EditorCopilotController {
             "\"": "&quot;",
             "'": "&#39;",
         }[character] ?? character))
-    }
-
-    private async safeJson<T>(response: Response): Promise<T | null> {
-        try {
-            return await response.json() as T
-        } catch {
-            return null
-        }
     }
 }
