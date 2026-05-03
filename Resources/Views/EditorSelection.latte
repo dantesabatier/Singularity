@@ -1,0 +1,20 @@
+{templateType App\ViewControllers\EditorController}
+<div id="content">
+    {if $isTableViewSelected}
+        {include content from "Content.latte"}
+    {else}
+        {include graphView from "GraphView.latte"}
+    {/if}
+</div>
+<div id="inspector-pane">
+    {include inspector from "Inspector.latte"}
+</div>
+<div id="ai-copilot-pane">
+    {include aiCopilot from "AICopilot.latte"}
+</div>
+<ul id="editor-actions-menu">
+    {include menuActions from "EditorMenuActions.latte"}
+</ul>
+<ol id="breadcrumb-list">
+    {include breadcrumbItems from "EditorBreadcrumb.latte"}
+</ol>

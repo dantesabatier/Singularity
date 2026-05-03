@@ -272,6 +272,9 @@ return $this->allRoles;
     #[Override]
     public function viewWillLoad(): void
     {
+        if (($this->request->parameters['partial'] ?? null) === '1') {
+            $this->name = 'EditorSelection';
+        }
         $project = $this->project;
         $model = $project->model ?? throw new NotFoundException("Model not found");
         $this->breadcrumb->append($project);

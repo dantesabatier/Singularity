@@ -40,7 +40,20 @@ export class ViewNavigator {
         return true
     }
 
-    private async load(url: string, cache?: RequestCache): Promise<string | undefined> {
+    public replaceZones(html: string, url: string): void {
+        const doc = new DOMParser().parseFromString(html, "text/html")
+        const ids = ["content", "inspector-pane", "ai-copilot-pane", "editor-actions-menu", "breadcrumb-list"]
+        for (const id of ids) {
+            const source = doc.getElementById(id)
+            const target = document.getElementById(id)
+            if (source && target) {
+                target.innerHTML = source.innerHTML
+            }
+        }
+        document.dispatchEvent(new CustomEvent("view:updated", {detail: {url}}))
+    }
+
+    public async load(url: string, cache?: RequestCache): Promise<string | undefined> {
         let response: Response
         try {
             response = await this.httpClient.get(url, cache)

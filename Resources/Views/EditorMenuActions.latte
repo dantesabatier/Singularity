@@ -1,0 +1,133 @@
+{templateType App\ViewControllers\EditorController}
+{define menuActions}
+    <li>
+        <button class="dropdown-item" type="button" data-editor-action="showAboutPanel">
+            <i class="bi bi-info-circle"></i> <span>About</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="showPreferences">
+            <i class="bi bi-sliders"></i> <span>Preferences</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li><h6 class="dropdown-header">Add Element</h6></li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addEntity"
+                data-parent="{$project->model|json}"
+                data-position="{$project->model?->entities?->count}">
+            <i class="bi bi-plus-circle"></i> <span>Add Entity</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addCompositeType"
+                data-parent="{$project->model|json}"
+                data-position="{$project->model?->compositeTypes?->count}">
+            <i class="bi bi-diagram-3"></i> <span>Add Composite Type</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addFetchRequestTemplate"
+                data-parent="{$project->model|json}"
+                data-position="{$project->model?->fetchRequestTemplates?->count}">
+            <i class="bi bi-search"></i> <span>Add Fetch Request</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addConfiguration"
+                data-parent="{$project->model|json}"
+                data-position="{$project->model?->configurations?->count}">
+            <i class="bi bi-gear"></i> <span>Add Configuration</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li><h6 class="dropdown-header">Entity Properties</h6></li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addAttribute"
+                data-parent="{$selectedEntity|json}"
+                data-position="{$selectedEntity?->attributes?->count}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+            <i class="bi bi-tag"></i> <span>Add Attribute</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addFetchedProperty"
+                data-parent="{$selectedEntity|json}"
+                data-position="{$selectedEntity?->fetchedProperties?->count}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+            <i class="bi bi-box-arrow-in-down"></i> <span>Add Fetched Property</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addRelationship"
+                data-parent="{$selectedEntity|json}"
+                data-position="{$selectedEntity?->relationships?->count}" {!$selectedEntity instanceof App\Model\Entity ? disabled}>
+            <i class="bi bi-arrow-left-right"></i> <span>Add Relationship</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2"
+                type="button"
+                data-editor-action="addFetchIndex"
+                data-parent="{$selectedEntity|json}"
+                data-position="{$selectedEntity?->indexes?->count}" {!$selectedEntity instanceof App\Model\Entity || $selectedEntity->attributes->isEmpty ? disabled}>
+            <i class="bi bi-lightning"></i> <span>Add Fetch Index</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li>
+        <button class="dropdown-item text-danger d-flex align-items-center gap-2"
+                data-editor-action="removeSelection"
+                data-item="{$selection|json}" {!$selection ? disabled}>
+            <i class="bi bi-trash"></i> <span>Remove</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li><h6 class="dropdown-header">Project Actions</h6></li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="saveProject" data-project-id="{$project->objectID|json}">
+            <i class="bi bi-floppy"></i> <span>Save</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="openSQLViewer" data-project-id="{$project->objectID|json}" {!$isSQLViewerEnabled ? disabled}>
+            <i class="bi bi-file-earmark-code"></i> <span>Show SQL Schema...</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="createSubclass" data-project-id="{$project->objectID|json}">
+            <i class="bi bi-file-earmark-plus"></i> <span>Create ManagedObject Subclass...</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="importModel" data-project-id="{$project->objectID|json}" data-model-path="{$project->model?->url?->path}">
+            <i class="bi bi-upload"></i> <span>Import...</span>
+        </button>
+    </li>
+{/define}
