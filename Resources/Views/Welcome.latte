@@ -41,7 +41,7 @@
                         {else}
                             <div class="list-group list-group-flush">
                                 {foreach $projects as $project}
-                                    {var $path = $project->url->path}
+                                    {var $path = $project->url?->path}
                                     <div class="list-group-item">
                                         <div class="d-flex align-items-center gap-3">
                                             <span class="project-avatar color-picker cursor-pointer" style="background-color: {$project?->color|noescape};" data-jscolor="{ value: '{$project?->color|noescape}', preset: 'dark'}" data-project="{$project->objectID|json}">

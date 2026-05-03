@@ -239,7 +239,7 @@ final class EditorController extends ProjectController
     private(set) Set $allRoles {
         get {
             if (isset($this->allRoles)) {
-return $this->allRoles;
+                return $this->allRoles;
             }
             /** @var Set<string> $allRoles */
             $allRoles = $this->selectedAccessControl?->roles?->map(fn(Role $role): string => $role->name) ?? new Set();

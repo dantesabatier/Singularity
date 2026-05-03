@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Model;
+
+use Override;
+use Sabatier\CoreData\ManagedObject;
+use Sabatier\Foundation\Date;
+use Sabatier\Foundation\Set;
+
+/**
+ * @property Date $creationDate
+ * @property string $title
+ * @property string $provider
+ * @property string $model
+ * @property Project|null $project
+ * @property Set<Message> $messages
+ * @method void addMessagesObject(Message $object)
+ * @method void removeMessagesObject(Message $object)
+ * @method void addMessages(Set<Message> $objects)
+ * @method void removeMessages(Set<Message> $objects)
+ * @method Set<Message> intersectMessages(Set<Message> $objects)
+ * @method void setMessages(Set<Message> $objects)
+ */
+final class Conversation extends ManagedObject
+{
+    #[Override]
+    public function willSave(): void
+    {
+        $this->title = $this->title |> trim(...);
+    }
+}

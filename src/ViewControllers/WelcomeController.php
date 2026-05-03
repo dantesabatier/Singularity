@@ -52,7 +52,6 @@ final class WelcomeController extends ViewController
                 return $this->projects;
             }
             $fetchRequest = Project::fetchRequest();
-            $fetchRequest->propertiesToFetch = new ArrayClass(["name", "creationDate", "url", "color"]);
             $fetchRequest->sortDescriptors = new ArrayClass([new SortDescriptor("creationDate")]);
             return $this->projects = $this->managedObjectContext->fetch($fetchRequest);
         }

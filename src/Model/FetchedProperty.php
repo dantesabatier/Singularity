@@ -3,8 +3,8 @@
 namespace App\Model;
 
 use Override;
-use Sabatier\CoreData\FetchedPropertyDescription;
 use Sabatier\CoreData\FetchRequest;
+use Sabatier\CoreData\FetchedPropertyDescription;
 use Sabatier\CoreData\PropertyDescription;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Predicates\Predicate;
