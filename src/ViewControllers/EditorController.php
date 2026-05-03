@@ -4,7 +4,6 @@ namespace App\ViewControllers;
 
 use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
-use App\Cache\PrivateCacheHeaderTransformer;
 use App\FileWriters\SubclassFileWriter;
 use App\Model\AccessControl;
 use App\Model\CompositeType;
@@ -45,7 +44,6 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\JSONTransformer;
-use Sabatier\Service\NoCacheHeaderTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
@@ -59,7 +57,7 @@ use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
 
-#[Endpoint("Editor", transformers: [HTMLTransformer::class, PrivateCacheHeaderTransformer::class])]
+#[Endpoint("Editor", transformers: [HTMLTransformer::class])]
 final class EditorController extends ProjectController
 {
     public const string tableViewValue = EditorTableViewValue;
@@ -329,7 +327,7 @@ return $this->allRoles;
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function save(): void
     {
         $project = $this->project;
@@ -343,7 +341,7 @@ return $this->allRoles;
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function import(): void
     {
         $parameters = $this->request->parameters;
@@ -365,7 +363,7 @@ return $this->allRoles;
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function subclass(): void
     {
         $project = $this->project;
@@ -397,7 +395,7 @@ return $this->allRoles;
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function reorder(): void
     {
         $parameters = $this->request->parameters;

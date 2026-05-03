@@ -20,20 +20,18 @@ use Sabatier\Foundation\Predicates\ComparisonPredicate;
 use Sabatier\Foundation\Predicates\Expression;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
-use App\Cache\PrivateCacheHeaderTransformer;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
-use Sabatier\Service\NoCacheHeaderTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\random_color;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
-#[Endpoint("/", transformers: [HTMLTransformer::class, PrivateCacheHeaderTransformer::class])]
+#[Endpoint("/", transformers: [HTMLTransformer::class])]
 final class WelcomeController extends ViewController
 {
     #[Override]
@@ -97,7 +95,7 @@ final class WelcomeController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function open(): void
     {
         $parameters = $this->request->parameters;
@@ -114,7 +112,7 @@ final class WelcomeController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function create(): void
     {
         $parameters = $this->request->parameters;
@@ -133,7 +131,7 @@ final class WelcomeController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(HTTPRequestMethod::patch, transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(HTTPRequestMethod::patch, transformers: [JSONTransformer::class])]
     public function rename(): void
     {
         $parameters = $this->request->parameters;
@@ -149,7 +147,7 @@ final class WelcomeController extends ViewController
     /**
      * @throws Exception
      */
-    #[Action(HTTPRequestMethod::delete, transformers: [NoCacheHeaderTransformer::class])]
+    #[Action(HTTPRequestMethod::delete)]
     public function remove(): void
     {
         $objectID = $this->request->parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException("`objectID` is required");

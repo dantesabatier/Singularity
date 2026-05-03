@@ -11,20 +11,18 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use App\Cache\PrivateCacheHeaderTransformer;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
-use Sabatier\Service\NoCacheHeaderTransformer;
 use Sabatier\Service\Outlet;
 use const App\EntityPositionsMappingPreferencesKey;
 use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
 
-#[Endpoint("Viewer", transformers: [HTMLTransformer::class, PrivateCacheHeaderTransformer::class])]
+#[Endpoint("Viewer", transformers: [HTMLTransformer::class])]
 final class ViewerController extends ProjectController
 {
     #[Override]
@@ -65,7 +63,7 @@ final class ViewerController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function export(): void
     {
         $parameters = $this->request->parameters;
@@ -80,7 +78,7 @@ final class ViewerController extends ProjectController
     /**
      * @throws Exception
      */
-    #[Action(transformers: [JSONTransformer::class, NoCacheHeaderTransformer::class])]
+    #[Action(transformers: [JSONTransformer::class])]
     public function moved(): void
     {
         $name = $this->project->name;
