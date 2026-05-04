@@ -30,40 +30,27 @@
                     <i class="bi bi-chevron-down" style="font-size: 8px; opacity: 0.5;"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end ai-model-dropdown">
-                    <li>
-                        <h6 class="dropdown-header ai-provider-header">
-                            <span class="ai-provider-icon tier-anthropic">A</span>Anthropic
-                        </h6>
-                    </li>
-                    <li>
-                        <button class="dropdown-item ai-model-item" type="button" data-provider="anthropic" data-model="claude-opus-4-7" data-label="Opus 4.7" data-tier="opus">
-                            <span class="ai-model-item-dot tier-opus"></span>
-                            <span class="ai-model-item-name">Opus 4.7</span>
-                            <code class="ai-model-item-id">claude-opus-4-7</code>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item ai-model-item" type="button"
-                                data-provider="anthropic"
-                                data-model="claude-sonnet-4-6"
-                                data-label="Sonnet 4.6"
-                                data-tier="sonnet">
-                            <span class="ai-model-item-dot tier-sonnet"></span>
-                            <span class="ai-model-item-name">Sonnet 4.6</span>
-                            <code class="ai-model-item-id">claude-sonnet-4-6</code>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item ai-model-item" type="button"
-                                data-provider="anthropic"
-                                data-model="claude-haiku-4-5-20251001"
-                                data-label="Haiku 4.5"
-                                data-tier="haiku">
-                            <span class="ai-model-item-dot tier-haiku"></span>
-                            <span class="ai-model-item-name">Haiku 4.5</span>
-                            <code class="ai-model-item-id">claude-haiku-4-5-20251001</code>
-                        </button>
-                    </li>
+                    {foreach $aiProviders as $provider}
+                        <li>
+                            <h6 class="dropdown-header ai-provider-header">
+                                <span class="ai-provider-icon tier-{$provider->identifier}">{$provider->name|first}</span>
+                                {$provider->name}
+                            </h6>
+                        </li>
+                        {foreach $provider->models as $model}
+                            <li>
+                                <button class="dropdown-item ai-model-item" type="button" data-provider="{$provider->identifier}" data-model="{$model->identifier}" data-label="{$model->name}" data-tier="{$model->tier}">
+                                    <span class="ai-model-item-dot tier-{$model->tier}"></span>
+                                    <span class="ai-model-item-name">{$model->name}</span>
+                                    <code class="ai-model-item-id">{$model->identifier}</code>
+                                </button>
+                            </li>
+                        {/foreach}
+                        {if !$iterator->last}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>{/if}
+                    {/foreach}
                 </ul>
             </div>
             <span id="ai-status" class="ai-status-pill is-idle">Idle</span>
@@ -72,10 +59,7 @@
             <i class="bi bi-stars"></i>
             <p>Select a conversation or start typing below</p>
         </div>
-        <div n:if="$selectedConversation"
-                id="chat-messages"
-                data-conversation-id="{$selectedConversation->objectID|json}"
-                class="ai-chat-messages flex-grow-1">
+        <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" class="ai-chat-messages flex-grow-1">
             {foreach $selectedConversation->messages as $message}
                 <div class="ai-msg ai-msg--{$message->role}">
                     <div n:if="$message->role !== 'tool'" class="ai-bubble">{$message->content}</div>

@@ -111,7 +111,7 @@ final class EditorController extends ProjectController
     }
     #[Outlet]
     public string $selectedAIProvider {
-        get => UserDefaults::standard()->string(EditorAIProviderPreferencesKey) ?? LLMProvider::anthropic->value;
+        get => UserDefaults::standard()->string(EditorAIProviderPreferencesKey) ?? "anthropic";
         set {
             UserDefaults::standard()->setObject($value, EditorAIProviderPreferencesKey);
         }
@@ -121,6 +121,16 @@ final class EditorController extends ProjectController
         get => UserDefaults::standard()->string(EditorAIModelPreferencesKey);
         set {
             UserDefaults::standard()->setObject($value, EditorAIModelPreferencesKey);
+        }
+    }
+    /** @var ArrayClass<LLMProvider> */
+    #[Outlet]
+    private(set) ArrayClass $aiProviders {
+        get {
+            if (isset($this->aiProviders)) {
+                return $this->aiProviders;
+            }
+            return $this->aiProviders = LLMProvider::all();
         }
     }
     #[Outlet]
@@ -499,8 +509,8 @@ final class EditorController extends ProjectController
     {
         $parameters = $this->request->parameters;
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
-        $providerModel = $parameters["model"] ?? $this->selectedAIModel;
-        $provider = LLMProvider::tryFrom($this->selectedAIProvider) ?? LLMProvider::anthropic;
+        $providerModel = is_string($parameters["model"] ?? null) ? $parameters["model"] : $this->selectedAIModel;
+        $provider = LLMProvider::find($this->selectedAIProvider) ?? LLMProvider::anthropic();
         $conversation = $this->selectedConversation ?? new Conversation($this->managedObjectContext);
         $conversation->title ??= $content;
         $conversation->project ??= $this->project;

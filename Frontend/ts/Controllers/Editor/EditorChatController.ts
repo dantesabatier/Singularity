@@ -10,12 +10,6 @@ type ChatMessage = {
 const DEFAULT_PROVIDER = "anthropic"
 const DEFAULT_MODEL = "claude-opus-4-7"
 
-const MODEL_META: Record<string, { label: string; tier: string }> = {
-    "claude-opus-4-7": {label: "Opus 4.7", tier: "opus"},
-    "claude-sonnet-4-6": {label: "Sonnet 4.6", tier: "sonnet"},
-    "claude-haiku-4-5-20251001": {label: "Haiku 4.5", tier: "haiku"},
-}
-
 export class EditorChatController {
     private currentConversationID: string | null = null
     private currentProjectID: string | null = null
@@ -116,15 +110,17 @@ export class EditorChatController {
 
     private applyModel(model: string, persist: boolean): void {
         this.selectedModel = model
-        const meta = MODEL_META[model] ?? {label: model, tier: "opus"}
+        const modelBtn = document.querySelector<HTMLElement>(`.ai-model-item[data-model="${model}"]`)
+        const label = modelBtn?.dataset.label ?? model
+        const tier = modelBtn?.dataset.tier ?? "opus"
 
         const nameEl = document.getElementById("chat-model-name")
         if (nameEl) {
-            nameEl.textContent = meta.label
+            nameEl.textContent = label
         }
         const indicator = document.getElementById("chat-model-indicator")
         if (indicator) {
-            indicator.className = `ai-model-indicator tier-${meta.tier}`
+            indicator.className = `ai-model-indicator tier-${tier}`
         }
         if (persist) {
             void this.context.actionDispatcher.dispatch("Synchronize", {
