@@ -1,9 +1,12 @@
 {templateType App\ViewControllers\EditorController}
 {define editorChat}
-    <div id="ai-chat-panel" class="ai-copilot-panel" data-project-object-id="{$project->objectID|json}" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="inspector-header ai-copilot-header d-flex align-items-center gap-2 flex-shrink-0">
+    <div id="ai-chat-panel" class="ai-chat-panel"
+         data-project-object-id="{$project->objectID|json}"
+         data-ai-provider="{$selectedAIProvider ?? 'anthropic'}"
+         data-ai-model="{$selectedAIModel ?? 'claude-opus-4-7'}">
+        <div class="ai-chat-header">
             <div class="dropdown">
-                <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Conversations">
+                <button class="btn btn-icon ai-chat-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Conversations">
                     <i class="bi bi-clock-history"></i>
                 </button>
                 <ul class="dropdown-menu">
@@ -19,31 +22,94 @@
                     {/foreach}
                 </ul>
             </div>
-            <span class="text-truncate flex-grow-1" style="font-size: 11px; color: var(--text-secondary);">{$selectedConversation?->title ?? ""}</span>
-            <span id="ai-status" class="ai-copilot-status is-idle flex-shrink-0">Idle</span>
-        </div>
-        <div n:if="!$selectedConversation" class="chat-empty-state flex-grow-1">
-            <i class="bi bi-chat-left-dots"></i>
-            <p>Select a conversation<br>from the dropdown above</p>
-        </div>
-        <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" class="flex-grow-1 overflow-auto p-2 d-flex flex-column gap-2" style="min-height: 0;">
-            <div n:foreach="$selectedConversation->messages as $message" class="chat-message chat-message--{$message->role}">
-                <div n:if="$message->role !== 'tool'" class="chat-bubble">{$message->content}</div>
-                <div n:if="$message->role === 'tool'" class="chat-tool-badge">
-                    <i class="bi bi-gear-fill"></i> {$message->toolCallId}
-                </div>
-                <div n:if="$message->role === 'assistant'" n:foreach="json_decode($message->toolCalls ?? '[]', true) ?? [] as $tc" class="chat-tool-badge mt-1">
-                    <i class="bi bi-gear"></i> {$tc["name"]}
-                </div>
+            <span class="ai-chat-title text-truncate flex-grow-1">{$selectedConversation?->title ?? ""}</span>
+            <div class="dropdown">
+                <button class="btn ai-model-picker-btn" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false"
+                        title="Select AI Model"
+                        id="chat-model-picker-btn">
+                    <span class="ai-model-indicator" id="chat-model-indicator"></span>
+                    <span class="ai-model-name" id="chat-model-name">Opus 4.7</span>
+                    <i class="bi bi-chevron-down" style="font-size: 8px; opacity: 0.5;"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end ai-model-dropdown">
+                    <li>
+                        <h6 class="dropdown-header ai-provider-header">
+                            <span class="ai-provider-icon tier-anthropic">A</span>
+                            Anthropic
+                        </h6>
+                    </li>
+                    <li>
+                        <button class="dropdown-item ai-model-item" type="button"
+                                data-provider="anthropic"
+                                data-model="claude-opus-4-7"
+                                data-label="Opus 4.7"
+                                data-tier="opus">
+                            <span class="ai-model-item-dot tier-opus"></span>
+                            <span class="ai-model-item-name">Opus 4.7</span>
+                            <code class="ai-model-item-id">claude-opus-4-7</code>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item ai-model-item" type="button"
+                                data-provider="anthropic"
+                                data-model="claude-sonnet-4-6"
+                                data-label="Sonnet 4.6"
+                                data-tier="sonnet">
+                            <span class="ai-model-item-dot tier-sonnet"></span>
+                            <span class="ai-model-item-name">Sonnet 4.6</span>
+                            <code class="ai-model-item-id">claude-sonnet-4-6</code>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item ai-model-item" type="button"
+                                data-provider="anthropic"
+                                data-model="claude-haiku-4-5-20251001"
+                                data-label="Haiku 4.5"
+                                data-tier="haiku">
+                            <span class="ai-model-item-dot tier-haiku"></span>
+                            <span class="ai-model-item-name">Haiku 4.5</span>
+                            <code class="ai-model-item-id">claude-haiku-4-5-20251001</code>
+                        </button>
+                    </li>
+                </ul>
             </div>
-            <div id="chat-thinking" class="chat-thinking">
+            <span id="ai-status" class="ai-status-pill is-idle">Idle</span>
+        </div>
+        <div n:if="!$selectedConversation" class="ai-chat-empty flex-grow-1">
+            <i class="bi bi-stars"></i>
+            <p>Select a conversation or start typing below</p>
+        </div>
+        <div n:if="$selectedConversation"
+             id="chat-messages"
+             data-conversation-id="{$selectedConversation->objectID|json}"
+             class="ai-chat-messages flex-grow-1">
+            {foreach $selectedConversation->messages as $message}
+                <div class="ai-msg ai-msg--{$message->role}">
+                    <div n:if="$message->role !== 'tool'" class="ai-bubble">{$message->content}</div>
+                    <div n:if="$message->role === 'tool'" class="ai-tool-badge">
+                        <i class="bi bi-check2-circle"></i>
+                        {$message->toolCallId}
+                    </div>
+                    <div n:if="$message->role === 'assistant'"
+                         n:foreach="json_decode($message->toolCalls ?? '[]', true) ?? [] as $tc"
+                         class="ai-tool-badge">
+                        <i class="bi bi-gear"></i> {$tc["name"]}
+                    </div>
+                </div>
+            {/foreach}
+            <div id="chat-thinking" class="ai-thinking">
                 <span></span><span></span><span></span>
             </div>
         </div>
-        <div class="flex-shrink-0 p-2 d-flex gap-2 align-items-end" style="border-top: 1px solid var(--border-color);">
-            <textarea aria-label="chat" id="chat-input" class="form-control form-control-sm" rows="2" placeholder="Ask the AI…" style="resize: none; font-size: 12px;"></textarea>
-            <button type="button" id="chat-send-btn" class="btn btn-primary btn-sm" disabled>
-                <i class="bi bi-send"></i>
+        <div class="ai-chat-input-bar flex-shrink-0">
+            <textarea aria-label="chat"
+                      id="chat-input"
+                      class="ai-chat-textarea"
+                      rows="2"
+                      placeholder="Ask the AI…"></textarea>
+            <button type="button" id="chat-send-btn" class="ai-send-btn" disabled>
+                <i class="bi bi-arrow-up"></i>
             </button>
         </div>
     </div>

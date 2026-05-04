@@ -15,6 +15,8 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use const App\CompanyNamePreferencesKey;
+use const App\EditorAIModelPreferencesKey;
+use const App\EditorAIProviderPreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
@@ -86,6 +88,20 @@ final class PreferencesController extends ViewController
         get => UserDefaults::standard()->bool(ExportIncludeCommentsPreferencesKey);
         set {
             UserDefaults::standard()->setBool($value, ExportIncludeCommentsPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?string $editorAIProvider {
+        get => UserDefaults::standard()->string(EditorAIProviderPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorAIProviderPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?string $editorAIModel {
+        get => UserDefaults::standard()->string(EditorAIModelPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorAIModelPreferencesKey);
         }
     }
 

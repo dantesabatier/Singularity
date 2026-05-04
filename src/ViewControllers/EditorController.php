@@ -1,10 +1,14 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
+declare(strict_types=1);
+
 namespace App\ViewControllers;
 
 use App\AI\LLMAgent;
 use App\AI\LLMMessage;
-use App\AI\Providers\AnthropicClient;
+use App\AI\LLMProvider;
 use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
 use App\FileWriters\SubclassFileWriter;
@@ -61,6 +65,8 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
+use const App\EditorAIModelPreferencesKey;
+use const App\EditorAIProviderPreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
@@ -101,6 +107,20 @@ final class EditorController extends ProjectController
         get => UserDefaults::standard()->bool(EditorCopilotEnabledPreferencesKey);
         set {
             UserDefaults::standard()->setBool($value, EditorCopilotEnabledPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public string $selectedAIProvider {
+        get => UserDefaults::standard()->string(EditorAIProviderPreferencesKey) ?? LLMProvider::anthropic->value;
+        set {
+            UserDefaults::standard()->setObject($value, EditorAIProviderPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?string $selectedAIModel {
+        get => UserDefaults::standard()->string(EditorAIModelPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorAIModelPreferencesKey);
         }
     }
     #[Outlet]
@@ -479,6 +499,8 @@ final class EditorController extends ProjectController
     {
         $parameters = $this->request->parameters;
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
+        $providerModel = $parameters["model"] ?? $this->selectedAIModel;
+        $provider = LLMProvider::tryFrom($this->selectedAIProvider) ?? LLMProvider::anthropic;
         $conversation = $this->selectedConversation ?? new Conversation($this->managedObjectContext);
         $conversation->title ??= $content;
         $conversation->project ??= $this->project;
@@ -488,7 +510,7 @@ final class EditorController extends ProjectController
         $conversation->addMessagesObject($message);
         /** @var ArrayClass<LLMMessage> $history */
         $history = new ArrayClass($conversation->messages->map(fn(Message $message): LLMMessage => $message->LLMMessage));
-        $agent = new LLMAgent(new AnthropicClient(), $this->registry);
+        $agent = new LLMAgent($provider->client($providerModel), $this->registry);
         $conversation->addMessages(new Set($agent->run($history)->map(function (LLMMessage $llmMessage): Message {
             $message = new Message($this->managedObjectContext);
             $message->LLMMessage = $llmMessage;

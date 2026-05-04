@@ -7,9 +7,20 @@ type ChatMessage = {
     toolCallId?: string | null
 }
 
+const DEFAULT_PROVIDER = "anthropic"
+const DEFAULT_MODEL = "claude-opus-4-7"
+
+const MODEL_META: Record<string, { label: string; tier: string }> = {
+    "claude-opus-4-7": {label: "Opus 4.7", tier: "opus"},
+    "claude-sonnet-4-6": {label: "Sonnet 4.6", tier: "sonnet"},
+    "claude-haiku-4-5-20251001": {label: "Haiku 4.5", tier: "haiku"},
+}
+
 export class EditorChatController {
     private currentConversationID: string | null = null
     private currentProjectID: string | null = null
+    private selectedProvider: string = DEFAULT_PROVIDER
+    private selectedModel: string = DEFAULT_MODEL
 
     private readonly onSendClick = (): void => {
         void this.sendMessage()
@@ -34,6 +45,8 @@ export class EditorChatController {
             return
         }
         this.bindElements()
+        this.loadSelectionsFromDOM()
+        this.bindModelPicker()
     }
 
     private bindElements(): void {
@@ -67,6 +80,59 @@ export class EditorChatController {
         this.updateSendButton()
     }
 
+    private loadSelectionsFromDOM(): void {
+        const panel = document.getElementById("ai-chat-panel")
+        if (!(panel instanceof HTMLElement)) {
+            return
+        }
+        const provider = panel.dataset.aiProvider ?? DEFAULT_PROVIDER
+        const model = panel.dataset.aiModel ?? DEFAULT_MODEL
+        this.applyProvider(provider, false)
+        this.applyModel(model, false)
+    }
+
+    private bindModelPicker(): void {
+        const menu = document.querySelector(".ai-model-dropdown")
+        menu?.addEventListener("click", (e) => {
+            const btn = (e.target as Element).closest<HTMLElement>("[data-model]")
+            if (!btn?.dataset.model) {
+                return
+            }
+            const provider = btn.dataset.provider ?? DEFAULT_PROVIDER
+            const model = btn.dataset.model
+            this.applyProvider(provider, true)
+            this.applyModel(model, true)
+        })
+    }
+
+    private applyProvider(provider: string, persist: boolean): void {
+        this.selectedProvider = provider
+        if (persist) {
+            void this.context.actionDispatcher.dispatch("Synchronize", {
+                editorAIProvider: provider,
+            })
+        }
+    }
+
+    private applyModel(model: string, persist: boolean): void {
+        this.selectedModel = model
+        const meta = MODEL_META[model] ?? {label: model, tier: "opus"}
+
+        const nameEl = document.getElementById("chat-model-name")
+        if (nameEl) {
+            nameEl.textContent = meta.label
+        }
+        const indicator = document.getElementById("chat-model-indicator")
+        if (indicator) {
+            indicator.className = `ai-model-indicator tier-${meta.tier}`
+        }
+        if (persist) {
+            void this.context.actionDispatcher.dispatch("Synchronize", {
+                editorAIModel: model,
+            })
+        }
+    }
+
     private async sendMessage(): Promise<void> {
         const input = document.getElementById("chat-input")
         if (!(input instanceof HTMLTextAreaElement)) {
@@ -84,6 +150,7 @@ export class EditorChatController {
             project: this.currentProjectID,
             conversation: this.currentConversationID,
             content,
+            model: this.selectedModel,
         })
 
         if (!response.ok) {
@@ -118,21 +185,21 @@ export class EditorChatController {
             return
         }
         const wrapper = document.createElement("div")
-        wrapper.className = `chat-message chat-message--${message.role}`
+        wrapper.className = `ai-msg ai-msg--${message.role}`
 
         if (message.role === "tool") {
             const name = message.toolCallId ?? "tool"
-            wrapper.innerHTML = `<span class="chat-tool-badge"><i class="bi bi-gear-fill"></i> ${this.escapeHTML(name)}</span>`
+            wrapper.innerHTML = `<span class="ai-tool-badge"><i class="bi bi-check2-circle"></i> ${this.escapeHTML(name)}</span>`
         } else {
             const bubble = document.createElement("div")
-            bubble.className = "chat-bubble"
+            bubble.className = "ai-bubble"
             bubble.textContent = message.content ?? ""
             wrapper.appendChild(bubble)
 
             if (message.role === "assistant" && message.toolCalls?.length) {
                 for (const call of message.toolCalls) {
                     const badge = document.createElement("div")
-                    badge.className = "chat-tool-badge mt-1"
+                    badge.className = "ai-tool-badge"
                     badge.innerHTML = `<i class="bi bi-gear"></i> ${this.escapeHTML(call.name)}`
                     wrapper.appendChild(badge)
                 }

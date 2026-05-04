@@ -24,6 +24,10 @@ final class AnthropicClient extends LLMClient
     private const string anthropicVersion = "2023-06-01";
     private const int maxTokens = 8192;
 
+    public function __construct(private readonly ?string $model = null)
+    {
+    }
+
     private function apiKey(): string
     {
         return ProcessInfo::processInfo()->environment["ANTHROPIC_API_KEY"] ?? "";
@@ -31,7 +35,7 @@ final class AnthropicClient extends LLMClient
 
     private function model(): string
     {
-        return ProcessInfo::processInfo()->environment["AI_MODEL"] ?? "claude-opus-4-7";
+        return $this->model ?? ProcessInfo::processInfo()->environment["AI_MODEL"] ?? "claude-opus-4-7";
     }
 
     /**
