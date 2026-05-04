@@ -1,6 +1,7 @@
 {
   "name": "sabatier/singularity",
   "description": "A set of tools to build web services in a bit.",
+  "version": "0.7.0",
   "keywords": [
     "sabatier",
     "singularity"
