@@ -21,16 +21,6 @@
                 <file name="src/Bundles/RenameBundleTransaction.php"/>
             </errorLevel>
         </UnresolvableInclude>
-        <PossiblyNullReference>
-            <errorLevel type="suppress">
-                <file name="src/AI/ValidatePatchProcessor.php"/>
-            </errorLevel>
-        </PossiblyNullReference>
-        <InvalidArgument>
-            <errorLevel type="suppress">
-                <file name="src/AI/ValidatePatchProcessor.php"/>
-            </errorLevel>
-        </InvalidArgument>
         <InvalidAttribute errorLevel="suppress"/>
     </issueHandlers>
     <plugins>

@@ -16,7 +16,7 @@
                     <select name="superentityID" id="superentityID" class="form-select form-select-sm" data-autosave="true">
                         <option value="">No Parent Entity</option>
                         <option disabled>──────────</option>
-                        <option n:foreach="$project->model->entities as $entity" value="{$entity->objectID|json}" {$entity->name === $selectedEntity->superentity?->name ? selected} {$entity->isEqual($selectedEntity) ? disabled}>{$entity->name}</option>
+                        <option n:foreach="$project->model->entities as $entity" value="{$entity->objectID|json}" {$entity->isEqual($selectedEntity->superentity) ? selected} {$entity->isEqual($selectedEntity) ? disabled}>{$entity->name}</option>
                     </select>
                 </div>
             </div>
@@ -63,10 +63,7 @@
                             <button type="button" class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
-                            <button type="button"
-                                    class="btn btn-sm icon"
-                                    data-editor-action="removeSelection"
-                                    data-item="{$selectedUniquenessConstraint|json}" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
+                            <button type="button" class="btn btn-sm icon" data-editor-action="removeSelection" data-item="{$selectedUniquenessConstraint|json}" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
                                 <i class="bi bi-dash-lg"></i>
                             </button>
                         </div>

@@ -75,7 +75,7 @@
                 <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
             </div>
         </nav>
-        <div id="editor-runtime" data-project-object-id="{$project->objectID}" hidden></div>
+        <div id="editor-runtime" data-project-object-id="{$project->objectID|json}" hidden></div>
         <div id="split-container" class="split-container" data-split-sizes="{$splitSizes->array}" data-copilot-enabled="{$isCopilotEnabled ? 'true' : 'false'}" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
             <div id="source" class="split-panel scroll-view border-end border-black p-2" style="width: {$initialSplitSizes[0]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
                 {include sourceList from "SourceList.latte"}
@@ -91,7 +91,7 @@
                 <div id="inspector-pane" class="scroll-view pe-1" style="height: 100%; display: {$isCopilotEnabled ? 'none' : 'block'};">
                     {include inspector from "Inspector.latte"}
                 </div>
-                <div id="ai-copilot-pane" class="scroll-view ps-1" style="height: 100%; display: {$isCopilotEnabled ? 'block' : 'none'};">
+                <div id="ai-copilot-pane" class="ps-1" style="height: 100%; display: {$isCopilotEnabled ? 'block' : 'none'}; overflow: hidden;">
                     {include editorChat from "EditorChat.latte"}
                 </div>
             </div>

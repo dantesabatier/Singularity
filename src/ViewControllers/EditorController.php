@@ -2,16 +2,21 @@
 
 namespace App\ViewControllers;
 
+use App\AI\LLMAgent;
+use App\AI\LLMMessage;
+use App\AI\Providers\AnthropicClient;
 use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
 use App\FileWriters\SubclassFileWriter;
 use App\Model\AccessControl;
 use App\Model\CompositeType;
 use App\Model\Configuration;
+use App\Model\Conversation;
 use App\Model\Entity;
 use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
 use App\Model\FetchRequestTemplate;
+use App\Model\Message;
 use App\Model\Model;
 use App\Model\Project;
 use App\Model\Property;
@@ -44,6 +49,14 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\JSONTransformer;
+use Sabatier\Service\MCP\Schema\AttributeSchemaFactory;
+use Sabatier\Service\MCP\Schema\ModelDescriptor;
+use Sabatier\Service\MCP\Schema\ModelSchemaExtractor;
+use Sabatier\Service\MCP\Schema\PredicateGuideFactory;
+use Sabatier\Service\MCP\Schema\SchemaLocalizer;
+use Sabatier\Service\MCP\Schema\VocabularyRepository;
+use Sabatier\Service\MCP\ToolResolver;
+use Sabatier\Service\MCP\Tools\ToolRegistry;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
@@ -156,6 +169,22 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ?Role $selectedRole = null;
     #[Outlet]
+    private(set) ?Conversation $selectedConversation {
+        /**
+         * @throws Exception
+         */
+        get {
+            if (isset($this->selectedConversation)) {
+                return $this->selectedConversation;
+            }
+            $reference = $this->request->parameters["conversation"];
+            if (!is_numeric($reference)) {
+                return $this->selectedConversation = null;
+            }
+            return $this->selectedConversation = $this->fetchByReference(Conversation::class, (int)$reference);
+        }
+    }
+    #[Outlet]
     private(set) ?ManagedObject $selection = null;
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
@@ -252,6 +281,12 @@ final class EditorController extends ProjectController
     private(set) bool $isCustomRole {
         get => $this->isCustomRole ??= $this->defaultRoles->contains(fn(string $s): bool => $s === $this->selectedRole?->name);
     }
+    private ModelDescriptor $descriptor {
+        get => $this->descriptor ??= new ModelDescriptor(new ModelSchemaExtractor($this->managedObjectContext, new AttributeSchemaFactory()), new VocabularyRepository(), new SchemaLocalizer(), new PredicateGuideFactory());
+    }
+    private ToolRegistry $registry {
+        get => $this->registry ??= new ToolRegistry(new ToolResolver($this->managedObjectContext, $this->descriptor)->resolve());
+    }
 
     private function className(Entity $entity, string $namespace): string
     {
@@ -270,14 +305,14 @@ final class EditorController extends ProjectController
     #[Override]
     public function viewWillLoad(): void
     {
-        if (($this->request->parameters['partial'] ?? null) === '1') {
-            $this->name = 'EditorSelection';
+        if (($this->request->parameters["partial"] ?? null) === "1") {
+            $this->name = "EditorSelection";
         }
         $project = $this->project;
         $model = $project->model ?? throw new NotFoundException("Model not found");
         $this->breadcrumb->append($project);
         $this->breadcrumb->append($model);
-        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role"];
+        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role", "conversation"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
                 continue;
@@ -294,6 +329,7 @@ final class EditorController extends ProjectController
                 "element" => FetchIndexElement::class,
                 "accessControl" => AccessControl::class,
                 "role" => Role::class,
+                "conversation" => Conversation::class,
             };
             if (!($selection = $this->fetchByReference($managedObjectClass, $objectID))) {
                 break;
@@ -318,6 +354,8 @@ final class EditorController extends ProjectController
                 $this->selectedAccessControl = $selection;
             } elseif ($selection instanceof Role) {
                 $this->selectedRole = $selection;
+            } elseif ($selection instanceof Conversation) {
+                $this->selectedConversation = $selection;
             }
             $this->selection = $selection;
             $this->breadcrumb->append($selection);
@@ -435,5 +473,32 @@ final class EditorController extends ProjectController
         $entity->properties = new Set($properties);
         $this->managedObjectContext->save();
         $this->data = $entity;
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Action(transformers: [JSONTransformer::class])]
+    public function message(): void
+    {
+        $parameters = $this->request->parameters;
+        $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
+        $conversation = $this->selectedConversation ?? new Conversation($this->managedObjectContext);
+        $conversation->title ??= $content;
+        $conversation->project ??= $this->project;
+        $message = new Message($this->managedObjectContext);
+        $message->content = $content;
+        $message->role = "user";
+        $conversation->addMessagesObject($message);
+        /** @var ArrayClass<LLMMessage> $history */
+        $history = new ArrayClass($conversation->messages->map(fn(Message $message): LLMMessage => $message->LLMMessage));
+        $agent = new LLMAgent(new AnthropicClient(), $this->registry);
+        $conversation->addMessages(new Set($agent->run($history)->map(function (LLMMessage $llmMessage): Message {
+            $message = new Message($this->managedObjectContext);
+            $message->LLMMessage = $llmMessage;
+            return $message;
+        })));
+        $this->managedObjectContext->save();
+        $this->data = new Dictionary(["conversationID" => $conversation->objectID, "messages" => $conversation->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
     }
 }

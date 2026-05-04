@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\AI;
+
+use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\Error;
+use Sabatier\Foundation\InternalInconsistencyException;
+use Sabatier\Foundation\Networking\URLRequest;
+use Sabatier\Foundation\Networking\URLResponse;
+use Sabatier\Foundation\Networking\URLSession;
+use Sabatier\Service\InternalServerErrorException;
+use Sabatier\Service\MCP\Response\ToolDescriptor;
+use function Sabatier\Foundation\human_readable_value;
+
+abstract class LLMClient
+{
+    /**
+     * @param ArrayClass<LLMMessage> $messages
+     * @param ArrayClass<ToolDescriptor> $tools
+     */
+    abstract protected function buildRequest(ArrayClass $messages, ArrayClass $tools): URLRequest;
+
+    abstract protected function parseResponse(Dictionary $body): LLMTurn;
+
+    /**
+     * @param ArrayClass<LLMMessage> $messages
+     * @param ArrayClass<ToolDescriptor> $tools
+     */
+    public function complete(ArrayClass $messages, ArrayClass $tools): LLMTurn
+    {
+        $request = $this->buildRequest($messages, $tools);
+        $body = $this->send($request);
+        return $this->parseResponse($body);
+    }
+
+    /**
+     * @throws InternalServerErrorException
+     */
+    protected function send(URLRequest $request): Dictionary
+    {
+        $data = null;
+        $error = null;
+        URLSession::shared()->dataTaskWithRequest($request, function (?string $responseData, ?URLResponse $response, ?Error $err) use (&$data, &$error): void {
+            $data = $responseData;
+            $error = $err;
+        })->resume();
+        !$error instanceof Error ?: throw new InternalInconsistencyException(error: $error);
+        return new Dictionary(json_decode($data ?? "[]", true) ?? []);
+    }
+}

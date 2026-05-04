@@ -1,37 +1,50 @@
 {templateType App\ViewControllers\EditorController}
 {define editorChat}
-    <div class="ai-copilot-panel mb-2">
-        <div class="inspector-header ai-copilot-header d-flex justify-content-between align-items-center">
-            <span class="d-inline-flex align-items-center gap-2">
-                <i class="bi bi-robot"></i>
-                <span>AI Copilot</span>
-            </span> <span id="ai-status" class="ai-copilot-status is-idle">Idle</span>
+    <div id="ai-chat-panel" class="ai-copilot-panel" data-project-object-id="{$project->objectID|json}" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="inspector-header ai-copilot-header d-flex align-items-center gap-2 flex-shrink-0">
+            <div class="dropdown">
+                <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Conversations">
+                    <i class="bi bi-clock-history"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Conversations</h6></li>
+                    {foreach $project->conversations as $conversation}
+                        <li>
+                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-editor-action="selectConversation" data-conversation-id="{$conversation->objectID|json}">
+                                <i class="bi bi-chat-text" style="flex-shrink: 0;"></i>
+                                <span class="text-truncate flex-grow-1">{$conversation->title}</span>
+                                <i n:if="$selectedConversation?->objectID === $conversation->objectID" class="bi bi-check ms-1" style="flex-shrink: 0;"></i>
+                            </button>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
+            <span class="text-truncate flex-grow-1" style="font-size: 11px; color: var(--text-secondary);">{$selectedConversation?->title ?? ""}</span>
+            <span id="ai-status" class="ai-copilot-status is-idle flex-shrink-0">Idle</span>
         </div>
-        <div class="ai-copilot-body d-flex flex-column gap-2">
-            <div class="ai-copilot-section">
-                <label for="ai-prompt" class="ai-copilot-label">Prompt</label>
-                <textarea id="ai-prompt" class="form-control ai-copilot-prompt" rows="4" placeholder="create entity User"></textarea>
+        <div n:if="!$selectedConversation" class="chat-empty-state flex-grow-1">
+            <i class="bi bi-chat-left-dots"></i>
+            <p>Select a conversation<br>from the dropdown above</p>
+        </div>
+        <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" class="flex-grow-1 overflow-auto p-2 d-flex flex-column gap-2" style="min-height: 0;">
+            <div n:foreach="$selectedConversation->messages as $message" class="chat-message chat-message--{$message->role}">
+                <div n:if="$message->role !== 'tool'" class="chat-bubble">{$message->content}</div>
+                <div n:if="$message->role === 'tool'" class="chat-tool-badge">
+                    <i class="bi bi-gear-fill"></i> {$message->toolCallId}
+                </div>
+                <div n:if="$message->role === 'assistant'" n:foreach="json_decode($message->toolCalls ?? '[]', true) ?? [] as $tc" class="chat-tool-badge mt-1">
+                    <i class="bi bi-gear"></i> {$tc["name"]}
+                </div>
             </div>
-            <div class="d-flex gap-2 ai-copilot-actions">
-                <button type="button" id="ai-propose-btn" class="btn btn-outline-primary btn-sm">Propose</button>
-                <button type="button" id="ai-apply-btn" class="btn btn-primary btn-sm" disabled>Apply</button>
+            <div id="chat-thinking" class="chat-thinking">
+                <span></span><span></span><span></span>
             </div>
-            <div class="ai-copilot-section">
-                <div class="ai-copilot-label">Summary</div>
-                <div id="ai-summary" class="ai-copilot-summary">No proposal yet.</div>
-            </div>
-            <div class="ai-copilot-section">
-                <div class="ai-copilot-label">Warnings</div>
-                <ul id="ai-warnings" class="ai-copilot-warnings mb-0 ps-3">
-                    <li>No warnings</li>
-                </ul>
-            </div>
-            <div class="ai-copilot-section">
-                <div class="ai-copilot-label">Operations</div>
-                <ul id="ai-operations" class="ai-copilot-operations mb-0 ps-3">
-                    <li>No operations</li>
-                </ul>
-            </div>
+        </div>
+        <div class="flex-shrink-0 p-2 d-flex gap-2 align-items-end" style="border-top: 1px solid var(--border-color);">
+            <textarea aria-label="chat" id="chat-input" class="form-control form-control-sm" rows="2" placeholder="Ask the AI…" style="resize: none; font-size: 12px;"></textarea>
+            <button type="button" id="chat-send-btn" class="btn btn-primary btn-sm" disabled>
+                <i class="bi bi-send"></i>
+            </button>
         </div>
     </div>
 {/define}

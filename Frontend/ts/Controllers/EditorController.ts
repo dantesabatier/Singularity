@@ -1,6 +1,6 @@
 import {ViewController} from "@/Application/ViewController"
 import {EditorSplitViewController} from "@/Controllers/Editor/EditorSplitViewController"
-import {EditorCopilotController} from "@/Controllers/Editor/EditorCopilotController"
+import {EditorChatController} from "./Editor/EditorChatController"
 import {EditorGraphController} from "@/Controllers/Editor/EditorGraphController"
 
 type ManagedReference = {
@@ -17,7 +17,7 @@ type RemovableReference = ManagedReference & {
 export class EditorController extends ViewController {
     private readonly compositeTypeAttributeValue = "2100"
     private readonly splitController = new EditorSplitViewController(this.context)
-    private readonly copilotController = new EditorCopilotController(this.context)
+    private readonly copilotController = new EditorChatController(this.context)
     private readonly graphController = new EditorGraphController(this.context)
     private readonly onDocumentClick = (event: MouseEvent): void => {
         const target = event.target
@@ -99,6 +99,9 @@ export class EditorController extends ViewController {
                 return
             case "toggleCopilotPanel":
                 void this.splitController.toggleCopilotPanel()
+                return
+            case "selectConversation":
+                void this.selectConversation(element)
                 return
             default:
                 return
@@ -206,6 +209,41 @@ export class EditorController extends ViewController {
             return
         }
         await this.context.viewNavigator.push(this.context.routeBuilder.build("Editor", {project: projectID}))
+    }
+
+    private async selectConversation(element: HTMLElement): Promise<void> {
+        const conversationID = element.dataset.conversationId
+        if (!conversationID) {
+            return
+        }
+        const nextUrl = new URL(window.location.href)
+        nextUrl.searchParams.set("conversation", conversationID)
+        const partialUrl = new URL(nextUrl.href)
+        partialUrl.searchParams.set("partial", "1")
+        const html = await this.context.viewNavigator.load(partialUrl.href)
+        if (html === undefined) {
+            return
+        }
+        this.updateSourceListActiveState(nextUrl)
+        this.context.viewNavigator.replaceZones(html, nextUrl.href)
+        const current = new URL(window.location.href)
+        if (current.href !== nextUrl.href) {
+            history.pushState({url: nextUrl.href}, "", nextUrl.href)
+        }
+    }
+
+    private updateSourceListActiveState(nextUrl: URL): void {
+        document.querySelectorAll<HTMLElement>("#source [data-href]").forEach((el) => {
+            const elHref = el.dataset.href
+            if (!elHref) {
+                return
+            }
+            const elUrl = new URL(elHref, window.location.origin)
+            const isActive = [...elUrl.searchParams.entries()]
+                .filter(([k]) => k !== "project")
+                .every(([k, v]) => nextUrl.searchParams.get(k) === v)
+            el.classList.toggle("active", isActive)
+        })
     }
 
     private parseJSON<T>(raw: string | undefined): T | undefined {
