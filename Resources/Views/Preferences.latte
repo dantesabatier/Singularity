@@ -20,9 +20,9 @@
                             Settings
                         </h6>
                         <nav class="nav flex-column">
-                            <a class="nav-item active" href="#general"> <i class="bi bi-gear me-2"></i>
-                                <span>General</span> </a> <a class="nav-item" href="#projects">
-                                <i class="bi bi-folder me-2"></i> <span>Projects</span> </a>
+                            <a class="nav-item active" href="#general"><i class="bi bi-gear me-2"></i><span>General</span></a>
+                            <a class="nav-item" href="#projects"><i class="bi bi-folder me-2"></i><span>Projects</span></a>
+                            <a class="nav-item" href="#ai"><i class="bi bi-stars me-2"></i><span>AI</span></a>
                         </nav>
                     </div>
                 </div>
@@ -64,6 +64,32 @@
                                         <strong>Warning:</strong> Enabling this option will permanently delete project files from your system when removing a project.
                                     </div>
                                 </div>
+                            </section>
+                            <section id="ai" class="mb-5">
+                                <h5 class="fw-semibold mb-3 pb-2 border-bottom">AI</h5>
+                                {foreach $aiProviders as $provider}
+                                    <div class="mb-4">
+                                        <h6 class="d-flex align-items-center gap-2 mb-3">
+                                            <span class="ai-provider-icon tier-{$provider->identifier}">{$provider->name|first}</span>
+                                            {$provider->name}
+                                        </h6>
+                                        <div class="d-flex flex-column gap-2">
+                                            {foreach $provider->models as $model}
+                                                <div class="card border-0">
+                                                    <div class="card-body p-3 d-flex align-items-center justify-content-between">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <span class="ai-model-item-dot tier-{$model->tier}"></span>
+                                                            <span class="fw-medium">{$model->name}</span>
+                                                            <code class="ai-model-item-id">{$model->identifier}</code>
+                                                        </div>
+                                                        <i n:if="$editorAIModel === $model->identifier" class="bi bi-check-circle-fill text-success"></i>
+                                                    </div>
+                                                </div>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    {if !$iterator->last}<hr class="my-4">{/if}
+                                {/foreach}
                             </section>
                             <input class="d-none" type="submit">
                         </form>

@@ -2,6 +2,7 @@
 
 namespace App\ViewControllers;
 
+use App\AI\LLMProvider;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
@@ -111,6 +112,11 @@ final class PreferencesController extends ViewController
         set {
             UserDefaults::standard()->setObject($value, EditorAIProvidersPreferencesKey);
         }
+    }
+    /** @var ArrayClass<LLMProvider> */
+    #[Outlet]
+    private(set) ArrayClass $aiProviders {
+        get => $this->aiProviders ??= LLMProvider::all();
     }
 
     #[Override]
