@@ -17,6 +17,7 @@ use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use const App\CompanyNamePreferencesKey;
 use const App\EditorAIModelPreferencesKey;
 use const App\EditorAIProviderPreferencesKey;
+use const App\EditorAIProvidersPreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
@@ -102,6 +103,13 @@ final class PreferencesController extends ViewController
         get => UserDefaults::standard()->string(EditorAIModelPreferencesKey);
         set {
             UserDefaults::standard()->setObject($value, EditorAIModelPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public ?ArrayClass $editorAIProviders {
+        get => UserDefaults::standard()->array(EditorAIProvidersPreferencesKey);
+        set {
+            UserDefaults::standard()->setObject($value, EditorAIProvidersPreferencesKey);
         }
     }
 

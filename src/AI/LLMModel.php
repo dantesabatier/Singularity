@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace App\AI;
 
-final readonly class LLMModel
+use Sabatier\Foundation\Dictionary;
+
+final class LLMModel
 {
-    public function __construct(public string $name, public string $identifier, public string $tier)
+    public Dictionary $dictionaryRepresentation {
+        get => new Dictionary(["name" => $this->name, "identifier" => $this->identifier, "tier" => $this->tier]);
+    }
+
+    public function __construct(public readonly string $name, public readonly string $identifier, public readonly string $tier)
     {
     }
 }

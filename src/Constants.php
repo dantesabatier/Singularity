@@ -12,6 +12,7 @@ const EditorSplitSizesPreferencesKey = "editorSplitSizes";
 const EditorCopilotEnabledPreferencesKey = "editorCopilotEnabled";
 const EditorAIProviderPreferencesKey = "editorAIProvider";
 const EditorAIModelPreferencesKey = "editorAIModel";
+const EditorAIProvidersPreferencesKey = "editorAIProviders";
 const EditorTableViewValue = "tableView";
 const EditorGraphViewValue = "graphView";
 const GraphViewPreferencesKey = "graphViewPreferences";
