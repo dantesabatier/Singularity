@@ -13,7 +13,6 @@ use Sabatier\Foundation\Networking\URLResponse;
 use Sabatier\Foundation\Networking\URLSession;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\MCP\Response\ToolDescriptor;
-use function Sabatier\Foundation\human_readable_value;
 
 abstract class LLMClient
 {
