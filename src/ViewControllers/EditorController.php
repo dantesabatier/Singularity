@@ -509,13 +509,13 @@ final class EditorController extends ProjectController
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
         $model = $parameters["model"] ?? $this->selectedAIModel;
         $provider = LLMProvider::find($this->selectedLLMProviderIdentifier) ?? fatal_error("Unable to find LLM provider");
+        $project = $this->project;
         $message = new Message($this->managedObjectContext);
         $message->content = $content;
         $message->role = "user";
         $conversation = $this->selectedConversation;
         $conversation ??= new Conversation($this->managedObjectContext);
         $conversation->title = $content;
-        $conversation->project = $this->project;
         $conversation->model = $model;
         $conversation->provider = $provider->identifier;
         $conversation->addMessagesObject($message);
@@ -527,6 +527,7 @@ final class EditorController extends ProjectController
             $message->LLMMessage = $llmMessage;
             return $message;
         })));
+        $project->addConversationsObject($conversation);
         $this->managedObjectContext->save();
         $this->data = new Dictionary(["conversationID" => $conversation->objectID, "messages" => $conversation->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
     }
