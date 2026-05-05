@@ -10,7 +10,7 @@ use Sabatier\Foundation\URL;
 
 final class LLMProviderBuilder
 {
-    public static function build(Dictionary $dictionary): ?LLMProvider
+    public static function build(Dictionary $dictionary): LLMProvider
     {
         $name = $dictionary["name"] ?? "";
         $identifier = $dictionary["identifier"] ?? "";

@@ -20,7 +20,9 @@ use function Sabatier\Foundation\fatal_error;
 
 final class StandardLLMClient extends LLMClient
 {
+    #[Override]
     public string $version = "2022-11-28";
+    #[Override]
     public int $maxTokens = 8192;
 
     public function __construct(private readonly ?string $model = null, private readonly ?URL $endpoint = null, private readonly ?string $key = null)

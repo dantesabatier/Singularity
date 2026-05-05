@@ -21,7 +21,9 @@ use function Sabatier\Foundation\fatal_error;
 
 final class AnthropicClient extends LLMClient
 {
+    #[Override]
     public string $version = "2023-06-01";
+    #[Override]
     public int $maxTokens = 8192;
 
     public function __construct(private readonly ?string $model = null, private readonly ?URL $endpoint = null, private readonly ?string $key = null)
