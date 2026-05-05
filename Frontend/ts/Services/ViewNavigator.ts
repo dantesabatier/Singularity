@@ -40,10 +40,9 @@ export class ViewNavigator {
         return true
     }
 
-    public replaceZones(html: string, url: string): void {
+    public replaceZones(html: string, url: string, zones = ["content", "inspector-pane", "ai-copilot-pane", "editor-actions-menu", "breadcrumb-list"]): void {
         const doc = new DOMParser().parseFromString(html, "text/html")
-        const ids = ["content", "inspector-pane", "ai-copilot-pane", "editor-actions-menu", "breadcrumb-list"]
-        for (const id of ids) {
+        for (const id of zones) {
             const source = doc.getElementById(id)
             const target = document.getElementById(id)
             if (source && target) {

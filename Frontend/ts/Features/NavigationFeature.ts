@@ -46,7 +46,7 @@ export class NavigationFeature extends Feature {
             return
         }
         this.updateSourceListActiveState(nextUrl)
-        this.context.viewNavigator.replaceZones(html, nextUrl.href)
+        this.context.viewNavigator.replaceZones(html, nextUrl.href, ["content", "inspector-pane", "editor-actions-menu", "breadcrumb-list"])
         const current = new URL(window.location.href)
         if (current.href !== nextUrl.href) {
             history.pushState({url: nextUrl.href}, "", nextUrl.href)
