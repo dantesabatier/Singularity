@@ -129,7 +129,7 @@ final class AnthropicClient extends LLMClient
         $content = $body["content"] ?? [];
         foreach ($content as $block) {
             match ($block["type"] ?? "") {
-                "text" => $text = $block["text"],
+                "text" => $text = $block["text"] ?? null,
                 "tool_use" => $toolCalls->append(new LLMToolCall(
                     $block["id"] ?? "",
                     $block["name"] ?? "",
