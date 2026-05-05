@@ -508,7 +508,7 @@ final class EditorController extends ProjectController
         $parameters = $this->request->parameters;
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
         $model = $parameters["model"] ?? $this->selectedAIModel;
-        $provider = LLMProvider::find($this->selectedLLMProviderIdentifier) ?? fatal_error("Unable to find LLM provider");
+        $provider = LLMProvider::find($this->selectedLLMProviderIdentifier) ?? throw new InternalServerErrorException("Unable to find LLM provider");
         $project = $this->project;
         $message = new Message($this->managedObjectContext);
         $message->content = $content;
