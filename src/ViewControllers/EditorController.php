@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpInternalEntityUsedInspection */
-
 declare(strict_types=1);
 
 namespace App\ViewControllers;
@@ -110,7 +108,7 @@ final class EditorController extends ProjectController
         }
     }
     #[Outlet]
-    public string $selectedAIProvider {
+    public string $selectedLLMProviderIdentifier {
         get => UserDefaults::standard()->string(EditorAIProviderPreferencesKey) ?? "anthropic";
         set {
             UserDefaults::standard()->setObject($value, EditorAIProviderPreferencesKey);
@@ -509,18 +507,20 @@ final class EditorController extends ProjectController
     {
         $parameters = $this->request->parameters;
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
-        $providerModel = is_string($parameters["model"] ?? null) ? $parameters["model"] : $this->selectedAIModel;
-        $provider = LLMProvider::find($this->selectedAIProvider) ?? LLMProvider::anthropic();
-        $conversation = $this->selectedConversation ?? new Conversation($this->managedObjectContext);
-        $conversation->title ??= $content;
-        $conversation->project ??= $this->project;
+        $model = $parameters["model"] ?? $this->selectedAIModel;
+        $provider = LLMProvider::find($this->selectedLLMProviderIdentifier) ?? fatal_error("Unable to find LLM provider");
         $message = new Message($this->managedObjectContext);
         $message->content = $content;
         $message->role = "user";
+        $conversation = $this->selectedConversation ?? new Conversation($this->managedObjectContext);
+        $conversation->title = $content;
+        $conversation->project = $this->project;
+        $conversation->model = $model;
+        $conversation->provider = $provider->identifier;
         $conversation->addMessagesObject($message);
         /** @var ArrayClass<LLMMessage> $history */
         $history = new ArrayClass($conversation->messages->map(fn(Message $message): LLMMessage => $message->LLMMessage));
-        $agent = new LLMAgent($provider->client($providerModel), $this->registry);
+        $agent = new LLMAgent($provider->client($model), $this->registry);
         $conversation->addMessages(new Set($agent->run($history)->map(function (LLMMessage $llmMessage): Message {
             $message = new Message($this->managedObjectContext);
             $message->LLMMessage = $llmMessage;

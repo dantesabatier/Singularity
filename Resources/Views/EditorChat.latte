@@ -1,9 +1,6 @@
 {templateType App\ViewControllers\EditorController}
 {define editorChat}
-    <div id="ai-chat-panel" class="ai-chat-panel"
-            data-project-object-id="{$project->objectID|json}"
-            data-ai-provider="{$selectedAIProvider ?? 'anthropic'}"
-            data-ai-model="{$selectedAIModel ?? 'claude-opus-4-7'}">
+    <div id="ai-chat-panel" class="ai-chat-panel" data-project-object-id="{$project->objectID|json}" data-ai-provider="{$selectedLLMProviderIdentifier ?? 'anthropic'}" data-ai-model="{$selectedAIModel ?? 'claude-opus-4-7'}">
         <div class="ai-chat-header">
             <div class="dropdown">
                 <button class="btn btn-icon ai-chat-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Conversations">
@@ -11,15 +8,25 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><h6 class="dropdown-header">Conversations</h6></li>
-                    {foreach $project->conversations as $conversation}
-                        <li>
-                            <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-editor-action="selectConversation" data-conversation-id="{$conversation->objectID|json}">
-                                <i class="bi bi-chat-text" style="flex-shrink: 0;"></i>
-                                <span class="text-truncate flex-grow-1">{$conversation->title}</span>
-                                <i n:if="$selectedConversation?->objectID === $conversation->objectID" class="bi bi-check ms-1" style="flex-shrink: 0;"></i>
-                            </button>
-                        </li>
-                    {/foreach}
+                    {if $project->conversations->isEmpty}
+                        <li><span class="dropdown-item text-muted fst-italic pe-none">No conversations</span></li>
+                    {else}
+                        {foreach $project->conversations as $conversation}
+                            {if !$conversation->title}
+                                {continueIf true}
+                            {/if}
+                            <li class="d-flex align-items-center pe-1">
+                                <button class="dropdown-item d-flex align-items-center gap-2 flex-grow-1" type="button" data-editor-action="selectConversation" data-conversation-id="{$conversation->objectID|json}">
+                                    <i class="bi bi-chat-text" style="flex-shrink: 0;"></i>
+                                    <span class="text-truncate flex-grow-1">{$conversation->title}</span>
+                                    <i n:if="$conversation->isEqual($selectedConversation)" class="bi bi-check ms-1" style="flex-shrink: 0;"></i>
+                                </button>
+                                <button class="btn btn-sm btn-icon text-danger flex-shrink-0" type="button" data-editor-action="deleteConversation" data-conversation-id="{$conversation->objectID|json}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </li>
+                        {/foreach}
+                    {/if}
                 </ul>
             </div>
             <span class="ai-chat-title text-truncate flex-grow-1">{$selectedConversation?->title ?? ""}</span>
@@ -79,11 +86,7 @@
             </div>
         </div>
         <div class="ai-chat-input-bar flex-shrink-0">
-            <textarea aria-label="chat"
-                    id="chat-input"
-                    class="ai-chat-textarea"
-                    rows="2"
-                    placeholder="Ask the AI…"></textarea>
+            <textarea aria-label="chat" id="chat-input" class="ai-chat-textarea" rows="2" placeholder="Ask the AI…"></textarea>
             <button type="button" id="chat-send-btn" class="ai-send-btn" disabled>
                 <i class="bi bi-arrow-up"></i>
             </button>

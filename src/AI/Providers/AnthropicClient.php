@@ -13,29 +13,18 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Networking\URLRequest;
-use Sabatier\Foundation\ProcessInfo;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\MCP\Response\ToolDescriptor;
+use function Sabatier\Foundation\fatal_error;
 
 final class AnthropicClient extends LLMClient
 {
-    private const string apiEndpoint = "https://api.anthropic.com/v1/messages";
-    private const string anthropicVersion = "2023-06-01";
-    private const int maxTokens = 8192;
+    public string $version = "2023-06-01";
+    public int $maxTokens = 8192;
 
-    public function __construct(private readonly ?string $model = null)
+    public function __construct(private readonly ?string $model = null, private readonly ?URL $endpoint = null, private readonly ?string $key = null)
     {
-    }
-
-    private function apiKey(): string
-    {
-        return ProcessInfo::processInfo()->environment["ANTHROPIC_API_KEY"] ?? "";
-    }
-
-    private function model(): string
-    {
-        return $this->model ?? ProcessInfo::processInfo()->environment["AI_MODEL"] ?? "claude-opus-4-7";
     }
 
     /**
@@ -45,16 +34,16 @@ final class AnthropicClient extends LLMClient
     #[Override]
     protected function buildRequest(ArrayClass $messages, ArrayClass $tools): URLRequest
     {
-        $request = new URLRequest(new URL(self::apiEndpoint));
+        $request = new URLRequest($this->endpoint ?? fatal_error("Endpoint URL must be provided for AnthropicClient"));
         $request->httpMethod = HTTPRequestMethod::post;
         $request->allHTTPHeaderFields = new Dictionary([
-            "x-api-key" => $this->apiKey(),
-            "anthropic-version" => self::anthropicVersion,
+            "x-api-key" => $this->key,
+            "anthropic-version" => $this->version,
             "Content-Type" => "application/json",
         ]);
         $request->httpBody = (string)json_encode([
-            "model" => $this->model(),
-            "max_tokens" => self::maxTokens,
+            "model" => $this->model,
+            "max_tokens" => $this->maxTokens,
             "messages" => $this->formatMessages($messages),
             "tools" => $this->formatTools($tools),
         ]);

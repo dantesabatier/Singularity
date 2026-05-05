@@ -6,21 +6,18 @@ namespace App\AI;
 
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\URL;
 
 final class LLMProviderBuilder
 {
-    public static function build(Dictionary $dict): ?LLMProvider
+    public static function build(Dictionary $dictionary): ?LLMProvider
     {
-        $name = $dict["name"];
-        $identifier = $dict["identifier"];
-        $modelsData = $dict["models"];
-        if (!is_string($name) || !is_string($identifier) || !($modelsData instanceof ArrayClass)) {
-            return null;
-        }
-        $models = $modelsData->compactMap(fn(mixed $item): ?LLMModel => $item instanceof Dictionary ? LLMModelBuilder::build($item) : null);
-        if ($models->count === 0) {
-            return null;
-        }
-        return new LLMProvider($name, $identifier, $models);
+        $name = $dictionary["name"] ?? "";
+        $identifier = $dictionary["identifier"] ?? "";
+        $url = new URL($dictionary["url"] ?? "https://api.provider.com/v1");
+        $apiKey = $dictionary["apiKey"] ?? "";
+        /** @var ArrayClass<Dictionary<mixed>> $models */
+        $models = $dictionary["models"] ?? new ArrayClass();
+        return new LLMProvider($name, $identifier, $url, $apiKey, $models->map(fn(Dictionary $model): LLMModel => LLMModelBuilder::build($model)));
     }
 }

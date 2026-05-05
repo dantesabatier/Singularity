@@ -16,6 +16,13 @@ use Sabatier\Service\MCP\Response\ToolDescriptor;
 
 abstract class LLMClient
 {
+    abstract public string $version {
+        get;
+    }
+    abstract public int $maxTokens {
+        get;
+    }
+
     /**
      * @param ArrayClass<LLMMessage> $messages
      * @param ArrayClass<ToolDescriptor> $tools
@@ -47,6 +54,6 @@ abstract class LLMClient
             $error = $err;
         })->resume();
         !$error instanceof Error ?: throw new InternalInconsistencyException(error: $error);
-        return new Dictionary(json_decode($data ?? "[]", true) ?? []);
+        return new Dictionary(json_decode($data, true) ?? []);
     }
 }

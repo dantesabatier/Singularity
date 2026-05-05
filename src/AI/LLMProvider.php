@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\AI;
 
 use App\AI\Providers\AnthropicClient;
+use App\AI\Providers\OpenAICompatibleClient;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\InternalInconsistencyException;
+use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
 use const App\EditorAIProvidersPreferencesKey;
 
@@ -17,34 +18,30 @@ final class LLMProvider
         get => new Dictionary([
             "name" => $this->name,
             "identifier" => $this->identifier,
+            "url" => $this->url,
+            "apiKey" => $this->apiKey,
             "models" => $this->models->map(fn(LLMModel $model): Dictionary => $model->dictionaryRepresentation),
         ]);
     }
 
-    /**
-     * @param string $name
-     * @param string $identifier
-     * @param ArrayClass<LLMModel> $models
-     */
-    public function __construct(public readonly string $name, public readonly string $identifier, public readonly ArrayClass $models)
+    /** @param ArrayClass<LLMModel> $models */
+    public function __construct(public readonly string $name, public readonly string $identifier, public readonly URL $url, public readonly string $apiKey, public readonly ArrayClass $models)
     {
     }
 
     public function client(?string $model = null): LLMClient
     {
         return match ($this->identifier) {
-            "anthropic" => new AnthropicClient($model),
-            default => throw new InternalInconsistencyException("Unknown LLM provider: $this->identifier"),
+            "anthropic" => new AnthropicClient($model, $this->url, $this->apiKey),
+            default => new OpenAICompatibleClient($model, $this->url, $this->apiKey),
         };
     }
 
-    /**
-     * @return ArrayClass<LLMProvider>
-     */
+    /** @return ArrayClass<LLMProvider> */
     public static function all(): ArrayClass
     {
         if ($stored = UserDefaults::standard()->array(EditorAIProvidersPreferencesKey)) {
-            $providers = $stored->compactMap(fn(Dictionary $item): ?LLMProvider => LLMProviderBuilder::build($item));
+            $providers = $stored->compactMap(fn(Dictionary $dictionary): ?LLMProvider => LLMProviderBuilder::build($dictionary));
             if (!$providers->isEmpty) {
                 return $providers;
             }
@@ -68,6 +65,8 @@ final class LLMProvider
         return new self(
             name: "Anthropic",
             identifier: "anthropic",
+            url: new URL("https://api.anthropic.com/v1/messages"),
+            apiKey: "",
             models: new ArrayClass([new LLMModel("Opus 4.7", "claude-opus-4-7", "opus"), new LLMModel("Sonnet 4.6", "claude-sonnet-4-6", "sonnet"), new LLMModel("Haiku 4.5", "claude-haiku-4-5-20251001", "haiku")])
         );
     }

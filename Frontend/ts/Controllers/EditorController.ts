@@ -91,6 +91,9 @@ export class EditorController extends ViewController {
             case "removeSelection":
                 void this.removeSelection(element)
                 return
+            case "deleteConversation":
+                void this.deleteConversation(element)
+                return
             case "toggleSourcePanel":
                 this.splitController.toggleSourcePanel()
                 return
@@ -347,6 +350,23 @@ export class EditorController extends ViewController {
             return
         }
         await this.context.actionDispatcher.dispatch(item.entityName, {objectID: item.objectID}, "DELETE")
+    }
+
+    private async deleteConversation(element: HTMLElement): Promise<void> {
+        const conversationID = element.dataset.conversationId
+        if (!conversationID) {
+            return
+        }
+        const result = await this.context.desktopBridge.showMessageBox("Delete conversation?", "This action cannot be undone.", ["Cancel", "OK"])
+        if (!result?.response) {
+            return
+        }
+        const panel = document.getElementById("ai-chat-panel")
+        const projectID = panel instanceof HTMLElement ? panel.dataset.projectObjectId : null
+        if (projectID && localStorage.getItem(`ai_conversation_${projectID}`) === conversationID) {
+            localStorage.removeItem(`ai_conversation_${projectID}`)
+        }
+        await this.context.actionDispatcher.dispatch("Conversation", {objectID: conversationID}, "DELETE")
     }
 
     private updateAttributeValueClassName(select: HTMLSelectElement): void {

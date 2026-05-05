@@ -142,6 +142,8 @@ export class EditorChatController {
         this.setStatus("thinking")
         this.appendMessageBubble({role: "user", content})
 
+        const isNewConversation = !this.currentConversationID
+
         const response = await this.context.httpClient.post("/message", {
             project: this.currentProjectID,
             conversation: this.currentConversationID,
@@ -150,11 +152,39 @@ export class EditorChatController {
         })
 
         if (!response.ok) {
-            this.setStatus("error")
+            let errorMessage = "Something went wrong. Please try again."
+            try {
+                const errorData = await response.json() as {
+                    error?: {
+                        localizedDescription?: string | null
+                        localizedFailureReason?: string | null
+                        localizedRecoverySuggestion?: string | null
+                    }
+                }
+                const e = errorData.error
+                if (e) {
+                    const title = e.localizedDescription ?? errorMessage
+                    let detail = e.localizedFailureReason ?? e.localizedRecoverySuggestion ?? ""
+                    if (detail && e.localizedRecoverySuggestion && detail !== e.localizedRecoverySuggestion) {
+                        if (!detail.endsWith(".")) {
+                            detail += "."
+                        }
+                        detail += "\n" + e.localizedRecoverySuggestion
+                    }
+                    if (detail && !detail.endsWith(".")) {
+                        detail += "."
+                    }
+                    errorMessage = detail ? `${title}\n${detail}` : title
+                }
+            } catch {
+                // ignore parse error
+            }
+            this.appendErrorBubble(errorMessage)
+            this.setStatus("idle")
             return
         }
 
-        const data = await response.json() as {conversationID: string; messages: ChatMessage[]}
+        const data = await response.json() as { conversationID: string; messages: ChatMessage[] }
         if (!this.currentConversationID) {
             this.currentConversationID = data.conversationID
             if (this.currentProjectID) {
@@ -172,7 +202,38 @@ export class EditorChatController {
 
         if (modelWasChanged) {
             await this.context.viewNavigator.push(window.location.href)
+        } else if (isNewConversation) {
+            await this.navigateToConversation(data.conversationID)
         }
+    }
+
+    private appendErrorBubble(message: string): void {
+        const container = document.getElementById("chat-messages")
+        if (!container) {
+            return
+        }
+        const wrapper = document.createElement("div")
+        wrapper.className = "ai-msg ai-msg--error"
+        const bubble = document.createElement("div")
+        bubble.className = "ai-bubble"
+        bubble.textContent = message
+        wrapper.appendChild(bubble)
+        container.appendChild(wrapper)
+        container.scrollTop = container.scrollHeight
+    }
+
+    private async navigateToConversation(conversationID: string): Promise<void> {
+        const nextUrl = new URL(window.location.href)
+        nextUrl.searchParams.set("conversation", conversationID)
+        const partialUrl = new URL(nextUrl.href)
+        partialUrl.searchParams.set("partial", "1")
+        const html = await this.context.viewNavigator.load(partialUrl.href)
+        if (html === undefined) {
+            history.pushState({url: nextUrl.href}, "", nextUrl.href)
+            return
+        }
+        this.context.viewNavigator.replaceZones(html, nextUrl.href)
+        history.pushState({url: nextUrl.href}, "", nextUrl.href)
     }
 
     private appendMessageBubble(message: ChatMessage): void {
