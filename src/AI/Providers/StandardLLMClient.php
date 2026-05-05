@@ -18,7 +18,7 @@ use Sabatier\Service\MCP\Response\ToolDescriptor;
 use stdClass;
 use function Sabatier\Foundation\fatal_error;
 
-final class OpenAICompatibleClient extends LLMClient
+final class StandardLLMClient extends LLMClient
 {
     public string $version = "2022-11-28";
     public int $maxTokens = 8192;
@@ -34,11 +34,10 @@ final class OpenAICompatibleClient extends LLMClient
     #[Override]
     protected function buildRequest(ArrayClass $messages, ArrayClass $tools): URLRequest
     {
-        $request = new URLRequest($this->endpoint ?? fatal_error("Endpoint URL must be provided for OpenAICompatibleClient"));
+        $request = new URLRequest($this->endpoint ?? fatal_error("Endpoint URL must be provided for StandardLLMClient"));
         $request->httpMethod = HTTPRequestMethod::post;
         $request->allHTTPHeaderFields = new Dictionary([
             "Authorization" => "Bearer $this->key",
-            "X-GitHub-Api-Version" => $this->version,
             "Content-Type" => "application/json",
         ]);
         $body = [

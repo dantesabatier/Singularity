@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\AI;
 
 use App\AI\Providers\AnthropicClient;
-use App\AI\Providers\OpenAICompatibleClient;
+use App\AI\Providers\StandardLLMClient;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\URL;
@@ -33,7 +33,7 @@ final class LLMProvider
     {
         return match ($this->identifier) {
             "anthropic" => new AnthropicClient($model, $this->url, $this->apiKey),
-            default => new OpenAICompatibleClient($model, $this->url, $this->apiKey),
+            default => new StandardLLMClient($model, $this->url, $this->apiKey),
         };
     }
 
