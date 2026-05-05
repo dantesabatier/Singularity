@@ -236,6 +236,10 @@ export class EditorController extends ViewController {
         if (current.href !== nextUrl.href) {
             history.pushState({url: nextUrl.href}, "", nextUrl.href)
         }
+        const projectID = nextUrl.searchParams.get("project")
+        if (projectID) {
+            void this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: conversationID})
+        }
     }
 
     private updateSourceListActiveState(nextUrl: URL): void {
@@ -358,9 +362,6 @@ export class EditorController extends ViewController {
     private async newConversation(): Promise<void> {
         const panel = document.getElementById("ai-chat-panel")
         const projectID = panel instanceof HTMLElement ? panel.dataset.projectObjectId : null
-        if (projectID) {
-            localStorage.removeItem(`ai_conversation_${projectID}`)
-        }
         const nextUrl = new URL(window.location.href)
         nextUrl.searchParams.delete("conversation")
         const partialUrl = new URL(nextUrl.href)
@@ -372,6 +373,9 @@ export class EditorController extends ViewController {
         }
         this.context.viewNavigator.replaceZones(html, nextUrl.href)
         history.pushState({url: nextUrl.href}, "", nextUrl.href)
+        if (projectID) {
+            void this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: null})
+        }
     }
 
     private async deleteConversation(element: HTMLElement): Promise<void> {
@@ -385,8 +389,10 @@ export class EditorController extends ViewController {
         }
         const panel = document.getElementById("ai-chat-panel")
         const projectID = panel instanceof HTMLElement ? panel.dataset.projectObjectId : null
-        if (projectID && localStorage.getItem(`ai_conversation_${projectID}`) === conversationID) {
-            localStorage.removeItem(`ai_conversation_${projectID}`)
+        const messagesContainer = document.getElementById("chat-messages")
+        const selectedID = messagesContainer instanceof HTMLElement ? messagesContainer.dataset.conversationId : null
+        if (projectID && selectedID === conversationID) {
+            void this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: null})
         }
         await this.context.actionDispatcher.dispatch("Conversation", {objectID: conversationID}, "DELETE")
     }

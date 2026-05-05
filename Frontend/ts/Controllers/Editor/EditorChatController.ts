@@ -50,12 +50,7 @@ export class EditorChatController {
         const projectObjectID = panel instanceof HTMLElement ? (panel.dataset.projectObjectId ?? "") : ""
         this.currentProjectID = projectObjectID || null
         const messagesContainer = document.getElementById("chat-messages")
-        const fromDOM = messagesContainer instanceof HTMLElement ? (messagesContainer.dataset.conversationId ?? null) : null
-        const conversationID = fromDOM ?? localStorage.getItem(`ai_conversation_${projectObjectID}`)
-        this.currentConversationID = conversationID ?? null
-        if (conversationID && projectObjectID) {
-            localStorage.setItem(`ai_conversation_${projectObjectID}`, conversationID)
-        }
+        this.currentConversationID = messagesContainer instanceof HTMLElement ? (messagesContainer.dataset.conversationId ?? null) : null
 
         if (sendBtn instanceof HTMLButtonElement && sendBtn !== this.currentSendBtn) {
             this.currentSendBtn?.removeEventListener("click", this.onSendClick)
@@ -185,9 +180,6 @@ export class EditorChatController {
         const data = await response.json() as { conversationID: string; messages: ChatMessage[] }
         if (!this.currentConversationID) {
             this.currentConversationID = data.conversationID
-            if (this.currentProjectID) {
-                localStorage.setItem(`ai_conversation_${this.currentProjectID}`, data.conversationID)
-            }
         }
         let modelWasChanged = false
         for (const msg of data.messages.slice(1)) {

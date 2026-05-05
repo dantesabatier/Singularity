@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Exception;
@@ -10,8 +12,8 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use function Sabatier\Foundation\random_color;
+use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 
 /**
  * @property string $name
@@ -22,6 +24,7 @@ use function Sabatier\Foundation\random_color;
  * @property int<0, max> $position
  * @property Model|null $model
  * @property Set<Conversation> $conversations
+ * @property Conversation|null $selectedConversation
  * @method void addConversationsObject(Conversation $object)
  * @method void removeConversationsObject(Conversation $object)
  * @method void addConversations(Set<Conversation> $objects)

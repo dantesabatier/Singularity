@@ -203,7 +203,7 @@ final class EditorController extends ProjectController
             }
             $reference = $this->request->parameters["conversation"];
             if (!is_numeric($reference)) {
-                return $this->selectedConversation = null;
+                return $this->selectedConversation = $this->project->selectedConversation;
             }
             return $this->selectedConversation = $this->fetchByReference(Conversation::class, (int)$reference);
         }
@@ -528,6 +528,7 @@ final class EditorController extends ProjectController
             return $message;
         })));
         $project->addConversationsObject($conversation);
+        $project->selectedConversation = $conversation;
         $this->managedObjectContext->save();
         $this->data = new Dictionary(["conversationID" => $conversation->objectID, "messages" => $conversation->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
     }
