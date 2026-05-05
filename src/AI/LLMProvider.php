@@ -41,7 +41,7 @@ final class LLMProvider
     public static function all(): ArrayClass
     {
         if ($stored = UserDefaults::standard()->array(EditorAIProvidersPreferencesKey)) {
-            $providers = $stored->compactMap(fn(Dictionary $dictionary): ?LLMProvider => LLMProviderBuilder::build($dictionary));
+            $providers = $stored->map(fn(Dictionary $dictionary): LLMProvider => LLMProviderBuilder::build($dictionary));
             if (!$providers->isEmpty) {
                 return $providers;
             }
