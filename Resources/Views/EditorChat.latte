@@ -7,7 +7,12 @@
                     <i class="bi bi-clock-history"></i>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><h6 class="dropdown-header">Conversations</h6></li>
+                    <li class="d-flex align-items-center justify-content-between ps-2 pe-1">
+                        <h6 class="dropdown-header p-0">Conversations</h6>
+                        <button class="btn btn-icon ai-new-conversation-btn" type="button" data-editor-action="newConversation" title="New conversation">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </li>
                     {if $project->conversations->isEmpty}
                         <li><span class="dropdown-item text-muted fst-italic pe-none">No conversations</span></li>
                     {else}
@@ -15,15 +20,17 @@
                             {if !$conversation->title}
                                 {continueIf true}
                             {/if}
-                            <li class="d-flex align-items-center pe-1">
-                                <button class="dropdown-item d-flex align-items-center gap-2 flex-grow-1" type="button" data-editor-action="selectConversation" data-conversation-id="{$conversation->objectID|json}">
-                                    <i class="bi bi-chat-text" style="flex-shrink: 0;"></i>
-                                    <span class="text-truncate flex-grow-1">{$conversation->title}</span>
-                                    <i n:if="$conversation->isEqual($selectedConversation)" class="bi bi-check ms-1" style="flex-shrink: 0;"></i>
-                                </button>
-                                <button class="btn btn-sm btn-icon text-danger flex-shrink-0" type="button" data-editor-action="deleteConversation" data-conversation-id="{$conversation->objectID|json}">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                            <li>
+                                <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%;">
+                                    <button class="dropdown-item d-flex align-items-center gap-2" type="button" style="overflow: hidden;" data-editor-action="selectConversation" data-conversation-id="{$conversation->objectID|json}">
+                                        <i class="bi bi-chat-text" style="flex-shrink: 0;"></i>
+                                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{$conversation->title}</span>
+                                        <i n:if="$conversation->isEqual($selectedConversation)" class="bi bi-check ms-1" style="flex-shrink: 0;"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-icon text-danger" type="button" data-editor-action="deleteConversation" data-conversation-id="{$conversation->objectID|json}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             </li>
                         {/foreach}
                     {/if}

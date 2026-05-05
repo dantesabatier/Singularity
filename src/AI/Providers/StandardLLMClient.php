@@ -13,6 +13,7 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Networking\URLRequest;
+use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\MCP\Response\ToolDescriptor;
 use stdClass;
@@ -47,6 +48,7 @@ final class StandardLLMClient extends LLMClient
         ];
         if (!$tools->isEmpty) {
             $body["tools"] = $this->formatTools($tools);
+            $body["tool_choice"] = "auto";
         }
         $request->httpBody = (string)json_encode($body);
         return $request;
@@ -148,17 +150,20 @@ final class StandardLLMClient extends LLMClient
         $toolCalls = new ArrayClass();
         foreach ($body["choices"] ?? [] as $choice) {
             $message = $choice["message"] ?? [];
-            $text = $message["content"] ?? null;
+            $text = $message["content"];
             foreach ($message["tool_calls"] ?? [] as $tc) {
                 $fn = $tc["function"] ?? [];
-                $args = json_decode($fn["arguments"] ?? "{}", true);
+                $args = json_decode($fn["arguments"] ?? "[]", true) ?? [];
                 $toolCalls->append(new LLMToolCall(
                     $tc["id"] ?? "",
                     $fn["name"] ?? "",
-                    new Dictionary(is_array($args) ? $args : []),
+                    Dictionary::dictionaryWithArray($args),
                 ));
             }
             break;
+        }
+        if ($text instanceof Nil) {
+            $text = null;
         }
         return new LLMTurn($text, $toolCalls);
     }

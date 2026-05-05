@@ -512,7 +512,8 @@ final class EditorController extends ProjectController
         $message = new Message($this->managedObjectContext);
         $message->content = $content;
         $message->role = "user";
-        $conversation = $this->selectedConversation ?? new Conversation($this->managedObjectContext);
+        $conversation = $this->selectedConversation;
+        $conversation ??= new Conversation($this->managedObjectContext);
         $conversation->title = $content;
         $conversation->project = $this->project;
         $conversation->model = $model;

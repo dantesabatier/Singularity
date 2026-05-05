@@ -13,6 +13,7 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Networking\URLRequest;
+use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\MCP\Response\ToolDescriptor;
@@ -128,7 +129,7 @@ final class AnthropicClient extends LLMClient
         $content = $body["content"] ?? [];
         foreach ($content as $block) {
             match ($block["type"] ?? "") {
-                "text" => $text = $block["text"] ?? null,
+                "text" => $text = $block["text"],
                 "tool_use" => $toolCalls->append(new LLMToolCall(
                     $block["id"] ?? "",
                     $block["name"] ?? "",
@@ -136,6 +137,9 @@ final class AnthropicClient extends LLMClient
                 )),
                 default => null,
             };
+        }
+        if ($text instanceof Nil) {
+            $text = null;
         }
         return new LLMTurn($text, $toolCalls);
     }

@@ -34,7 +34,7 @@ final class Message extends ManagedObject
         set {
             $this->role = $value->role;
             $this->content = $value->content;
-            if ($toolCalls = $value->toolCalls) {
+            if ($toolCalls = $value->toolCalls and !$toolCalls->isEmpty) {
                 $this->toolCalls = json_encode($toolCalls->array);
             }
             $this->toolCallId = $value->toolCallId;

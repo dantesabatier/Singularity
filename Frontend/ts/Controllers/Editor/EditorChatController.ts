@@ -52,11 +52,9 @@ export class EditorChatController {
         const messagesContainer = document.getElementById("chat-messages")
         const fromDOM = messagesContainer instanceof HTMLElement ? (messagesContainer.dataset.conversationId ?? null) : null
         const conversationID = fromDOM ?? localStorage.getItem(`ai_conversation_${projectObjectID}`)
-        if (conversationID) {
-            this.currentConversationID = conversationID
-            if (projectObjectID) {
-                localStorage.setItem(`ai_conversation_${projectObjectID}`, conversationID)
-            }
+        this.currentConversationID = conversationID ?? null
+        if (conversationID && projectObjectID) {
+            localStorage.setItem(`ai_conversation_${projectObjectID}`, conversationID)
         }
 
         if (sendBtn instanceof HTMLButtonElement && sendBtn !== this.currentSendBtn) {

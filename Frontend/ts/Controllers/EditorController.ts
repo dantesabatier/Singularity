@@ -106,6 +106,9 @@ export class EditorController extends ViewController {
             case "selectConversation":
                 void this.selectConversation(element)
                 return
+            case "newConversation":
+                void this.newConversation()
+                return
             default:
                 return
         }
@@ -350,6 +353,25 @@ export class EditorController extends ViewController {
             return
         }
         await this.context.actionDispatcher.dispatch(item.entityName, {objectID: item.objectID}, "DELETE")
+    }
+
+    private async newConversation(): Promise<void> {
+        const panel = document.getElementById("ai-chat-panel")
+        const projectID = panel instanceof HTMLElement ? panel.dataset.projectObjectId : null
+        if (projectID) {
+            localStorage.removeItem(`ai_conversation_${projectID}`)
+        }
+        const nextUrl = new URL(window.location.href)
+        nextUrl.searchParams.delete("conversation")
+        const partialUrl = new URL(nextUrl.href)
+        partialUrl.searchParams.set("partial", "1")
+        const html = await this.context.viewNavigator.load(partialUrl.href)
+        if (html === undefined) {
+            history.pushState({url: nextUrl.href}, "", nextUrl.href)
+            return
+        }
+        this.context.viewNavigator.replaceZones(html, nextUrl.href)
+        history.pushState({url: nextUrl.href}, "", nextUrl.href)
     }
 
     private async deleteConversation(element: HTMLElement): Promise<void> {
