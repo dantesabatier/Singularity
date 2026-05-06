@@ -141,24 +141,29 @@ final class StandardLLMClient extends LLMClient
     }
 
     #[Override]
-    protected function parseResponse(Dictionary $body): LLMTurn
+    protected function parse(Dictionary $body): LLMTurn
     {
+        /** @var Dictionary<mixed>|null $error */
         $error = $body["error"];
-        !$error ?: fatal_error($error["message"] ?? "Unknown API error");
+        !$error instanceof Dictionary ?: fatal_error($error["message"] ?? "Unknown API error");
         $text = null;
         /** @var ArrayClass<LLMToolCall> $toolCalls */
         $toolCalls = new ArrayClass();
-        foreach ($body["choices"] ?? [] as $choice) {
-            $message = $choice["message"] ?? [];
-            $text = $message["content"] ?? null;
-            foreach ($message["tool_calls"] ?? [] as $tc) {
-                $fn = $tc["function"] ?? [];
-                $args = json_decode($fn["arguments"] ?? "{}", true);
-                $toolCalls->append(new LLMToolCall(
-                    $tc["id"] ?? "",
-                    $fn["name"] ?? "",
-                    new Dictionary(is_array($args) ? $args : []),
-                ));
+        /** @var ArrayClass<Dictionary<mixed>> $choices */
+        $choices = $body["choices"] ?? new ArrayClass();
+        foreach ($choices as $choice) {
+            /** @var Dictionary<mixed> $message */
+            $message = $choice["message"] ?? new Dictionary();
+            $text = $message["content"];
+            /** @var ArrayClass<Dictionary<mixed>> $calls */
+            $calls = $message["tool_calls"] ?? new ArrayClass();
+            foreach ($calls as $tc) {
+                /** @var Dictionary<mixed> $fn */
+                $fn = $tc["function"] ?? new Dictionary();
+                $id = $tc["id"] ?? "";
+                $name = $fn["name"] ?? "";
+                $arguments = Dictionary::dictionaryWithArray(json_decode($fn["arguments"] ?? "[]", true) ?? []);
+                $toolCalls->append(new LLMToolCall($id, $name, $arguments));
             }
             break;
         }

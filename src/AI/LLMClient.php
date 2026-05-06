@@ -29,7 +29,11 @@ abstract class LLMClient
      */
     abstract protected function buildRequest(ArrayClass $messages, ArrayClass $tools): URLRequest;
 
-    abstract protected function parseResponse(Dictionary $body): LLMTurn;
+    /**
+     * @param Dictionary<mixed> $body
+     * @return LLMTurn
+     */
+    abstract protected function parse(Dictionary $body): LLMTurn;
 
     /**
      * @param ArrayClass<LLMMessage> $messages
@@ -39,7 +43,7 @@ abstract class LLMClient
     {
         $request = $this->buildRequest($messages, $tools);
         $body = $this->send($request);
-        return $this->parseResponse($body);
+        return $this->parse($body);
     }
 
     /**
@@ -54,6 +58,6 @@ abstract class LLMClient
             $error = $err;
         })->resume();
         !$error instanceof Error ?: throw new InternalInconsistencyException(error: $error);
-        return new Dictionary(json_decode($data ?? "[]", true) ?? []);
+        return Dictionary::dictionaryWithArray(json_decode($data ?? "[]", true) ?? []);
     }
 }

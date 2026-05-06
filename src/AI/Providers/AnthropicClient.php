@@ -13,7 +13,6 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\Networking\URLRequest;
-use Sabatier\Foundation\Nil;
 use Sabatier\Foundation\URL;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\MCP\Response\ToolDescriptor;
@@ -117,31 +116,24 @@ final class AnthropicClient extends LLMClient
     }
 
     #[Override]
-    protected function parseResponse(Dictionary $body): LLMTurn
+    protected function parse(Dictionary $body): LLMTurn
     {
         if ($body["type"] === "error") {
-            $error = $body["error"];
-            $message = is_array($error) ? ($error["message"] ?? "Unknown API error") : "Unknown API error";
-            throw new InternalServerErrorException($message);
+            /** @var Dictionary<mixed> $error */
+            $error = $body["error"] ?? new Dictionary();
+            throw new InternalServerErrorException($error["message"] ?? "Unknown API error");
         }
         $text = null;
         /** @var ArrayClass<LLMToolCall> $toolCalls */
         $toolCalls = new ArrayClass();
-        /** @var list<array{type: string, text?: string, id?: string, name?: string, input?: array<string, mixed>}> $content */
-        $content = $body["content"] ?? [];
+        /** @var ArrayClass<Dictionary<mixed>> $content */
+        $content = $body["content"] ?? new ArrayClass();
         foreach ($content as $block) {
-            match ($block["type"] ?? "") {
-                "text" => $text = $block["text"] ?? null,
-                "tool_use" => $toolCalls->append(new LLMToolCall(
-                    $block["id"] ?? "",
-                    $block["name"] ?? "",
-                    new Dictionary($block["input"] ?? []),
-                )),
+            match ($block["type"]) {
+                "text" => $text = $block["text"],
+                "tool_use" => $toolCalls->append(new LLMToolCall($block["id"] ?? "", $block["name"] ?? "", $block["input"] ?? new Dictionary())),
                 default => null,
             };
-        }
-        if ($text instanceof Nil) {
-            $text = null;
         }
         return new LLMTurn($text, $toolCalls);
     }

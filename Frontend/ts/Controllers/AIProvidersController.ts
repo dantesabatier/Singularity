@@ -24,7 +24,6 @@ export class AIProvidersController extends ViewController {
 
     protected override viewDidUpdate(): void {
         this.loadProviders()
-        this.bindActions()
     }
 
     private loadProviders(): void {
@@ -39,58 +38,61 @@ export class AIProvidersController extends ViewController {
     }
 
     private bindActions(): void {
-        document.getElementById("addLLMProvider")?.addEventListener("show.bs.modal", () => {
+        document.addEventListener("show.bs.modal", (e) => {
+            if ((e.target as Element | null)?.id !== "addLLMProvider") {
+                return
+            }
             if (this.editingIndex === null) {
                 this.clearForm()
             }
         })
 
-        document.getElementById("addLLMProvider")?.addEventListener("hidden.bs.modal", () => {
+        document.addEventListener("hidden.bs.modal", (e) => {
+            if ((e.target as Element | null)?.id !== "addLLMProvider") {
+                return
+            }
             this.editingIndex = null
             this.editingModels = []
         })
 
-        document.getElementById("addLLMProvider")?.addEventListener("click", (e) => {
+        document.addEventListener("click", (e) => {
             const btn = (e.target as Element).closest<HTMLElement>("[data-ai-action]")
             if (!btn) {
                 return
             }
-            switch (btn.dataset.aiAction) {
-                case "confirmAddProvider":
-                    void this.confirmSaveProvider()
-                    break
-                case "addModel":
-                    this.addModel()
-                    break
-                case "removeModel": {
-                    const idx = parseInt(btn.dataset.modelIndex ?? "-1", 10)
-                    if (idx >= 0) {
-                        this.removeModel(idx)
+            if (btn.closest("#addLLMProvider")) {
+                switch (btn.dataset.aiAction) {
+                    case "confirmAddProvider":
+                        void this.confirmSaveProvider()
+                        break
+                    case "addModel":
+                        this.addModel()
+                        break
+                    case "removeModel": {
+                        const idx = parseInt(btn.dataset.modelIndex ?? "-1", 10)
+                        if (idx >= 0) {
+                            this.removeModel(idx)
+                        }
+                        break
                     }
-                    break
                 }
-            }
-        })
-
-        document.getElementById("ai")?.addEventListener("click", (e) => {
-            const btn = (e.target as Element).closest<HTMLElement>("[data-ai-action]")
-            if (!btn) {
                 return
             }
-            const card = btn.closest<HTMLElement>(".provider-card")
-            const index = card ? Array.from(document.querySelectorAll(".provider-card")).indexOf(card) : -1
-
-            switch (btn.dataset.aiAction) {
-                case "editProvider":
-                    if (index >= 0) {
-                        this.openForEditing(index)
-                    }
-                    break
-                case "deleteProvider":
-                    if (index >= 0) {
-                        void this.deleteProvider(index)
-                    }
-                    break
+            if (btn.closest("#ai")) {
+                const card = btn.closest<HTMLElement>(".provider-card")
+                const index = card ? Array.from(document.querySelectorAll(".provider-card")).indexOf(card) : -1
+                switch (btn.dataset.aiAction) {
+                    case "editProvider":
+                        if (index >= 0) {
+                            this.openForEditing(index)
+                        }
+                        break
+                    case "deleteProvider":
+                        if (index >= 0) {
+                            void this.deleteProvider(index)
+                        }
+                        break
+                }
             }
         })
     }

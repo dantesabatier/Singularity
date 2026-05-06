@@ -31,6 +31,7 @@
     "dagre": "^0.8.5",
     "db-viewer-component": "^4.3.7",
     "highlight.js": "^11.11.1",
+    "marked": "^18.0.3",
     "sortablejs": "^1.15.7",
     "split.js": "^1.6.5"
   }

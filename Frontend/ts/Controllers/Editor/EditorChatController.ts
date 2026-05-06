@@ -1,4 +1,6 @@
 import {ApplicationContext} from "@/Application/ApplicationContext"
+import { marked } from "marked"
+import hljs from "highlight.js"
 
 type ChatMessage = {
     role: "user" | "assistant" | "tool"
@@ -41,6 +43,7 @@ export class EditorChatController {
         this.bindElements()
         this.loadSelectionsFromDOM()
         this.bindModelPicker()
+        this.renderServerMessages()
     }
 
     private bindElements(): void {
@@ -240,7 +243,15 @@ export class EditorChatController {
         } else {
             const bubble = document.createElement("div")
             bubble.className = "ai-bubble"
-            bubble.textContent = message.content ?? ""
+            if (message.role === "assistant") {
+                bubble.innerHTML = marked.parse(message.content ?? "") as string
+                bubble.setAttribute("data-md", "")
+                bubble.querySelectorAll("pre code").forEach((block) => {
+                    hljs.highlightElement(block as HTMLElement)
+                })
+            } else {
+                bubble.textContent = message.content ?? ""
+            }
             wrapper.appendChild(bubble)
 
             if (message.role === "assistant" && message.toolCalls?.length) {
@@ -287,6 +298,21 @@ export class EditorChatController {
             const hasContent = input instanceof HTMLTextAreaElement && input.value.trim().length > 0
             sendBtn.toggleAttribute("disabled", !hasContent)
         }
+    }
+
+    private renderServerMessages(): void {
+        const container = document.getElementById("chat-messages")
+        if (!container) {
+            return
+        }
+        container.querySelectorAll<HTMLElement>(".ai-msg--assistant .ai-bubble:not([data-md])").forEach((bubble) => {
+            const content = bubble.textContent ?? ""
+            bubble.innerHTML = marked.parse(content) as string
+            bubble.setAttribute("data-md", "")
+            bubble.querySelectorAll("pre code").forEach((block) => {
+                hljs.highlightElement(block as HTMLElement)
+            })
+        })
     }
 
     private escapeHTML(value: unknown): string {

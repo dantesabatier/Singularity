@@ -360,12 +360,11 @@ export class EditorController extends ViewController {
     }
 
     private async newConversation(): Promise<void> {
-        const panel = document.getElementById("ai-chat-panel")
-        const projectID = panel instanceof HTMLElement ? panel.dataset.projectObjectId : null
         const nextUrl = new URL(window.location.href)
         nextUrl.searchParams.delete("conversation")
         const partialUrl = new URL(nextUrl.href)
         partialUrl.searchParams.set("partial", "1")
+        partialUrl.searchParams.set("newConversation", "1")
         const html = await this.context.viewNavigator.load(partialUrl.href)
         if (html === undefined) {
             history.pushState({url: nextUrl.href}, "", nextUrl.href)
@@ -373,9 +372,6 @@ export class EditorController extends ViewController {
         }
         this.context.viewNavigator.replaceZones(html, nextUrl.href)
         history.pushState({url: nextUrl.href}, "", nextUrl.href)
-        if (projectID) {
-            void this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: null})
-        }
     }
 
     private async deleteConversation(element: HTMLElement): Promise<void> {

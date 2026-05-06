@@ -925,11 +925,11 @@ button {
     border-radius: 10px;
     font-size: 12px;
     line-height: 1.5;
-    white-space: pre-wrap;
     word-break: break-word;
 }
 
 .ai-msg--user .ai-bubble {
+    white-space: pre-wrap;
     background-color: var(--accent-blue);
     color: white;
     border-bottom-right-radius: 2px;
@@ -940,6 +940,111 @@ button {
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-bottom-left-radius: 2px;
+
+    > *:first-child { margin-top: 0 !important; }
+    > *:last-child { margin-bottom: 0 !important; }
+
+    p {
+        margin: 0 0 8px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
+        color: var(--text-bright);
+        margin: 12px 0 4px;
+        line-height: 1.3;
+    }
+    h1 { font-size: 14px; }
+    h2 { font-size: 13px; }
+    h3, h4, h5, h6 { font-size: 12px; }
+
+    code {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        background-color: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 3px;
+        padding: 1px 4px;
+    }
+
+    pre {
+        background-color: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 8px 10px;
+        overflow-x: auto;
+        margin: 8px 0;
+        scrollbar-width: thin;
+        scrollbar-color: var(--bg-active) transparent;
+
+        code {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+    }
+
+    ul, ol {
+        padding-left: 18px;
+        margin: 4px 0 8px;
+    }
+
+    li {
+        margin-bottom: 2px;
+    }
+
+    li > ul,
+    li > ol {
+        margin: 2px 0;
+    }
+
+    blockquote {
+        border-left: 2px solid var(--accent-blue);
+        margin: 8px 0;
+        padding: 2px 8px;
+        color: var(--text-secondary);
+
+        p { margin-bottom: 0; }
+    }
+
+    a {
+        color: var(--accent-blue);
+        text-decoration: none;
+
+        &:hover { text-decoration: underline; }
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--border-color);
+        margin: 8px 0;
+    }
+
+    strong {
+        font-weight: 600;
+        color: var(--text-bright);
+    }
+
+    table {
+        border-collapse: collapse;
+        font-size: 11px;
+        margin: 8px 0;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid var(--border-color);
+        padding: 3px 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: var(--bg-tertiary);
+        color: var(--text-bright);
+        font-weight: 600;
+    }
 }
 
 .ai-msg--error {
@@ -948,6 +1053,7 @@ button {
 }
 
 .ai-msg--error .ai-bubble {
+    white-space: pre-wrap;
     background-color: rgba(var(--bs-danger-rgb), 0.1);
     color: var(--bs-danger);
     border: 1px solid rgba(var(--bs-danger-rgb), 0.2);
