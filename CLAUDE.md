@@ -68,6 +68,23 @@ Key controllers in `src/ViewControllers/`:
 - `ProjectController` — base class that loads a project from query string reference
 - `FetchController` — base for endpoints that return managed objects by ID/predicate
 
+### Responder Data Pattern
+
+A responder **provides data**, it does not construct a response. The framework builds the HTTP response from `$data` and the transformer chain.
+
+- **GET responders / ViewControllers** — override the `$data` property hook (or `#[Outlet]` properties). The framework reads `$data` once, lazily, and passes it through the transformer chain declared on `#[Endpoint]`.
+- **Action methods** — perform their work, then assign `$this->data = ...` before returning. The framework passes `$this->data` through the transformer chain declared on `#[Action]`. Do not return a value; assigning `$this->data` is the contract.
+- **Override `$response` only** for genuinely atypical behavior: no-body responses (set `$this->statusCode` and leave `$data` null), streaming, or custom status codes. Do not override `$response` when overriding `$data` is sufficient.
+
+### Response Pipeline
+
+Every response goes through two pipelines in sequence:
+
+1. **User pipeline** — the transformers declared on `#[Endpoint]` or `#[Action]` (e.g. `JSONTransformer`, `HTMLTransformer`, `NoCacheHeaderTransformer`).
+2. **Infrastructure pipeline** — always runs automatically: `CacheHeaderTransformer`, `ConditionalGetTransformer`, `RateLimitHeaderTransformer`, `SecurityHeadersTransformer`, `CORSResponseTransformer`.
+
+`SecurityHeadersTransformer` is part of the infrastructure pipeline — it applies to every response automatically. Do not add it to a custom transformer list.
+
 ### Managed Objects (CoreData Pattern)
 Domain models in `src/Model/` extend `ManagedObject`. They use KVC and are automatically persisted via the `PersistentStore`. Never write raw SQL — use fetch requests and predicates:
 
@@ -78,6 +95,29 @@ $context->save();  // commits all pending changes
 ```
 
 The object graph: `Project` → `Model` → `Entity` → `Attribute` / `Relationship` / `UniquenessConstraint`
+
+### PersistentSpace
+
+Any URL whose last path component matches a registered Core Data entity name is handled automatically by `PersistentSpace` — no custom responder needed. It provides `GET` (list, filter, count, aggregate), `POST` (create → 201), `PATCH` (update by `objectID` → 200), and `DELETE` (delete by `objectID` → 204), all with field-level security and ownership enforcement applied automatically.
+
+For `PATCH` and `DELETE` the request body must include `objectID`. For `GET`, query parameters become equality predicates; complex queries (sorting, pagination, aggregates) are passed via `?fetchRequest=<base64-json>`.
+
+Field-level security on managed object properties:
+- `#[Readable]` / `#[Writable]` — controls which fields PersistentSpace reads/writes per request
+- `#[Owner]` — marks the ownership field; PersistentSpace enforces that the authenticated user owns the record on PATCH and DELETE
+
+### Auth & Access Control
+
+The Service framework selects its auth mode at boot:
+- **JWT mode** — when `JWT_PRIVATE_KEY` env var is present. Stateless; tokens carry `access` and `refresh` scopes. Default validity: 1800 s (override with `JWT_VALIDITY_TIME_INTERVAL`).
+- **Session mode** — default when no JWT key is set. `applicationWillFinishLaunching` in `Delegate.php` is where the access policy is configured.
+
+The access evaluator chain runs in this order (AND short-circuit):
+`SessionAuthenticationEvaluator` → `AuthenticationEvaluator` → `JSONWebTokenScopeEvaluator` → `JSONWebTokenAccessTimeEvaluator` → `JSONWebTokenEnabledEvaluator` → `JSONWebTokenVersionEvaluator` → `AuthorizationEvaluator`
+
+When debugging a 401/403, work through this chain. The evaluator that fails is always the one logged first.
+
+Custom responders can override `$accessEvaluator` to use a different chain (e.g., `AuthenticationManager::refresh` drops `AuthorizationEvaluator` and accepts only the refresh-scoped token).
 
 ### Application Lifecycle
 `index.php` → `Application::shared()->run()` → `Delegate.php` is the entry point. `Delegate::initialize()` (static, called early) registers `UserDefaults`, configures the Redis row cache and `LatteRenderer`. `applicationWillFinishLaunching` sets the access policy and idempotency store.
