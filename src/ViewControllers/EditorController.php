@@ -201,6 +201,9 @@ final class EditorController extends ProjectController
             if (isset($this->selectedConversation)) {
                 return $this->selectedConversation;
             }
+            if ($this->request->parameters["newConversation"]) {
+                return null;
+            }
             $reference = $this->request->parameters["conversation"];
             if (!is_numeric($reference)) {
                 return $this->selectedConversation = $this->project->selectedConversation;
