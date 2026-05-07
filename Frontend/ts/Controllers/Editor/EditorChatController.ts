@@ -248,38 +248,69 @@ export class EditorChatController {
 
         const textarea = document.createElement("textarea")
         textarea.value = originalText
-        textarea.rows = Math.max(2, originalText.split("\n").length)
+        textarea.rows = 1
+
+        const autoGrow = (): void => {
+            textarea.style.height = "auto"
+            textarea.style.height = `${textarea.scrollHeight}px`
+        }
+
+        const cancel = (): void => {
+            bubble.innerHTML = originalHTML
+            editContainer.replaceWith(bubble)
+        }
 
         const actions = document.createElement("div")
         actions.className = "ai-edit-actions"
 
+        const hint = document.createElement("span")
+        hint.className = "ai-edit-hint"
+        hint.textContent = "Esc to cancel · ⌘↵ to save"
+
         const cancelBtn = document.createElement("button")
         cancelBtn.type = "button"
-        cancelBtn.className = "btn btn-sm btn-icon"
+        cancelBtn.className = "ai-edit-cancel-btn"
         cancelBtn.textContent = "Cancel"
-        cancelBtn.addEventListener("click", () => {
-            bubble.innerHTML = originalHTML
-            editContainer.replaceWith(bubble)
-        })
+        cancelBtn.addEventListener("click", cancel)
 
         const saveBtn = document.createElement("button")
         saveBtn.type = "button"
-        saveBtn.className = "btn btn-sm btn-primary"
+        saveBtn.className = "ai-edit-save-btn"
         saveBtn.textContent = "Save"
-        saveBtn.addEventListener("click", async () => {
+
+        const save = async (): Promise<void> => {
             if (!messageID) {
                 return
             }
             const newContent = textarea.value.trim()
+            if (!newContent) {
+                return
+            }
+            saveBtn.disabled = true
             const response = await this.context.httpClient.patch("/Message", { objectID: messageID, content: newContent })
             if (!response.ok) {
+                saveBtn.disabled = false
                 this.appendErrorBubble(await this.extractErrorMessage(response))
                 return
             }
             bubble.textContent = newContent
             editContainer.replaceWith(bubble)
+        }
+
+        saveBtn.addEventListener("click", () => { void save() })
+
+        textarea.addEventListener("input", autoGrow)
+        textarea.addEventListener("keydown", (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                e.preventDefault()
+                cancel()
+            } else if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault()
+                void save()
+            }
         })
 
+        actions.appendChild(hint)
         actions.appendChild(cancelBtn)
         actions.appendChild(saveBtn)
         editContainer.appendChild(textarea)
@@ -288,6 +319,7 @@ export class EditorChatController {
         bubble.replaceWith(editContainer)
         textarea.focus()
         textarea.selectionStart = textarea.value.length
+        autoGrow()
     }
 
     private async regenerateFrom(wrapper: HTMLElement, messageID: string | null, content: string | null): Promise<void> {

@@ -1349,34 +1349,101 @@ button {
 
 /* Edit mode */
 
+@keyframes ai-edit-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 .ai-bubble-edit {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     width: 100%;
+    animation: ai-edit-in 0.14s ease;
 
     textarea {
         width: 100%;
-        min-height: 60px;
-        padding: 6px 8px;
-        background-color: var(--bg-primary);
-        border: 1px solid var(--border-focus);
-        border-radius: 6px;
-        color: var(--text-primary);
+        min-height: 32px;
+        padding: 6px 10px;
+        background-color: var(--accent-blue);
+        color: white;
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        border-bottom-right-radius: 2px;
         font-family: var(--font-ui);
-        font-size: 13px;
-        resize: vertical;
+        font-size: 12px;
+        line-height: 1.5;
+        resize: none;
+        overflow: hidden;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+        }
 
         &:focus {
             outline: none;
-            box-shadow: 0 0 0 1px var(--border-focus);
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12);
         }
     }
 
     .ai-edit-actions {
         display: flex;
+        align-items: center;
         gap: 6px;
         justify-content: flex-end;
+    }
+}
+
+.ai-edit-hint {
+    font-size: 10px;
+    color: var(--text-disabled);
+    margin-right: auto;
+    letter-spacing: 0.2px;
+    user-select: none;
+}
+
+.ai-edit-cancel-btn,
+.ai-edit-save-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    padding: 0 10px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+    line-height: 1;
+}
+
+.ai-edit-cancel-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+
+    &:hover {
+        background-color: var(--bg-hover);
+        color: var(--text-primary);
+        border-color: var(--text-disabled);
+    }
+}
+
+.ai-edit-save-btn {
+    background: var(--accent-blue);
+    border: none;
+    color: white;
+
+    &:hover {
+        background-color: var(--accent-blue-hover);
+    }
+
+    &:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
     }
 }
 
