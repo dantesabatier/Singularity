@@ -8,6 +8,7 @@ use App\AI\LLMClient;
 use App\AI\LLMMessage;
 use App\AI\LLMToolCall;
 use App\AI\LLMTurn;
+use App\Model\MessageRole;
 use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
@@ -34,7 +35,7 @@ final class AnthropicClient extends LLMClient
      * @param ArrayClass<ToolDescriptor> $tools
      */
     #[Override]
-    protected function buildRequest(ArrayClass $messages, ArrayClass $tools): URLRequest
+    protected function buildRequest(ArrayClass $messages, ArrayClass $tools, ?string $systemPrompt = null): URLRequest
     {
         $request = new URLRequest($this->endpoint ?? fatal_error("Endpoint URL must be provided for AnthropicClient"));
         $request->httpMethod = HTTPRequestMethod::post;
@@ -43,12 +44,16 @@ final class AnthropicClient extends LLMClient
             "anthropic-version" => $this->version,
             "Content-Type" => "application/json",
         ]);
-        $request->httpBody = (string)json_encode([
+        $body = [
             "model" => $this->model,
             "max_tokens" => $this->maxTokens,
             "messages" => $this->formatMessages($messages),
             "tools" => $this->formatTools($tools),
-        ]);
+        ];
+        if ($systemPrompt !== null) {
+            $body["system"] = $systemPrompt;
+        }
+        $request->httpBody = (string)json_encode($body);
         return $request;
     }
 
@@ -61,7 +66,7 @@ final class AnthropicClient extends LLMClient
         $result = [];
         $pendingToolResults = [];
         foreach ($messages as $message) {
-            if ($message->role === "tool") {
+            if ($message->role === MessageRole::tool) {
                 $pendingToolResults[] = [
                     "type" => "tool_result",
                     "tool_use_id" => $message->toolCallId ?? "",
@@ -74,7 +79,7 @@ final class AnthropicClient extends LLMClient
                 $pendingToolResults = [];
             }
             $toolCalls = $message->toolCalls;
-            if ($toolCalls && !$toolCalls->isEmpty && $message->role === "assistant") {
+            if ($toolCalls && !$toolCalls->isEmpty && $message->role === MessageRole::assistant) {
                 $content = [];
                 if ($message->content !== null && $message->content !== "") {
                     $content[] = ["type" => "text", "text" => $message->content];
@@ -88,6 +93,22 @@ final class AnthropicClient extends LLMClient
                     ];
                 }
                 $result[] = ["role" => "assistant", "content" => $content];
+            } elseif ($message->images && !$message->images->isEmpty) {
+                $content = [];
+                foreach ($message->images as $image) {
+                    $content[] = [
+                        "type" => "image",
+                        "source" => [
+                            "type" => "base64",
+                            "media_type" => $image["mimeType"],
+                            "data" => $image["data"],
+                        ],
+                    ];
+                }
+                if ($message->content !== null && $message->content !== "") {
+                    $content[] = ["type" => "text", "text" => $message->content];
+                }
+                $result[] = ["role" => $message->role, "content" => $content];
             } else {
                 $result[] = ["role" => $message->role, "content" => $message->content ?? ""];
             }
@@ -135,6 +156,8 @@ final class AnthropicClient extends LLMClient
                 default => null,
             };
         }
-        return new LLMTurn($text, $toolCalls);
+        /** @var Dictionary<mixed> $usage */
+        $usage = $body["usage"] ?? new Dictionary();
+        return new LLMTurn($text, $toolCalls, (int)($usage["input_tokens"] ?? 0), (int)($usage["output_tokens"] ?? 0));
     }
 }

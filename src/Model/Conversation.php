@@ -9,9 +9,14 @@ use Sabatier\Foundation\Set;
 
 /**
  * @property Date $creationDate
+ * @property Date $lastModifiedDate
  * @property string $title
  * @property string $provider
  * @property string $model
+ * @property int<0, max> $totalTokens
+ * @property int<0, max> $inputTokens
+ * @property int<0, max> $outputTokens
+ * @property float $cost
  * @property Project|null $project
  * @property Set<Message> $messages
  * @method void addMessagesObject(Message $object)
@@ -27,5 +32,6 @@ final class Conversation extends ManagedObject
     public function willSave(): void
     {
         $this->title = $this->title |> trim(...);
+        //$this->lastModifiedDate = new Date();
     }
 }

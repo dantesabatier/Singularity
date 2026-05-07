@@ -8,6 +8,7 @@ export class AIProvidersController extends ViewController {
     private providers: LLMProvider[] = []
     private editingIndex: number | null = null
     private editingModels: LLMModel[] = []
+    private abortController: AbortController | null = null
 
     public constructor(context: ApplicationContext) {
         super(context)
@@ -24,6 +25,8 @@ export class AIProvidersController extends ViewController {
 
     protected override viewDidUpdate(): void {
         this.loadProviders()
+        this.abortController?.abort()
+        this.bindActions()
     }
 
     private loadProviders(): void {
@@ -38,63 +41,62 @@ export class AIProvidersController extends ViewController {
     }
 
     private bindActions(): void {
-        document.addEventListener("show.bs.modal", (e) => {
-            if ((e.target as Element | null)?.id !== "addLLMProvider") {
-                return
-            }
+        this.abortController = new AbortController()
+        const signal = this.abortController.signal
+
+        document.getElementById("addLLMProvider")?.addEventListener("show.bs.modal", () => {
             if (this.editingIndex === null) {
                 this.clearForm()
             }
-        })
+        }, { signal })
 
-        document.addEventListener("hidden.bs.modal", (e) => {
-            if ((e.target as Element | null)?.id !== "addLLMProvider") {
-                return
-            }
+        document.getElementById("addLLMProvider")?.addEventListener("hidden.bs.modal", () => {
             this.editingIndex = null
             this.editingModels = []
-        })
+        }, { signal })
 
-        document.addEventListener("click", (e) => {
+        document.getElementById("addLLMProvider")?.addEventListener("click", (e) => {
             const btn = (e.target as Element).closest<HTMLElement>("[data-ai-action]")
             if (!btn) {
                 return
             }
-            if (btn.closest("#addLLMProvider")) {
-                switch (btn.dataset.aiAction) {
-                    case "confirmAddProvider":
-                        void this.confirmSaveProvider()
-                        break
-                    case "addModel":
-                        this.addModel()
-                        break
-                    case "removeModel": {
-                        const idx = parseInt(btn.dataset.modelIndex ?? "-1", 10)
-                        if (idx >= 0) {
-                            this.removeModel(idx)
-                        }
-                        break
+            switch (btn.dataset.aiAction) {
+                case "confirmAddProvider":
+                    void this.confirmSaveProvider()
+                    break
+                case "addModel":
+                    this.addModel()
+                    break
+                case "removeModel": {
+                    const idx = parseInt(btn.dataset.modelIndex ?? "-1", 10)
+                    if (idx >= 0) {
+                        this.removeModel(idx)
                     }
+                    break
                 }
+            }
+        }, { signal })
+
+        document.getElementById("ai")?.addEventListener("click", (e) => {
+            const btn = (e.target as Element).closest<HTMLElement>("[data-ai-action]")
+            if (!btn) {
                 return
             }
-            if (btn.closest("#ai")) {
-                const card = btn.closest<HTMLElement>(".provider-card")
-                const index = card ? Array.from(document.querySelectorAll(".provider-card")).indexOf(card) : -1
-                switch (btn.dataset.aiAction) {
-                    case "editProvider":
-                        if (index >= 0) {
-                            this.openForEditing(index)
-                        }
-                        break
-                    case "deleteProvider":
-                        if (index >= 0) {
-                            void this.deleteProvider(index)
-                        }
-                        break
-                }
+            const card = btn.closest<HTMLElement>(".provider-card")
+            const index = card ? Array.from(document.querySelectorAll(".provider-card")).indexOf(card) : -1
+            switch (btn.dataset.aiAction) {
+                case "editProvider":
+                    if (index >= 0) {
+                        this.openForEditing(index)
+                    }
+                    break
+                case "deleteProvider":
+                    if (index >= 0) {
+                        void this.deleteProvider(index)
+                    }
+                    break
             }
-        })
+        }, { signal })
     }
 
     private openForEditing(index: number): void {

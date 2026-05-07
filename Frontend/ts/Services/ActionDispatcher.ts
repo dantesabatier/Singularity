@@ -115,8 +115,13 @@ export class ActionDispatcher {
         }
 
         try {
-            const json = await response.json() as { objectID?: string }
-            return typeof json.objectID === "string" && json.objectID.length > 0 ? json.objectID : undefined
+            const json = await response.json() as { objectID?: string | number }
+            const id = json.objectID
+            if (id === undefined || id === null || id === "") {
+                return undefined
+            }
+            const str = String(id)
+            return str.length > 0 ? str : undefined
         } catch {
             return undefined
         }

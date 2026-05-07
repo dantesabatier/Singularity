@@ -90,8 +90,22 @@ Domain models in `src/Model/` extend `ManagedObject`. They use KVC and are autom
 
 ```php
 $projects = $context->fetch(FetchRequest::named('allProjects'));
-$entity = $context->object(Entity::class, objectID: $id);
 $context->save();  // commits all pending changes
+```
+
+To fetch a single object by `objectID`:
+
+```php
+use Sabatier\Foundation\Predicates\ComparisonPredicate;
+use Sabatier\Foundation\Predicates\Expression;
+use const Sabatier\CoreData\ManagedObjectObjectIDKey;
+
+$fetchRequest = Entity::fetchRequest();
+$fetchRequest->predicate = new ComparisonPredicate(
+    Expression::expressionForKeyPath(ManagedObjectObjectIDKey),
+    Expression::expressionForConstantValue($id)
+);
+$entity = $context->fetch($fetchRequest)->first ?? throw new NotFoundException("Not found");
 ```
 
 The object graph: `Project` → `Model` → `Entity` → `Attribute` / `Relationship` / `UniquenessConstraint`
@@ -103,7 +117,7 @@ Any URL whose last path component matches a registered Core Data entity name is 
 For `PATCH` and `DELETE` the request body must include `objectID`. For `GET`, query parameters become equality predicates; complex queries (sorting, pagination, aggregates) are passed via `?fetchRequest=<base64-json>`.
 
 Field-level security on managed object properties:
-- `#[Readable]` / `#[Writable]` — controls which fields PersistentSpace reads/writes per request
+- `#[Readable]` / `#[Writable]` — restricts access to specific fields; by default all fields are readable and writable
 - `#[Owner]` — marks the ownership field; PersistentSpace enforces that the authenticated user owns the record on PATCH and DELETE
 
 ### Auth & Access Control

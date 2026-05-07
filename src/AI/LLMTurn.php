@@ -13,8 +13,10 @@ final readonly class LLMTurn
     /**
      * @param string|null $text
      * @param ArrayClass<LLMToolCall> $toolCalls
+     * @param int $inputTokens
+     * @param int $outputTokens
      */
-    public function __construct(public ?string $text, public ArrayClass $toolCalls)
+    public function __construct(public ?string $text, public ArrayClass $toolCalls, public int $inputTokens = 0, public int $outputTokens = 0)
     {
         $this->isDone = $this->toolCalls->isEmpty;
     }

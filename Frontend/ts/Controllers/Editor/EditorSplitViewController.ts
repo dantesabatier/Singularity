@@ -14,6 +14,7 @@ export class EditorSplitViewController {
     private splitInstance: SplitInstance | null = null
     private isCopilotEnabled = false
     private currentContainer: HTMLElement | null = null
+    private sidebarTabAbortController: AbortController | null = null
 
     public constructor(private readonly context: ApplicationContext) {
     }
@@ -25,6 +26,17 @@ export class EditorSplitViewController {
         }
         this.isCopilotEnabled = container.dataset.copilotEnabled === "true"
         this.updateSidebarMode()
+        this.sidebarTabAbortController?.abort()
+        this.sidebarTabAbortController = new AbortController()
+        const signal = this.sidebarTabAbortController.signal
+        document.querySelectorAll<HTMLButtonElement>("[data-sidebar-tab]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const target = btn.dataset.sidebarTab
+                if (target === "inspector" || target === "chat") {
+                    void this.selectSidebarTab(target)
+                }
+            }, {signal})
+        })
         if (this.currentContainer !== container) {
             this.currentContainer = container
             this.rebuildSplitView(container)
@@ -47,11 +59,11 @@ export class EditorSplitViewController {
         this.togglePanel("sidebar")
     }
 
-    public async toggleCopilotPanel(): Promise<void> {
+    public async selectSidebarTab(tab: "inspector" | "chat"): Promise<void> {
         if (!this.supportsCurrentView()) {
             return
         }
-        this.isCopilotEnabled = !this.isCopilotEnabled
+        this.isCopilotEnabled = tab === "chat"
         this.updateSidebarMode()
         this.updateToggleButtons()
         await this.context.actionDispatcher.dispatch("Synchronize", {
@@ -124,7 +136,7 @@ export class EditorSplitViewController {
         if (container instanceof HTMLElement) {
             container.dataset.splitSizes = JSON.stringify(sizes)
         }
-        void this.context.httpClient.patch("Synchronize", {editorSplitSizes: sizes})
+        void this.context.httpClient.post("Synchronize", {editorSplitSizes: sizes})
     }
 
     private updateSidebarMode(): void {
@@ -135,16 +147,20 @@ export class EditorSplitViewController {
         }
         inspectorPane.style.display = this.isCopilotEnabled ? "none" : "block"
         aiPane.style.display = this.isCopilotEnabled ? "block" : "none"
+        document.querySelectorAll<HTMLButtonElement>("[data-sidebar-tab]").forEach(btn => {
+            const isActive =
+                (btn.dataset.sidebarTab === "chat" && this.isCopilotEnabled) ||
+                (btn.dataset.sidebarTab === "inspector" && !this.isCopilotEnabled)
+            btn.classList.toggle("active", isActive)
+        })
     }
 
     private updateToggleButtons(): void {
         const sourceButton = document.getElementById("btn-toggle-source")
         const sidebarButton = document.getElementById("btn-toggle-sidebar")
-        const copilotButton = document.getElementById("btn-toggle-copilot")
         const sizes = this.splitInstance?.getSizes() ?? [20, 60, 20]
         sourceButton?.classList.toggle("active", sizes[0] > 2)
         sidebarButton?.classList.toggle("active", sizes[2] > 2)
-        copilotButton?.classList.toggle("active", this.isCopilotEnabled)
     }
 
     private togglePanel(panel: SplitPanel): void {

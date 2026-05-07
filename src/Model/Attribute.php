@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Model;
 
 use Override;
@@ -114,8 +112,9 @@ final class Attribute extends Property
                 AttributeType::uuid => UUID::class,
                 AttributeType::uri => URL::class,
                 AttributeType::objectID => ManagedObjectID::class,
+                AttributeType::transformable => $attribute->attributeValueClassName,
                 AttributeType::undefined => throw new InternalInconsistencyException(error: new Error(CocoaErrorDomain, ManagedObjectValidationError, new Dictionary([LocalizedDescriptionKey => "$parent?->name.$attribute->name must be a defined type", LocalizedFailureReasonErrorKey => "$parent?->name.$attribute->name cannot use an attribute type of \"Undefined\""]))),
-                default => $attribute->attributeValueClassName,
+                default => null,
             };
             $attribute->isDefaultValueBounded = false;
             $attribute->defaultValue = null;
@@ -135,6 +134,11 @@ final class Attribute extends Property
                 AttributeType::date => $change->newValue ? $attribute->maxValue : null,
                 default => $attribute->maxValue
             };
+        });
+        $this->observe("isDefaultValueBounded", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
+            if (!$change->newValue) {
+                $attribute->defaultValue = null;
+            }
         });
         $this->observe("defaultValue", KeyValueObservingOptions::new, function (Attribute $attribute, KeyValueObservedChange $change): void {
             if ($change->newValue === "") {

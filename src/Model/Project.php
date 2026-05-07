@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Model;
 
 use Exception;
@@ -12,8 +10,8 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use function Sabatier\Foundation\random_color;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
+use function Sabatier\Foundation\random_color;
 
 /**
  * @property string $name

@@ -100,9 +100,6 @@ export class EditorController extends ViewController {
             case "toggleSidebarPanel":
                 this.splitController.toggleSidebarPanel()
                 return
-            case "toggleCopilotPanel":
-                void this.splitController.toggleCopilotPanel()
-                return
             case "selectConversation":
                 void this.selectConversation(element)
                 return

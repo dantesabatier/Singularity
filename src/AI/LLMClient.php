@@ -27,7 +27,7 @@ abstract class LLMClient
      * @param ArrayClass<LLMMessage> $messages
      * @param ArrayClass<ToolDescriptor> $tools
      */
-    abstract protected function buildRequest(ArrayClass $messages, ArrayClass $tools): URLRequest;
+    abstract protected function buildRequest(ArrayClass $messages, ArrayClass $tools, ?string $systemPrompt = null): URLRequest;
 
     /**
      * @param Dictionary<mixed> $body
@@ -39,9 +39,9 @@ abstract class LLMClient
      * @param ArrayClass<LLMMessage> $messages
      * @param ArrayClass<ToolDescriptor> $tools
      */
-    public function complete(ArrayClass $messages, ArrayClass $tools): LLMTurn
+    public function complete(ArrayClass $messages, ArrayClass $tools, ?string $systemPrompt = null): LLMTurn
     {
-        $request = $this->buildRequest($messages, $tools);
+        $request = $this->buildRequest($messages, $tools, $systemPrompt);
         $body = $this->send($request);
         return $this->parse($body);
     }

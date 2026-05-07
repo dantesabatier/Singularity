@@ -3,10 +3,13 @@ import { marked } from "marked"
 import hljs from "highlight.js"
 
 type ChatMessage = {
+    objectID?: string | null
     role: "user" | "assistant" | "tool"
     content: string | null
     toolCalls?: Array<{ id: string; name: string; input: unknown }> | null
     toolCallId?: string | null
+    images?: Array<{ name: string; mimeType: string; data: string }>
+    thumbnailURLs?: string[]
 }
 
 const DEFAULT_PROVIDER = "anthropic"
@@ -17,6 +20,7 @@ export class EditorChatController {
     private currentProjectID: string | null = null
     private selectedProvider: string = DEFAULT_PROVIDER
     private selectedModel: string = DEFAULT_MODEL
+    private pendingAttachments: File[] = []
 
     private readonly onSendClick = (): void => {
         void this.sendMessage()
@@ -67,6 +71,22 @@ export class EditorChatController {
             input.addEventListener("input", this.onInputChange)
             this.currentInput = input
         }
+
+        const fileInput = document.getElementById("chat-file-input")
+        if (fileInput instanceof HTMLInputElement) {
+            fileInput.addEventListener("change", () => this.onFilesSelected(fileInput))
+        }
+        const attachBtn = document.getElementById("chat-attach-btn")
+        attachBtn?.addEventListener("click", () => fileInput?.click())
+
+        const messages = document.getElementById("chat-messages")
+        messages?.addEventListener("click", (e) => {
+            const btn = (e.target as Element).closest<HTMLElement>("[data-msg-action]")
+            if (btn) {
+                void this.handleMessageAction(btn)
+            }
+        })
+
         this.updateSendButton()
     }
 
@@ -136,46 +156,38 @@ export class EditorChatController {
         }
         input.value = ""
         this.setStatus("thinking")
-        this.appendMessageBubble({role: "user", content})
+
+        const thumbnailURLs = this.pendingAttachments.map(f => URL.createObjectURL(f))
+        const images = await Promise.all(this.pendingAttachments.map(f => this.fileToBase64(f)))
+        this.pendingAttachments = []
+        this.clearAttachmentChips()
+
+        this.appendMessageBubble({role: "user", content, images: images.length > 0 ? images : undefined, thumbnailURLs: thumbnailURLs.length > 0 ? thumbnailURLs : undefined})
 
         const isNewConversation = !this.currentConversationID
 
-        const response = await this.context.httpClient.post("/message", {
+        const body: Record<string, unknown> = {
             project: this.currentProjectID,
             conversation: this.currentConversationID,
             content,
             model: this.selectedModel,
-        })
+        }
+        const selectionKeys = ["entity", "property", "index", "element", "constraint", "fetchRequest", "configuration", "composite", "accessControl", "role"]
+        const urlParams = new URLSearchParams(window.location.search)
+        for (const key of selectionKeys) {
+            const val = urlParams.get(key)
+            if (val) {
+                body[key] = val
+            }
+        }
+        if (images.length > 0) {
+            body.images = images
+        }
+
+        const response = await this.context.httpClient.post("/message", body)
 
         if (!response.ok) {
-            let errorMessage = "Something went wrong. Please try again."
-            try {
-                const errorData = await response.json() as {
-                    error?: {
-                        localizedDescription?: string | null
-                        localizedFailureReason?: string | null
-                        localizedRecoverySuggestion?: string | null
-                    }
-                }
-                const e = errorData.error
-                if (e) {
-                    const title = e.localizedDescription ?? errorMessage
-                    let detail = e.localizedFailureReason ?? e.localizedRecoverySuggestion ?? ""
-                    if (detail && e.localizedRecoverySuggestion && detail !== e.localizedRecoverySuggestion) {
-                        if (!detail.endsWith(".")) {
-                            detail += "."
-                        }
-                        detail += "\n" + e.localizedRecoverySuggestion
-                    }
-                    if (detail && !detail.endsWith(".")) {
-                        detail += "."
-                    }
-                    errorMessage = detail ? `${title}\n${detail}` : title
-                }
-            } catch {
-                // ignore parse error
-            }
-            this.appendErrorBubble(errorMessage)
+            this.appendErrorBubble(await this.extractErrorMessage(response))
             this.setStatus("idle")
             return
         }
@@ -198,6 +210,259 @@ export class EditorChatController {
         } else if (isNewConversation) {
             await this.navigateToConversation(data.conversationID)
         }
+    }
+
+    private async handleMessageAction(btn: HTMLElement): Promise<void> {
+        const action = btn.dataset.msgAction
+        const msgWrapper = btn.closest<HTMLElement>(".ai-msg")
+        if (!msgWrapper) {
+            return
+        }
+        const messageID = msgWrapper.dataset.messageId ?? null
+
+        if (action === "copy") {
+            const bubble = msgWrapper.querySelector(".ai-bubble")
+            await navigator.clipboard.writeText(bubble?.textContent ?? "")
+            const icon = btn.querySelector("i")
+            if (icon) {
+                icon.className = "bi bi-check"
+                window.setTimeout(() => { icon.className = "bi bi-clipboard" }, 1000)
+            }
+        } else if (action === "edit") {
+            this.enterEditMode(msgWrapper, messageID)
+        } else if (action === "resend") {
+            await this.regenerateFrom(msgWrapper, messageID, null)
+        }
+    }
+
+    private enterEditMode(wrapper: HTMLElement, messageID: string | null): void {
+        const bubble = wrapper.querySelector<HTMLElement>(".ai-bubble")
+        if (!bubble) {
+            return
+        }
+        const originalHTML = bubble.innerHTML
+        const originalText = bubble.textContent ?? ""
+
+        const editContainer = document.createElement("div")
+        editContainer.className = "ai-bubble-edit"
+
+        const textarea = document.createElement("textarea")
+        textarea.value = originalText
+        textarea.rows = Math.max(2, originalText.split("\n").length)
+
+        const actions = document.createElement("div")
+        actions.className = "ai-edit-actions"
+
+        const cancelBtn = document.createElement("button")
+        cancelBtn.type = "button"
+        cancelBtn.className = "btn btn-sm btn-icon"
+        cancelBtn.textContent = "Cancel"
+        cancelBtn.addEventListener("click", () => {
+            bubble.innerHTML = originalHTML
+            editContainer.replaceWith(bubble)
+        })
+
+        const saveBtn = document.createElement("button")
+        saveBtn.type = "button"
+        saveBtn.className = "btn btn-sm btn-primary"
+        saveBtn.textContent = "Save"
+        saveBtn.addEventListener("click", async () => {
+            if (!messageID) {
+                return
+            }
+            const newContent = textarea.value.trim()
+            const response = await this.context.httpClient.patch("/Message", { objectID: messageID, content: newContent })
+            if (!response.ok) {
+                this.appendErrorBubble(await this.extractErrorMessage(response))
+                return
+            }
+            bubble.textContent = newContent
+            editContainer.replaceWith(bubble)
+        })
+
+        actions.appendChild(cancelBtn)
+        actions.appendChild(saveBtn)
+        editContainer.appendChild(textarea)
+        editContainer.appendChild(actions)
+
+        bubble.replaceWith(editContainer)
+        textarea.focus()
+        textarea.selectionStart = textarea.value.length
+    }
+
+    private async regenerateFrom(wrapper: HTMLElement, messageID: string | null, content: string | null): Promise<void> {
+        if (!messageID) {
+            return
+        }
+        this.setStatus("thinking")
+
+        const container = document.getElementById("chat-messages")
+        if (container) {
+            const allMessages = Array.from(container.querySelectorAll<HTMLElement>(".ai-msg"))
+            const idx = allMessages.indexOf(wrapper)
+            if (idx !== -1) {
+                for (const el of allMessages.slice(idx)) {
+                    el.remove()
+                }
+            }
+        }
+
+        if (content !== null) {
+            const newWrapper = document.createElement("div")
+            newWrapper.className = "ai-msg ai-msg--user"
+            newWrapper.dataset.messageId = messageID
+            const bubble = document.createElement("div")
+            bubble.className = "ai-bubble"
+            bubble.textContent = content
+            newWrapper.appendChild(bubble)
+            newWrapper.appendChild(this.buildActionBar("user"))
+            container?.appendChild(newWrapper)
+        }
+
+        const body: Record<string, unknown> = { messageObjectID: messageID }
+        if (content !== null) {
+            body.content = content
+        }
+
+        const response = await this.context.httpClient.post("/message/regenerate", body)
+
+        if (!response.ok) {
+            this.appendErrorBubble(await this.extractErrorMessage(response))
+            this.setStatus("idle")
+            return
+        }
+
+        const data = await response.json() as { conversationID: string; messages: ChatMessage[] }
+        for (const msg of content !== null ? data.messages.slice(1) : data.messages) {
+            this.appendMessageBubble(msg)
+        }
+        this.setStatus("idle")
+    }
+
+    private buildActionBar(role: "user" | "assistant"): HTMLElement {
+        const bar = document.createElement("div")
+        bar.className = "ai-msg-actions"
+
+        const copyBtn = document.createElement("button")
+        copyBtn.className = "ai-msg-action-btn"
+        copyBtn.dataset.msgAction = "copy"
+        copyBtn.title = "Copy"
+        copyBtn.innerHTML = `<i class="bi bi-clipboard"></i>`
+        bar.appendChild(copyBtn)
+
+        if (role === "user") {
+            const editBtn = document.createElement("button")
+            editBtn.className = "ai-msg-action-btn"
+            editBtn.dataset.msgAction = "edit"
+            editBtn.title = "Edit"
+            editBtn.innerHTML = `<i class="bi bi-pencil"></i>`
+            bar.appendChild(editBtn)
+
+            const resendBtn = document.createElement("button")
+            resendBtn.className = "ai-msg-action-btn"
+            resendBtn.dataset.msgAction = "resend"
+            resendBtn.title = "Resend"
+            resendBtn.innerHTML = `<i class="bi bi-arrow-clockwise"></i>`
+            bar.appendChild(resendBtn)
+        }
+
+        return bar
+    }
+
+    private onFilesSelected(input: HTMLInputElement): void {
+        const files = Array.from(input.files ?? [])
+        for (const file of files) {
+            if (!this.pendingAttachments.some(f => f.name === file.name && f.size === file.size)) {
+                this.pendingAttachments.push(file)
+            }
+        }
+        input.value = ""
+        this.renderAttachmentChips()
+        this.updateSendButton()
+    }
+
+    private renderAttachmentChips(): void {
+        const container = document.getElementById("chat-attachments")
+        if (!container) {
+            return
+        }
+        container.innerHTML = ""
+        for (const [index, file] of this.pendingAttachments.entries()) {
+            const chip = document.createElement("div")
+            chip.className = "ai-attachment-chip"
+
+            const thumb = document.createElement("img")
+            thumb.src = URL.createObjectURL(file)
+            thumb.alt = file.name
+            chip.appendChild(thumb)
+
+            const name = document.createElement("span")
+            name.className = "ai-attachment-name"
+            name.textContent = file.name
+            chip.appendChild(name)
+
+            const removeBtn = document.createElement("button")
+            removeBtn.type = "button"
+            removeBtn.textContent = "×"
+            removeBtn.addEventListener("click", () => {
+                this.pendingAttachments.splice(index, 1)
+                this.renderAttachmentChips()
+                this.updateSendButton()
+            })
+            chip.appendChild(removeBtn)
+
+            container.appendChild(chip)
+        }
+    }
+
+    private clearAttachmentChips(): void {
+        const container = document.getElementById("chat-attachments")
+        if (container) {
+            container.innerHTML = ""
+        }
+    }
+
+    private fileToBase64(file: File): Promise<{ name: string; mimeType: string; data: string }> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => {
+                const dataUrl = reader.result as string
+                resolve({ name: file.name, mimeType: file.type, data: dataUrl.split(",")[1] ?? "" })
+            }
+            reader.onerror = reject
+            reader.readAsDataURL(file)
+        })
+    }
+
+    private async extractErrorMessage(response: Response): Promise<string> {
+        let errorMessage = "Something went wrong. Please try again."
+        try {
+            const errorData = await response.json() as {
+                error?: {
+                    localizedDescription?: string | null
+                    localizedFailureReason?: string | null
+                    localizedRecoverySuggestion?: string | null
+                }
+            }
+            const e = errorData.error
+            if (e) {
+                const title = e.localizedDescription ?? errorMessage
+                let detail = e.localizedFailureReason ?? e.localizedRecoverySuggestion ?? ""
+                if (detail && e.localizedRecoverySuggestion && detail !== e.localizedRecoverySuggestion) {
+                    if (!detail.endsWith(".")) {
+                        detail += "."
+                    }
+                    detail += "\n" + e.localizedRecoverySuggestion
+                }
+                if (detail && !detail.endsWith(".")) {
+                    detail += "."
+                }
+                errorMessage = detail ? `${title}\n${detail}` : title
+            }
+        } catch {
+            // ignore parse error
+        }
+        return errorMessage
     }
 
     private appendErrorBubble(message: string): void {
@@ -236,6 +501,9 @@ export class EditorChatController {
         }
         const wrapper = document.createElement("div")
         wrapper.className = `ai-msg ai-msg--${message.role}`
+        if (message.objectID) {
+            wrapper.dataset.messageId = message.objectID
+        }
 
         if (message.role === "tool") {
             const name = message.toolCallId ?? "tool"
@@ -250,7 +518,18 @@ export class EditorChatController {
                     hljs.highlightElement(block as HTMLElement)
                 })
             } else {
-                bubble.textContent = message.content ?? ""
+                if (message.thumbnailURLs?.length) {
+                    const imgRow = document.createElement("div")
+                    imgRow.className = "ai-msg-images"
+                    for (const url of message.thumbnailURLs) {
+                        const thumb = document.createElement("img")
+                        thumb.src = url
+                        thumb.className = "ai-msg-img"
+                        imgRow.appendChild(thumb)
+                    }
+                    bubble.appendChild(imgRow)
+                }
+                bubble.appendChild(document.createTextNode(message.content ?? ""))
             }
             wrapper.appendChild(bubble)
 
@@ -262,6 +541,8 @@ export class EditorChatController {
                     wrapper.appendChild(badge)
                 }
             }
+
+            wrapper.appendChild(this.buildActionBar(message.role as "user" | "assistant"))
         }
 
         container.appendChild(wrapper)
@@ -295,7 +576,8 @@ export class EditorChatController {
         const sendBtn = document.getElementById("chat-send-btn")
         const input = document.getElementById("chat-input")
         if (sendBtn instanceof HTMLButtonElement) {
-            const hasContent = input instanceof HTMLTextAreaElement && input.value.trim().length > 0
+            const hasContent = (input instanceof HTMLTextAreaElement && input.value.trim().length > 0)
+                || this.pendingAttachments.length > 0
             sendBtn.toggleAttribute("disabled", !hasContent)
         }
     }
@@ -306,7 +588,7 @@ export class EditorChatController {
             return
         }
         container.querySelectorAll<HTMLElement>(".ai-msg--assistant .ai-bubble:not([data-md])").forEach((bubble) => {
-            const content = bubble.textContent ?? ""
+            const content = bubble.textContent?.trim() ?? ""
             bubble.innerHTML = marked.parse(content) as string
             bubble.setAttribute("data-md", "")
             bubble.querySelectorAll("pre code").forEach((block) => {

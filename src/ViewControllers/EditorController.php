@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 declare(strict_types=1);
 
 namespace App\ViewControllers;
@@ -11,6 +13,8 @@ use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
 use App\FileWriters\SubclassFileWriter;
 use App\Model\AccessControl;
+use App\Model\Attachment;
+use App\Model\Attribute;
 use App\Model\CompositeType;
 use App\Model\Configuration;
 use App\Model\Conversation;
@@ -19,10 +23,14 @@ use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
 use App\Model\FetchRequestTemplate;
 use App\Model\Message;
+use App\Model\MessageRole;
 use App\Model\Model;
 use App\Model\Project;
 use App\Model\Property;
+use App\Model\Relationship;
 use App\Model\Role;
+use App\Model\ToolCall;
+use App\Model\ToolCallStatus;
 use App\Model\UniquenessConstraint;
 use Exception;
 use Override;
@@ -40,9 +48,11 @@ use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\KeyedUnarchiver;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
+use Sabatier\Foundation\SearchPathDirectory;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
+use Sabatier\Foundation\URLFileTypeMappings;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\AuthorizationScope;
@@ -502,6 +512,67 @@ final class EditorController extends ProjectController
         $this->data = $entity;
     }
 
+    private function buildSystemPrompt(): string
+    {
+        $project = $this->project;
+        $lines = [
+            "You are an AI assistant integrated in Singularity, a data model design IDE for the Sabatier stack.",
+            "Use your tools to query and modify the data model.",
+            "",
+            "## How this system works",
+            "",
+            "Everything in Singularity is a managed object. Objects connect to each other through relationships.",
+            "A relationship is a named link from one object to another (or to a collection of others).",
+            "To \"add\" something to an object means creating the new object AND linking it to its parent via the appropriate relationship.",
+            "",
+            "The object graph is:",
+            "  Project → Model → Entity → Attribute / Relationship / FetchIndex / UniquenessConstraint",
+            "",
+            "Use DescribeModel to discover the exact field and relationship names before creating or updating any object.",
+            "Always complete every operation fully in one turn — never stop to ask for confirmation mid-operation.",
+            "",
+            "## Current context",
+            "",
+            "Project: {$project->name}",
+        ];
+        $entityRef = $this->referenceObject("entity");
+        if ($entityRef && ($entity = $this->fetchByReference(Entity::class, $entityRef))) {
+            $lines[] = "";
+            $lines[] = "Selected entity: \"{$entity->name}\" (objectID: {$entity->objectID})";
+            if (!$entity->attributes->isEmpty) {
+                $attrParts = [];
+                foreach ($entity->attributes as $attr) {
+                    $attrParts[] = "{$attr->name} (objectID: {$attr->objectID}, type: {$attr->type->name}, " . ($attr->isOptional ? "optional" : "required") . ")";
+                }
+                $lines[] = "  Attributes: " . implode(", ", $attrParts);
+            }
+            if (!$entity->relationships->isEmpty) {
+                $relParts = [];
+                foreach ($entity->relationships as $rel) {
+                    $relParts[] = "{$rel->name} (objectID: {$rel->objectID}, " . ($rel->isToMany ? "to-many" : "to-one") . " → {$rel->lazyDestinationEntityName})";
+                }
+                $lines[] = "  Relationships: " . implode(", ", $relParts);
+            }
+            if ($entity->superentity) {
+                $lines[] = "  Parent entity: {$entity->superentity->name} (objectID: {$entity->superentity->objectID})";
+            }
+        }
+        $propertyRef = $this->referenceObject("property");
+        if ($propertyRef && ($property = $this->fetchByReference(Property::class, $propertyRef))) {
+            $lines[] = "";
+            $detail = match (true) {
+                $property instanceof Attribute => "Attribute, type: {$property->type->name}",
+                $property instanceof Relationship => "Relationship, " . ($property->isToMany ? "to-many" : "to-one") . " → {$property->lazyDestinationEntityName}",
+                default => "Property",
+            };
+            $optional = $property->isOptional ? "optional" : "required";
+            $lines[] = "Selected property: \"{$property->name}\" (objectID: {$property->objectID}) — {$detail}, {$optional}";
+        }
+        $lines[] = "";
+        $lines[] = "When the user asks questions or requests changes, assume they refer to the selected context unless otherwise specified.";
+        return implode("\n", $lines);
+    }
+
     /**
      * @throws Exception
      */
@@ -513,24 +584,73 @@ final class EditorController extends ProjectController
         $model = $parameters["model"] ?? $this->selectedAIModel;
         $provider = LLMProvider::find($this->selectedLLMProviderIdentifier) ?? throw new InternalServerErrorException("Unable to find LLM provider");
         $project = $this->project;
-        $message = new Message($this->managedObjectContext);
-        $message->content = $content;
-        $message->role = "user";
-        $conversation = $this->selectedConversation;
+        $userMessage = new Message($this->managedObjectContext);
+        $userMessage->content = $content;
+        $userMessage->role = MessageRole::user;
+        $conversationRef = $parameters["conversation"];
+        $isNewConversation = !is_numeric($conversationRef);
+        $conversation = $isNewConversation ? null : $this->fetchByReference(Conversation::class, (int)$conversationRef);
         $conversation ??= new Conversation($this->managedObjectContext);
-        $conversation->title = $content;
-        $conversation->model = $model;
-        $conversation->provider = $provider->identifier;
-        $conversation->addMessagesObject($message);
+        if ($isNewConversation) {
+            $conversation->title = $content;
+            $conversation->model = $model;
+            $conversation->provider = $provider->identifier;
+        }
+        $conversation->addMessagesObject($userMessage);
+        $imagesData = $parameters["images"];
+        if ($imagesData instanceof ArrayClass && !$imagesData->isEmpty) {
+            $fileManager = FileManager::default();
+            $attachmentsDir = $fileManager->url(SearchPathDirectory::applicationSupportDirectory)->appendingPathComponent("Singularity")->appendingPathComponent("Attachments");
+            if (!$fileManager->fileExists($attachmentsDir->path)) {
+                $fileManager->createDirectory($attachmentsDir, true);
+            }
+            foreach ($imagesData as $image) {
+                $extension = URLFileTypeMappings::shared()->preferredExtension((string)$image["mimeType"]) ?? "bin";
+                $fileURL = $attachmentsDir->appendingPathComponent(bin2hex(random_bytes(16)) . "." . $extension);
+                $fileManager->createFile($fileURL->path, base64_decode((string)$image["data"]));
+                $attachment = new Attachment($this->managedObjectContext);
+                $attachment->name = (string)$image["name"];
+                $attachment->url = $fileURL;
+                $userMessage->addAttachmentsObject($attachment);
+            }
+        }
         /** @var ArrayClass<LLMMessage> $history */
-        $history = new ArrayClass($conversation->messages->map(fn(Message $message): LLMMessage => $message->LLMMessage));
+        $history = new ArrayClass();
+        foreach ($conversation->messages as $message) {
+            if ($message === $userMessage) {
+                $history->append(new LLMMessage(MessageRole::user, $content, images: $imagesData instanceof ArrayClass && !$imagesData->isEmpty ? $imagesData : null));
+                continue;
+            }
+            $history->append($message->LLMMessage);
+            foreach ($message->toolCalls as $toolCall) {
+                if ($toolCall->result !== null) {
+                    $history->append(new LLMMessage(MessageRole::tool, $toolCall->result, toolCallId: $toolCall->identifier));
+                }
+            }
+        }
         $agent = new LLMAgent($provider->client($model), $this->registry);
-        $conversation->addMessages(new Set($agent->run($history)->map(function (LLMMessage $llmMessage): Message {
+        $run = $agent->run($history, $this->buildSystemPrompt());
+        /** @var array<string, ToolCall> $toolCallMap */
+        $toolCallMap = [];
+        foreach ($run->messages as $llmMessage) {
+            if (($llmMessage->role === MessageRole::tool) && ($id = $llmMessage->toolCallId) && isset($toolCallMap[$id])) {
+                $toolCallMap[$id]->result = $llmMessage->content;
+                $toolCallMap[$id]->status = ToolCallStatus::completed;
+                continue;
+            }
             $message = new Message($this->managedObjectContext);
             $message->LLMMessage = $llmMessage;
-            return $message;
-        })));
-        $project->addConversationsObject($conversation);
+            foreach ($message->toolCalls as $toolCall) {
+                $toolCallMap[$toolCall->identifier] = $toolCall;
+            }
+            $conversation->addMessagesObject($message);
+        }
+        $conversation->inputTokens = $conversation->inputTokens + $run->inputTokens;
+        $conversation->outputTokens = $conversation->outputTokens + $run->outputTokens;
+        $conversation->totalTokens = $conversation->inputTokens + $conversation->outputTokens;
+        if ($isNewConversation) {
+            $project->addConversationsObject($conversation);
+        }
         $project->selectedConversation = $conversation;
         $this->managedObjectContext->save();
         $this->data = new Dictionary(["conversationID" => $conversation->objectID, "messages" => $conversation->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);

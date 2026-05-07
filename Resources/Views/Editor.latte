@@ -64,13 +64,6 @@
                             style="-webkit-app-region: no-drag;">
                         <i class="bi bi-layout-sidebar-reverse"></i>
                     </button>
-                    <button id="btn-toggle-copilot"
-                            class="btn btn-icon btn-pane-toggle btn-sm {$isCopilotEnabled ? 'active' : ''}"
-                            data-editor-action="toggleCopilotPanel"
-                            title="Toggle AI Copilot"
-                            style="-webkit-app-region: no-drag;">
-                        <i class="bi bi-robot"></i>
-                    </button>
                 </div>
                 <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
             </div>
@@ -87,16 +80,24 @@
                     {include graphView from "GraphView.latte"}
                 {/if}
             </div>
-            <div id="sidebar" class="split-panel border-start border-black p-2" style="width: {$initialSplitSizes[2]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
-                <div id="inspector-pane" class="scroll-view pe-1" style="height: 100%; display: {$isCopilotEnabled ? 'none' : 'block'};">
+            <div id="sidebar" class="split-panel border-start border-black" style="width: {$initialSplitSizes[2]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
+                <div id="sidebar-tabs" class="sidebar-tabs">
+                    <button class="sidebar-tab {$isCopilotEnabled ? '' : 'active'}" data-sidebar-tab="inspector" title="Inspector">
+                        <i class="bi bi-sliders2"></i>
+                    </button>
+                    <button class="sidebar-tab {$isCopilotEnabled ? 'active' : ''}" data-sidebar-tab="chat" title="Chat">
+                        <i class="bi bi-robot"></i>
+                    </button>
+                </div>
+                <div id="inspector-pane" class="scroll-view pe-1 p-2" style="flex: 1; overflow-y: auto; display: {$isCopilotEnabled ? 'none' : 'block'};">
                     {include inspector from "Inspector.latte"}
                 </div>
-                <div id="ai-copilot-pane" class="ps-1" style="height: 100%; display: {$isCopilotEnabled ? 'block' : 'none'}; overflow: hidden;">
+                <div id="ai-copilot-pane" class="ps-1" style="flex: 1; overflow: hidden; display: {$isCopilotEnabled ? 'block' : 'none'};">
                     {include editorChat from "EditorChat.latte"}
                 </div>
             </div>
         </div>
-        <script type="text/javascript" src="/Resources/Scripts/EditorInitialSplitState.js"></script>
+        <script n:syntax="off">(function(){var e=document.getElementById("editor-runtime"),t=document.getElementById("source"),n=document.getElementById("content"),o=document.getElementById("sidebar");if(!e||!t||!n||!o)return;var r=e.dataset.projectObjectId||"",s=localStorage.getItem("editorSplitSizes:"+r);if(!s)return;try{var p=JSON.parse(s);Array.isArray(p)&&p.length===3&&(t.style.width=Number(p[0])+"%",n.style.width=Number(p[1])+"%",o.style.width=Number(p[2])+"%")}catch(e){}})();</script>
         <nav class="breadcrumb-nav" aria-label="breadcrumb">
             <ol id="breadcrumb-list" class="breadcrumb-list">
                 {include breadcrumbItems from "EditorBreadcrumb.latte"}

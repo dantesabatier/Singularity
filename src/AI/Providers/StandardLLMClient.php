@@ -8,6 +8,7 @@ use App\AI\LLMClient;
 use App\AI\LLMMessage;
 use App\AI\LLMToolCall;
 use App\AI\LLMTurn;
+use App\Model\MessageRole;
 use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
@@ -34,7 +35,7 @@ final class StandardLLMClient extends LLMClient
      * @param ArrayClass<ToolDescriptor> $tools
      */
     #[Override]
-    protected function buildRequest(ArrayClass $messages, ArrayClass $tools): URLRequest
+    protected function buildRequest(ArrayClass $messages, ArrayClass $tools, ?string $systemPrompt = null): URLRequest
     {
         $request = new URLRequest($this->endpoint ?? fatal_error("Endpoint URL must be provided for StandardLLMClient"));
         $request->httpMethod = HTTPRequestMethod::post;
@@ -42,10 +43,14 @@ final class StandardLLMClient extends LLMClient
             "Authorization" => "Bearer $this->key",
             "Content-Type" => "application/json",
         ]);
+        $formattedMessages = $this->formatMessages($messages);
+        if ($systemPrompt !== null) {
+            array_unshift($formattedMessages, ["role" => "system", "content" => $systemPrompt]);
+        }
         $body = [
             "model" => $this->model,
             "max_tokens" => $this->maxTokens,
-            "messages" => $this->formatMessages($messages),
+            "messages" => $formattedMessages,
         ];
         if (!$tools->isEmpty) {
             $body["tools"] = $this->formatTools($tools);
@@ -62,7 +67,7 @@ final class StandardLLMClient extends LLMClient
     {
         $result = [];
         foreach ($messages as $message) {
-            if ($message->role === "tool") {
+            if ($message->role === MessageRole::tool) {
                 $result[] = [
                     "role" => "tool",
                     "tool_call_id" => $message->toolCallId ?? "",
@@ -71,7 +76,7 @@ final class StandardLLMClient extends LLMClient
                 continue;
             }
             $toolCalls = $message->toolCalls;
-            if ($toolCalls && !$toolCalls->isEmpty && $message->role === "assistant") {
+            if ($toolCalls && !$toolCalls->isEmpty && $message->role === MessageRole::assistant) {
                 $calls = [];
                 foreach ($toolCalls as $call) {
                     $calls[] = [
@@ -167,6 +172,8 @@ final class StandardLLMClient extends LLMClient
             }
             break;
         }
-        return new LLMTurn($text, $toolCalls);
+        /** @var Dictionary<mixed> $usage */
+        $usage = $body["usage"] ?? new Dictionary();
+        return new LLMTurn($text, $toolCalls, (int)($usage["prompt_tokens"] ?? 0), (int)($usage["completion_tokens"] ?? 0));
     }
 }
