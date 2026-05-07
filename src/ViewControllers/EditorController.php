@@ -518,7 +518,7 @@ final class EditorController extends ProjectController
     private function buildSystemPrompt(): string
     {
         $project = $this->project;
-        $lines = [
+        $lines = new ArrayClass([
             "You are an AI assistant integrated in Singularity, a data model design IDE for the Sabatier stack.",
             "Use your tools to query and modify the data model.",
             "",
@@ -537,24 +537,16 @@ final class EditorController extends ProjectController
             "## Current context",
             "",
             "Project: $project->name",
-        ];
+        ]);
         $entityRef = $this->referenceObject("entity");
         if ($entityRef && ($entity = $this->fetchByReference(Entity::class, $entityRef))) {
             $lines[] = "";
             $lines[] = "Selected entity: \"$entity->name\" (objectID: $entity->objectID)";
             if (!$entity->attributes->isEmpty) {
-                $attrParts = [];
-                foreach ($entity->attributes as $attr) {
-                    $attrParts[] = "$attr->name (objectID: $attr->objectID, type: {$attr->type->name}, " . ($attr->isOptional ? "optional" : "required") . ")";
-                }
-                $lines[] = "  Attributes: " . implode(", ", $attrParts);
+                $lines[] = "  Attributes: " . $entity->attributes->map(fn(Attribute $attribute): string => "$attribute->name (objectID: $attribute->objectID, type: {$attribute->type->name}, " . ($attribute->isOptional ? "optional" : "required") . ")")->join(", ");
             }
             if (!$entity->relationships->isEmpty) {
-                $relParts = [];
-                foreach ($entity->relationships as $relationship) {
-                    $relParts[] = "$relationship->name (objectID: $relationship->objectID, " . ($relationship->isToMany ? "to-many" : "to-one") . " → $relationship->lazyDestinationEntityName)";
-                }
-                $lines[] = "  Relationships: " . implode(", ", $relParts);
+                $lines[] = "  Relationships: " . $entity->relationships->map(fn(Relationship $relationship): string => "$relationship->name (objectID: $relationship->objectID, " . ($relationship->isToMany ? "to-many" : "to-one") . " → $relationship->lazyDestinationEntityName)")->join(", ");
             }
             if ($entity->superentity) {
                 $lines[] = "  Parent entity: {$entity->superentity->name} (objectID: {$entity->superentity->objectID})";
@@ -573,7 +565,7 @@ final class EditorController extends ProjectController
         }
         $lines[] = "";
         $lines[] = "When the user asks questions or requests changes, assume they refer to the selected context unless otherwise specified.";
-        return implode("\n", $lines);
+        return $lines->join("\n");
     }
 
     /**
