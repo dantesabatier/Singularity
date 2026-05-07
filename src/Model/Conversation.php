@@ -32,6 +32,6 @@ final class Conversation extends ManagedObject
     public function willSave(): void
     {
         $this->title = $this->title |> trim(...);
-        //$this->lastModifiedDate = new Date();
+        $this->lastModifiedDate = new Date();
     }
 }

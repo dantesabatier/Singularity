@@ -2,107 +2,119 @@
 {templateType App\ViewControllers\EditorController}
 {block title}{$project->name}{/block}
 {block content}
-    {var $initialSplitSizes = $splitSizes?->array ?? [20, 60, 20]}
-    <div id="main" data-view="editor" class="user-select-none">
-        <div n:if="$isGraphViewSelected" id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
-        <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
-            <div class="container-fluid justify-content-start align-items-center px-2">
-                <div class="navbar-brand mb-0 me-2">
-                    <img src="/Resources/Images/icon24@1x.png" srcset="/Resources/Images/icon24@2x.png 2x, /Resources/Images/icon24@3x.png 3x" alt="{$title}" class="d-inline-block">
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;" data-bs-placement="bottom" data-bs-title="Main Menu">
-                        <i class="bi bi-list"></i>
-                    </button>
-                    <ul id="editor-actions-menu" class="dropdown-menu">
-                        {include menuActions from "EditorMenuActions.latte"}
-                    </ul>
-                </div>
-                <div class="dropdown ms-2">
-                    <button type="button" class="btn btn-sm d-flex align-items-center gap-2 px-2" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag; background-color: var(--bg-hover); border: 1px solid var(--border-color);">
+{var $initialSplitSizes = $splitSizes?->array ?? [20, 60, 20]}
+<div id="main" data-view="editor" class="user-select-none">
+    <div n:if="$isGraphViewSelected" id="current-graph-data" data-json="{$project->model?->graph|json}" style="display:none;"></div>
+    <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
+        <div class="container-fluid justify-content-start align-items-center px-2">
+            <div class="navbar-brand mb-0 me-2">
+                <img src="/Resources/Images/icon24@1x.png" srcset="/Resources/Images/icon24@2x.png 2x, /Resources/Images/icon24@3x.png 3x" alt="{$title}" class="d-inline-block">
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;" data-bs-placement="bottom" data-bs-title="Main Menu">
+                    <i class="bi bi-list"></i>
+                </button>
+                <ul id="editor-actions-menu" class="dropdown-menu">
+                    {include menuActions from "EditorMenuActions.latte"}
+                </ul>
+            </div>
+            <div class="dropdown ms-2">
+                <button type="button" class="btn btn-sm d-flex align-items-center gap-2 px-2" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag; background-color: var(--bg-hover); border: 1px solid var(--border-color);">
                         <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold" style="width: 20px; height: 20px; background-color: {$project->color|noescape}; font-size: 11px;">
                             {$project->name|first}
                         </span> <span class="text-truncate" style="max-width: 200px;">{$project->name}</span>
-                        <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><h6 class="dropdown-header">Switch Project</h6></li>
-                        {foreach $projects as $i => $e}
-                            <li>
-                                <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-editor-action="openEditorProject" data-project-id="{$e->objectID|json}">
+                    <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Switch Project</h6></li>
+                    {foreach $projects as $i => $e}
+                    <li>
+                        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-editor-action="openEditorProject" data-project-id="{$e->objectID|json}">
                                     <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold flex-shrink-0" style="width: 20px; height: 20px; background-color: {$e->color|noescape}; font-size: 11px;">
                                         {$e->name|first}
                                     </span> <span class="text-truncate">{$e->name}</span>
-                                </button>
-                            </li>
-                            <li n:if="$i < ($projects->count - 1)">
-                                <hr class="dropdown-divider">
-                            </li>
-                        {/foreach}
-                    </ul>
-                </div>
-                <div class="segmented-control small ms-2" id="interactive-switcher">
-                    <button class="segmented-control-button {$isTableViewSelected ? active}" data-target="tableView">
-                        <i class="bi bi-table"></i>
-                    </button>
-                    <button class="segmented-control-button {$isGraphViewSelected ? active}" data-target="graphView">
-                        <i class="bi bi-diagram-3"></i>
-                    </button>
-                </div>
-                <div class="d-flex align-items-center justify-content-center ms-auto ps-2 ms-2 gap-1" style="border-left: 1px solid var(--border-color); height: 24px;">
-                    <button id="btn-toggle-source"
-                            class="btn btn-icon btn-pane-toggle btn-sm active"
-                            data-editor-action="toggleSourcePanel"
-                            title="Toggle Navigator"
-                            style="-webkit-app-region: no-drag;">
-                        <i class="bi bi-layout-sidebar"></i>
-                    </button>
-                    <button id="btn-toggle-sidebar"
-                            class="btn btn-icon btn-pane-toggle btn-sm active"
-                            data-editor-action="toggleSidebarPanel"
-                            title="Toggle Inspector"
-                            style="-webkit-app-region: no-drag;">
-                        <i class="bi bi-layout-sidebar-reverse"></i>
-                    </button>
-                </div>
-                <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
+                        </button>
+                    </li>
+                    <li n:if="$i < ($projects->count - 1)">
+                        <hr class="dropdown-divider">
+                    </li>
+                    {/foreach}
+                </ul>
             </div>
-        </nav>
-        <div id="editor-runtime" data-project-object-id="{$project->objectID|json}" hidden></div>
-        <div id="split-container" class="split-container" data-split-sizes="{$splitSizes->array}" data-copilot-enabled="{$isCopilotEnabled ? 'true' : 'false'}" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
-            <div id="source" class="split-panel scroll-view border-end border-black p-2" style="width: {$initialSplitSizes[0]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
-                {include sourceList from "SourceList.latte"}
+            <div class="segmented-control small ms-2" id="interactive-switcher">
+                <button class="segmented-control-button {$isTableViewSelected ? active}" data-target="tableView">
+                    <i class="bi bi-table"></i>
+                </button>
+                <button class="segmented-control-button {$isGraphViewSelected ? active}" data-target="graphView">
+                    <i class="bi bi-diagram-3"></i>
+                </button>
             </div>
-            <div id="content" class="split-panel scroll-view p-2" style="width: {$initialSplitSizes[1]}%;">
-                {if $isTableViewSelected}
-                    {include content from "Content.latte"}
-                {else}
-                    {include graphView from "GraphView.latte"}
-                {/if}
+            <div class="d-flex align-items-center justify-content-center ms-auto ps-2 ms-2 gap-1" style="border-left: 1px solid var(--border-color); height: 24px;">
+                <button id="btn-toggle-source"
+                        class="btn btn-icon btn-pane-toggle btn-sm active"
+                        data-editor-action="toggleSourcePanel"
+                        title="Toggle Navigator"
+                        style="-webkit-app-region: no-drag;">
+                    <i class="bi bi-layout-sidebar"></i>
+                </button>
+                <button id="btn-toggle-sidebar"
+                        class="btn btn-icon btn-pane-toggle btn-sm active"
+                        data-editor-action="toggleSidebarPanel"
+                        title="Toggle Inspector"
+                        style="-webkit-app-region: no-drag;">
+                    <i class="bi bi-layout-sidebar-reverse"></i>
+                </button>
             </div>
-            <div id="sidebar" class="split-panel border-start border-black" style="width: {$initialSplitSizes[2]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
-                <div id="sidebar-tabs" class="sidebar-tabs">
-                    <button class="sidebar-tab {$isCopilotEnabled ? '' : 'active'}" data-sidebar-tab="inspector" title="Inspector">
-                        <i class="bi bi-sliders2"></i>
-                    </button>
-                    <button class="sidebar-tab {$isCopilotEnabled ? 'active' : ''}" data-sidebar-tab="chat" title="Chat">
-                        <i class="bi bi-robot"></i>
-                    </button>
-                </div>
-                <div id="inspector-pane" class="scroll-view pe-1 p-2" style="flex: 1; overflow-y: auto; display: {$isCopilotEnabled ? 'none' : 'block'};">
-                    {include inspector from "Inspector.latte"}
-                </div>
-                <div id="ai-copilot-pane" class="ps-1" style="flex: 1; overflow: hidden; display: {$isCopilotEnabled ? 'block' : 'none'};">
-                    {include editorChat from "EditorChat.latte"}
-                </div>
+            <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
+        </div>
+    </nav>
+    <div id="editor-runtime" data-project-object-id="{$project->objectID|json}" hidden></div>
+    <div id="split-container" class="split-container" data-split-sizes="{$splitSizes->array}" data-copilot-enabled="{$isCopilotEnabled ? 'true' : 'false'}" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
+        <div id="source" class="split-panel scroll-view border-end border-black p-2" style="width: {$initialSplitSizes[0]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+            {include sourceList from "SourceList.latte"}
+        </div>
+        <div id="content" class="split-panel scroll-view p-2" style="width: {$initialSplitSizes[1]}%;">
+            {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
+        </div>
+        <div id="sidebar" class="split-panel border-start border-black" style="width: {$initialSplitSizes[2]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
+            <div id="sidebar-tabs" class="sidebar-tabs">
+                <button class="sidebar-tab {$isCopilotEnabled ? '' : 'active'}" data-sidebar-tab="inspector" title="Inspector">
+                    <i class="bi bi-sliders2"></i>
+                </button>
+                <button class="sidebar-tab {$isCopilotEnabled ? 'active' : ''}" data-sidebar-tab="chat" title="Chat">
+                    <i class="bi bi-robot"></i>
+                </button>
+            </div>
+            <div id="inspector-pane" class="scroll-view pe-1 p-2" style="flex: 1; overflow-y: auto; display: {$isCopilotEnabled ? 'none' : 'block'};">
+                {include inspector from "Inspector.latte"}
+            </div>
+            <div id="ai-copilot-pane" class="ps-1" style="flex: 1; overflow: hidden; display: {$isCopilotEnabled ? 'block' : 'none'};">
+                {include editorChat from "EditorChat.latte"}
             </div>
         </div>
-        <script n:syntax="off">(function(){var e=document.getElementById("editor-runtime"),t=document.getElementById("source"),n=document.getElementById("content"),o=document.getElementById("sidebar");if(!e||!t||!n||!o)return;var r=e.dataset.projectObjectId||"",s=localStorage.getItem("editorSplitSizes:"+r);if(!s)return;try{var p=JSON.parse(s);Array.isArray(p)&&p.length===3&&(t.style.width=Number(p[0])+"%",n.style.width=Number(p[1])+"%",o.style.width=Number(p[2])+"%")}catch(e){}})();</script>
-        <nav class="breadcrumb-nav" aria-label="breadcrumb">
-            <ol id="breadcrumb-list" class="breadcrumb-list">
-                {include breadcrumbItems from "EditorBreadcrumb.latte"}
-            </ol>
-        </nav>
     </div>
+    <!--suppress JSUnresolvedReference, CommaExpressionJS -->
+    <script n:syntax="off">(function () {
+        let e = document.getElementById("editor-runtime"), t = document.getElementById("source"),
+            n = document.getElementById("content"), o = document.getElementById("sidebar");
+        if (!e || !t || !n || !o) {
+            return;
+        }
+        let r = e.dataset.projectObjectId || "", s = localStorage.getItem("editorSplitSizes:" + r);
+        if (!s) {
+            return;
+        }
+        try {
+            let p = JSON.parse(s);
+            Array.isArray(p) && p.length === 3 && (t.style.width = Number(p[0]) + "%", n.style.width = Number(p[1]) + "%", o.style.width = Number(p[2]) + "%")
+        } catch (e) {
+        }
+    })();</script>
+    <nav class="breadcrumb-nav" aria-label="breadcrumb">
+        <ol id="breadcrumb-list" class="breadcrumb-list">
+            {include breadcrumbItems from "EditorBreadcrumb.latte"}
+        </ol>
+    </nav>
+</div>
 {/block}
 
