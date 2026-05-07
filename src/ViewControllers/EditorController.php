@@ -512,6 +512,9 @@ final class EditorController extends ProjectController
         $this->data = $entity;
     }
 
+    /**
+     * @throws Exception
+     */
     private function buildSystemPrompt(): string
     {
         $project = $this->project;
@@ -533,23 +536,23 @@ final class EditorController extends ProjectController
             "",
             "## Current context",
             "",
-            "Project: {$project->name}",
+            "Project: $project->name",
         ];
         $entityRef = $this->referenceObject("entity");
         if ($entityRef && ($entity = $this->fetchByReference(Entity::class, $entityRef))) {
             $lines[] = "";
-            $lines[] = "Selected entity: \"{$entity->name}\" (objectID: {$entity->objectID})";
+            $lines[] = "Selected entity: \"$entity->name\" (objectID: $entity->objectID)";
             if (!$entity->attributes->isEmpty) {
                 $attrParts = [];
                 foreach ($entity->attributes as $attr) {
-                    $attrParts[] = "{$attr->name} (objectID: {$attr->objectID}, type: {$attr->type->name}, " . ($attr->isOptional ? "optional" : "required") . ")";
+                    $attrParts[] = "$attr->name (objectID: $attr->objectID, type: {$attr->type->name}, " . ($attr->isOptional ? "optional" : "required") . ")";
                 }
                 $lines[] = "  Attributes: " . implode(", ", $attrParts);
             }
             if (!$entity->relationships->isEmpty) {
                 $relParts = [];
-                foreach ($entity->relationships as $rel) {
-                    $relParts[] = "{$rel->name} (objectID: {$rel->objectID}, " . ($rel->isToMany ? "to-many" : "to-one") . " → {$rel->lazyDestinationEntityName})";
+                foreach ($entity->relationships as $relationship) {
+                    $relParts[] = "$relationship->name (objectID: $relationship->objectID, " . ($relationship->isToMany ? "to-many" : "to-one") . " → $relationship->lazyDestinationEntityName)";
                 }
                 $lines[] = "  Relationships: " . implode(", ", $relParts);
             }
@@ -562,11 +565,11 @@ final class EditorController extends ProjectController
             $lines[] = "";
             $detail = match (true) {
                 $property instanceof Attribute => "Attribute, type: {$property->type->name}",
-                $property instanceof Relationship => "Relationship, " . ($property->isToMany ? "to-many" : "to-one") . " → {$property->lazyDestinationEntityName}",
+                $property instanceof Relationship => "Relationship, " . ($property->isToMany ? "to-many" : "to-one") . " → $property->lazyDestinationEntityName",
                 default => "Property",
             };
             $optional = $property->isOptional ? "optional" : "required";
-            $lines[] = "Selected property: \"{$property->name}\" (objectID: {$property->objectID}) — {$detail}, {$optional}";
+            $lines[] = "Selected property: \"$property->name\" (objectID: $property->objectID) — $detail, $optional";
         }
         $lines[] = "";
         $lines[] = "When the user asks questions or requests changes, assume they refer to the selected context unless otherwise specified.";
