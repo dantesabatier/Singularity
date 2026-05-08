@@ -82,18 +82,23 @@
                                 <img src="{$attachment->dataURL}" alt="{$attachment->name}" class="ai-msg-img">
                             {/foreach}
                         </div>
+                        {$message->content}
                     </div>
                     <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-tool-badge">
                         <i class="bi bi-check2-circle"></i>
                         {$message}
                     </div>
                     <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::assistant" n:foreach="$message->toolCalls as $toolCall" class="ai-tool-badge">
-                        <i class="bi bi-gear"></i> {$toolCall->name}
+                        <i class="bi bi-gear"></i>
+                        {$toolCall->name}
                     </div>
                     <div n:if="$message->role !== Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-msg-actions">
-                        <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy"><i class="bi bi-clipboard"></i></button>
-                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="edit" title="Edit"><i class="bi bi-pencil"></i></button>
-                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="resend" title="Resend"><i class="bi bi-arrow-clockwise"></i></button>
+                        <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy">
+                            <i class="bi bi-clipboard"></i></button>
+                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="edit" title="Edit">
+                            <i class="bi bi-pencil"></i></button>
+                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="resend" title="Resend">
+                            <i class="bi bi-arrow-clockwise"></i></button>
                     </div>
                 </div>
             {/foreach}
