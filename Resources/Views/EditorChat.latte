@@ -73,7 +73,7 @@
             <i class="bi bi-stars"></i>
             <p>Select a conversation or start typing below</p>
         </div>
-        <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" class="ai-chat-messages flex-grow-1">
+        <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" class="scroll-view ai-chat-messages flex-grow-1">
             {foreach $selectedConversation->messages as $message}
                 <div class="ai-msg ai-msg--{$message->role->value}" data-message-id="{$message->objectID|json}">
                     <div n:if="$message->role !== Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-bubble">
