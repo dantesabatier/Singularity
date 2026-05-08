@@ -2688,3 +2688,108 @@ a.breadcrumb-link:hover {
     color: var(--accent-blue);
     font-weight: 400;
 }
+
+/* ============================================
+   Inspector — No Selection State
+   ============================================ */
+
+.ins-no-sel-wrap {
+    padding: 12px 12px 16px;
+}
+
+.ins-project-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ins-project-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ins-project-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-bright);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.ins-project-sub {
+    font-size: 10px;
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    font-weight: 600;
+}
+
+.ins-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--border-color);
+    gap: 1px;
+}
+
+.ins-stat-cell {
+    background-color: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px;
+    gap: 3px;
+}
+
+.ins-stat-number {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1;
+}
+
+.ins-stat-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text-disabled);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ins-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 28px 8px 8px;
+    text-align: center;
+}
+
+.ins-hint-icon {
+    font-size: 20px;
+    color: var(--text-disabled);
+    opacity: 0.35;
+}
+
+.ins-hint-text {
+    font-size: 11px;
+    color: var(--text-disabled);
+    line-height: 1.5;
+    margin: 0;
+}

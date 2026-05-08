@@ -18,5 +18,7 @@
         {include fetchRequestTemplate from "FetchRequestTemplate.latte"}
     {elseif $selectedConfiguration instanceof App\Model\Configuration}
         {include configuration from "Configuration.latte"}
+    {else}
+        {include inspectorNoSelection from "InspectorNoSelection.latte"}
     {/if}
 {/define}

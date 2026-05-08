@@ -295,6 +295,43 @@ final class EditorController extends ProjectController
             AuthorizationScope::own => "Own"
         }, "value" => $scope->value]);
     }
+    #[Outlet]
+    private(set) int $totalEntityCount {
+        get {
+            if (isset($this->totalEntityCount)) {
+                return $this->totalEntityCount;
+            }
+            return $this->totalEntityCount = $this->project->model?->entities->count ?? 0;
+        }
+    }
+    #[Outlet]
+    private(set) int $totalAttributeCount {
+        get {
+            if (isset($this->totalAttributeCount)) {
+                return $this->totalAttributeCount;
+            }
+            $count = 0;
+            /** @var Entity $entity */
+            foreach ($this->project->model?->entities ?? [] as $entity) {
+                $count += $entity->attributes->count;
+            }
+            return $this->totalAttributeCount = $count;
+        }
+    }
+    #[Outlet]
+    private(set) int $totalRelationshipCount {
+        get {
+            if (isset($this->totalRelationshipCount)) {
+                return $this->totalRelationshipCount;
+            }
+            $count = 0;
+            /** @var Entity $entity */
+            foreach ($this->project->model?->entities ?? [] as $entity) {
+                $count += $entity->relationships->count;
+            }
+            return $this->totalRelationshipCount = $count;
+        }
+    }
     /** @var ArrayClass<string> */
     #[Outlet]
     private(set) ArrayClass $defaultRoles {

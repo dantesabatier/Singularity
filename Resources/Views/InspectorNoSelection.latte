@@ -1,0 +1,33 @@
+{templateType App\ViewControllers\EditorController}
+{define inspectorNoSelection}
+<div class="ins-no-sel-wrap">
+    <div class="ins-project-header">
+        <span class="ins-project-badge" style="background-color: {$project->color|noescape};">
+            {$project->name|first}
+        </span>
+        <div>
+            <div class="ins-project-name">{$project->name}</div>
+            <div class="ins-project-sub">Data Model</div>
+        </div>
+    </div>
+    <div class="inspector-header">Model</div>
+    <div class="ins-stats-grid">
+        <div class="ins-stat-cell">
+            <div class="ins-stat-number">{$totalEntityCount}</div>
+            <div class="ins-stat-label">Entities</div>
+        </div>
+        <div class="ins-stat-cell">
+            <div class="ins-stat-number">{$totalAttributeCount}</div>
+            <div class="ins-stat-label">Attributes</div>
+        </div>
+        <div class="ins-stat-cell">
+            <div class="ins-stat-number">{$totalRelationshipCount}</div>
+            <div class="ins-stat-label">Relations</div>
+        </div>
+    </div>
+    <div class="ins-hint">
+        <i class="bi bi-cursor ins-hint-icon"></i>
+        <p class="ins-hint-text">Select an entity or property<br>to inspect it</p>
+    </div>
+</div>
+{/define}
