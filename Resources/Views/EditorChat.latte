@@ -86,7 +86,7 @@
                     </div>
                     <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-tool-badge">
                         <i class="bi bi-check2-circle"></i>
-                        {$message}
+                        {$message->toolCalls->first?->identifier ?? ""}
                     </div>
                     <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::assistant" n:foreach="$message->toolCalls as $toolCall" class="ai-tool-badge">
                         <i class="bi bi-gear"></i>
