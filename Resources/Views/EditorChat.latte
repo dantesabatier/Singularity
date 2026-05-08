@@ -76,25 +76,25 @@
         <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" class="ai-chat-messages flex-grow-1">
             {foreach $selectedConversation->messages as $message}
                 <div class="ai-msg ai-msg--{$message->role->value}" data-message-id="{$message->objectID|json}">
-                    <div n:if="$message->role !== App\Model\MessageRole::tool" class="ai-bubble">
-                        <div n:if="$message->role === App\Model\MessageRole::user && !$message->attachments->isEmpty" class="ai-msg-images">
+                    <div n:if="$message->role !== Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-bubble">
+                        <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user && !$message->attachments->isEmpty" class="ai-msg-images">
                             {foreach $message->attachments as $attachment}
                                 <img src="{$attachment->dataURL}" alt="{$attachment->name}" class="ai-msg-img">
                             {/foreach}
                         </div>
                         {$message->content}
                     </div>
-                    <div n:if="$message->role === App\Model\MessageRole::tool" class="ai-tool-badge">
+                    <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-tool-badge">
                         <i class="bi bi-check2-circle"></i>
                         {$message}
                     </div>
-                    <div n:if="$message->role === App\Model\MessageRole::assistant" n:foreach="$message->toolCalls as $tc" class="ai-tool-badge">
+                    <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::assistant" n:foreach="$message->toolCalls as $tc" class="ai-tool-badge">
                         <i class="bi bi-gear"></i> {$tc->name}
                     </div>
-                    <div n:if="$message->role !== App\Model\MessageRole::tool" class="ai-msg-actions">
+                    <div n:if="$message->role !== Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-msg-actions">
                         <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy"><i class="bi bi-clipboard"></i></button>
-                        <button n:if="$message->role === App\Model\MessageRole::user" class="ai-msg-action-btn" data-msg-action="edit" title="Edit"><i class="bi bi-pencil"></i></button>
-                        <button n:if="$message->role === App\Model\MessageRole::user" class="ai-msg-action-btn" data-msg-action="resend" title="Resend"><i class="bi bi-arrow-clockwise"></i></button>
+                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="edit" title="Edit"><i class="bi bi-pencil"></i></button>
+                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="resend" title="Resend"><i class="bi bi-arrow-clockwise"></i></button>
                     </div>
                 </div>
             {/foreach}

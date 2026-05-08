@@ -4,8 +4,9 @@
 
 namespace App\Model;
 
-use App\AI\LLMMessage;
-use App\AI\LLMToolCall;
+use Sabatier\Service\LLM\LLMMessage;
+use Sabatier\Service\LLM\LLMMessageRole;
+use Sabatier\Service\LLM\LLMToolCall;
 use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
@@ -17,7 +18,7 @@ use Sabatier\Foundation\URLFileTypeMappings;
 
 /**
  * @property Date $creationDate
- * @property MessageRole $role
+ * @property LLMMessageRole $role
  * @property string|null $content
  * @property Date|null $lastModifiedDate
  * @property int<0, max> $tokenCount
@@ -76,10 +77,10 @@ final class Message extends ManagedObject
         $this->lastModifiedDate = new Date();
     }
 
-    public function validateRole(MessageRole|string|null &$role): bool
+    public function validateRole(LLMMessageRole|string|null &$role): bool
     {
         if (is_string($role)) {
-            $role = MessageRole::from($role);
+            $role = LLMMessageRole::from($role);
         }
         return true;
     }

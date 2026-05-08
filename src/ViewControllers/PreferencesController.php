@@ -2,7 +2,7 @@
 
 namespace App\ViewControllers;
 
-use App\AI\LLMProvider;
+use Sabatier\Service\LLM\LLMProvider;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
@@ -16,9 +16,9 @@ use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use const App\CompanyNamePreferencesKey;
-use const App\EditorAIModelPreferencesKey;
-use const App\EditorAIProviderPreferencesKey;
-use const App\EditorAIProvidersPreferencesKey;
+use const Sabatier\Service\LLMModelPreferencesKey;
+use const Sabatier\Service\LLMProviderPreferencesKey;
+use const Sabatier\Service\LLMProvidersPreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
@@ -94,23 +94,23 @@ final class PreferencesController extends ViewController
     }
     #[Outlet]
     public ?string $editorAIProvider {
-        get => UserDefaults::standard()->string(EditorAIProviderPreferencesKey);
+        get => UserDefaults::standard()->string(LLMProviderPreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, EditorAIProviderPreferencesKey);
+            UserDefaults::standard()->setObject($value, LLMProviderPreferencesKey);
         }
     }
     #[Outlet]
     public ?string $editorAIModel {
-        get => UserDefaults::standard()->string(EditorAIModelPreferencesKey);
+        get => UserDefaults::standard()->string(LLMModelPreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, EditorAIModelPreferencesKey);
+            UserDefaults::standard()->setObject($value, LLMModelPreferencesKey);
         }
     }
     #[Outlet]
     public ?ArrayClass $editorAIProviders {
-        get => UserDefaults::standard()->array(EditorAIProvidersPreferencesKey);
+        get => UserDefaults::standard()->array(LLMProvidersPreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, EditorAIProvidersPreferencesKey);
+            UserDefaults::standard()->setObject($value, LLMProvidersPreferencesKey);
         }
     }
     /** @var ArrayClass<LLMProvider> */

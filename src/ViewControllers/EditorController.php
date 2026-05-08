@@ -6,9 +6,10 @@ declare(strict_types=1);
 
 namespace App\ViewControllers;
 
-use App\AI\LLMAgent;
-use App\AI\LLMMessage;
-use App\AI\LLMProvider;
+use Sabatier\Service\LLM\LLMAgent;
+use Sabatier\Service\LLM\LLMMessage;
+use Sabatier\Service\LLM\LLMMessageRole;
+use Sabatier\Service\LLM\LLMProvider;
 use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
 use App\FileWriters\SubclassFileWriter;
@@ -23,7 +24,6 @@ use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
 use App\Model\FetchRequestTemplate;
 use App\Model\Message;
-use App\Model\MessageRole;
 use App\Model\Model;
 use App\Model\Project;
 use App\Model\Property;
@@ -73,8 +73,8 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
-use const App\EditorAIModelPreferencesKey;
-use const App\EditorAIProviderPreferencesKey;
+use const Sabatier\Service\LLMModelPreferencesKey;
+use const Sabatier\Service\LLMProviderPreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
@@ -119,16 +119,16 @@ final class EditorController extends ProjectController
     }
     #[Outlet]
     public string $selectedLLMProviderIdentifier {
-        get => UserDefaults::standard()->string(EditorAIProviderPreferencesKey) ?? "anthropic";
+        get => UserDefaults::standard()->string(LLMProviderPreferencesKey) ?? "anthropic";
         set {
-            UserDefaults::standard()->setObject($value, EditorAIProviderPreferencesKey);
+            UserDefaults::standard()->setObject($value, LLMProviderPreferencesKey);
         }
     }
     #[Outlet]
     public ?string $selectedAIModel {
-        get => UserDefaults::standard()->string(EditorAIModelPreferencesKey);
+        get => UserDefaults::standard()->string(LLMModelPreferencesKey);
         set {
-            UserDefaults::standard()->setObject($value, EditorAIModelPreferencesKey);
+            UserDefaults::standard()->setObject($value, LLMModelPreferencesKey);
         }
     }
     /** @var ArrayClass<LLMProvider> */
@@ -618,7 +618,7 @@ final class EditorController extends ProjectController
         $project = $this->project;
         $userMessage = new Message($this->managedObjectContext);
         $userMessage->content = $content;
-        $userMessage->role = MessageRole::user;
+        $userMessage->role = LLMMessageRole::user;
         $conversationRef = $parameters["conversation"];
         $isNewConversation = !is_numeric($conversationRef);
         $conversation = $isNewConversation ? null : $this->fetchByReference(Conversation::class, (int)$conversationRef);
@@ -650,13 +650,13 @@ final class EditorController extends ProjectController
         $history = new ArrayClass();
         foreach ($conversation->messages as $message) {
             if ($message === $userMessage) {
-                $history->append(new LLMMessage(MessageRole::user, $content, images: $imagesData instanceof ArrayClass && !$imagesData->isEmpty ? $imagesData : null));
+                $history->append(new LLMMessage(LLMMessageRole::user, $content, images: $imagesData instanceof ArrayClass && !$imagesData->isEmpty ? $imagesData : null));
                 continue;
             }
             $history->append($message->LLMMessage);
             foreach ($message->toolCalls as $toolCall) {
                 if ($toolCall->result !== null) {
-                    $history->append(new LLMMessage(MessageRole::tool, $toolCall->result, toolCallId: $toolCall->identifier));
+                    $history->append(new LLMMessage(LLMMessageRole::tool, $toolCall->result, toolCallId: $toolCall->identifier));
                 }
             }
         }
@@ -665,7 +665,7 @@ final class EditorController extends ProjectController
         /** @var array<string, ToolCall> $toolCallMap */
         $toolCallMap = [];
         foreach ($run->messages as $llmMessage) {
-            if (($llmMessage->role === MessageRole::tool) && ($id = $llmMessage->toolCallId) && isset($toolCallMap[$id])) {
+            if (($llmMessage->role === LLMMessageRole::tool) && ($id = $llmMessage->toolCallId) && isset($toolCallMap[$id])) {
                 $toolCallMap[$id]->result = $llmMessage->content;
                 $toolCallMap[$id]->status = ToolCallStatus::completed;
                 continue;
