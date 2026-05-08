@@ -172,8 +172,12 @@ final class StandardLLMClient extends LLMClient
             }
             break;
         }
-        /** @var Dictionary<mixed> $usage */
+        /** @var Dictionary<int<0, max>> $usage */
         $usage = $body["usage"] ?? new Dictionary();
-        return new LLMTurn($text, $toolCalls, (int)($usage["prompt_tokens"] ?? 0), (int)($usage["completion_tokens"] ?? 0));
+        /** @var int<0, max> $inputTokens */
+        $inputTokens = (int)($usage["input_tokens"] ?? 0);
+        /** @var int<0, max> $outputTokens */
+        $outputTokens = (int)($usage["output_tokens"] ?? 0);
+        return new LLMTurn($text, $toolCalls, $inputTokens, $outputTokens);
     }
 }

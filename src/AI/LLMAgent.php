@@ -25,7 +25,9 @@ final readonly class LLMAgent
         $history = clone $messages;
         /** @var ArrayClass<LLMMessage> $newMessages */
         $newMessages = new ArrayClass();
+        /** @var int<0, max> $totalInputTokens */
         $totalInputTokens = 0;
+        /** @var int<0, max> $totalOutputTokens */
         $totalOutputTokens = 0;
         while (true) {
             $turn = $this->client->complete($history, $this->toolRegistry->list, $systemPrompt);
