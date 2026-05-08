@@ -10,7 +10,6 @@ type SplitInstance = {
 }
 
 export class EditorSplitViewController {
-    private static readonly splitStorageKeyPrefix = "editorSplitSizes:"
     private splitInstance: SplitInstance | null = null
     private isCopilotEnabled = false
     private currentContainer: HTMLElement | null = null
@@ -109,10 +108,6 @@ export class EditorSplitViewController {
     }
 
     private parseSplitSizes(rawSizes: string | undefined): [number, number, number] {
-        const stored = this.readStoredSplitSizes()
-        if (stored) {
-            return stored
-        }
         if (!rawSizes) {
             return [20, 60, 20]
         }
@@ -131,7 +126,6 @@ export class EditorSplitViewController {
             return
         }
         const sizes = this.splitInstance.getSizes()
-        this.writeStoredSplitSizes(sizes)
         const container = document.getElementById("split-container")
         if (container instanceof HTMLElement) {
             container.dataset.splitSizes = JSON.stringify(sizes)
@@ -200,35 +194,6 @@ export class EditorSplitViewController {
         source.style.width = `${sizes[0]}%`
         content.style.width = `${sizes[1]}%`
         sidebar.style.width = `${sizes[2]}%`
-    }
-
-    private readStoredSplitSizes(): [number, number, number] | null {
-        try {
-            const raw = window.localStorage.getItem(this.storageKey)
-            if (!raw) {
-                return null
-            }
-            const parsed = JSON.parse(raw) as unknown
-            if (!Array.isArray(parsed) || parsed.length !== 3) {
-                return null
-            }
-            return [Number(parsed[0]), Number(parsed[1]), Number(parsed[2])]
-        } catch {
-            return null
-        }
-    }
-
-    private writeStoredSplitSizes(sizes: [number, number, number]): void {
-        try {
-            window.localStorage.setItem(this.storageKey, JSON.stringify(sizes))
-        } catch {
-        }
-    }
-
-    private get storageKey(): string {
-        const runtime = document.getElementById("editor-runtime")
-        const projectObjectID = runtime instanceof HTMLElement ? (runtime.dataset.projectObjectId ?? "") : ""
-        return `${EditorSplitViewController.splitStorageKeyPrefix}${projectObjectID}`
     }
 
 }

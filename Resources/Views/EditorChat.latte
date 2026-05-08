@@ -97,8 +97,6 @@
                             <i class="bi bi-clipboard"></i></button>
                         <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="edit" title="Edit">
                             <i class="bi bi-pencil"></i></button>
-                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="resend" title="Resend">
-                            <i class="bi bi-arrow-clockwise"></i></button>
                     </div>
                 </div>
             {/foreach}

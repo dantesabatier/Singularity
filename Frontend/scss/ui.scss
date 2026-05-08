@@ -946,6 +946,7 @@ button {
 .ai-msg--user {
     align-self: flex-end;
     align-items: flex-end;
+    max-width: 72%;
 }
 
 .ai-msg--assistant,
@@ -964,6 +965,8 @@ button {
 }
 
 .ai-msg--user .ai-bubble {
+    width: fit-content;
+    max-width: 100%;
     white-space: pre-wrap;
     background-color: var(--accent-blue);
     color: white;

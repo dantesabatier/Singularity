@@ -2,7 +2,7 @@ import {ApplicationContext} from "@/Application/ApplicationContext"
 import {ViewController} from "@/Application/ViewController"
 
 type LLMModel = { name: string; identifier: string; tier: string }
-type LLMProvider = { name: string; identifier: string; url: string; apiKey: string; models: LLMModel[] }
+type LLMProvider = { name: string; identifier: string; url: string; apiKey?: string; models: LLMModel[] }
 
 export class AIProvidersController extends ViewController {
     private providers: LLMProvider[] = []
@@ -123,7 +123,7 @@ export class AIProvidersController extends ViewController {
         ;(document.getElementById("pf-name") as HTMLInputElement).value = provider.name
         ;(document.getElementById("pf-identifier") as HTMLInputElement).value = provider.identifier
         ;(document.getElementById("pf-url") as HTMLInputElement).value = provider.url
-        ;(document.getElementById("pf-apiKey") as HTMLInputElement).value = provider.apiKey
+        ;(document.getElementById("pf-apiKey") as HTMLInputElement).value = ""
     }
 
     private clearForm(): void {
@@ -199,7 +199,10 @@ export class AIProvidersController extends ViewController {
         if (pendingName && pendingId) {
             this.editingModels.push({name: pendingName, identifier: pendingId, tier: pendingTier})
         }
-        const provider: LLMProvider = {name, identifier, url, apiKey, models: [...this.editingModels]}
+        const provider: LLMProvider = {name, identifier, url, models: [...this.editingModels]}
+        if (apiKey) {
+            provider.apiKey = apiKey
+        }
         if (this.editingIndex !== null) {
             this.providers[this.editingIndex] = provider
         } else {
@@ -223,7 +226,6 @@ export class AIProvidersController extends ViewController {
     }
 
     private async persist(): Promise<void> {
-        console.log(JSON.stringify(this.providers, null, 2))
         await this.context.actionDispatcher.dispatch("Synchronize", {
             editorAIProviders: this.providers,
         })

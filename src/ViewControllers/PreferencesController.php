@@ -2,29 +2,31 @@
 
 namespace App\ViewControllers;
 
-use Sabatier\Service\LLM\LLMProvider;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
+use Sabatier\Service\LLM\LLMModel;
+use Sabatier\Service\LLM\LLMProvider;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
 use const App\CompanyNamePreferencesKey;
-use const Sabatier\Service\LLMModelPreferencesKey;
-use const Sabatier\Service\LLMProviderPreferencesKey;
-use const Sabatier\Service\LLMProvidersPreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
+use const Sabatier\Service\LLMModelPreferencesKey;
+use const Sabatier\Service\LLMProviderPreferencesKey;
+use const Sabatier\Service\LLMProvidersPreferencesKey;
 
 #[Endpoint("Preferences", transformers: [HTMLTransformer::class])]
 final class PreferencesController extends ViewController
@@ -118,6 +120,16 @@ final class PreferencesController extends ViewController
     private(set) ArrayClass $aiProviders {
         get => $this->aiProviders ??= LLMProvider::all();
     }
+    /** @var ArrayClass<Dictionary<mixed>> */
+    #[Outlet]
+    private(set) ArrayClass $aiProviderCards {
+        get => $this->aiProviderCards ??= $this->aiProviders->map(fn(LLMProvider $provider): Dictionary => new Dictionary([
+            "name" => $provider->name,
+            "identifier" => $provider->identifier,
+            "url" => $provider->url,
+            "models" => $provider->models->map(fn(LLMModel $model) => $model->dictionaryRepresentation),
+        ]));
+    }
 
     #[Override]
     public function viewWillLoad(): void
@@ -133,8 +145,39 @@ final class PreferencesController extends ViewController
     {
         $parameters = $this->request->parameters;
         foreach ($parameters as $key => $value) {
+            if ($key === "editorAIProviders") {
+                $value = $this->editorAIProvidersWithPreservedAPIKeys($value);
+            }
             $this->$key = $value;
         }
         $this->data = UserDefaults::standard()->dictionaryRepresentation();
+    }
+
+    /** @param ArrayClass<Dictionary<mixed>> $providers */
+    private function editorAIProvidersWithPreservedAPIKeys(ArrayClass $providers): ArrayClass
+    {
+        /** @var ArrayClass<Dictionary<mixed>> $storedProviders */
+        $storedProviders = UserDefaults::standard()->array(LLMProvidersPreferencesKey) ?? new ArrayClass();
+        /** @var array<string, Dictionary<mixed>> $storedProvidersByIdentifier */
+        $storedProvidersByIdentifier = [];
+        foreach ($storedProviders as $storedProvider) {
+            $storedProvidersByIdentifier[(string)$storedProvider["identifier"]] = $storedProvider;
+        }
+        return $providers->map(function (Dictionary $provider) use ($storedProvidersByIdentifier): Dictionary {
+            $identifier = (string)$provider["identifier"];
+            if ($identifier === "") {
+                return $provider;
+            }
+            $apiKey = (string)($provider["apiKey"] ?? "");
+            if ($apiKey !== "") {
+                return $provider;
+            }
+            $storedProvider = $storedProvidersByIdentifier[$identifier] ?? null;
+            if (!$storedProvider) {
+                return $provider;
+            }
+            $provider["apiKey"] = $storedProvider["apiKey"] ?? "";
+            return $provider;
+        });
     }
 }

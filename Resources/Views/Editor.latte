@@ -70,13 +70,13 @@
     </nav>
     <div id="editor-runtime" data-project-object-id="{$project->objectID|json}" hidden></div>
     <div id="split-container" class="split-container" data-split-sizes="{$splitSizes->array}" data-copilot-enabled="{$isCopilotEnabled ? 'true' : 'false'}" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
-        <div id="source" class="split-panel scroll-view border-end border-black p-2" style="width: {$initialSplitSizes[0]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
+        <div id="source" class="split-panel scroll-view border-end border-black p-2" style="width: {$initialSplitSizes[0]}%; flex-shrink: 0; background-color: var(--bg-secondary); border-color: var(--border-color) !important;">
             {include sourceList from "SourceList.latte"}
         </div>
-        <div id="content" class="split-panel scroll-view p-2" style="width: {$initialSplitSizes[1]}%;">
+        <div id="content" class="split-panel scroll-view p-2" style="width: {$initialSplitSizes[1]}%; flex-shrink: 0;">
             {if $isTableViewSelected} {include content from "Content.latte"} {else} {include graphView from "GraphView.latte"} {/if}
         </div>
-        <div id="sidebar" class="split-panel border-start border-black" style="width: {$initialSplitSizes[2]}%; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
+        <div id="sidebar" class="split-panel border-start border-black" style="width: {$initialSplitSizes[2]}%; flex-shrink: 0; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
             <div id="sidebar-tabs" class="sidebar-tabs">
                 <button class="sidebar-tab {$isCopilotEnabled ? '' : 'active'}" data-sidebar-tab="inspector" title="Inspector">
                     <i class="bi bi-sliders2"></i>
@@ -94,22 +94,22 @@
         </div>
     </div>
     <!--suppress JSUnresolvedReference, CommaExpressionJS -->
-    <script n:syntax="off">(function () {
-        let e = document.getElementById("editor-runtime"), t = document.getElementById("source"),
+    <script n:syntax="off">(() => {
+        let e = document.getElementById("split-container"), t = document.getElementById("source"),
             n = document.getElementById("content"), o = document.getElementById("sidebar");
         if (!e || !t || !n || !o) {
-            return;
+            return
         }
-        let r = e.dataset.projectObjectId || "", s = localStorage.getItem("editorSplitSizes:" + r);
-        if (!s) {
-            return;
+        let r = e.dataset.splitSizes
+        if (!r) {
+            return
         }
         try {
-            let p = JSON.parse(s);
-            Array.isArray(p) && p.length === 3 && (t.style.width = Number(p[0]) + "%", n.style.width = Number(p[1]) + "%", o.style.width = Number(p[2]) + "%")
-        } catch (e) {
+            let s = JSON.parse(r)
+            Array.isArray(s) && s.length === 3 && (t.style.width = Number(s[0]) + "%", n.style.width = Number(s[1]) + "%", o.style.width = Number(s[2]) + "%")
+        } catch {
         }
-    })();</script>
+    })()</script>
     <nav class="breadcrumb-nav" aria-label="breadcrumb">
         <ol id="breadcrumb-list" class="breadcrumb-list">
             {include breadcrumbItems from "EditorBreadcrumb.latte"}

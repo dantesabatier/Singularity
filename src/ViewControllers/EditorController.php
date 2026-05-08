@@ -614,7 +614,8 @@ final class EditorController extends ProjectController
         $parameters = $this->request->parameters;
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
         $model = $parameters["model"] ?? $this->selectedAIModel;
-        $provider = LLMProvider::find($this->selectedLLMProviderIdentifier) ?? throw new InternalServerErrorException("Unable to find LLM provider");
+        $providerIdentifier = $parameters["provider"] ?? $this->selectedLLMProviderIdentifier;
+        $provider = LLMProvider::find($providerIdentifier) ?? throw new InternalServerErrorException("Unable to find LLM provider");
         $project = $this->project;
         $userMessage = new Message($this->managedObjectContext);
         $userMessage->content = $content;
@@ -623,10 +624,10 @@ final class EditorController extends ProjectController
         $isNewConversation = !is_numeric($conversationRef);
         $conversation = $isNewConversation ? null : $this->fetchByReference(Conversation::class, (int)$conversationRef);
         $conversation ??= new Conversation($this->managedObjectContext);
+        $conversation->provider = $provider->identifier;
+        $conversation->model = $model;
         if ($isNewConversation) {
             $conversation->title = $content;
-            $conversation->model = $model;
-            $conversation->provider = $provider->identifier;
         }
         $conversation->addMessagesObject($userMessage);
         $imagesData = $parameters["images"];

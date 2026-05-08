@@ -12,6 +12,8 @@ type ChatMessage = {
     thumbnailURLs?: string[]
 }
 
+type SafeURLAttributes = "href" | "src" | "xlink:href"
+
 const DEFAULT_PROVIDER = "anthropic"
 const DEFAULT_MODEL = "claude-opus-4-7"
 
@@ -170,6 +172,7 @@ export class EditorChatController {
             project: this.currentProjectID,
             conversation: this.currentConversationID,
             content,
+            provider: this.selectedProvider,
             model: this.selectedModel,
         }
         const selectionKeys = ["entity", "property", "index", "element", "constraint", "fetchRequest", "configuration", "composite", "accessControl", "role"]
@@ -230,8 +233,6 @@ export class EditorChatController {
             }
         } else if (action === "edit") {
             this.enterEditMode(msgWrapper, messageID)
-        } else if (action === "resend") {
-            await this.regenerateFrom(msgWrapper, messageID, null)
         }
     }
 
@@ -322,55 +323,6 @@ export class EditorChatController {
         autoGrow()
     }
 
-    private async regenerateFrom(wrapper: HTMLElement, messageID: string | null, content: string | null): Promise<void> {
-        if (!messageID) {
-            return
-        }
-        this.setStatus("thinking")
-
-        const container = document.getElementById("chat-messages")
-        if (container) {
-            const allMessages = Array.from(container.querySelectorAll<HTMLElement>(".ai-msg"))
-            const idx = allMessages.indexOf(wrapper)
-            if (idx !== -1) {
-                for (const el of allMessages.slice(idx)) {
-                    el.remove()
-                }
-            }
-        }
-
-        if (content !== null) {
-            const newWrapper = document.createElement("div")
-            newWrapper.className = "ai-msg ai-msg--user"
-            newWrapper.dataset.messageId = messageID
-            const bubble = document.createElement("div")
-            bubble.className = "ai-bubble"
-            bubble.textContent = content
-            newWrapper.appendChild(bubble)
-            newWrapper.appendChild(this.buildActionBar("user"))
-            container?.appendChild(newWrapper)
-        }
-
-        const body: Record<string, unknown> = { messageObjectID: messageID }
-        if (content !== null) {
-            body.content = content
-        }
-
-        const response = await this.context.httpClient.post("/message/regenerate", body)
-
-        if (!response.ok) {
-            this.appendErrorBubble(await this.extractErrorMessage(response))
-            this.setStatus("idle")
-            return
-        }
-
-        const data = await response.json() as { conversationID: string; messages: ChatMessage[] }
-        for (const msg of content !== null ? data.messages.slice(1) : data.messages) {
-            this.appendMessageBubble(msg)
-        }
-        this.setStatus("idle")
-    }
-
     private buildActionBar(role: "user" | "assistant"): HTMLElement {
         const bar = document.createElement("div")
         bar.className = "ai-msg-actions"
@@ -389,13 +341,6 @@ export class EditorChatController {
             editBtn.title = "Edit"
             editBtn.innerHTML = `<i class="bi bi-pencil"></i>`
             bar.appendChild(editBtn)
-
-            const resendBtn = document.createElement("button")
-            resendBtn.className = "ai-msg-action-btn"
-            resendBtn.dataset.msgAction = "resend"
-            resendBtn.title = "Resend"
-            resendBtn.innerHTML = `<i class="bi bi-arrow-clockwise"></i>`
-            bar.appendChild(resendBtn)
         }
 
         return bar
@@ -544,7 +489,7 @@ export class EditorChatController {
             const bubble = document.createElement("div")
             bubble.className = "ai-bubble"
             if (message.role === "assistant") {
-                bubble.innerHTML = marked.parse(message.content ?? "") as string
+                bubble.innerHTML = this.renderMarkdown(message.content ?? "")
                 bubble.setAttribute("data-md", "")
                 bubble.querySelectorAll("pre code").forEach((block) => {
                     hljs.highlightElement(block as HTMLElement)
@@ -621,12 +566,61 @@ export class EditorChatController {
         }
         container.querySelectorAll<HTMLElement>(".ai-msg--assistant .ai-bubble:not([data-md])").forEach((bubble) => {
             const content = bubble.textContent?.trim() ?? ""
-            bubble.innerHTML = marked.parse(content) as string
+            bubble.innerHTML = this.renderMarkdown(content)
             bubble.setAttribute("data-md", "")
             bubble.querySelectorAll("pre code").forEach((block) => {
                 hljs.highlightElement(block as HTMLElement)
             })
         })
+    }
+
+    private renderMarkdown(content: string): string {
+        return this.sanitizeHTML(marked.parse(content) as string)
+    }
+
+    private sanitizeHTML(html: string): string {
+        const template = document.createElement("template")
+        template.innerHTML = html
+        const blockedTags = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "LINK", "META"])
+        const urlAttributes: SafeURLAttributes[] = ["href", "src", "xlink:href"]
+        const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT)
+        const elements: Element[] = []
+        let node = walker.nextNode()
+        while (node) {
+            if (node instanceof Element) {
+                elements.push(node)
+            }
+            node = walker.nextNode()
+        }
+        for (const element of elements) {
+            if (blockedTags.has(element.tagName)) {
+                element.remove()
+                continue
+            }
+            for (const attribute of Array.from(element.attributes)) {
+                const name = attribute.name.toLowerCase()
+                if (name.startsWith("on") || name === "style") {
+                    element.removeAttribute(attribute.name)
+                    continue
+                }
+                if ((urlAttributes as string[]).includes(name) && !this.isSafeURL(attribute.value)) {
+                    element.removeAttribute(attribute.name)
+                }
+            }
+        }
+        return template.innerHTML
+    }
+
+    private isSafeURL(value: string): boolean {
+        const normalizedValue = value.trim().toLowerCase()
+        return normalizedValue === ""
+            || normalizedValue.startsWith("/")
+            || normalizedValue.startsWith("#")
+            || normalizedValue.startsWith("http://")
+            || normalizedValue.startsWith("https://")
+            || normalizedValue.startsWith("mailto:")
+            || normalizedValue.startsWith("tel:")
+            || normalizedValue.startsWith("data:image/")
     }
 
     private escapeHTML(value: unknown): string {
