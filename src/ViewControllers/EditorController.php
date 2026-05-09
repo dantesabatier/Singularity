@@ -630,16 +630,16 @@ final class EditorController extends ProjectController
             $conversation->title = $content;
         }
         $conversation->addMessagesObject($userMessage);
-        $imagesData = $parameters["images"];
-        if ($imagesData instanceof ArrayClass && !$imagesData->isEmpty) {
+        $images = $parameters["images"];
+        if ($images instanceof ArrayClass) {
             $fileManager = FileManager::default();
-            $attachmentsDir = $fileManager->url(SearchPathDirectory::applicationSupportDirectory)->appendingPathComponent("Singularity")->appendingPathComponent("Attachments");
-            if (!$fileManager->fileExists($attachmentsDir->path)) {
-                $fileManager->createDirectory($attachmentsDir, true);
+            $attachmentDirectory = $fileManager->url(SearchPathDirectory::applicationSupportDirectory)->appendingPathComponent("Singularity")->appendingPathComponent("Attachments");
+            if (!$fileManager->fileExists($attachmentDirectory->path)) {
+                $fileManager->createDirectory($attachmentDirectory, true);
             }
-            foreach ($imagesData as $image) {
+            foreach ($images as $image) {
                 $extension = URLFileTypeMappings::shared()->preferredExtension((string)$image["mimeType"]) ?? "bin";
-                $fileURL = $attachmentsDir->appendingPathComponent(bin2hex(random_bytes(16)) . "." . $extension);
+                $fileURL = $attachmentDirectory->appendingPathComponent(bin2hex(random_bytes(16)) . "." . $extension);
                 $fileManager->createFile($fileURL->path, base64_decode((string)$image["data"]));
                 $attachment = new Attachment($this->managedObjectContext);
                 $attachment->name = (string)$image["name"];
@@ -651,7 +651,7 @@ final class EditorController extends ProjectController
         $history = new ArrayClass();
         foreach ($conversation->messages as $message) {
             if ($message === $userMessage) {
-                $history->append(new LLMMessage(LLMMessageRole::user, $content, images: $imagesData instanceof ArrayClass && !$imagesData->isEmpty ? $imagesData : null));
+                $history->append(new LLMMessage(LLMMessageRole::user, $content, images: $images));
                 continue;
             }
             $history->append($message->LLMMessage);

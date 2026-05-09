@@ -4,9 +4,6 @@
 
 namespace App\Model;
 
-use Sabatier\Service\LLM\LLMMessage;
-use Sabatier\Service\LLM\LLMMessageRole;
-use Sabatier\Service\LLM\LLMToolCall;
 use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\ArrayClass;
@@ -15,6 +12,9 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URLFileTypeMappings;
+use Sabatier\Service\LLM\LLMMessage;
+use Sabatier\Service\LLM\LLMMessageRole;
+use Sabatier\Service\LLM\LLMToolCall;
 
 /**
  * @property Date $creationDate
@@ -64,8 +64,9 @@ final class Message extends ManagedObject
             }) ?? []));
         }
     }
+    /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
-        get => new Dictionary(["objectID" => $this->objectID, "role" => $this->role, "content" => $this->content, "toolCalls" => $this->toolCalls->map(fn(ToolCall $toolCall): Dictionary => new Dictionary(["id" => $toolCall->identifier, "name" => $toolCall->name, "input" => $toolCall->arguments, "result" => $toolCall->result]))]);
+        get => new Dictionary(["objectID" => $this->objectID, "role" => $this->role, "content" => $this->content, "toolCalls" => $this->toolCalls->map(fn(ToolCall $toolCall): Dictionary => $toolCall->dictionaryRepresentation)]);
     }
 
     #[Override]
