@@ -609,7 +609,7 @@ final class EditorController extends ProjectController
      * @throws Exception
      */
     #[Action(transformers: [JSONTransformer::class])]
-    public function message(): void
+    public function chat(): void
     {
         $parameters = $this->request->parameters;
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");

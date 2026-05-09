@@ -1,6 +1,7 @@
 import {ApplicationContext} from "@/Application/ApplicationContext"
 import { marked } from "marked"
 import hljs from "highlight.js"
+import DOMPurify from "dompurify"
 
 type ChatMessage = {
     objectID?: string | null
@@ -11,8 +12,6 @@ type ChatMessage = {
     images?: Array<{ name: string; mimeType: string; data: string }>
     thumbnailURLs?: string[]
 }
-
-type SafeURLAttributes = "href" | "src" | "xlink:href"
 
 const DEFAULT_PROVIDER = "anthropic"
 const DEFAULT_MODEL = "claude-opus-4-7"
@@ -187,7 +186,7 @@ export class EditorChatController {
             body.images = images
         }
 
-        const response = await this.context.httpClient.post("/message", body)
+        const response = await this.context.httpClient.post("/chat", body)
 
         if (!response.ok) {
             this.appendErrorBubble(await this.extractErrorMessage(response))
@@ -575,52 +574,7 @@ export class EditorChatController {
     }
 
     private renderMarkdown(content: string): string {
-        return this.sanitizeHTML(marked.parse(content) as string)
-    }
-
-    private sanitizeHTML(html: string): string {
-        const template = document.createElement("template")
-        template.innerHTML = html
-        const blockedTags = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "LINK", "META"])
-        const urlAttributes: SafeURLAttributes[] = ["href", "src", "xlink:href"]
-        const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT)
-        const elements: Element[] = []
-        let node = walker.nextNode()
-        while (node) {
-            if (node instanceof Element) {
-                elements.push(node)
-            }
-            node = walker.nextNode()
-        }
-        for (const element of elements) {
-            if (blockedTags.has(element.tagName)) {
-                element.remove()
-                continue
-            }
-            for (const attribute of Array.from(element.attributes)) {
-                const name = attribute.name.toLowerCase()
-                if (name.startsWith("on") || name === "style") {
-                    element.removeAttribute(attribute.name)
-                    continue
-                }
-                if ((urlAttributes as string[]).includes(name) && !this.isSafeURL(attribute.value)) {
-                    element.removeAttribute(attribute.name)
-                }
-            }
-        }
-        return template.innerHTML
-    }
-
-    private isSafeURL(value: string): boolean {
-        const normalizedValue = value.trim().toLowerCase()
-        return normalizedValue === ""
-            || normalizedValue.startsWith("/")
-            || normalizedValue.startsWith("#")
-            || normalizedValue.startsWith("http://")
-            || normalizedValue.startsWith("https://")
-            || normalizedValue.startsWith("mailto:")
-            || normalizedValue.startsWith("tel:")
-            || normalizedValue.startsWith("data:image/")
+        return DOMPurify.sanitize(marked.parse(content) as string)
     }
 
     private escapeHTML(value: unknown): string {

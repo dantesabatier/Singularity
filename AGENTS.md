@@ -4,7 +4,7 @@
 
 | Task | Command |
 |------|---------|
-| PHP static analysis | `composer psalm` (runs `vendor/bin/psalm --config=psalm.xml`, errorLevel 4) |
+| PHP static analysis | `php C:\Users\DELL\AppData\Roaming\Composer\vendor\bin\psalm --config=psalm.xml` (Psalm 6.x installed globally via Composer) |
 | PHP code modernization | `vendor/bin/rector process src` |
 | PHP lint | `vendor/bin/phpcs --standard=phpcs.xml src/` |
 | PHP CS Fixer | `vendor/bin/php-cs-fixer fix --dry-run --diff` |
