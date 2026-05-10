@@ -11,18 +11,18 @@
                 </div>
                 <div class="dropdown">
                     <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;" data-bs-placement="bottom" data-bs-title="Main Menu">
-                        <i class="bi bi-list"></i>
+                        <span class="material-symbols-outlined">menu</span>
                     </button>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">View Options</h6></li>
                         <li>
                             <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-viewer-action="resetZoom">
-                                <i class="bi bi-arrows-fullscreen"></i> <span>Reset Zoom</span>
+                                <span class="material-symbols-outlined">fullscreen</span> <span>Reset Zoom</span>
                             </button>
                         </li>
                         <li>
                             <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-viewer-action="centerView">
-                                <i class="bi bi-bullseye"></i> <span>Center View</span>
+                                <span class="material-symbols-outlined">my_location</span> <span>Center View</span>
                             </button>
                         </li>
                         <li>
@@ -31,7 +31,7 @@
                         <li><h6 class="dropdown-header">Actions</h6></li>
                         <li>
                             <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-viewer-action="showExportModal">
-                                <i class="bi bi-download"></i> <span>Export Schema</span>
+                                <span class="material-symbols-outlined">download</span> <span>Export Schema</span>
                             </button>
                         </li>
                         <li>
@@ -39,7 +39,7 @@
                         </li>
                         <li>
                             <button class="dropdown-item" type="button" data-viewer-action="showAboutPanel">
-                                <i class="bi bi-info-circle"></i> <span>About</span>
+                                <span class="material-symbols-outlined">info</span> <span>About</span>
                             </button>
                         </li>
                     </ul>
@@ -49,13 +49,13 @@
                         <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold" style="width: 20px; height: 20px; background-color: {$project->color|noescape}; font-size: 11px;">
                             {$project->name|first}
                         </span> <span class="text-truncate" style="max-width: 200px;">{$project->name}</span>
-                        <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
+                        <span class="material-symbols-outlined" style="font-size: 10px;">expand_more</span>
                     </button>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">Database Schema</h6></li>
                         <li>
                             <div class="dropdown-item d-flex align-items-center gap-2">
-                                <i class="bi bi-database"></i> <span>{$project->name}</span>
+                                <span class="material-symbols-outlined">database</span> <span>{$project->name}</span>
                             </div>
                         </li>
                     </ul>
@@ -68,19 +68,19 @@
             <div class="viewer-toolbar">
                 <div class="viewer-toolbar-section">
                     <button class="btn-icon" data-viewer-action="zoomIn" title="Zoom In">
-                        <i class="bi bi-zoom-in"></i>
+                        <span class="material-symbols-outlined">zoom_in</span>
                     </button>
                     <button class="btn-icon" data-viewer-action="zoomOut" title="Zoom Out">
-                        <i class="bi bi-zoom-out"></i>
+                        <span class="material-symbols-outlined">zoom_out</span>
                     </button>
                     <button class="btn-icon" data-viewer-action="resetZoom" title="Reset Zoom">
-                        <i class="bi bi-arrows-fullscreen"></i>
+                        <span class="material-symbols-outlined">fullscreen</span>
                     </button>
                 </div>
                 <div class="viewer-toolbar-divider"></div>
                 <div class="viewer-toolbar-section">
                     <button class="btn-icon" data-viewer-action="centerView" title="Center View">
-                        <i class="bi bi-bullseye"></i>
+                        <span class="material-symbols-outlined">my_location</span>
                     </button>
                 </div>
                 <div class="viewer-toolbar-divider"></div>
@@ -91,7 +91,7 @@
             </div>
             <db-viewer></db-viewer>
             <div id="viewer-empty-state" class="viewer-empty-state" style="display: none;">
-                <i class="bi bi-database"></i>
+                <span class="material-symbols-outlined">database</span>
                 <h3>No Schema Available</h3>
                 <p>The database schema is empty or not loaded yet</p>
             </div>
@@ -106,7 +106,7 @@
                 </li>
                 <li class="breadcrumb-item-wrapper">
                     <div class="breadcrumb-link">
-                        <i class="bi bi-database breadcrumb-icon" style="width: 14px; height: 14px;"></i>
+                        <span class="material-symbols-outlined breadcrumb-icon" style="font-size: 14px;">database</span>
                         <span>Schema</span>
                     </div>
                 </li>
@@ -122,11 +122,11 @@
                 <div class="modal-body">
                     <div class="modal-form-field">
                         <label for="exportLastDirectory" class="modal-form-label">
-                            <i class="bi bi-folder"></i> Export Location </label>
+                            <span class="material-symbols-outlined">folder</span> Export Location </label>
                         <div class="input-group">
                             <input type="text" id="exportLastDirectory" class="form-control" placeholder="Choose a folder to export the schema" value="{$exportLastDirectory}" readonly>
                             <button type="button" class="btn btn-secondary" data-viewer-action="chooseExportFolder">
-                                <i class="bi bi-folder2-open"></i> <span>Browse...</span>
+                                <span class="material-symbols-outlined">folder_open</span> <span>Browse...</span>
                             </button>
                         </div>
                         <small class="form-text" style="color: var(--text-disabled); font-size: 11px; margin-top: 4px; display: block;">Select the directory where the MariaDB SQL file will be saved</small>
@@ -149,7 +149,7 @@
                         </form>
                     </div>
                     <div class="modal-help-text">
-                        <i class="bi bi-info-circle"></i>
+                        <span class="material-symbols-outlined">info</span>
                         <div>
                             The schema will be exported as a MariaDB-compatible SQL file
                             <span class="help-note">Compatible with MySQL 5.7+ and MariaDB 10.2+</span>

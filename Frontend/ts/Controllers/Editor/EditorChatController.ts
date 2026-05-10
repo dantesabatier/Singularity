@@ -235,10 +235,10 @@ export class EditorChatController {
         if (action === "copy") {
             const bubble = msgWrapper.querySelector(".ai-bubble")
             await navigator.clipboard.writeText(bubble?.textContent ?? "")
-            const icon = btn.querySelector("i")
+            const icon = btn.querySelector("span.material-symbols-outlined")
             if (icon) {
-                icon.className = "bi bi-check"
-                window.setTimeout(() => { icon.className = "bi bi-clipboard" }, 1000)
+                icon.textContent = "check"
+                window.setTimeout(() => { icon.textContent = "content_paste" }, 1000)
             }
         } else if (action === "edit") {
             this.enterEditMode(msgWrapper, messageID)
@@ -340,7 +340,7 @@ export class EditorChatController {
         copyBtn.className = "ai-msg-action-btn"
         copyBtn.dataset.msgAction = "copy"
         copyBtn.title = "Copy"
-        copyBtn.innerHTML = `<i class="bi bi-clipboard"></i>`
+        copyBtn.innerHTML = `<span class="material-symbols-outlined">content_paste</span>`
         bar.appendChild(copyBtn)
 
         if (role === "user") {
@@ -348,7 +348,7 @@ export class EditorChatController {
             editBtn.className = "ai-msg-action-btn"
             editBtn.dataset.msgAction = "edit"
             editBtn.title = "Edit"
-            editBtn.innerHTML = `<i class="bi bi-pencil"></i>`
+            editBtn.innerHTML = `<span class="material-symbols-outlined">edit</span>`
             bar.appendChild(editBtn)
         }
 
@@ -493,16 +493,30 @@ export class EditorChatController {
 
         if (message.role === "tool") {
             const name = message.toolCallId ?? "tool"
-            wrapper.innerHTML = `<span class="ai-tool-badge"><i class="bi bi-check2-circle"></i> ${this.escapeHTML(name)}</span>`
+            wrapper.innerHTML = `<div class="ai-tool-badge ai-tool-badge--done"><span class="material-symbols-outlined ai-tool-badge__icon">check_circle</span><span class="ai-tool-badge__name">${this.escapeHTML(name)}</span></div>`
         } else {
             const bubble = document.createElement("div")
             bubble.className = "ai-bubble"
+
             if (message.role === "assistant") {
-                bubble.innerHTML = this.renderMarkdown(message.content ?? "")
-                bubble.setAttribute("data-md", "")
-                bubble.querySelectorAll("pre code").forEach((block) => {
-                    hljs.highlightElement(block as HTMLElement)
-                })
+                if (message.content) {
+                    bubble.innerHTML = this.renderMarkdown(message.content)
+                    bubble.setAttribute("data-md", "")
+                    bubble.querySelectorAll("pre code").forEach((block) => {
+                        hljs.highlightElement(block as HTMLElement)
+                    })
+                }
+                if (message.toolCalls?.length) {
+                    const tools = document.createElement("div")
+                    tools.className = "ai-tools"
+                    for (const call of message.toolCalls) {
+                        const badge = document.createElement("div")
+                        badge.className = "ai-tool-badge"
+                        badge.innerHTML = `<span class="material-symbols-outlined ai-tool-badge__icon">settings</span><span class="ai-tool-badge__name">${this.escapeHTML(call.name)}</span>`
+                        tools.appendChild(badge)
+                    }
+                    bubble.appendChild(tools)
+                }
             } else {
                 if (message.thumbnailURLs?.length) {
                     const imgRow = document.createElement("div")
@@ -517,15 +531,9 @@ export class EditorChatController {
                 }
                 bubble.appendChild(document.createTextNode(message.content ?? ""))
             }
-            wrapper.appendChild(bubble)
 
-            if (message.role === "assistant" && message.toolCalls?.length) {
-                for (const call of message.toolCalls) {
-                    const badge = document.createElement("div")
-                    badge.className = "ai-tool-badge"
-                    badge.innerHTML = `<i class="bi bi-gear"></i> ${this.escapeHTML(call.name)}`
-                    wrapper.appendChild(badge)
-                }
+            if (bubble.children.length > 0 || message.content) {
+                wrapper.appendChild(bubble)
             }
 
             wrapper.appendChild(this.buildActionBar(message.role as "user" | "assistant"))
@@ -574,9 +582,16 @@ export class EditorChatController {
             return
         }
         container.querySelectorAll<HTMLElement>(".ai-msg--assistant .ai-bubble:not([data-md])").forEach((bubble) => {
+            const toolsEl = bubble.querySelector<HTMLElement>(".ai-tools")
+            if (toolsEl) {
+                toolsEl.remove()
+            }
             const content = bubble.textContent?.trim() ?? ""
             bubble.innerHTML = this.renderMarkdown(content)
             bubble.setAttribute("data-md", "")
+            if (toolsEl) {
+                bubble.appendChild(toolsEl)
+            }
             bubble.querySelectorAll("pre code").forEach((block) => {
                 hljs.highlightElement(block as HTMLElement)
             })

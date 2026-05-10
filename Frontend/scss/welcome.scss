@@ -119,7 +119,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-.action-btn i {
+.action-btn .material-symbols-outlined {
     font-size: 20px;
     color: var(--accent-blue);
 }
@@ -147,7 +147,7 @@
     color: var(--text-disabled);
 }
 
-.empty-state i {
+.empty-state .material-symbols-outlined {
     font-size: 48px;
     margin-bottom: 16px;
     opacity: 0.5;
@@ -210,7 +210,7 @@
     margin-bottom: 8px;
 }
 
-.form-group .form-label i {
+.form-group .form-label .material-symbols-outlined {
     color: var(--text-secondary);
 }
 
@@ -275,7 +275,7 @@
     margin-bottom: 4px;
 }
 
-.option-header i {
+.option-header .material-symbols-outlined {
     font-size: 16px;
 }
 

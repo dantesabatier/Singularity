@@ -12,7 +12,7 @@
             </div>
             <div class="dropdown">
                 <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;" data-bs-placement="bottom" data-bs-title="Main Menu">
-                    <i class="bi bi-list"></i>
+                    <span class="material-symbols-outlined">menu</span>
                 </button>
                 <ul id="editor-actions-menu" class="dropdown-menu">
                     {include menuActions from "EditorMenuActions.latte"}
@@ -23,7 +23,7 @@
                         <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold" style="width: 20px; height: 20px; background-color: {$project->color|noescape}; font-size: 11px;">
                             {$project->name|first}
                         </span> <span class="text-truncate" style="max-width: 200px;">{$project->name}</span>
-                    <i class="bi bi-chevron-down" style="font-size: 10px;"></i>
+                    <span class="material-symbols-outlined" style="font-size: 10px;">expand_more</span>
                 </button>
                 <ul class="dropdown-menu">
                     <li><h6 class="dropdown-header">Switch Project</h6></li>
@@ -43,10 +43,10 @@
             </div>
             <div class="segmented-control small ms-2" id="interactive-switcher">
                 <button class="segmented-control-button {$isTableViewSelected ? active}" data-target="tableView">
-                    <i class="bi bi-table"></i>
+                    <span class="material-symbols-outlined">list</span>
                 </button>
                 <button class="segmented-control-button {$isGraphViewSelected ? active}" data-target="graphView">
-                    <i class="bi bi-diagram-3"></i>
+                    <span class="material-symbols-outlined">grid_view</span>
                 </button>
             </div>
             <div class="d-flex align-items-center justify-content-center ms-auto ps-2 ms-2 gap-1" style="border-left: 1px solid var(--border-color); height: 24px;">
@@ -55,14 +55,14 @@
                         data-editor-action="toggleSourcePanel"
                         title="Toggle Navigator"
                         style="-webkit-app-region: no-drag;">
-                    <i class="bi bi-layout-sidebar"></i>
+                    <span class="material-symbols-outlined">left_panel_open</span>
                 </button>
                 <button id="btn-toggle-sidebar"
                         class="btn btn-icon btn-pane-toggle btn-sm active"
                         data-editor-action="toggleSidebarPanel"
                         title="Toggle Inspector"
                         style="-webkit-app-region: no-drag;">
-                    <i class="bi bi-layout-sidebar-reverse"></i>
+                    <span class="material-symbols-outlined">right_panel_open</span>
                 </button>
             </div>
             <div class="window-controls-spacer" style="width: 145px; flex-shrink: 0;"></div>
@@ -79,10 +79,10 @@
         <div id="sidebar" class="split-panel border-start border-black" style="width: {$initialSplitSizes[2]}%; flex-shrink: 0; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
             <div id="sidebar-tabs" class="sidebar-tabs">
                 <button class="sidebar-tab {$isCopilotEnabled ? '' : 'active'}" data-sidebar-tab="inspector" title="Inspector">
-                    <i class="bi bi-sliders2"></i>
+                    <span class="material-symbols-outlined">page_info</span>
                 </button>
                 <button class="sidebar-tab {$isCopilotEnabled ? 'active' : ''}" data-sidebar-tab="chat" title="Chat">
-                    <i class="bi bi-robot"></i>
+                    <span class="material-symbols-outlined">chat</span>
                 </button>
             </div>
             <div id="inspector-pane" class="scroll-view pe-1 p-2" style="flex: 1; overflow-y: auto; display: {$isCopilotEnabled ? 'none' : 'block'};">

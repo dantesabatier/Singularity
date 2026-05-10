@@ -165,7 +165,7 @@ export class RolePopoverFeature extends Feature {
 
     private showError(popover: Popover, message: string): void {
         popover.setContent({
-            ".popover-body": `<div class="p-3 text-danger"><i class="bi bi-exclamation-triangle"></i><span class="px-2">${message}</span></div>`,
+            ".popover-body": `<div class="p-3 text-danger"><span class="material-symbols-outlined">warning</span><span class="px-2">${message}</span></div>`,
         })
         popover.show()
         this.activePopover = popover

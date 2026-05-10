@@ -4,7 +4,7 @@
     <div class="content-panel">
         <div class="content-panel-header">
             <div class="content-panel-title">
-                <i class="bi bi-search"></i> <span>{$selectedFetchRequestTemplate->name}</span>
+                <span class="material-symbols-outlined">search</span> <span>{$selectedFetchRequestTemplate->name}</span>
             </div>
             <span class="content-panel-badge">TEMPLATE</span>
         </div>
@@ -15,7 +15,7 @@
                     <label for="predicateString" class="form-section-label">Predicate Format</label>
                     <div class="popover-anchor">
                         <button type="button" class="form-section-help" id="syntax-help-btn" data-popover="syntax-help-pop" aria-expanded="false">
-                            <i class="bi bi-question-circle"></i> <span>Syntax Help</span>
+                            <span class="material-symbols-outlined">help</span> <span>Syntax Help</span>
                         </button>
                         <div class="ide-popover" id="syntax-help-pop" aria-hidden="true">
                             <div class="ide-popover-header">
@@ -146,7 +146,7 @@
                 <textarea name="predicateString" id="predicateString" class="form-control code-editor" rows="5" autocomplete="off" spellcheck="false" placeholder="name == $NAME AND date > $DATE" required>{$selectedFetchRequestTemplate->predicateString}</textarea>
                 <!-- Help Text -->
                 <div class="form-help-text">
-                    <i class="bi bi-info-circle-fill"></i>
+                    <span class="material-symbols-outlined ms-filled">info</span>
                     <div class="form-help-content">
                         <div>Use <code class="inline-code">$VARIABLE</code> for substitution variables.</div>
                         <div class="form-help-note">Key paths are supported — e.g., address.city == $CITY.</div>

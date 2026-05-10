@@ -111,7 +111,7 @@ export class AboutController extends ViewController {
         try {
             await navigator.clipboard.writeText(value)
             const originalHTML = button.innerHTML
-            button.innerHTML = "<i class=\"bi bi-check\"></i> Copied!"
+            button.innerHTML = "<span class=\"material-symbols-outlined\">check</span> Copied!"
             window.setTimeout(() => {
                 button.innerHTML = originalHTML
             }, 2000)

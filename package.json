@@ -34,6 +34,8 @@
     "dompurify": "^3.4.2",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.3",
+    "material-icons": "^1.13.14",
+    "material-symbols": "^0.44.6",
     "sortablejs": "^1.15.7",
     "split.js": "^1.6.5"
   }

@@ -4,31 +4,28 @@
         <div class="ai-chat-header">
             <div class="dropdown">
                 <button class="btn btn-icon ai-chat-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Conversations">
-                    <i class="bi bi-clock-history"></i>
+                    <span class="material-symbols-outlined">history</span>
                 </button>
                 <ul class="dropdown-menu">
                     <li class="d-flex align-items-center justify-content-between ps-2 pe-1">
                         <h6 class="dropdown-header p-0">Conversations</h6>
                         <button class="btn btn-icon ai-new-conversation-btn" type="button" data-editor-action="newConversation" title="New conversation">
-                            <i class="bi bi-pencil-square"></i>
+                            <span class="material-symbols-outlined">edit_note</span>
                         </button>
                     </li>
                     {if $project->conversations->isEmpty}
                         <li><span class="dropdown-item text-muted fst-italic pe-none">No conversations</span></li>
                     {else}
                         {foreach $project->conversations as $conversation}
-                            {if !$conversation->title}
-                                {continueIf true}
-                            {/if}
                             <li>
                                 <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%;">
                                     <button class="dropdown-item d-flex align-items-center gap-2" type="button" style="overflow: hidden;" data-editor-action="selectConversation" data-conversation-id="{$conversation->objectID|json}">
-                                        <i class="bi bi-chat-text" style="flex-shrink: 0;"></i>
+                                        <span class="material-symbols-outlined" style="flex-shrink: 0;">chat</span>
                                         <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{$conversation->title}</span>
-                                        <i n:if="$conversation->isEqual($selectedConversation)" class="bi bi-check ms-1" style="flex-shrink: 0;"></i>
+                                        <span n:if="$conversation->isEqual($selectedConversation)" class="material-symbols-outlined ms-1" style="flex-shrink: 0;">check</span>
                                     </button>
                                     <button class="btn btn-sm btn-icon text-danger" type="button" data-editor-action="deleteConversation" data-conversation-id="{$conversation->objectID|json}">
-                                        <i class="bi bi-trash"></i>
+                                        <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </div>
                             </li>
@@ -41,7 +38,7 @@
                 <button class="btn ai-model-picker-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Select AI Model" id="chat-model-picker-btn">
                     <span class="ai-model-indicator" id="chat-model-indicator"></span>
                     <span class="ai-model-name" id="chat-model-name">Opus 4.7</span>
-                    <i class="bi bi-chevron-down" style="font-size: 8px; opacity: 0.5;"></i>
+                    <span class="material-symbols-outlined" style="font-size: 8px; opacity: 0.5;">expand_more</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end ai-model-dropdown">
                     {foreach $aiProviders as $provider}
@@ -70,34 +67,57 @@
             <span id="ai-status" class="ai-status-pill is-idle">Idle</span>
         </div>
         <div n:if="!$selectedConversation" class="ai-chat-empty flex-grow-1">
-            <i class="bi bi-stars"></i>
+            <span class="material-symbols-outlined">auto_awesome</span>
             <p>Select a conversation or start typing below</p>
         </div>
         <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" data-conversation-title="{$selectedConversation->title|json}" class="scroll-view ai-chat-messages flex-grow-1">
             {foreach $selectedConversation->messages as $message}
                 <div class="ai-msg ai-msg--{$message->role->value}" data-message-id="{$message->objectID|json}">
-                    <div n:if="$message->role !== Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-bubble">
-                        <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user && !$message->attachments->isEmpty" class="ai-msg-images">
-                            {foreach $message->attachments as $attachment}
-                                <img src="{$attachment->dataURL}" alt="{$attachment->name}" class="ai-msg-img">
-                            {/foreach}
+                    {if $message->role === Sabatier\Service\LLM\LLMMessageRole::tool}
+                        <div class="ai-tool-badge ai-tool-badge--done">
+                            <span class="material-symbols-outlined ai-tool-badge__icon">check_circle</span>
+                            <span class="ai-tool-badge__name">{$message->toolCalls->first?->identifier}</span>
                         </div>
-                        {$message->content}
-                    </div>
-                    <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-tool-badge">
-                        <i class="bi bi-check2-circle"></i>
-                        {$message->toolCalls->first?->identifier ?? ""}
-                    </div>
-                    <div n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::assistant" n:foreach="$message->toolCalls as $toolCall" class="ai-tool-badge">
-                        <i class="bi bi-gear"></i>
-                        {$toolCall->name}
-                    </div>
-                    <div n:if="$message->role !== Sabatier\Service\LLM\LLMMessageRole::tool" class="ai-msg-actions">
-                        <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy">
-                            <i class="bi bi-clipboard"></i></button>
-                        <button n:if="$message->role === Sabatier\Service\LLM\LLMMessageRole::user" class="ai-msg-action-btn" data-msg-action="edit" title="Edit">
-                            <i class="bi bi-pencil"></i></button>
-                    </div>
+                    {elseif $message->role === Sabatier\Service\LLM\LLMMessageRole::user}
+                        <div class="ai-bubble">
+                            {if !$message->attachments->isEmpty}
+                                <div class="ai-msg-images">
+                                    {foreach $message->attachments as $attachment}
+                                        <img src="{$attachment->dataURL}" alt="{$attachment->name}" class="ai-msg-img">
+                                    {/foreach}
+                                </div>
+                            {/if}
+                            {$message->content}
+                        </div>
+                        <div class="ai-msg-actions">
+                            <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy">
+                                <span class="material-symbols-outlined">content_paste</span></button>
+                            <button class="ai-msg-action-btn" data-msg-action="edit" title="Edit">
+                                <span class="material-symbols-outlined">edit</span></button>
+                        </div>
+                    {elseif $message->role === Sabatier\Service\LLM\LLMMessageRole::assistant}
+                        {if $message->content || !$message->toolCalls->isEmpty}
+                            <div class="ai-bubble">
+                                {if $message->content}
+                                    {$message->content}
+                                {/if}
+                                {if !$message->toolCalls->isEmpty}
+                                    <div class="ai-tools">
+                                        {foreach $message->toolCalls as $toolCall}
+                                            <div class="ai-tool-badge">
+                                                <span class="material-symbols-outlined ai-tool-badge__icon">build</span>
+                                                <span class="ai-tool-badge__name">{$toolCall->name ?? $toolCall->identifier}</span>
+                                            </div>
+                                        {/foreach}
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
+                        <div class="ai-msg-actions">
+                            <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy">
+                                <span class="material-symbols-outlined">content_paste</span></button>
+                        </div>
+                    {/if}
                 </div>
             {/foreach}
             <div id="chat-thinking" class="ai-thinking">
@@ -109,11 +129,11 @@
             <div id="chat-attachments" class="ai-attachment-preview"></div>
             <div class="ai-chat-input-row">
                 <button type="button" id="chat-attach-btn" class="ai-attach-btn" title="Attach image">
-                    <i class="bi bi-paperclip"></i>
+                    <span class="material-symbols-outlined">attach_file</span>
                 </button>
                 <textarea aria-label="chat" id="chat-input" class="ai-chat-textarea" rows="2" placeholder="Ask the AI…"></textarea>
                 <button type="button" id="chat-send-btn" class="ai-send-btn" disabled>
-                    <i class="bi bi-arrow-up"></i>
+                    <span class="material-symbols-outlined">arrow_upward</span>
                 </button>
             </div>
         </div>

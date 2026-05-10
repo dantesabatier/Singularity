@@ -113,11 +113,11 @@ p {
     transform: translateY(0);
 }
 
-.btn i {
+.btn .material-symbols-outlined {
     transition: transform 0.2s ease;
 }
 
-.btn:hover i {
+.btn:hover .material-symbols-outlined {
     transform: scale(1.1);
 }
 

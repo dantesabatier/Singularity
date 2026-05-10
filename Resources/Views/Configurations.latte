@@ -2,7 +2,7 @@
 {define configurations}
     <div n:foreach="$project->model->configurations as $config" class="source-row{$config->isEqual($selectedConfiguration) ? ' active'}" data-href="/Editor?project={$project->objectID|json}&configuration={$config->objectID|json}" style="--level: 0">
         <span style="width: 16px; display: inline-block;"></span>
-        <i class="bi bi-gear-fill source-icon text-secondary" style="font-size: 12px; margin-top: 2px;"></i>
+        <span class="material-symbols-outlined ms-filled source-icon text-secondary" style="font-size: 12px; margin-top: 2px;">settings</span>
         <span class="source-label">{$config->name}</span>
     </div>
 {/define}

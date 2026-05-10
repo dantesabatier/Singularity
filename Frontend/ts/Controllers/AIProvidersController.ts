@@ -123,7 +123,7 @@ export class AIProvidersController extends ViewController {
         ;(document.getElementById("pf-name") as HTMLInputElement).value = provider.name
         ;(document.getElementById("pf-identifier") as HTMLInputElement).value = provider.identifier
         ;(document.getElementById("pf-url") as HTMLInputElement).value = provider.url
-        ;(document.getElementById("pf-apiKey") as HTMLInputElement).value = ""
+        ;(document.getElementById("pf-apiKey") as HTMLInputElement).value = provider.apiKey ?? ""
     }
 
     private clearForm(): void {
@@ -178,7 +178,7 @@ export class AIProvidersController extends ViewController {
                 <span class="small flex-grow-1">${model.name}</span>
                 <code class="ai-model-item-id">${model.identifier}</code>
                 <button type="button" class="btn btn-sm btn-icon text-danger flex-shrink-0" data-ai-action="removeModel" data-model-index="${i}">
-                    <i class="bi bi-x-lg"></i>
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             `
             list.appendChild(row)

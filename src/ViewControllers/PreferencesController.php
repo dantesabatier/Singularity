@@ -12,7 +12,6 @@ use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
-use Sabatier\Service\LLM\LLMModel;
 use Sabatier\Service\LLM\LLMProvider;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
@@ -119,16 +118,6 @@ final class PreferencesController extends ViewController
     #[Outlet]
     private(set) ArrayClass $aiProviders {
         get => $this->aiProviders ??= LLMProvider::all();
-    }
-    /** @var ArrayClass<Dictionary<mixed>> */
-    #[Outlet]
-    private(set) ArrayClass $aiProviderCards {
-        get => $this->aiProviderCards ??= $this->aiProviders->map(fn(LLMProvider $provider): Dictionary => new Dictionary([
-            "name" => $provider->name,
-            "identifier" => $provider->identifier,
-            "url" => $provider->url,
-            "models" => $provider->models->map(fn(LLMModel $model) => $model->dictionaryRepresentation),
-        ]));
     }
 
     #[Override]

@@ -30,11 +30,11 @@
     font-weight: 500;
 }
 
-#main .nav-item i {
+#main .nav-item .material-symbols-outlined {
     transition: transform 0.15s ease;
 }
 
-#main .nav-item:hover i {
+#main .nav-item:hover .material-symbols-outlined {
     transform: scale(1.1);
 }
 
@@ -110,7 +110,7 @@
     padding: 3rem 1rem;
 }
 
-#main .empty-state i {
+#main .empty-state .material-symbols-outlined {
     font-size: 3rem;
     opacity: 0.25;
     color: var(--text-muted);

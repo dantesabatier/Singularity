@@ -92,14 +92,14 @@
                     data-parent="{$selectedIndex|json}"
                     data-property-name="{$attribute?->name}"
                     {!$attribute instanceof App\Model\Attribute ? disabled}>
-                <i class="bi bi-plus-lg"></i>
+                <span class="material-symbols-outlined">add</span>
             </button>
             <button class="btn btn-icon"
                     title="Remove Element"
                     data-editor-action="removeSelection"
                     data-item="{$selectedIndexElement|json}"
                     {!$selectedIndexElement instanceof App\Model\FetchIndexElement ? disabled}>
-                <i class="bi bi-dash-lg"></i>
+                <span class="material-symbols-outlined">remove</span>
             </button>
         </div>
     </div>

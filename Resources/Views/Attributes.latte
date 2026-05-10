@@ -49,13 +49,13 @@
                     data-editor-action="addAttribute"
                     data-parent="{$selectedEntity|json}"
                     data-position="{$selectedEntity->attributes->count}">
-                <i class="bi bi-plus-lg"></i>
+                <span class="material-symbols-outlined">add</span>
             </button>
             <button class="btn btn-icon"
                     title="Remove Attribute"
                     data-editor-action="removeSelection"
                     data-item="{$selectedProperty|json}" {!$selectedProperty instanceof App\Model\Attribute ? disabled}>
-                <i class="bi bi-dash-lg"></i>
+                <span class="material-symbols-outlined">remove</span>
             </button>
         </div>
     </div>

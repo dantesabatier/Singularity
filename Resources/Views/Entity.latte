@@ -52,7 +52,7 @@
                                 </tr>
                                 <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&constraint={$uniquenessConstraint->objectID|json}" class="cursor-pointer {$uniquenessConstraint->isEqual($selectedUniquenessConstraint) ? active}">
                                     <td>
-                                        <i class="bi bi-key-fill me-1 opacity-50" style="font-size: 10px;"></i>
+                                        <span class="material-symbols-outlined ms-filled me-1 opacity-50" style="font-size: 10px;">key</span>
                                         {$uniquenessConstraint->stringValue}
                                     </td>
                                 </tr>
@@ -61,10 +61,10 @@
                         </div>
                         <div class="list-control-toolbar">
                             <button type="button" class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
-                                <i class="bi bi-plus-lg"></i>
+                                <span class="material-symbols-outlined">add</span>
                             </button>
                             <button type="button" class="btn btn-sm icon" data-editor-action="removeSelection" data-item="{$selectedUniquenessConstraint|json}" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
-                                <i class="bi bi-dash-lg"></i>
+                                <span class="material-symbols-outlined">remove</span>
                             </button>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                                     </option>
                                 </select>
                                 <div class="modal-help-text">
-                                    <i class="bi bi-info-circle-fill"></i>
+                                    <span class="material-symbols-outlined ms-filled">info</span>
                                     <div>
                                         Enforces uniqueness for this attribute.
                                         <span class="help-note">Conflicts resolve via merge policy.</span>

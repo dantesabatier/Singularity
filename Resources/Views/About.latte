@@ -10,7 +10,7 @@
                     <span class="fs-6 fw-medium">{$title}</span>
                 </div>
                 <button class="btn btn-icon p-1" data-about-action="close" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Close (ESC)">
-                    <i class="bi bi-x-lg"></i>
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
         </div>
@@ -37,23 +37,23 @@
                 </p>
                 <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
                     <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="openURL" data-about-url="{$websiteURL}">
-                        <i class="bi bi-globe"></i> <span>Website</span>
+                        <span class="material-symbols-outlined">language</span> <span>Website</span>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="openURL" data-about-url="{$githubURL}">
-                        <i class="bi bi-github"></i> <span>GitHub</span>
+                        <span class="material-symbols-outlined">hub</span> <span>GitHub</span>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="openURL" data-about-url="{$licenseURL}">
-                        <i class="bi bi-file-text"></i> <span>Licenses</span>
+                        <span class="material-symbols-outlined">description</span> <span>Licenses</span>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2" data-about-action="copyVersionInfo" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Copy version info">
-                        <i class="bi bi-clipboard"></i> <span>Copy Info</span>
+                        <span class="material-symbols-outlined">content_paste</span> <span>Copy Info</span>
                     </button>
                 </div>
             </div>
         </div>
         <div class="footer border-top py-2 px-3 text-center">
             <small class="text-muted d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-info-circle"></i> <span>Powered by Electron & PHP</span> </small>
+                <span class="material-symbols-outlined">info</span> <span>Powered by Electron & PHP</span> </small>
         </div>
     </div>
 {/block}

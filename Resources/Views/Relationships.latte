@@ -61,13 +61,13 @@
                     data-editor-action="addRelationship"
                     data-parent="{$selectedEntity|json}"
                     data-position="{$selectedEntity->relationships->count}">
-                <i class="bi bi-plus-lg"></i>
+                <span class="material-symbols-outlined">add</span>
             </button>
             <button class="btn btn-icon"
                     title="Remove Relationship"
                     data-editor-action="removeSelection"
                     data-item="{$selectedProperty|json}" {!$selectedProperty instanceof App\Model\Relationship ? disabled}>
-                <i class="bi bi-dash-lg"></i>
+                <span class="material-symbols-outlined">remove</span>
             </button>
         </div>
     </div>
