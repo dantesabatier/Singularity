@@ -5,6 +5,7 @@ namespace App\Model;
 use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Date;
+use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Set;
 
 /**
@@ -28,6 +29,11 @@ use Sabatier\Foundation\Set;
  */
 final class Conversation extends ManagedObject
 {
+    /** @var Dictionary<mixed> */
+    public Dictionary $dictionaryRepresentation {
+        get => new Dictionary(["objectID" => $this->objectID, "title" => $this->title, "provider" => $this->provider, "model" => $this->model, "messages" => $this->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
+    }
+
     #[Override]
     public function willSave(): void
     {

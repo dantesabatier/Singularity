@@ -6,10 +6,6 @@ declare(strict_types=1);
 
 namespace App\ViewControllers;
 
-use Sabatier\Service\LLM\LLMAgent;
-use Sabatier\Service\LLM\LLMMessage;
-use Sabatier\Service\LLM\LLMMessageRole;
-use Sabatier\Service\LLM\LLMProvider;
 use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
 use App\FileWriters\SubclassFileWriter;
@@ -61,6 +57,10 @@ use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\JSONTransformer;
+use Sabatier\Service\LLM\LLMAgent;
+use Sabatier\Service\LLM\LLMMessage;
+use Sabatier\Service\LLM\LLMMessageRole;
+use Sabatier\Service\LLM\LLMProvider;
 use Sabatier\Service\MCP\Schema\AttributeSchemaFactory;
 use Sabatier\Service\MCP\Schema\ModelDescriptor;
 use Sabatier\Service\MCP\Schema\ModelSchemaExtractor;
@@ -73,8 +73,6 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
-use const Sabatier\Service\LLMModelPreferencesKey;
-use const Sabatier\Service\LLMProviderPreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
@@ -83,6 +81,8 @@ use const App\EditorTableViewValue;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
+use const Sabatier\Service\LLMModelPreferencesKey;
+use const Sabatier\Service\LLMProviderPreferencesKey;
 
 #[Endpoint("Editor", transformers: [HTMLTransformer::class])]
 final class EditorController extends ProjectController
@@ -611,25 +611,20 @@ final class EditorController extends ProjectController
     #[Action(transformers: [JSONTransformer::class])]
     public function chat(): void
     {
+        $project = $this->project;
         $parameters = $this->request->parameters;
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
-        $model = $parameters["model"] ?? $this->selectedAIModel;
-        $providerIdentifier = $parameters["provider"] ?? $this->selectedLLMProviderIdentifier;
-        $provider = LLMProvider::find($providerIdentifier) ?? throw new InternalServerErrorException("Unable to find LLM provider");
-        $project = $this->project;
-        $userMessage = new Message($this->managedObjectContext);
-        $userMessage->content = $content;
-        $userMessage->role = LLMMessageRole::user;
-        $conversationRef = $parameters["conversation"];
-        $isNewConversation = !is_numeric($conversationRef);
-        $conversation = $isNewConversation ? null : $this->fetchByReference(Conversation::class, (int)$conversationRef);
-        $conversation ??= new Conversation($this->managedObjectContext);
-        $conversation->provider = $provider->identifier;
+        $model = $parameters["model"] ?? UserDefaults::standard()->string(LLMModelPreferencesKey) ?? throw new BadRequestException("No model configured.");
+        $providerID = $parameters["provider"] ?? UserDefaults::standard()->string(LLMProviderPreferencesKey) ?? throw new BadRequestException("No provider configured.");
+        /** @var Dictionary<mixed> $snapshot */
+        $snapshot = $parameters["conversation"] ?? throw new BadRequestException("`conversation` is required");
+        $conversation = new Conversation($this->managedObjectContext);
+        $conversation->updateFromSnapshot($snapshot);
+        $conversation->provider = $providerID;
         $conversation->model = $model;
-        if ($isNewConversation) {
-            $conversation->title = $content;
-        }
-        $conversation->addMessagesObject($userMessage);
+        $userMessage = new Message($this->managedObjectContext);
+        $userMessage->role = LLMMessageRole::user;
+        $userMessage->content = $content;
         $images = $parameters["images"];
         if ($images instanceof ArrayClass) {
             $fileManager = FileManager::default();
@@ -647,6 +642,7 @@ final class EditorController extends ProjectController
                 $userMessage->addAttachmentsObject($attachment);
             }
         }
+        $conversation->addMessagesObject($userMessage);
         /** @var ArrayClass<LLMMessage> $history */
         $history = new ArrayClass();
         foreach ($conversation->messages as $message) {
@@ -661,6 +657,7 @@ final class EditorController extends ProjectController
                 }
             }
         }
+        $provider = LLMProvider::find($providerID) ?? throw new InternalServerErrorException("Provider `$providerID` not configured");
         $agent = new LLMAgent($provider->client($model), $this->registry);
         $run = $agent->run($history, $this->buildSystemPrompt());
         /** @var array<string, ToolCall> $toolCallMap */
@@ -681,11 +678,9 @@ final class EditorController extends ProjectController
         $conversation->inputTokens = $conversation->inputTokens + $run->inputTokens;
         $conversation->outputTokens = $conversation->outputTokens + $run->outputTokens;
         $conversation->totalTokens = $conversation->inputTokens + $conversation->outputTokens;
-        if ($isNewConversation) {
-            $project->addConversationsObject($conversation);
-        }
+        $project->addConversationsObject($conversation);
         $project->selectedConversation = $conversation;
         $this->managedObjectContext->save();
-        $this->data = new Dictionary(["conversationID" => $conversation->objectID, "messages" => $conversation->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
+        $this->data = $conversation->dictionaryRepresentation;
     }
 }

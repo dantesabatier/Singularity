@@ -357,16 +357,51 @@ export class EditorController extends ViewController {
     }
 
     private async newConversation(): Promise<void> {
+        const panel = document.getElementById("ai-chat-panel")
+        if (!(panel instanceof HTMLElement)) {
+            return
+        }
+        const projectID = panel.dataset.projectObjectId
+        if (!projectID) {
+            return
+        }
+        const existingTitles = new Set(
+            Array.from(document.querySelectorAll<HTMLElement>("[data-editor-action='selectConversation'] span"))
+                .map(el => el.textContent?.trim() ?? "")
+        )
+        const defaultTitle = "New conversation"
+        let title = defaultTitle
+        let counter = 1
+        while (existingTitles.has(title)) {
+            title = `${defaultTitle} ${counter}`
+            counter++
+        }
+        const provider = panel.dataset.aiProvider ?? "anthropic"
+        const model = panel.dataset.aiModel ?? "claude-opus-4-7"
+        const response = await this.context.httpClient.post("/Conversation", {
+            title,
+            project: {objectID: projectID},
+            provider,
+            model,
+        })
+        if (!response.ok) {
+            return
+        }
+        const data = await response.json() as {objectID?: string | number}
+        const conversationID = data.objectID ? String(data.objectID) : null
+        if (!conversationID) {
+            return
+        }
         const nextUrl = new URL(window.location.href)
-        nextUrl.searchParams.delete("conversation")
+        nextUrl.searchParams.set("conversation", conversationID)
         const partialUrl = new URL(nextUrl.href)
         partialUrl.searchParams.set("partial", "1")
-        partialUrl.searchParams.set("newConversation", "1")
         const html = await this.context.viewNavigator.load(partialUrl.href)
         if (html === undefined) {
             history.pushState({url: nextUrl.href}, "", nextUrl.href)
             return
         }
+        this.updateSourceListActiveState(nextUrl)
         this.context.viewNavigator.replaceZones(html, nextUrl.href)
         history.pushState({url: nextUrl.href}, "", nextUrl.href)
     }
@@ -387,7 +422,15 @@ export class EditorController extends ViewController {
         if (projectID && selectedID === conversationID) {
             void this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: null})
         }
-        await this.context.actionDispatcher.dispatch("Conversation", {objectID: conversationID}, "DELETE")
+        const response = await this.context.httpClient.delete("/Conversation", {objectID: conversationID})
+        if (!response.ok) {
+            return
+        }
+        const nextUrl = new URL(window.location.href)
+        if (nextUrl.searchParams.get("conversation") === conversationID) {
+            nextUrl.searchParams.delete("conversation")
+        }
+        await this.context.viewNavigator.push(nextUrl.href, "reload")
     }
 
     private updateAttributeValueClassName(select: HTMLSelectElement): void {

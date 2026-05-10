@@ -18,6 +18,7 @@ const DEFAULT_MODEL = "claude-opus-4-7"
 
 export class EditorChatController {
     private currentConversationID: string | null = null
+    private currentConversationTitle: string | null = null
     private currentProjectID: string | null = null
     private selectedProvider: string = DEFAULT_PROVIDER
     private selectedModel: string = DEFAULT_MODEL
@@ -59,6 +60,7 @@ export class EditorChatController {
         this.currentProjectID = projectObjectID || null
         const messagesContainer = document.getElementById("chat-messages")
         this.currentConversationID = messagesContainer instanceof HTMLElement ? (messagesContainer.dataset.conversationId ?? null) : null
+        this.currentConversationTitle = messagesContainer instanceof HTMLElement ? (messagesContainer.dataset.conversationTitle ?? null) : null
 
         if (sendBtn instanceof HTMLButtonElement && sendBtn !== this.currentSendBtn) {
             this.currentSendBtn?.removeEventListener("click", this.onSendClick)
@@ -166,10 +168,13 @@ export class EditorChatController {
         this.appendMessageBubble({role: "user", content, images: images.length > 0 ? images : undefined, thumbnailURLs: thumbnailURLs.length > 0 ? thumbnailURLs : undefined})
 
         const isNewConversation = !this.currentConversationID
+        const conversationTitle = (!this.currentConversationTitle || this.currentConversationTitle.startsWith("New conversation"))
+            ? content
+            : this.currentConversationTitle
 
         const body: Record<string, unknown> = {
             project: this.currentProjectID,
-            conversation: this.currentConversationID,
+            conversation: {objectID: this.currentConversationID, title: conversationTitle},
             content,
             provider: this.selectedProvider,
             model: this.selectedModel,
@@ -194,9 +199,14 @@ export class EditorChatController {
             return
         }
 
-        const data = await response.json() as { conversationID: string; messages: ChatMessage[] }
+        const data = await response.json() as { objectID: string; title: string; messages: ChatMessage[] }
         if (!this.currentConversationID) {
-            this.currentConversationID = data.conversationID
+            this.currentConversationID = String(data.objectID)
+        }
+        this.currentConversationTitle = data.title
+        const titleEl = document.querySelector(".ai-chat-title")
+        if (titleEl) {
+            titleEl.textContent = data.title
         }
         let modelWasChanged = false
         for (const msg of data.messages.slice(1)) {
