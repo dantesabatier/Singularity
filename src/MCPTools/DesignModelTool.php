@@ -45,7 +45,7 @@ final class DesignModelTool extends AbstractTool
     {
         /** @var string $description */
         $description = $arguments["description"] ?? fatal_error("description is required");
-        $schema = $this->descriptor->describe();
+        $schema = $this->descriptor->schema;
         $existingEntityNames = $schema->entities->keys->join(", ");
         return $this->jsonResult([
             "description" => $description,
