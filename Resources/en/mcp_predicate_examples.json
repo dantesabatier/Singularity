@@ -6,5 +6,6 @@
     "\"%K = %s\", [\"isToMany\", true]",
     "\"%K CONTAINS[cd] %s AND %K = %s\", [\"name\", \"Date\", \"isOptional\", false]",
     "\"%K CONTAINS[cd] %s\", [\"entityProperty.name\", \"Order\"]",
-    "\"NOT %K IN %s\", [\"deleteRule\", [0, 1]]"
+    "\"%K IN %s\", [\"deleteRule\", [0, 1]]",
+    "\"%K BETWEEN %s\", [\"creationDate\", [\"2025-01-01\", \"2025-01-31\"]]"
 ]
