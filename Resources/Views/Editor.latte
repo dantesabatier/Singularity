@@ -89,7 +89,9 @@
                 {include inspector from "Inspector.latte"}
             </div>
             <div id="ai-copilot-pane" class="ps-1" style="flex: 1; overflow: hidden; display: {$isCopilotEnabled ? 'block' : 'none'};">
-                {include editorChat from "EditorChat.latte"}
+                {if $isCopilotEnabled}
+                    {include editorChat from "EditorChat.latte"}
+                {/if}
             </div>
         </div>
     </div>

@@ -220,7 +220,7 @@ export class EditorChatController {
         if (modelWasChanged) {
             await this.context.viewNavigator.push(window.location.href)
         } else if (isNewConversation) {
-            await this.navigateToConversation(data.conversationID)
+            await this.reloadSelectedConversation()
         }
     }
 
@@ -466,9 +466,9 @@ export class EditorChatController {
         container.scrollTop = container.scrollHeight
     }
 
-    private async navigateToConversation(conversationID: string): Promise<void> {
+    private async reloadSelectedConversation(): Promise<void> {
         const nextUrl = new URL(window.location.href)
-        nextUrl.searchParams.set("conversation", conversationID)
+        nextUrl.searchParams.delete("conversation")
         const partialUrl = new URL(nextUrl.href)
         partialUrl.searchParams.set("partial", "1")
         const html = await this.context.viewNavigator.load(partialUrl.href)

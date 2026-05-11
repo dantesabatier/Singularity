@@ -204,21 +204,11 @@ final class EditorController extends ProjectController
     private(set) ?Role $selectedRole = null;
     #[Outlet]
     private(set) ?Conversation $selectedConversation {
-        /**
-         * @throws Exception
-         */
         get {
             if (isset($this->selectedConversation)) {
                 return $this->selectedConversation;
             }
-            if ($this->request->parameters["newConversation"]) {
-                return null;
-            }
-            $reference = $this->request->parameters["conversation"];
-            if (!is_numeric($reference)) {
-                return $this->selectedConversation = $this->project->selectedConversation;
-            }
-            return $this->selectedConversation = $this->fetchByReference(Conversation::class, (int)$reference);
+            return $this->selectedConversation = $this->project->selectedConversation;
         }
     }
     #[Outlet]
@@ -386,7 +376,7 @@ final class EditorController extends ProjectController
         $model = $project->model ?? throw new NotFoundException("Model not found");
         $this->breadcrumb->append($project);
         $this->breadcrumb->append($model);
-        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role", "conversation"];
+        $keys = ["entity", "fetchRequest", "configuration", "composite", "constraint", "property", "index", "element", "accessControl", "role"];
         foreach ($keys as $key) {
             if (!($objectID = $this->referenceObject($key))) {
                 continue;
@@ -403,7 +393,6 @@ final class EditorController extends ProjectController
                 "element" => FetchIndexElement::class,
                 "accessControl" => AccessControl::class,
                 "role" => Role::class,
-                "conversation" => Conversation::class,
             };
             if (!($selection = $this->fetchByReference($managedObjectClass, $objectID))) {
                 break;
@@ -428,8 +417,6 @@ final class EditorController extends ProjectController
                 $this->selectedAccessControl = $selection;
             } elseif ($selection instanceof Role) {
                 $this->selectedRole = $selection;
-            } elseif ($selection instanceof Conversation) {
-                $this->selectedConversation = $selection;
             }
             $this->selection = $selection;
             $this->breadcrumb->append($selection);

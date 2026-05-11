@@ -220,7 +220,14 @@ export class EditorController extends ViewController {
             return
         }
         const nextUrl = new URL(window.location.href)
-        nextUrl.searchParams.set("conversation", conversationID)
+        nextUrl.searchParams.delete("conversation")
+        const projectID = nextUrl.searchParams.get("project")
+        if (projectID) {
+            const response = await this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: conversationID})
+            if (!response.ok) {
+                return
+            }
+        }
         const partialUrl = new URL(nextUrl.href)
         partialUrl.searchParams.set("partial", "1")
         const html = await this.context.viewNavigator.load(partialUrl.href)
@@ -232,10 +239,6 @@ export class EditorController extends ViewController {
         const current = new URL(window.location.href)
         if (current.href !== nextUrl.href) {
             history.pushState({url: nextUrl.href}, "", nextUrl.href)
-        }
-        const projectID = nextUrl.searchParams.get("project")
-        if (projectID) {
-            void this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: conversationID})
         }
     }
 
@@ -392,8 +395,12 @@ export class EditorController extends ViewController {
         if (!conversationID) {
             return
         }
+        const updateResponse = await this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: conversationID})
+        if (!updateResponse.ok) {
+            return
+        }
         const nextUrl = new URL(window.location.href)
-        nextUrl.searchParams.set("conversation", conversationID)
+        nextUrl.searchParams.delete("conversation")
         const partialUrl = new URL(nextUrl.href)
         partialUrl.searchParams.set("partial", "1")
         const html = await this.context.viewNavigator.load(partialUrl.href)
@@ -427,9 +434,7 @@ export class EditorController extends ViewController {
             return
         }
         const nextUrl = new URL(window.location.href)
-        if (nextUrl.searchParams.get("conversation") === conversationID) {
-            nextUrl.searchParams.delete("conversation")
-        }
+        nextUrl.searchParams.delete("conversation")
         await this.context.viewNavigator.push(nextUrl.href, "reload")
     }
 
