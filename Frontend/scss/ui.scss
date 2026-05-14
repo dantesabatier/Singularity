@@ -775,10 +775,16 @@ button {
   transition: all 0.1s ease;
 }
 
-.ai-model-picker-btn:hover {
+.ai-model-picker-btn:hover:not(:disabled) {
   background-color: var(--bg-active);
   border-color: var(--border-light);
   color: var(--text-primary);
+}
+
+.ai-model-picker-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
 }
 
 .ai-model-indicator {

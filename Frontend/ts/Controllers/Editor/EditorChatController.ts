@@ -117,6 +117,9 @@ export class EditorChatController {
         const model = panel.dataset.aiModel ?? DEFAULT_MODEL
         this.applyProvider(provider, false)
         this.applyModel(model, false)
+        if (panel.dataset.conversationLocked === "true") {
+            this.lockModelPicker()
+        }
     }
 
     private bindModelPicker(): void {
@@ -241,6 +244,7 @@ export class EditorChatController {
                 }
             }
             this.setStatus("idle")
+            this.lockModelPicker()
 
             if (modelWasChanged) {
                 await this.context.viewNavigator.push(window.location.href)
@@ -604,6 +608,14 @@ export class EditorChatController {
 
         group.appendChild(list)
         return group
+    }
+
+    private lockModelPicker(): void {
+        const btn = document.getElementById("chat-model-picker-btn")
+        if (btn instanceof HTMLButtonElement && !btn.disabled) {
+            btn.disabled = true
+            btn.title = "Model locked for this conversation"
+        }
     }
 
     private toggleToolGroup(header: HTMLElement): void {
