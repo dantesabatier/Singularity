@@ -74,10 +74,6 @@
             {foreach $selectedConversation->messages as $message}
                 <div class="ai-msg ai-msg--{$message->role->value}" data-message-id="{$message->objectID|json}">
                     {if $message->role === Sabatier\Service\LLM\LLMMessageRole::tool}
-                        <div class="ai-tool-badge ai-tool-badge--done">
-                            <span class="material-symbols-outlined ai-tool-badge__icon">check_circle</span>
-                            <span class="ai-tool-badge__name">{$message->toolCalls->first?->identifier}</span>
-                        </div>
                     {elseif $message->role === Sabatier\Service\LLM\LLMMessageRole::user}
                         <div class="ai-bubble">
                             {if !$message->attachments->isEmpty}
@@ -96,27 +92,37 @@
                                 <span class="material-symbols-outlined">edit</span></button>
                         </div>
                     {elseif $message->role === Sabatier\Service\LLM\LLMMessageRole::assistant}
-                        {if $message->content || !$message->toolCalls->isEmpty}
+                        {if $message->content}
                             <div class="ai-bubble">
-                                {if $message->content}
-                                    {$message->content}
-                                {/if}
-                                {if !$message->toolCalls->isEmpty}
-                                    <div class="ai-tools">
-                                        {foreach $message->toolCalls as $toolCall}
-                                            <div class="ai-tool-badge">
-                                                <span class="material-symbols-outlined ai-tool-badge__icon">build</span>
-                                                <span class="ai-tool-badge__name">{$toolCall->name ?? $toolCall->identifier}</span>
-                                            </div>
-                                        {/foreach}
-                                    </div>
-                                {/if}
+                                {$message->content}
                             </div>
                         {/if}
-                        <div class="ai-msg-actions">
-                            <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy">
-                                <span class="material-symbols-outlined">content_paste</span></button>
-                        </div>
+                        {if !$message->toolCalls->isEmpty}
+                            <div class="ai-tool-group">
+                                <button class="ai-tool-group__header" type="button" data-action="toggle-tools">
+                                    <span class="material-symbols-outlined ai-tool-group__arrow">chevron_right</span>
+                                    <span class="ai-tool-group__label">Used {$message->toolCalls->count()} {$message->toolCalls->count() === 1 ? "tool" : "tools"}</span>
+                                </button>
+                                <div class="ai-tool-list" hidden>
+                                    {foreach $message->toolCalls as $toolCall}
+                                        <div class="ai-tool-item">
+                                            <span class="material-symbols-outlined ai-tool-item__icon">manufacturing</span>
+                                            <span class="ai-tool-item__name">{$toolCall->name ?? $toolCall->identifier}</span>
+                                        </div>
+                                    {/foreach}
+                                    <div class="ai-tool-done">
+                                        <span class="material-symbols-outlined ai-tool-done__icon">check_circle</span>
+                                        <span class="ai-tool-done__label">Done</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+                        {if $message->content}
+                            <div class="ai-msg-actions">
+                                <button class="ai-msg-action-btn" data-msg-action="copy" title="Copy">
+                                    <span class="material-symbols-outlined">content_paste</span></button>
+                            </div>
+                        {/if}
                     {/if}
                 </div>
             {/foreach}
@@ -126,6 +132,7 @@
         </div>
         <div class="ai-chat-input-bar flex-shrink-0">
             <input type="file" id="chat-file-input" accept="image/*" multiple style="display:none">
+            <div id="chat-context" class="ai-context-bar" hidden></div>
             <div id="chat-attachments" class="ai-attachment-preview"></div>
             <div class="ai-chat-input-row">
                 <button type="button" id="chat-attach-btn" class="ai-attach-btn" title="Attach image">

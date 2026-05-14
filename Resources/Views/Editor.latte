@@ -88,7 +88,7 @@
             <div id="inspector-pane" class="scroll-view pe-1 p-2" style="flex: 1; overflow-y: auto; display: {$isCopilotEnabled ? 'none' : 'block'};">
                 {include inspector from "Inspector.latte"}
             </div>
-            <div id="ai-copilot-pane" class="ps-1" style="flex: 1; overflow: hidden; display: {$isCopilotEnabled ? 'block' : 'none'};">
+            <div id="ai-copilot-pane" style="flex: 1; overflow: hidden; display: {$isCopilotEnabled ? 'block' : 'none'};">
                 {if $isCopilotEnabled}
                     {include editorChat from "EditorChat.latte"}
                 {/if}

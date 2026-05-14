@@ -12,7 +12,7 @@ use Sabatier\Service\Action;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
-use Sabatier\Service\LLM\LLMProvider;
+use App\LLM\Provider;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
@@ -23,9 +23,9 @@ use const App\EditorSplitSizesPreferencesKey;
 use const App\ExportIncludeCommentsPreferencesKey;
 use const App\ExportIncludeDataPreferencesKey;
 use const App\ExportLastDirectoryPreferencesKey;
-use const Sabatier\Service\LLMModelPreferencesKey;
-use const Sabatier\Service\LLMProviderPreferencesKey;
-use const Sabatier\Service\LLMProvidersPreferencesKey;
+use const App\LLMModelPreferencesKey;
+use const App\LLMProviderPreferencesKey;
+use const App\LLMProvidersPreferencesKey;
 
 #[Endpoint("Preferences", transformers: [HTMLTransformer::class])]
 final class PreferencesController extends ViewController
@@ -114,10 +114,10 @@ final class PreferencesController extends ViewController
             UserDefaults::standard()->setObject($value, LLMProvidersPreferencesKey);
         }
     }
-    /** @var ArrayClass<LLMProvider> */
+    /** @var ArrayClass<Provider> */
     #[Outlet]
     private(set) ArrayClass $aiProviders {
-        get => $this->aiProviders ??= LLMProvider::all();
+        get => $this->aiProviders ??= Provider::all();
     }
 
     #[Override]

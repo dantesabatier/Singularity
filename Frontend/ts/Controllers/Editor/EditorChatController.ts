@@ -25,7 +25,11 @@ export class EditorChatController {
     private pendingAttachments: File[] = []
 
     private readonly onSendClick = (): void => {
-        void this.sendMessage()
+        if (this.abortController) {
+            this.abortController.abort()
+        } else {
+            void this.sendMessage()
+        }
     }
     private readonly onInputKeydown = (event: KeyboardEvent): void => {
         if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
@@ -38,6 +42,9 @@ export class EditorChatController {
 
     private currentSendBtn: HTMLButtonElement | null = null
     private currentInput: HTMLTextAreaElement | null = null
+    private abortController: AbortController | null = null
+
+    private readonly onPopState = (): void => { this.updateContextIndicator() }
 
     public constructor(private readonly context: ApplicationContext) {
     }
@@ -50,6 +57,9 @@ export class EditorChatController {
         this.loadSelectionsFromDOM()
         this.bindModelPicker()
         this.renderServerMessages()
+        this.updateContextIndicator()
+        window.removeEventListener("popstate", this.onPopState)
+        window.addEventListener("popstate", this.onPopState)
     }
 
     private bindElements(): void {
@@ -87,6 +97,11 @@ export class EditorChatController {
             const btn = (e.target as Element).closest<HTMLElement>("[data-msg-action]")
             if (btn) {
                 void this.handleMessageAction(btn)
+                return
+            }
+            const toolHeader = (e.target as Element).closest<HTMLElement>("[data-action='toggle-tools']")
+            if (toolHeader) {
+                this.toggleToolGroup(toolHeader)
             }
         })
 
@@ -165,7 +180,7 @@ export class EditorChatController {
         this.pendingAttachments = []
         this.clearAttachmentChips()
 
-        this.appendMessageBubble({role: "user", content, images: images.length > 0 ? images : undefined, thumbnailURLs: thumbnailURLs.length > 0 ? thumbnailURLs : undefined})
+        const optimisticBubble = this.appendMessageBubble({role: "user", content, images: images.length > 0 ? images : undefined, thumbnailURLs: thumbnailURLs.length > 0 ? thumbnailURLs : undefined})
 
         const isNewConversation = !this.currentConversationID
         const conversationTitle = (!this.currentConversationTitle || this.currentConversationTitle.startsWith("New conversation"))
@@ -191,36 +206,56 @@ export class EditorChatController {
             body.images = images
         }
 
-        const response = await this.context.httpClient.post("/chat", body)
+        this.abortController = new AbortController()
+        try {
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-Requested-With": "XmlHttpRequest",
+                },
+                body: JSON.stringify(body),
+                signal: this.abortController.signal,
+            })
 
-        if (!response.ok) {
-            this.appendErrorBubble(await this.extractErrorMessage(response))
-            this.setStatus("idle")
-            return
-        }
-
-        const data = await response.json() as { objectID: string; title: string; messages: ChatMessage[] }
-        if (!this.currentConversationID) {
-            this.currentConversationID = String(data.objectID)
-        }
-        this.currentConversationTitle = data.title
-        const titleEl = document.querySelector(".ai-chat-title")
-        if (titleEl) {
-            titleEl.textContent = data.title
-        }
-        let modelWasChanged = false
-        for (const msg of data.messages.slice(1)) {
-            this.appendMessageBubble(msg)
-            if (msg.toolCalls && msg.toolCalls.length > 0) {
-                modelWasChanged = true
+            if (!response.ok) {
+                this.appendErrorBubble(await this.extractErrorMessage(response))
+                this.setStatus("idle")
+                return
             }
-        }
-        this.setStatus("idle")
 
-        if (modelWasChanged) {
-            await this.context.viewNavigator.push(window.location.href)
-        } else if (isNewConversation) {
-            await this.reloadSelectedConversation()
+            const data = await response.json() as { objectID: string; title: string; messages: ChatMessage[] }
+            if (!this.currentConversationID) {
+                this.currentConversationID = String(data.objectID)
+            }
+            this.currentConversationTitle = data.title
+            const titleEl = document.querySelector(".ai-chat-title")
+            if (titleEl) {
+                titleEl.textContent = data.title
+            }
+            let modelWasChanged = false
+            for (const msg of data.messages.slice(1)) {
+                this.appendMessageBubble(msg)
+                if (msg.toolCalls && msg.toolCalls.length > 0) {
+                    modelWasChanged = true
+                }
+            }
+            this.setStatus("idle")
+
+            if (modelWasChanged) {
+                await this.context.viewNavigator.push(window.location.href)
+            } else if (isNewConversation) {
+                await this.reloadSelectedConversation()
+            }
+        } catch (e) {
+            if (e instanceof DOMException && e.name === "AbortError") {
+                optimisticBubble?.remove()
+                this.setStatus("idle")
+                return
+            }
+            throw e
+        } finally {
+            this.abortController = null
         }
     }
 
@@ -480,67 +515,105 @@ export class EditorChatController {
         history.pushState({url: nextUrl.href}, "", nextUrl.href)
     }
 
-    private appendMessageBubble(message: ChatMessage): void {
+    private appendMessageBubble(message: ChatMessage): HTMLElement | undefined {
+        if (message.role === "tool") {
+            return undefined
+        }
+
         const container = document.getElementById("chat-messages")
         if (!container) {
             return
         }
+
         const wrapper = document.createElement("div")
         wrapper.className = `ai-msg ai-msg--${message.role}`
         if (message.objectID) {
             wrapper.dataset.messageId = message.objectID
         }
 
-        if (message.role === "tool") {
-            const name = message.toolCallId ?? "tool"
-            wrapper.innerHTML = `<div class="ai-tool-badge ai-tool-badge--done"><span class="material-symbols-outlined ai-tool-badge__icon">check_circle</span><span class="ai-tool-badge__name">${this.escapeHTML(name)}</span></div>`
+        const bubble = document.createElement("div")
+        bubble.className = "ai-bubble"
+
+        if (message.role === "assistant") {
+            if (message.content) {
+                bubble.innerHTML = this.renderMarkdown(message.content)
+                bubble.setAttribute("data-md", "")
+                bubble.querySelectorAll("pre code").forEach((block) => {
+                    hljs.highlightElement(block as HTMLElement)
+                })
+            }
         } else {
-            const bubble = document.createElement("div")
-            bubble.className = "ai-bubble"
-
-            if (message.role === "assistant") {
-                if (message.content) {
-                    bubble.innerHTML = this.renderMarkdown(message.content)
-                    bubble.setAttribute("data-md", "")
-                    bubble.querySelectorAll("pre code").forEach((block) => {
-                        hljs.highlightElement(block as HTMLElement)
-                    })
+            if (message.thumbnailURLs?.length) {
+                const imgRow = document.createElement("div")
+                imgRow.className = "ai-msg-images"
+                for (const url of message.thumbnailURLs) {
+                    const thumb = document.createElement("img")
+                    thumb.src = url
+                    thumb.className = "ai-msg-img"
+                    imgRow.appendChild(thumb)
                 }
-                if (message.toolCalls?.length) {
-                    const tools = document.createElement("div")
-                    tools.className = "ai-tools"
-                    for (const call of message.toolCalls) {
-                        const badge = document.createElement("div")
-                        badge.className = "ai-tool-badge"
-                        badge.innerHTML = `<span class="material-symbols-outlined ai-tool-badge__icon">settings</span><span class="ai-tool-badge__name">${this.escapeHTML(call.name)}</span>`
-                        tools.appendChild(badge)
-                    }
-                    bubble.appendChild(tools)
-                }
-            } else {
-                if (message.thumbnailURLs?.length) {
-                    const imgRow = document.createElement("div")
-                    imgRow.className = "ai-msg-images"
-                    for (const url of message.thumbnailURLs) {
-                        const thumb = document.createElement("img")
-                        thumb.src = url
-                        thumb.className = "ai-msg-img"
-                        imgRow.appendChild(thumb)
-                    }
-                    bubble.appendChild(imgRow)
-                }
-                bubble.appendChild(document.createTextNode(message.content ?? ""))
+                bubble.appendChild(imgRow)
             }
+            bubble.appendChild(document.createTextNode(message.content ?? ""))
+        }
 
-            if (bubble.children.length > 0 || message.content) {
-                wrapper.appendChild(bubble)
-            }
+        if (bubble.children.length > 0 || message.content) {
+            wrapper.appendChild(bubble)
+        }
 
+        if (message.toolCalls?.length) {
+            wrapper.appendChild(this.buildToolGroup(message.toolCalls))
+        }
+
+        if (message.role === "user" || message.content) {
             wrapper.appendChild(this.buildActionBar(message.role as "user" | "assistant"))
         }
 
         container.appendChild(wrapper)
         container.scrollTop = container.scrollHeight
+        return wrapper
+    }
+
+    private buildToolGroup(toolCalls: Array<{ id: string; name: string; input: unknown }>): HTMLElement {
+        const group = document.createElement("div")
+        group.className = "ai-tool-group"
+
+        const count = toolCalls.length
+        const header = document.createElement("button")
+        header.type = "button"
+        header.className = "ai-tool-group__header"
+        header.dataset.action = "toggle-tools"
+        header.innerHTML = `<span class="material-symbols-outlined ai-tool-group__arrow">chevron_right</span><span class="ai-tool-group__label">Used ${count} ${count === 1 ? "tool" : "tools"}</span>`
+        group.appendChild(header)
+
+        const list = document.createElement("div")
+        list.className = "ai-tool-list"
+        list.hidden = true
+
+        for (const call of toolCalls) {
+            const item = document.createElement("div")
+            item.className = "ai-tool-item"
+            item.innerHTML = `<span class="material-symbols-outlined ai-tool-item__icon">manufacturing</span><span class="ai-tool-item__name">${this.escapeHTML(call.name)}</span>`
+            list.appendChild(item)
+        }
+
+        const done = document.createElement("div")
+        done.className = "ai-tool-done"
+        done.innerHTML = `<span class="material-symbols-outlined ai-tool-done__icon">check_circle</span><span class="ai-tool-done__label">Done</span>`
+        list.appendChild(done)
+
+        group.appendChild(list)
+        return group
+    }
+
+    private toggleToolGroup(header: HTMLElement): void {
+        const list = header.nextElementSibling as HTMLElement | null
+        const arrow = header.querySelector<HTMLElement>(".ai-tool-group__arrow")
+        if (!list) {
+            return
+        }
+        list.hidden = !list.hidden
+        arrow?.classList.toggle("ai-tool-group__arrow--open", !list.hidden)
     }
 
     private setStatus(state: "idle" | "thinking" | "error"): void {
@@ -562,8 +635,36 @@ export class EditorChatController {
         }
         const sendBtn = document.getElementById("chat-send-btn")
         if (sendBtn instanceof HTMLButtonElement) {
-            sendBtn.toggleAttribute("disabled", state === "thinking")
+            const icon = sendBtn.querySelector<HTMLElement>(".material-symbols-outlined")
+            if (state === "thinking") {
+                sendBtn.removeAttribute("disabled")
+                sendBtn.classList.add("is-stop")
+                if (icon) icon.textContent = "stop"
+            } else {
+                sendBtn.classList.remove("is-stop")
+                if (icon) icon.textContent = "arrow_upward"
+                this.updateSendButton()
+            }
         }
+    }
+
+    private updateContextIndicator(): void {
+        const bar = document.getElementById("chat-context")
+        if (!bar) return
+        const urlParams = new URLSearchParams(window.location.search)
+        const keys: Array<{ key: string; label: string; icon: string }> = [
+            { key: "entity", label: "Entity", icon: "category" },
+            { key: "property", label: "Property", icon: "text_fields" },
+            { key: "constraint", label: "Constraint", icon: "rule" },
+            { key: "index", label: "Index", icon: "view_list" },
+            { key: "element", label: "Element", icon: "code" },
+            { key: "role", label: "Role", icon: "manage_accounts" },
+        ]
+        const chips = keys
+            .filter(({ key }) => urlParams.has(key))
+            .map(({ label, icon }) => `<span class="ai-ctx-chip"><span class="material-symbols-outlined ai-ctx-chip__icon">${icon}</span>${label}</span>`)
+        bar.innerHTML = chips.join("")
+        bar.hidden = chips.length === 0
     }
 
     private updateSendButton(): void {
@@ -582,16 +683,9 @@ export class EditorChatController {
             return
         }
         container.querySelectorAll<HTMLElement>(".ai-msg--assistant .ai-bubble:not([data-md])").forEach((bubble) => {
-            const toolsEl = bubble.querySelector<HTMLElement>(".ai-tools")
-            if (toolsEl) {
-                toolsEl.remove()
-            }
             const content = bubble.textContent?.trim() ?? ""
             bubble.innerHTML = this.renderMarkdown(content)
             bubble.setAttribute("data-md", "")
-            if (toolsEl) {
-                bubble.appendChild(toolsEl)
-            }
             bubble.querySelectorAll("pre code").forEach((block) => {
                 hljs.highlightElement(block as HTMLElement)
             })

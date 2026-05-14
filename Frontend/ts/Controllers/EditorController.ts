@@ -211,7 +211,18 @@ export class EditorController extends ViewController {
         if (!projectID) {
             return
         }
-        await this.context.viewNavigator.push(this.context.routeBuilder.build("Editor", {project: projectID}))
+        const currentProjectID = new URL(window.location.href).searchParams.get("project")
+        const cleanUrl = this.context.routeBuilder.build("Editor", {project: projectID})
+        if (currentProjectID && currentProjectID !== projectID) {
+            const freshUrl = new URL(cleanUrl, window.location.origin)
+            freshUrl.searchParams.set("fresh", "1")
+            const replaced = await this.context.viewNavigator.replace(freshUrl.href)
+            if (replaced) {
+                history.pushState({url: cleanUrl}, "", cleanUrl)
+            }
+        } else {
+            await this.context.viewNavigator.push(cleanUrl)
+        }
     }
 
     private async selectConversation(element: HTMLElement): Promise<void> {

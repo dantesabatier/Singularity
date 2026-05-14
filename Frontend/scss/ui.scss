@@ -700,7 +700,6 @@ button {
   padding: 4px 6px;
   background-color: var(--bg-tertiary);
   border-bottom: 1px solid var(--border-color);
-  border-radius: 4px 4px 0 0;
   flex-shrink: 0;
   min-height: 30px;
 
@@ -1140,36 +1139,95 @@ button {
   border-bottom-left-radius: 2px;
 }
 
-.ai-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 0;
+/* Tool group (collapsible) */
+
+.ai-tool-group {
+  margin-top: 6px;
 }
 
-.ai-tool-badge {
+.ai-tool-group__header {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px 2px 5px;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--bg-elevated);
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 2px 5px 2px 3px;
+  color: var(--text-disabled);
+  font-size: 11px;
+  font-family: var(--font-ui);
+  line-height: 1.5;
   border-radius: 4px;
+  transition: color 0.12s, background 0.12s;
+  user-select: none;
+
+  &:hover {
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.ai-tool-group__arrow {
+  font-size: 15px !important;
+  transition: transform 0.18s;
+}
+
+.ai-tool-group__arrow--open {
+  transform: rotate(90deg);
+}
+
+.ai-tool-group__label {
+  font-size: 11px;
+}
+
+.ai-tool-list {
+  margin-top: 4px;
+  padding-left: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-left: 1.5px solid var(--border-color);
+}
+
+.ai-tool-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 5px;
+}
+
+.ai-tool-item__icon {
+  font-size: 13px !important;
+  color: var(--text-disabled) !important;
+}
+
+.ai-tool-item__name {
   font-size: 11px;
   color: var(--text-secondary);
   font-family: var(--font-mono);
 }
 
-.ai-tool-badge__icon {
-  font-size: 14px;
+.ai-tool-done {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 5px;
+  margin-top: 1px;
 }
 
-.ai-tool-badge__name {
+.ai-tool-done__icon {
+  font-size: 13px !important;
+  color: var(--text-disabled) !important;
+}
+
+.ai-tool-done__label {
   font-size: 11px;
+  color: var(--text-disabled);
 }
 
 /* Thinking dots */
@@ -1250,6 +1308,35 @@ button {
     color: var(--text-primary);
     background-color: var(--bg-hover);
   }
+}
+
+.ai-context-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-bottom: 6px;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.ai-ctx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px 1px 4px;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+}
+
+.ai-ctx-chip__icon {
+  font-size: 11px !important;
+  color: var(--text-disabled) !important;
 }
 
 .ai-attachment-preview {
@@ -1363,6 +1450,14 @@ button {
 .ai-send-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+.ai-send-btn.is-stop {
+  background-color: rgba(206, 93, 93, 0.85);
+
+  &:hover {
+    background-color: rgba(206, 93, 93, 1);
+  }
 }
 
 /* Message actions */

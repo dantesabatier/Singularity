@@ -9,6 +9,7 @@ namespace App\ViewControllers;
 use App\Bundles\BundleUpdater;
 use App\Bundles\SaveBundleTransaction;
 use App\FileWriters\SubclassFileWriter;
+use App\LLM\Provider;
 use App\Model\AccessControl;
 use App\Model\Attachment;
 use App\Model\Attribute;
@@ -60,7 +61,6 @@ use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\LLM\LLMAgent;
 use Sabatier\Service\LLM\LLMMessage;
 use Sabatier\Service\LLM\LLMMessageRole;
-use Sabatier\Service\LLM\LLMProvider;
 use Sabatier\Service\MCP\Schema\AttributeSchemaFactory;
 use Sabatier\Service\MCP\Schema\ModelDescriptor;
 use Sabatier\Service\MCP\Schema\ModelSchemaExtractor;
@@ -78,11 +78,11 @@ use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\EditorTableViewValue;
+use const App\LLMModelPreferencesKey;
+use const App\LLMProviderPreferencesKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
 use const Sabatier\Foundation\kCFBundleTypeNameKey;
-use const Sabatier\Service\LLMModelPreferencesKey;
-use const Sabatier\Service\LLMProviderPreferencesKey;
 
 #[Endpoint("Editor", transformers: [HTMLTransformer::class])]
 final class EditorController extends ProjectController
@@ -131,15 +131,10 @@ final class EditorController extends ProjectController
             UserDefaults::standard()->setObject($value, LLMModelPreferencesKey);
         }
     }
-    /** @var ArrayClass<LLMProvider> */
+    /** @var ArrayClass<Provider> */
     #[Outlet]
     private(set) ArrayClass $aiProviders {
-        get {
-            if (isset($this->aiProviders)) {
-                return $this->aiProviders;
-            }
-            return $this->aiProviders = LLMProvider::all();
-        }
+        get => $this->aiProviders ??= Provider::all();
     }
     #[Outlet]
     public bool $isTableViewSelected {
@@ -207,6 +202,9 @@ final class EditorController extends ProjectController
         get {
             if (isset($this->selectedConversation)) {
                 return $this->selectedConversation;
+            }
+            if (($this->request->parameters["fresh"] ?? null) === "1") {
+                return null;
             }
             return $this->selectedConversation = $this->project->selectedConversation;
         }
@@ -562,33 +560,36 @@ final class EditorController extends ProjectController
             "",
             "Project: $project->name",
         ]);
+        if ($model = $project->model) {
+            $lines->append("Model: $model->name (objectID: $model->objectID)");
+        }
         $entityRef = $this->referenceObject("entity");
         if ($entityRef && ($entity = $this->fetchByReference(Entity::class, $entityRef))) {
-            $lines[] = "";
-            $lines[] = "Selected entity: \"$entity->name\" (objectID: $entity->objectID)";
+            $lines->append("");
+            $lines->append("Selected entity: \"$entity->name\" (objectID: $entity->objectID)");
             if (!$entity->attributes->isEmpty) {
-                $lines[] = "  Attributes: " . $entity->attributes->map(fn(Attribute $attribute): string => "$attribute->name (objectID: $attribute->objectID, type: {$attribute->type->name}, " . ($attribute->isOptional ? "optional" : "required") . ")")->join(", ");
+                $lines->append("  Attributes: " . $entity->attributes->map(fn(Attribute $attribute): string => "$attribute->name (objectID: $attribute->objectID, type: {$attribute->type->name}, " . ($attribute->isOptional ? "optional" : "required") . ")")->join(", "));
             }
             if (!$entity->relationships->isEmpty) {
-                $lines[] = "  Relationships: " . $entity->relationships->map(fn(Relationship $relationship): string => "$relationship->name (objectID: $relationship->objectID, " . ($relationship->isToMany ? "to-many" : "to-one") . " → $relationship->lazyDestinationEntityName)")->join(", ");
+                $lines->append("  Relationships: " . $entity->relationships->map(fn(Relationship $relationship): string => "$relationship->name (objectID: $relationship->objectID, " . ($relationship->isToMany ? "to-many" : "to-one") . " → $relationship->lazyDestinationEntityName)")->join(", "));
             }
             if ($entity->superentity) {
-                $lines[] = "  Parent entity: {$entity->superentity->name} (objectID: {$entity->superentity->objectID})";
+                $lines->append("  Parent entity: {$entity->superentity->name} (objectID: {$entity->superentity->objectID})");
             }
         }
         $propertyRef = $this->referenceObject("property");
         if ($propertyRef && ($property = $this->fetchByReference(Property::class, $propertyRef))) {
-            $lines[] = "";
+            $lines->append("");
             $detail = match (true) {
                 $property instanceof Attribute => "Attribute, type: {$property->type->name}",
                 $property instanceof Relationship => "Relationship, " . ($property->isToMany ? "to-many" : "to-one") . " → $property->lazyDestinationEntityName",
                 default => "Property",
             };
             $optional = $property->isOptional ? "optional" : "required";
-            $lines[] = "Selected property: \"$property->name\" (objectID: $property->objectID) — $detail, $optional";
+            $lines->append("Selected property: \"$property->name\" (objectID: $property->objectID) — $detail, $optional");
         }
-        $lines[] = "";
-        $lines[] = "When the user asks questions or requests changes, assume they refer to the selected context unless otherwise specified.";
+        $lines->append("");
+        $lines->append("When the user asks questions or requests changes, assume they refer to the selected context unless otherwise specified.");
         return $lines->join("\n");
     }
 
@@ -644,7 +645,7 @@ final class EditorController extends ProjectController
                 }
             }
         }
-        $provider = LLMProvider::find($providerID) ?? throw new InternalServerErrorException("Provider `$providerID` not configured");
+        $provider = Provider::find($providerID) ?? throw new InternalServerErrorException("Provider `$providerID` not configured");
         $agent = new LLMAgent($provider->client($model), $this->registry);
         $run = $agent->run($history, $this->buildSystemPrompt());
         /** @var array<string, ToolCall> $toolCallMap */
