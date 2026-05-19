@@ -663,8 +663,8 @@ final class EditorController extends ProjectController
             }
             $conversation->addMessagesObject($message);
         }
-        $conversation->inputTokens = $conversation->inputTokens + $run->inputTokens;
-        $conversation->outputTokens = $conversation->outputTokens + $run->outputTokens;
+        $conversation->inputTokens += $run->inputTokens;
+        $conversation->outputTokens += $run->outputTokens;
         $conversation->totalTokens = $conversation->inputTokens + $conversation->outputTokens;
         $project->addConversationsObject($conversation);
         $project->selectedConversation = $conversation;
