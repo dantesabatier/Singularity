@@ -207,8 +207,8 @@
                     </div>
                     {default}
                 {/switch}
-                <div class="inspector-header">Advanced</div>
-                <div class="row mb-2">
+                <div n:if="!$selectedProperty->isDerived" class="inspector-header">Advanced</div>
+                <div n:if="!$selectedProperty->isDerived" class="row mb-2">
                     <div class="col-sm-4"></div>
                     <div class="col-sm-8">
                         <div class="form-check">
