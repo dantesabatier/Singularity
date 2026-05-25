@@ -283,16 +283,6 @@ final class EditorController extends ProjectController
             AuthorizationScope::own => "Own"
         }, "value" => $scope->value]);
     }
-    #[Outlet]
-    private(set) int $totalEntityCount {
-        get {
-            if (isset($this->totalEntityCount)) {
-                return $this->totalEntityCount;
-            }
-            return $this->totalEntityCount = $this->project->model?->entities->count ?? 0;
-        }
-    }
-    #[Outlet]
     private(set) int $totalAttributeCount {
         get {
             if (isset($this->totalAttributeCount)) {
@@ -306,7 +296,6 @@ final class EditorController extends ProjectController
             return $this->totalAttributeCount = $count;
         }
     }
-    #[Outlet]
     private(set) int $totalRelationshipCount {
         get {
             if (isset($this->totalRelationshipCount)) {
