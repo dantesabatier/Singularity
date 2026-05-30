@@ -19,7 +19,7 @@ final class ClassFileAssembler
      */
     public function assemble(string $namespace, Entity $entity, Set $uses, Set $properties, ArrayClass $methods, string $declaration): string
     {
-        $content = "<?php\n\n";
+        $content = "<?php\n\ndeclare(strict_types=1);\n\n";
         $content .= "namespace $namespace;\n";
         $superentity = $entity->superentity;
         if (!$superentity) {

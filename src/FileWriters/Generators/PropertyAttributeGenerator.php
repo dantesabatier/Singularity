@@ -28,6 +28,7 @@ final readonly class PropertyAttributeGenerator
         /** @var Set<string> $attributes */
         $attributes = new Set();
         if ($property instanceof Relationship && $property->isOwner) {
+            $uses->insert("use Sabatier\\Service\\Owner;");
             $attributes->insert("#[Owner]");
         }
         $attributes->formUnion($property->accessControls->map(function (AccessControl $accessControl) use ($uses): string {
