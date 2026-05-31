@@ -16,11 +16,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$selectedEntity->fetchedProperties as $fetchedProperty"
-                        id="property-{$fetchedProperty->objectID|json}"
-                        data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$fetchedProperty->objectID|json}"
-                        n:class="$fetchedProperty->isEqual($selectedProperty) ? active">
-
+                <tr n:foreach="$selectedEntity->fetchedProperties as $fetchedProperty" id="property-{$fetchedProperty->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$fetchedProperty->objectID|json}" n:class="$fetchedProperty->isEqual($selectedProperty) ? active">
                     <!-- Name Column -->
                     <td class="col-name">
                         <div class="cell-content">
