@@ -52,8 +52,6 @@ final class Attribute extends Property
                 return null;
             }
             $derivedAttributeDescription = new DerivedAttributeDescription();
-            $derivedAttributeDescription->name = $this->name;
-            $derivedAttributeDescription->type = $this->type;
             $derivedAttributeDescription->derivationExpression = Expression::expressionWithFormat($derivationExpressionFormat);
             return $derivedAttributeDescription;
         }
@@ -70,8 +68,6 @@ final class Attribute extends Property
                 return null;
             }
             $compositeAttributeDescription = new CompositeAttributeDescription();
-            $compositeAttributeDescription->name = $this->name;
-            $compositeAttributeDescription->type = AttributeType::compositeAttributeType;
             $compositeAttributeDescription->elements = new ArrayClass($compositeType->elements->map(fn(Attribute $attribute): AttributeDescription => $attribute->attributeDescription));
             return $compositeAttributeDescription;
         }
@@ -81,13 +77,13 @@ final class Attribute extends Property
             if (isset($this->attributeDescription)) {
                 return $this->attributeDescription;
             }
+            $attributeDescription = new AttributeDescription();
             if ($derivedAttributeDescription = $this->derivedAttributeDescription) {
-                return $this->attributeDescription = $derivedAttributeDescription;
+                $attributeDescription = $derivedAttributeDescription;
             }
             if ($compositeAttributeDescription = $this->compositeAttributeDescription) {
-                return $this->attributeDescription = $compositeAttributeDescription;
+                $attributeDescription = $compositeAttributeDescription;
             }
-            $attributeDescription = new AttributeDescription();
             $attributeDescription->name = $this->name;
             $attributeDescription->type = $this->type;
             $attributeDescription->setValuesForKeys($this->dictionaryWithValues($this->attributeDescriptionKeys));
