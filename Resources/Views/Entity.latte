@@ -1,6 +1,6 @@
 {templateType App\ViewControllers\EditorController}
 {define entity}
-    <div class="px-3 pb-4">
+    <div n:if="$selectedEntity" class="px-3 pb-4">
         <form action="/Entity" method="POST">
             <input type="hidden" name="objectID" value="{$selectedEntity->objectID|json}">
             <div class="inspector-header">Entity Identity</div>

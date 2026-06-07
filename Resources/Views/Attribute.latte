@@ -1,7 +1,7 @@
 {templateType App\ViewControllers\EditorController}
 {varType App\Model\Attribute $selectedProperty}
 {define attribute}
-    <div class="px-3 pb-4">
+    <div n:if="$selectedProperty" class="px-3 pb-4">
         <form action="/Attribute" method="POST">
             <input type="hidden" name="objectID" value="{$selectedProperty->objectID|json}">
             {if $selectedProperty->type !== Sabatier\CoreData\AttributeType::transformable}

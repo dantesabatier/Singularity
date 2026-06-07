@@ -1,6 +1,6 @@
 {templateType App\ViewControllers\EditorController}
 {define fetchedProperties}
-    <div class="ide-list-control">
+    <div n:if="$selectedEntity" class="ide-list-control">
         <!-- Header -->
         <div class="list-control-header">
             <span class="list-control-title">Fetched Properties</span>

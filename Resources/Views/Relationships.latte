@@ -1,6 +1,6 @@
 {templateType App\ViewControllers\EditorController}
 {define relationships}
-    <div class="ide-list-control">
+    <div n:if="$selectedEntity" class="ide-list-control">
         <div class="list-control-header">
             <span class="list-control-title">Relationships</span>
         </div>
