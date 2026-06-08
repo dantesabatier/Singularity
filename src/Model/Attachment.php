@@ -18,9 +18,22 @@ use Sabatier\Foundation\URLFileTypeMappings;
  */
 final class Attachment extends ManagedObject
 {
+    private bool $isFileURLResolved = false;
+    private(set) ?URL $fileURL {
+        get {
+            if ($this->isFileURLResolved) {
+                return $this->fileURL;
+            }
+            $this->isFileURLResolved = true;
+            if (!($url = $this->url)) {
+                return $this->fileURL = null;
+            }
+            return $this->fileURL = new URL($url->path, FileManager::default()->documentRootDirectory);
+        }
+    }
     public string $dataURL {
         get {
-            if (!($url = $this->url)) {
+            if (!($url = $this->fileURL)) {
                 return "";
             }
             if (!($data = FileManager::default()->contents($url->path))) {
@@ -34,10 +47,9 @@ final class Attachment extends ManagedObject
     #[Override]
     public function prepareForDeletion(): void
     {
-        if (!($url = $this->url)) {
+        if (!($url = $this->fileURL)) {
             return;
         }
-        $url = new URL($url->path, FileManager::default()->documentRootDirectory);
         if (!FileManager::default()->fileExists($url->path)) {
             return;
         }
