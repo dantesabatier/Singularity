@@ -146,14 +146,14 @@ final class Entity extends ManagedObject
             return;
         }
         $this->name = $this->name |> trim(...);
-        if ($this->managedObjectClassName) {
-            $this->managedObjectClassName = $this->managedObjectClassName |> trim(...);
+        if ($managedObjectClassName = $this->managedObjectClassName) {
+            $this->managedObjectClassName = $managedObjectClassName |> trim(...);
         }
-        if ($this->renamingIdentifier) {
-            $this->renamingIdentifier = $this->renamingIdentifier |> trim(...);
+        if ($renamingIdentifier = $this->renamingIdentifier) {
+            $this->renamingIdentifier = $renamingIdentifier |> trim(...);
         }
-        if ($this->versionHashModifier) {
-            $this->versionHashModifier = $this->versionHashModifier |> trim(...);
+        if ($versionHashModifier = $this->versionHashModifier) {
+            $this->versionHashModifier = $versionHashModifier |> trim(...);
         }
         $this->isLeaf = !$this->subentitiesCount;
         $this->isFinal = $this->isLeaf;
