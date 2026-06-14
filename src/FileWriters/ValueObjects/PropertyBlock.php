@@ -18,8 +18,8 @@ final class PropertyBlock extends ObjectClass
                 $code .= $this->phpAttributes->join("\n    ");
                 $code .= "\n    ";
             }
-            $nullable = $this->isNullable ? "|null" : "";
-            $code .= "public $this->type$nullable \$$this->name {\n";
+            $nullable = $this->isNullable ? "?" : "";
+            $code .= "public $nullable$this->type \$$this->name {\n";
             $code .= "        get => \$this->valueForKey(__PROPERTY__);\n";
             $code .= "        set {\n";
             $code .= "            \$this->setValueForKey(\$value, __PROPERTY__);\n";
