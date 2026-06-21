@@ -14,7 +14,7 @@ type ChatMessage = {
 }
 
 const DEFAULT_PROVIDER = "anthropic"
-const DEFAULT_MODEL = "claude-opus-4-7"
+const DEFAULT_MODEL = "claude-opus-4-8"
 
 export class EditorChatController {
     private currentConversationID: string | null = null
