@@ -7,29 +7,24 @@ export class TreeToggleFeature extends Feature {
     }
 
     public start(): void {
-        document.addEventListener("click", this.handleClick)
+        // Bootstrap owns the visual collapse and fires these on the target after the state
+        // settles, so we read the final state from the event instead of racing aria-expanded.
+        document.addEventListener("shown.bs.collapse", this.handleToggle)
+        document.addEventListener("hidden.bs.collapse", this.handleToggle)
     }
 
-    private readonly handleClick = (event: MouseEvent): void => {
-        const target = event.target
-        if (!(target instanceof Element)) {
+    private readonly handleToggle = (event: Event): void => {
+        const group = event.target
+        if (!(group instanceof HTMLElement) || !group.id) {
             return
         }
-        const toggle = target.closest<HTMLElement>("[data-tree-toggle]")
-        if (!toggle) {
+        const toggle = document.querySelector<HTMLElement>(`.tree-toggle[data-bs-target="#${CSS.escape(group.id)}"]`)
+        const objectID = toggle?.dataset.id
+        if (!objectID) {
             return
         }
-        event.preventDefault()
-        const selector = toggle.dataset.treeToggle
-        if (!selector) {
-            return
-        }
-        const node = document.querySelector<HTMLElement>(selector)
-        if (!node) {
-            return
-        }
-        const expanded = toggle.getAttribute("aria-expanded") === "true"
-        toggle.setAttribute("aria-expanded", String(!expanded))
-        node.hidden = expanded
+        const expanded = event.type === "shown.bs.collapse"
+        toggle?.setAttribute("aria-expanded", String(expanded))
+        void this.context.httpClient.patch("Entity", {objectID, isExpanded: expanded})
     }
 }
