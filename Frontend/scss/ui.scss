@@ -1236,6 +1236,20 @@ button {
   color: var(--text-disabled);
 }
 
+.ai-tool-group__header--error .ai-tool-group__label {
+  color: var(--bs-danger);
+}
+
+.ai-tool-item--error .ai-tool-item__icon,
+.ai-tool-item--error .ai-tool-item__name {
+  color: var(--bs-danger) !important;
+}
+
+.ai-tool-done--error .ai-tool-done__icon,
+.ai-tool-done--error .ai-tool-done__label {
+  color: var(--bs-danger) !important;
+}
+
 /* Thinking dots */
 
 .ai-thinking {

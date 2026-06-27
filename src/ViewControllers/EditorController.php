@@ -72,6 +72,7 @@ use Sabatier\Service\MCP\ToolResolver;
 use Sabatier\Service\MCP\Tools\ToolRegistry;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
+use Throwable;
 use function Sabatier\Foundation\class_name;
 use function Sabatier\Foundation\fatal_error;
 use const App\EditorCopilotEnabledPreferencesKey;
@@ -573,7 +574,7 @@ final class EditorController extends ProjectController
     }
 
     /**
-     * @throws Exception
+     * @throws Throwable
      */
     #[Action(transformers: [JSONTransformer::class])]
     public function chat(): void
