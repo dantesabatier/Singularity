@@ -1,7 +1,11 @@
-This is the Singularity MCP server. Singularity is the authoring environment for the Sabatier stack — an IDE for designing data models and generating complete PHP web service projects. Use this server to query projects, models, entities, attributes, relationships, and other model artifacts.
+Singularity is the authoring environment for the Sabatier stack — an IDE for designing data models and generating complete PHP web service projects. Through these tools you query and modify model artifacts: projects, models, entities, attributes, relationships, and the artifacts they group.
+
+Everything in Singularity is a managed object, and objects connect to each other through relationships. A relationship is a named link from one object to another (or to a collection of others). To "add" something to an object means creating the new object AND linking it to its parent through the appropriate relationship.
 
 Domain hierarchy:
   Project → Model → Entity → Attribute / Relationship / FetchedProperty
   Entity also groups: FetchIndex, UniquenessConstraint
   Model also groups: FetchRequestTemplate, Configuration, CompositeType
   Property (base of Attribute, Relationship, and FetchedProperty) → AccessControl → Role
+
+When the request targets the model structure, complete every operation fully — create the object and every link it requires — without stopping to ask for confirmation mid-operation.

@@ -7,7 +7,7 @@ type ChatMessage = {
     objectID?: string | null
     role: "user" | "assistant" | "tool"
     content: string | null
-    toolCalls?: Array<{ id: string; name: string; input: unknown }> | null
+    toolCalls?: Array<{ id: string; name: string; input: unknown; isError?: boolean }> | null
     toolCallId?: string | null
     images?: Array<{ name: string; mimeType: string; data: string }>
     thumbnailURLs?: string[]
@@ -42,9 +42,42 @@ export class EditorChatController {
 
     private currentSendBtn: HTMLButtonElement | null = null
     private currentInput: HTMLTextAreaElement | null = null
+    private currentModelMenu: Element | null = null
+    private currentFileInput: HTMLInputElement | null = null
+    private currentAttachBtn: Element | null = null
+    private currentMessages: Element | null = null
     private abortController: AbortController | null = null
 
     private readonly onPopState = (): void => { this.updateContextIndicator() }
+
+    private readonly onFileInputChange = (): void => {
+        if (this.currentFileInput) {
+            this.onFilesSelected(this.currentFileInput)
+        }
+    }
+    private readonly onAttachClick = (): void => { this.currentFileInput?.click() }
+    private readonly onMessagesClick = (e: Event): void => {
+        const btn = (e.target as Element).closest<HTMLElement>("[data-msg-action]")
+        if (btn) {
+            void this.handleMessageAction(btn)
+            return
+        }
+        const toolHeader = (e.target as Element).closest<HTMLElement>("[data-action='toggle-tools']")
+        if (toolHeader) {
+            this.toggleToolGroup(toolHeader)
+        }
+    }
+
+    private readonly onModelMenuClick = (e: Event): void => {
+        const btn = (e.target as Element).closest<HTMLElement>("[data-model]")
+        if (!btn?.dataset.model) {
+            return
+        }
+        const provider = btn.dataset.provider ?? DEFAULT_PROVIDER
+        const model = btn.dataset.model
+        this.applyProvider(provider, true)
+        this.applyModel(model, true)
+    }
 
     public constructor(private readonly context: ApplicationContext) {
     }
@@ -86,24 +119,24 @@ export class EditorChatController {
         }
 
         const fileInput = document.getElementById("chat-file-input")
-        if (fileInput instanceof HTMLInputElement) {
-            fileInput.addEventListener("change", () => this.onFilesSelected(fileInput))
+        if (fileInput instanceof HTMLInputElement && fileInput !== this.currentFileInput) {
+            this.currentFileInput?.removeEventListener("change", this.onFileInputChange)
+            fileInput.addEventListener("change", this.onFileInputChange)
+            this.currentFileInput = fileInput
         }
         const attachBtn = document.getElementById("chat-attach-btn")
-        attachBtn?.addEventListener("click", () => fileInput?.click())
+        if (attachBtn && attachBtn !== this.currentAttachBtn) {
+            this.currentAttachBtn?.removeEventListener("click", this.onAttachClick)
+            attachBtn.addEventListener("click", this.onAttachClick)
+            this.currentAttachBtn = attachBtn
+        }
 
         const messages = document.getElementById("chat-messages")
-        messages?.addEventListener("click", (e) => {
-            const btn = (e.target as Element).closest<HTMLElement>("[data-msg-action]")
-            if (btn) {
-                void this.handleMessageAction(btn)
-                return
-            }
-            const toolHeader = (e.target as Element).closest<HTMLElement>("[data-action='toggle-tools']")
-            if (toolHeader) {
-                this.toggleToolGroup(toolHeader)
-            }
-        })
+        if (messages && messages !== this.currentMessages) {
+            this.currentMessages?.removeEventListener("click", this.onMessagesClick)
+            messages.addEventListener("click", this.onMessagesClick)
+            this.currentMessages = messages
+        }
 
         this.updateSendButton()
     }
@@ -124,16 +157,12 @@ export class EditorChatController {
 
     private bindModelPicker(): void {
         const menu = document.querySelector(".ai-model-dropdown")
-        menu?.addEventListener("click", (e) => {
-            const btn = (e.target as Element).closest<HTMLElement>("[data-model]")
-            if (!btn?.dataset.model) {
-                return
-            }
-            const provider = btn.dataset.provider ?? DEFAULT_PROVIDER
-            const model = btn.dataset.model
-            this.applyProvider(provider, true)
-            this.applyModel(model, true)
-        })
+        if (!menu || menu === this.currentModelMenu) {
+            return
+        }
+        this.currentModelMenu?.removeEventListener("click", this.onModelMenuClick)
+        menu.addEventListener("click", this.onModelMenuClick)
+        this.currentModelMenu = menu
     }
 
     private applyProvider(provider: string, persist: boolean): void {
@@ -502,7 +531,7 @@ export class EditorChatController {
         bubble.textContent = message
         wrapper.appendChild(bubble)
         container.appendChild(wrapper)
-        container.scrollTop = container.scrollHeight
+        this.scrollToBottom()
     }
 
     private async reloadSelectedConversation(): Promise<void> {
@@ -574,20 +603,25 @@ export class EditorChatController {
         }
 
         container.appendChild(wrapper)
-        container.scrollTop = container.scrollHeight
+        this.scrollToBottom()
         return wrapper
     }
 
-    private buildToolGroup(toolCalls: Array<{ id: string; name: string; input: unknown }>): HTMLElement {
+    private buildToolGroup(toolCalls: Array<{ id: string; name: string; input: unknown; isError?: boolean }>): HTMLElement {
         const group = document.createElement("div")
         group.className = "ai-tool-group"
 
+        const failedCount = toolCalls.filter(c => c.isError).length
         const count = toolCalls.length
         const header = document.createElement("button")
         header.type = "button"
         header.className = "ai-tool-group__header"
         header.dataset.action = "toggle-tools"
-        header.innerHTML = `<span class="material-symbols-outlined ai-tool-group__arrow">chevron_right</span><span class="ai-tool-group__label">Used ${count} ${count === 1 ? "tool" : "tools"}</span>`
+        const headerLabel = failedCount > 0
+            ? `Used ${count} ${count === 1 ? "tool" : "tools"} · ${failedCount} failed`
+            : `Used ${count} ${count === 1 ? "tool" : "tools"}`
+        header.classList.toggle("ai-tool-group__header--error", failedCount > 0)
+        header.innerHTML = `<span class="material-symbols-outlined ai-tool-group__arrow">chevron_right</span><span class="ai-tool-group__label">${headerLabel}</span>`
         group.appendChild(header)
 
         const list = document.createElement("div")
@@ -596,14 +630,17 @@ export class EditorChatController {
 
         for (const call of toolCalls) {
             const item = document.createElement("div")
-            item.className = "ai-tool-item"
-            item.innerHTML = `<span class="material-symbols-outlined ai-tool-item__icon">manufacturing</span><span class="ai-tool-item__name">${this.escapeHTML(call.name)}</span>`
+            item.className = call.isError ? "ai-tool-item ai-tool-item--error" : "ai-tool-item"
+            const icon = call.isError ? "error" : "manufacturing"
+            item.innerHTML = `<span class="material-symbols-outlined ai-tool-item__icon">${icon}</span><span class="ai-tool-item__name">${this.escapeHTML(call.name)}</span>`
             list.appendChild(item)
         }
 
         const done = document.createElement("div")
-        done.className = "ai-tool-done"
-        done.innerHTML = `<span class="material-symbols-outlined ai-tool-done__icon">check_circle</span><span class="ai-tool-done__label">Done</span>`
+        done.className = failedCount > 0 ? "ai-tool-done ai-tool-done--error" : "ai-tool-done"
+        const doneIcon = failedCount > 0 ? "warning" : "check_circle"
+        const doneLabel = failedCount > 0 ? "Completed with errors" : "Done"
+        done.innerHTML = `<span class="material-symbols-outlined ai-tool-done__icon">${doneIcon}</span><span class="ai-tool-done__label">${doneLabel}</span>`
         list.appendChild(done)
 
         group.appendChild(list)
@@ -701,6 +738,18 @@ export class EditorChatController {
             bubble.querySelectorAll("pre code").forEach((block) => {
                 hljs.highlightElement(block as HTMLElement)
             })
+        })
+        this.scrollToBottom()
+    }
+
+    private scrollToBottom(): void {
+        const container = document.getElementById("chat-messages")
+        if (!container) {
+            return
+        }
+        container.scrollTop = container.scrollHeight
+        window.requestAnimationFrame(() => {
+            container.scrollTop = container.scrollHeight
         })
     }
 

@@ -61,6 +61,7 @@ use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\LLM\LLMAgent;
 use Sabatier\Service\LLM\LLMMessage;
 use Sabatier\Service\LLM\LLMMessageRole;
+use Sabatier\Service\MCP\MCPInstructionsProvider;
 use Sabatier\Service\MCP\Schema\AttributeSchemaFactory;
 use Sabatier\Service\MCP\Schema\ModelDescriptor;
 use Sabatier\Service\MCP\Schema\ModelSchemaExtractor;
@@ -530,20 +531,7 @@ final class EditorController extends ProjectController
     {
         $project = $this->project;
         $lines = new ArrayClass([
-            "You are an AI assistant integrated in Singularity, a data model design IDE for the Sabatier stack.",
-            "Use your tools to query and modify the data model.",
-            "",
-            "## How this system works",
-            "",
-            "Everything in Singularity is a managed object. Objects connect to each other through relationships.",
-            "A relationship is a named link from one object to another (or to a collection of others).",
-            "To \"add\" something to an object means creating the new object AND linking it to its parent via the appropriate relationship.",
-            "",
-            "The object graph is:",
-            "  Project → Model → Entity → Attribute / Relationship / FetchIndex / UniquenessConstraint",
-            "",
-            "Use DescribeModel to discover the exact field and relationship names before creating or updating any object.",
-            "Always complete every operation fully in one turn — never stop to ask for confirmation mid-operation.",
+            new MCPInstructionsProvider()->build(),
             "",
             "## Current context",
             "",
@@ -557,10 +545,12 @@ final class EditorController extends ProjectController
             $lines->append("");
             $lines->append("Selected entity: \"$entity->name\" (objectID: $entity->objectID)");
             if (!$entity->attributes->isEmpty) {
-                $lines->append("  Attributes: " . $entity->attributes->map(fn(Attribute $attribute): string => "$attribute->name (objectID: $attribute->objectID, type: {$attribute->type->name}, " . ($attribute->isOptional ? "optional" : "required") . ")")->join(", "));
+                $attributes = $entity->attributes->map(fn(Attribute $attribute): string => "$attribute->name (objectID: $attribute->objectID, type: {$attribute->type->name}, " . ($attribute->isOptional ? "optional" : "required") . ")")->join(", ");
+                $lines->append("  Attributes: $attributes");
             }
             if (!$entity->relationships->isEmpty) {
-                $lines->append("  Relationships: " . $entity->relationships->map(fn(Relationship $relationship): string => "$relationship->name (objectID: $relationship->objectID, " . ($relationship->isToMany ? "to-many" : "to-one") . " → $relationship->lazyDestinationEntityName)")->join(", "));
+                $relationships = $entity->relationships->map(fn(Relationship $relationship): string => "$relationship->name (objectID: $relationship->objectID, " . ($relationship->isToMany ? "to-many" : "to-one") . " → $relationship->lazyDestinationEntityName)")->join(", ");
+                $lines->append("  Relationships: $relationships");
             }
             if ($entity->superentity) {
                 $lines->append("  Parent entity: {$entity->superentity->name} (objectID: {$entity->superentity->objectID})");
@@ -630,7 +620,7 @@ final class EditorController extends ProjectController
             $history->append($message->LLMMessage);
             foreach ($message->toolCalls as $toolCall) {
                 if ($toolCall->result !== null) {
-                    $history->append(new LLMMessage(LLMMessageRole::tool, $toolCall->result, toolCallId: $toolCall->identifier));
+                    $history->append(new LLMMessage(LLMMessageRole::tool, $toolCall->result, toolCallId: $toolCall->identifier, isError: $toolCall->status === ToolCallStatus::error));
                 }
             }
         }
@@ -642,7 +632,7 @@ final class EditorController extends ProjectController
         foreach ($run->messages as $llmMessage) {
             if (($llmMessage->role === LLMMessageRole::tool) && ($id = $llmMessage->toolCallId) && isset($toolCallMap[$id])) {
                 $toolCallMap[$id]->result = $llmMessage->content;
-                $toolCallMap[$id]->status = ToolCallStatus::completed;
+                $toolCallMap[$id]->status = $llmMessage->isError ? ToolCallStatus::error : ToolCallStatus::completed;
                 continue;
             }
             $message = new Message($this->managedObjectContext);

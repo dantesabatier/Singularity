@@ -155,7 +155,7 @@ final class Entity extends ManagedObject
         if ($versionHashModifier = $this->versionHashModifier) {
             $this->versionHashModifier = $versionHashModifier |> trim(...);
         }
-        $this->isLeaf = !$this->subentitiesCount;
+        $this->isLeaf = $this->subentities->isEmpty;
         $this->isFinal = $this->isLeaf;
     }
 }

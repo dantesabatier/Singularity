@@ -10,6 +10,7 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\UserDefaults;
+use App\LLM\Provider;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 use Sabatier\Service\PublicAccessPolicy;
@@ -37,6 +38,9 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
             EditorCopilotEnabledPreferencesKey => false,
             ExportIncludeDataPreferencesKey => true,
             ExportIncludeCommentsPreferencesKey => false,
+            LLMProviderPreferencesKey => "anthropic",
+            LLMModelPreferencesKey => "claude-opus-4-8",
+            LLMProvidersPreferencesKey => new ArrayClass([Provider::anthropic()->dictionaryRepresentation]),
         ]));
     }
 

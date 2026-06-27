@@ -21,7 +21,7 @@ final class ToolCall extends ManagedObject
 {
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
-        get => new Dictionary(["id" => $this->identifier, "name" => $this->name, "input" => $this->arguments, "result" => $this->result]);
+        get => new Dictionary(["id" => $this->identifier, "name" => $this->name, "input" => $this->arguments, "result" => $this->result, "status" => $this->status->value, "isError" => $this->status === ToolCallStatus::error]);
     }
 
     public function validateStatus(ToolCallStatus|int|null &$status): bool
