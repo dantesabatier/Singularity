@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\MCPTools;
 
-use JsonException;
+use App\Model\Entity;
+use App\Model\Project;
+use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\AbstractTool;
+use Sabatier\Service\NotFoundException;
 use function Sabatier\Foundation\fatal_error;
+use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
 final class DesignModelTool extends AbstractTool
 {
@@ -27,29 +31,37 @@ final class DesignModelTool extends AbstractTool
         get => [
             "type" => "object",
             "properties" => [
+                "objectID" => [
+                    "type" => "integer",
+                    "description" => "objectID of the Project to model.",
+                ],
                 "description" => [
                     "type" => "string",
                     "description" => "Plain-language description of the application or domain to model.",
                 ],
             ],
-            "required" => ["description"],
+            "required" => ["objectID", "description"],
         ];
     }
 
     /**
      * @return ArrayClass<ContentItem>
-     * @throws JsonException
+     * @throws Exception
      */
     #[Override]
     public function execute(Dictionary $arguments): ArrayClass
     {
+        $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
         /** @var string $description */
         $description = $arguments["description"] ?? fatal_error("description is required");
-        $schema = $this->descriptor->schema;
-        $existingEntityNames = $schema->entities->keys->join(", ");
+        $request = $this->fetchRequest("Project");
+        $request->predicate = $this->buildPredicate("%K = %d", new ArrayClass([ManagedObjectObjectIDKey, $objectID]));
+        /** @var Project $project */
+        $project = $this->context->fetch($request)->first ?? throw new NotFoundException("Project $objectID was not found");
+        $existingEntityNames = $project->model?->entities->map(fn(Entity $entity): string => $entity->name)->join(", ") ?: "none";
         return $this->jsonResult([
             "description" => $description,
-            "existingEntities" => $existingEntityNames ?: "none",
+            "existingEntities" => $existingEntityNames,
             "instructions" => $this->instructions(),
             "outputFormat" => $this->outputFormat(),
         ]);
