@@ -42,5 +42,9 @@ abstract class Property extends ManagedObject
         if ($this->regex) {
             $this->regex = $this->regex |> trim(...);
         }
+        if (!$this->isInserted && ($entity = $this->entityProperty)) {
+            $all = $entity->properties->map(fn(Property $property): Property => $property);
+            $this->position = $all->indexOf($this) ?? $all->count;
+        }
     }
 }
