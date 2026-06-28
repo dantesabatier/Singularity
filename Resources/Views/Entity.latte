@@ -48,22 +48,24 @@
                             <table class="list-control-table">
                                 <tbody>
                                 <tr n:if="$selectedEntity->uniquenessConstraints->isEmpty">
-                                    <td class="text-muted fst-italic text-center py-4" style="border: none;">No constraints</td>
+                                    <td class="list-control-empty">No constraints</td>
                                 </tr>
                                 <tr n:foreach="$selectedEntity->uniquenessConstraints as $uniquenessConstraint" id="constraint-{$uniquenessConstraint->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&constraint={$uniquenessConstraint->objectID|json}" class="cursor-pointer {$uniquenessConstraint->isEqual($selectedUniquenessConstraint) ? active}">
                                     <td>
-                                        <span class="material-symbols-outlined ms-filled me-1 opacity-50" style="font-size: 10px;">key</span>
-                                        {$uniquenessConstraint->stringValue}
+                                        <div class="cell-content">
+                                            <span class="material-symbols-outlined ms-filled cell-icon" style="font-size: 14px;">key</span>
+                                            <span class="cell-text">{$uniquenessConstraint->stringValue}</span>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="list-control-toolbar">
-                            <button type="button" class="btn btn-sm icon" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
+                            <button type="button" class="btn btn-icon" title="Add Constraint" data-bs-toggle="modal" data-bs-target="#addUniquenessConstraint">
                                 <span class="material-symbols-outlined">add</span>
                             </button>
-                            <button type="button" class="btn btn-sm icon" data-editor-action="removeSelection" data-item="{$selectedUniquenessConstraint|json}" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
+                            <button type="button" class="btn btn-icon" title="Remove Constraint" data-editor-action="removeSelection" data-item="{$selectedUniquenessConstraint|json}" {!$selectedUniquenessConstraint instanceof App\Model\UniquenessConstraint ? disabled}>
                                 <span class="material-symbols-outlined">remove</span>
                             </button>
                         </div>

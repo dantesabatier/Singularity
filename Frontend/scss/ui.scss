@@ -1808,6 +1808,14 @@ button {
   white-space: nowrap;
 }
 
+.list-control-empty {
+  padding: 16px 12px;
+  text-align: center;
+  font-style: italic;
+  color: var(--text-secondary);
+  border-bottom: none;
+}
+
 .cell-code {
   color: var(--text-secondary);
 }
