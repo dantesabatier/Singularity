@@ -55,6 +55,9 @@ final class DesignModelTool extends AbstractTool
         ]);
     }
 
+    /**
+     * @return list<string>
+     */
     private function instructions(): array
     {
         return [
@@ -75,6 +78,9 @@ final class DesignModelTool extends AbstractTool
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function outputFormat(): array
     {
         return [
