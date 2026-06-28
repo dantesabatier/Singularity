@@ -2,8 +2,8 @@ import {Feature} from "@/Application/Feature"
 
 export class ValidationFeature extends Feature {
     private handleSubmit = async (event: Event) => {
-        const form = event.target as HTMLFormElement
-        if (!form || !form.matches(".needs-validation")) {
+        const form = event.target
+        if (!(form instanceof HTMLFormElement) || !form.matches(".needs-validation")) {
             return
         }
         event.preventDefault()
@@ -18,18 +18,16 @@ export class ValidationFeature extends Feature {
     }
 
     private handleInputChange = (event: Event): void => {
-        const target = event.target as
-            | HTMLInputElement
-            | HTMLSelectElement
-            | HTMLTextAreaElement
-        if (!target) {
+        const target = event.target
+        if (!(target instanceof HTMLInputElement) && !(target instanceof HTMLSelectElement) && !(target instanceof HTMLTextAreaElement)) {
             return
         }
-        target.classList.toggle("is-invalid", !target.checkValidity())
-        target.classList.toggle("is-valid", target.checkValidity())
+        const isValid = target.checkValidity()
+        target.classList.toggle("is-invalid", !isValid)
+        target.classList.toggle("is-valid", isValid)
     }
 
-    public override refresh(): void {
+    public override start(): void {
         document.addEventListener("submit", this.handleSubmit, true)
         document.addEventListener("input", this.handleInputChange, true)
         document.addEventListener("change", this.handleInputChange, true)
