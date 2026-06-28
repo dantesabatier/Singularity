@@ -3,6 +3,14 @@
 .material-symbols-outlined {
   font-size: 16px;
   vertical-align: middle;
+  /* Reserve the glyph's box up-front so the ligature text does not reflow the
+     layout when the icon font finishes loading (font-display: block). The width
+     is fixed to 1em while overflow stays visible, so glyphs slightly wider than
+     1em (e.g. "menu") are never clipped — the block period keeps the raw
+     ligature text hidden, so nothing overflows visibly before the font loads. */
+  width: 1em;
+  overflow: visible;
+  text-align: center;
 }
 
 .ms-filled {
