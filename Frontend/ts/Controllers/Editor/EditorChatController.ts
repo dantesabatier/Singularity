@@ -1,7 +1,36 @@
 import {ApplicationContext} from "@/Application/ApplicationContext"
 import { marked } from "marked"
-import hljs from "highlight.js"
+import hljs from "highlight.js/lib/core"
+import php from "highlight.js/lib/languages/php"
+import typescript from "highlight.js/lib/languages/typescript"
+import javascript from "highlight.js/lib/languages/javascript"
+import json from "highlight.js/lib/languages/json"
+import bash from "highlight.js/lib/languages/bash"
+import xml from "highlight.js/lib/languages/xml"
+import css from "highlight.js/lib/languages/css"
+import sql from "highlight.js/lib/languages/sql"
 import DOMPurify from "dompurify"
+
+let languagesRegistered = false
+
+function registerHighlightLanguages(): void {
+    if (languagesRegistered) {
+        return
+    }
+    languagesRegistered = true
+    hljs.registerLanguage("php", php)
+    hljs.registerLanguage("typescript", typescript)
+    hljs.registerLanguage("javascript", javascript)
+    hljs.registerLanguage("json", json)
+    hljs.registerLanguage("bash", bash)
+    hljs.registerLanguage("xml", xml)
+    hljs.registerLanguage("css", css)
+    hljs.registerLanguage("sql", sql)
+    hljs.registerAliases(["ts"], {languageName: "typescript"})
+    hljs.registerAliases(["js"], {languageName: "javascript"})
+    hljs.registerAliases(["html"], {languageName: "xml"})
+    hljs.registerAliases(["sh", "shell", "zsh"], {languageName: "bash"})
+}
 
 type ChatMessage = {
     objectID?: string | null
@@ -571,6 +600,7 @@ export class EditorChatController {
             if (message.content) {
                 bubble.innerHTML = this.renderMarkdown(message.content)
                 bubble.setAttribute("data-md", "")
+                registerHighlightLanguages()
                 bubble.querySelectorAll("pre code").forEach((block) => {
                     hljs.highlightElement(block as HTMLElement)
                 })
@@ -735,6 +765,7 @@ export class EditorChatController {
             const content = bubble.textContent?.trim() ?? ""
             bubble.innerHTML = this.renderMarkdown(content)
             bubble.setAttribute("data-md", "")
+            registerHighlightLanguages()
             bubble.querySelectorAll("pre code").forEach((block) => {
                 hljs.highlightElement(block as HTMLElement)
             })
