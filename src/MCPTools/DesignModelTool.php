@@ -51,6 +51,7 @@ final class DesignModelTool extends AbstractTool
     #[Override]
     public function execute(Dictionary $arguments): ArrayClass
     {
+        /** @var int $objectID */
         $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
         /** @var string $description */
         $description = $arguments["description"] ?? fatal_error("description is required");

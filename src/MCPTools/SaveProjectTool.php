@@ -48,6 +48,7 @@ final class SaveProjectTool extends AbstractTool
     #[Override]
     public function execute(Dictionary $arguments): ArrayClass
     {
+        /** @var int $objectID */
         $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
         $request = $this->fetchRequest("Project");
         $request->predicate = $this->buildPredicate("%K = %d", new ArrayClass([ManagedObjectObjectIDKey, $objectID]));
