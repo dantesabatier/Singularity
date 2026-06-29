@@ -28,6 +28,7 @@ final class DelegateFileWriter extends FileWriter
                 "use " . ApplicationDelegate::class . ";",
                 "use " . PublicAccessPolicy::class . ";",
                 "use " . Throwable::class . ";",
+                "use " . Override::class . ";",
             ]);
             $content = "<?php\n";
             $content .= "\n";
@@ -38,10 +39,12 @@ final class DelegateFileWriter extends FileWriter
             $content .= "\n";
             $content .= "class $this->name extends ObjectClass implements ApplicationDelegate\n";
             $content .= "{\n";
+            $content .= "    #[Override]\n";
             $content .= "    public static function initialize(): void\n";
             $content .= "    {\n";
             $content .= "    }\n";
             $content .= "\n";
+            $content .= "    #[Override]\n";
             $content .= "    public function applicationWillFinishLaunching(Application \$application): void\n";
             $content .= "    {\n";
             if (!$this->isGeneratedWithSecurity) {
@@ -49,14 +52,17 @@ final class DelegateFileWriter extends FileWriter
             }
             $content .= "    }\n";
             $content .= "\n";
+            $content .= "    #[Override]\n";
             $content .= "    public function applicationDidFinishLaunching(Application \$application): void\n";
             $content .= "    {\n";
             $content .= "    }\n";
             $content .= "\n";
+            $content .= "    #[Override]\n";
             $content .= "    public function applicationWillTerminate(Application \$application): void\n";
             $content .= "    {\n";
             $content .= "    }\n";
             $content .= "\n";
+            $content .= "    #[Override]\n";
             $content .= "    public function applicationDidCrash(Application \$application, Throwable \$throwable): void\n";
             $content .= "    {\n";
             $content .= "    }\n";
