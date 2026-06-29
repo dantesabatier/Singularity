@@ -54,20 +54,31 @@ export class NavigationFeature extends Feature {
     }
 
     private updateSourceListActiveState(nextUrl: URL): void {
-        const selectionParams = (url: URL): string => {
-            const params = [...url.searchParams.entries()]
-                .filter(([k]) => k !== "project")
-                .sort(([a], [b]) => a.localeCompare(b))
-            return new URLSearchParams(params).toString()
-        }
-        const nextParams = selectionParams(nextUrl)
-        document.querySelectorAll<HTMLElement>("#source [data-href]").forEach((el) => {
+        // A row's selection params are its query params minus "project". A row is a
+        // candidate when every one of its params matches the target (it's a prefix of
+        // the selection). The active row is the most specific candidate — the one whose
+        // params fully cover the deepest sidebar level present for this selection. This
+        // keeps a fetch index highlighted when one of its elements (a deeper level with
+        // no sidebar row of its own) is selected, while never lighting up the ancestor
+        // entity at the same time.
+        const rows = [...document.querySelectorAll<HTMLElement>("#source [data-href]")]
+        let bestSpecificity = -1
+        const specificities = rows.map((el) => {
             const elHref = el.dataset.href
             if (!elHref) {
-                return
+                return -1
             }
             const elUrl = new URL(elHref, window.location.origin)
-            el.classList.toggle("active", selectionParams(elUrl) === nextParams)
+            const params = [...elUrl.searchParams.entries()].filter(([k]) => k !== "project")
+            const isPrefix = params.every(([k, v]) => nextUrl.searchParams.get(k) === v)
+            if (!isPrefix) {
+                return -1
+            }
+            bestSpecificity = Math.max(bestSpecificity, params.length)
+            return params.length
+        })
+        rows.forEach((el, i) => {
+            el.classList.toggle("active", specificities[i] >= 0 && specificities[i] === bestSpecificity)
         })
     }
 
