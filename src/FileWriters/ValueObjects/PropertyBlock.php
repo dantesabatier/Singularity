@@ -29,6 +29,9 @@ final class PropertyBlock extends ObjectClass
     }
 
     /**
+     * @param string $name
+     * @param string $type
+     * @param bool $isNullable
      * @param Set<string> $phpAttributes
      */
     public function __construct(public readonly string $name, public readonly string $type, public readonly bool $isNullable, public readonly Set $phpAttributes = new Set())

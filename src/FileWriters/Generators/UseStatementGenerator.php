@@ -15,6 +15,10 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UUID;
 use Sabatier\Service\Authorizable;
+use Sabatier\Service\AuthorizableRole;
+use Sabatier\Service\Authorization;
+use Sabatier\Service\AuthorizationScope;
+use Sabatier\Service\AuthorizationType;
 
 final class UseStatementGenerator
 {
@@ -53,6 +57,18 @@ final class UseStatementGenerator
             $uses->insert("use " . AttributeType::class . ";");
             $uses->insert("use " . Dictionary::class . ";");
             $uses->insert("use " . Set::class . ";");
+            $uses->insert("use Override;");
+        }
+        if ($entity->isAuthorizableRole) {
+            $uses->insert("use " . AuthorizableRole::class . ";");
+            $uses->insert("use " . Authorization::class . ";");
+            $uses->insert("use " . Set::class . ";");
+            $uses->insert("use Override;");
+        }
+        if ($entity->isAuthorization) {
+            $uses->insert("use " . Authorization::class . ";");
+            $uses->insert("use " . AuthorizationType::class . ";");
+            $uses->insert("use " . AuthorizationScope::class . ";");
             $uses->insert("use Override;");
         }
         return $uses->sort();

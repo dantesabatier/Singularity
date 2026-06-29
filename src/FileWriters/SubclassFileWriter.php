@@ -3,6 +3,8 @@
 namespace App\FileWriters;
 
 use App\FileWriters\Generators\AuthorizableCodeGenerator;
+use App\FileWriters\Generators\AuthorizableRoleCodeGenerator;
+use App\FileWriters\Generators\AuthorizationCodeGenerator;
 use App\FileWriters\Generators\ClassDeclarationInjector;
 use App\FileWriters\Generators\ClassFileAssembler;
 use App\FileWriters\Generators\MagicMethodDocGenerator;
@@ -34,6 +36,8 @@ final class SubclassFileWriter extends FileWriter
     private readonly PropertyBlockGenerator $propertyBlockGenerator;
     private readonly MagicMethodDocGenerator $magicMethodDocGenerator;
     private readonly AuthorizableCodeGenerator $authorizableCodeGenerator;
+    private readonly AuthorizableRoleCodeGenerator $authorizableRoleCodeGenerator;
+    private readonly AuthorizationCodeGenerator $authorizationCodeGenerator;
     private readonly ClassDeclarationInjector $declarationInjector;
     private readonly ClassFileAssembler $fileAssembler;
 
@@ -49,6 +53,8 @@ final class SubclassFileWriter extends FileWriter
         $this->propertyDocBlockGenerator = new PropertyDocBlockGenerator($accessControlGenerator);
         $this->propertyBlockGenerator = new PropertyBlockGenerator($accessControlGenerator);
         $this->authorizableCodeGenerator = new AuthorizableCodeGenerator($accessControlGenerator);
+        $this->authorizableRoleCodeGenerator = new AuthorizableRoleCodeGenerator($accessControlGenerator);
+        $this->authorizationCodeGenerator = new AuthorizationCodeGenerator($accessControlGenerator);
         $this->magicMethodDocGenerator = new MagicMethodDocGenerator($classNameGenerator);
         $this->declarationInjector = new ClassDeclarationInjector();
         $this->fileAssembler = new ClassFileAssembler();
@@ -66,7 +72,12 @@ final class SubclassFileWriter extends FileWriter
             $existingClassProperties = $parsed["classProperties"];
             $existingMethods = $parsed["methods"];
             $declaration = $parsed["declaration"] ?? $this->fileAssembler->createDefaultDeclaration($this->class, $this->entity);
-            $reservedPropertyNames = $this->entity->isAuthorizable ? $this->authorizableCodeGenerator->getReservedPropertyNames() : [];
+            $reservedPropertyNames = match (true) {
+                $this->entity->isAuthorizable => $this->authorizableCodeGenerator->getReservedPropertyNames(),
+                $this->entity->isAuthorizableRole => $this->authorizableRoleCodeGenerator->getReservedPropertyNames(),
+                $this->entity->isAuthorization => $this->authorizationCodeGenerator->getReservedPropertyNames(),
+                default => [],
+            };
             $uses = $this->useStatementGenerator->generate($this->entity, $existingUses);
             $properties = $this->propertyDocBlockGenerator->generate($this->entity, $existingProperties, $reservedPropertyNames, $declaration);
             $methods = $this->magicMethodDocGenerator->generate($this->entity, $this->namespace);
@@ -84,6 +95,10 @@ final class SubclassFileWriter extends FileWriter
                         }
                     });
                 }
+            } elseif ($this->entity->isAuthorizableRole) {
+                $propertyBlocks->appendContentsOf($this->authorizableRoleCodeGenerator->generatePropertyBlocks($this->entity, $existingClassProperties, $uses));
+            } elseif ($this->entity->isAuthorization) {
+                $propertyBlocks->appendContentsOf($this->authorizationCodeGenerator->generatePropertyBlocks($this->entity, $existingClassProperties, $uses));
             }
             return $this->fileAssembler->assemble($this->namespace, $this->entity, $uses, $properties, $methods, $this->declarationInjector->inject($declaration, $propertyBlocks));
         }

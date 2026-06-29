@@ -102,6 +102,14 @@
       "description": "entity with access control",
       "aliases": ["authorizable", "has permissions", "has ACL", "access-controlled"]
     },
+    "Entity.isAuthorizableRole": {
+      "description": "entity representing an authorizable role",
+      "aliases": ["authorizable role", "role", "permission group", "user role"]
+    },
+    "Entity.isAuthorization": {
+      "description": "entity representing a single authorization",
+      "aliases": ["authorization", "permission", "access grant", "fine-grained permission"]
+    },
     "Entity.managedObjectClassName": {
       "description": "custom PHP class name",
       "aliases": ["class name", "PHP class", "custom class name"]

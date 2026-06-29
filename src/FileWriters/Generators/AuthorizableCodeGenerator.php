@@ -54,9 +54,11 @@ final readonly class AuthorizableCodeGenerator
     {
         /** @var Property|null $property */
         $property = $entity->attributes->first(fn(Attribute $attribute) => $attribute->name === $name) ?? $entity->relationships->first(fn(Relationship $relationship) => $relationship->name === $name);
+        /** @var Set<string> $phpAttributes */
         $phpAttributes = new Set();
+        $phpAttributes->insert("#[Override]");
         if ($property && !$property->accessControls->isEmpty) {
-            $phpAttributes = $this->accessControlGenerator->generateAttributes($property, $uses);
+            $phpAttributes->formUnion($this->accessControlGenerator->generateAttributes($property, $uses));
         }
         $isNullable = str_starts_with($type, "?");
         $cleanType = $isNullable ? substr($type, 1) : $type;
