@@ -51,7 +51,7 @@ final class FetchedProperty extends Property
     public function willSave(): void
     {
         if ($this->fetchRequestPredicateFormat) {
-            $this->fetchedPropertyDescription = $this->fetchRequestPredicateFormat |> trim(...);
+            $this->fetchRequestPredicateFormat = $this->fetchRequestPredicateFormat |> trim(...);
         }
     }
 }
