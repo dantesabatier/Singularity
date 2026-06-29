@@ -329,7 +329,6 @@ export class EditorController extends ViewController {
             case "FetchIndex":
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,
-                    position,
                     entityProperty: parent,
                 })
                 return
