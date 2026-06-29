@@ -170,7 +170,7 @@ final class Entity extends ManagedObject
     private function enforceExclusiveAuthorizationRole(): void
     {
         $changedValues = $this->changedValuesForCurrentEvent();
-        $enabledRole = (new Set(["isAuthorizable", "isAuthorizableRole", "isAuthorization"]))->first(fn(string $role): bool => $changedValues[$role] === true);
+        $enabledRole = new Set(["isAuthorizable", "isAuthorizableRole", "isAuthorization"])->first(fn(string $role): bool => $changedValues[$role] === true);
         if ($enabledRole === null) {
             return;
         }
