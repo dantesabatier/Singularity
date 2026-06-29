@@ -54,16 +54,20 @@ export class NavigationFeature extends Feature {
     }
 
     private updateSourceListActiveState(nextUrl: URL): void {
+        const selectionParams = (url: URL): string => {
+            const params = [...url.searchParams.entries()]
+                .filter(([k]) => k !== "project")
+                .sort(([a], [b]) => a.localeCompare(b))
+            return new URLSearchParams(params).toString()
+        }
+        const nextParams = selectionParams(nextUrl)
         document.querySelectorAll<HTMLElement>("#source [data-href]").forEach((el) => {
             const elHref = el.dataset.href
             if (!elHref) {
                 return
             }
             const elUrl = new URL(elHref, window.location.origin)
-            const isActive = [...elUrl.searchParams.entries()]
-                .filter(([k]) => k !== "project")
-                .every(([k, v]) => nextUrl.searchParams.get(k) === v)
-            el.classList.toggle("active", isActive)
+            el.classList.toggle("active", selectionParams(elUrl) === nextParams)
         })
     }
 

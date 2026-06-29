@@ -2,8 +2,7 @@
 {define entities, $entities, $level = 0}
     {varType Sabatier\Foundation\Set $entities}
     <div n:foreach="$entities ?? $project->model->rootEntities as $entity">
-        {varType App\Model\Entity $entity}
-        <div class="source-row{!$selectedIndex && $entity->isEqual($selectedEntity) ? ' active'}" id="entity-{$entity->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$entity->objectID|json}" title="{$entity->name}" style="--level: {$level}">
+        <div class="source-row{$selectedIndex === null && $entity->isEqual($selectedEntity) ? ' active'}" id="entity-{$entity->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$entity->objectID|json}" title="{$entity->name}" style="--level: {$level}">
             {if !$entity->isLeaf}
                 <button class="tree-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#group-{$entity->objectID|json}" data-id="{$entity->objectID|json}" data-expanded="{!$entity->isExpanded|json}" aria-controls="group-{$entity->objectID|json}" aria-expanded="{$entity->isExpanded|json}"></button>
             {else}
