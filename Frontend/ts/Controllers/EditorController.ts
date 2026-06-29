@@ -294,18 +294,12 @@ export class EditorController extends ViewController {
         }
         switch (entity) {
             case "Entity":
-                await this.context.actionDispatcher.dispatch(entity, {
-                    name,
-                    model: parent,
-                })
-                return
             case "FetchRequestTemplate":
             case "Configuration":
             case "CompositeType":
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,
                     model: parent,
-                    position,
                 })
                 return
             case "Attribute": {
