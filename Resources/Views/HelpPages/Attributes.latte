@@ -1,0 +1,53 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">label</span>
+        <h1 class="help-article-title">Adding Attributes</h1>
+        <p class="help-article-lead">
+            Attributes are the individual fields of an entity &mdash; its name, type, and constraints.
+            They hold the actual values that each record stores.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Add an attribute</h2>
+    <ol class="help-steps">
+        <li>
+            <strong>Select an entity</strong> in the source list.
+        </li>
+        <li>
+            <strong>Open the main menu</strong> and choose <em>Add Attribute</em>.
+            A new attribute is added to the selected entity.
+        </li>
+        <li>
+            <strong>Name it and pick a type</strong> in the Inspector &mdash; String, Integer, Boolean,
+            Date, Decimal, Binary, and more. You can also choose one of your model's composite types.
+        </li>
+    </ol>
+
+    <h2 class="help-heading">Common options</h2>
+    <ul class="help-list">
+        <li><strong>Optional</strong> &mdash; whether the field may be left empty. Clear it to make the attribute required.</li>
+        <li><strong>Transient</strong> &mdash; the value is computed at runtime and never written to the store, so it has no column.</li>
+        <li><strong>Derived</strong> &mdash; the value comes from a derivation expression rather than being set directly.</li>
+        <li><strong>Sensitive</strong> &mdash; marks data that should be handled carefully (for example, excluded where appropriate).</li>
+    </ul>
+
+    <p>
+        Depending on the type, the <strong>Configuration</strong> section lets you set a default value,
+        a permitted range or length, a validation pattern, and other type-specific rules.
+    </p>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">functions</span>
+        <div>
+            <strong>Derived attributes use an expression, not a predicate.</strong>
+            The derivation is an expression that produces a value. For a derived boolean, use a form like
+            <code>TERNARY(x == n, 1, 0)</code> rather than a comparison such as <code>x = n</code>.
+        </div>
+    </div>
+
+    <h2 class="help-heading">Next steps</h2>
+    <p>
+        With attributes in place, connect this entity to others by
+        <a class="help-link" href="#relationships" data-help-anchor="relationships">adding relationships</a>.
+    </p>
+</article>

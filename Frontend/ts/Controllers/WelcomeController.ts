@@ -42,6 +42,9 @@ export class WelcomeController extends ViewController {
             case "showAboutPanel":
                 void this.context.desktopBridge.showAboutPanel()
                 return
+            case "showHelp":
+                void this.context.desktopBridge.showHelp()
+                return
             default:
                 return
         }

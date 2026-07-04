@@ -1,0 +1,58 @@
+{layout "Layout.latte"}
+{templateType App\ViewControllers\HelpController}
+{block title}{$title}{/block}
+{block head}{/block}
+{block content}
+    <div id="main" data-view="help" data-anchor="{$anchor}" class="vh-100 d-flex flex-column user-select-none">
+        <nav class="navbar sticky-top bg-dark border-bottom border-black p-0 h-navbar">
+            <div class="container-fluid justify-content-between gap-3 help-titlebar">
+                <div class="navbar-brand d-flex align-items-center gap-2 mb-0">
+                    <img src="/Resources/Images/icon16@1x.png" srcset="/Resources/Images/icon16@2x.png 2x, /Resources/Images/icon16@3x.png 3x" alt="{$title}" class="d-inline-block">
+                    <span class="fs-6 fw-medium">{$title}</span>
+                </div>
+                <div class="help-search position-relative">
+                    <span class="material-symbols-outlined position-absolute top-50 translate-middle-y ms-2 text-muted">search</span>
+                    <input type="search" id="help-search-input" class="form-control form-control-sm ps-5" placeholder="Search Help" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid p-0 flex-grow-1 overflow-hidden">
+            <div class="row g-0 h-100">
+                <div class="col-3 bg-dark-subtle border-end d-flex flex-column h-100">
+                    <div class="p-2 overflow-auto flex-grow-1" id="help-index">
+                        <nav n:foreach="$sections as $section" class="mb-3">
+                            <h6 class="text-secondary text-uppercase fw-semibold px-2 mb-2 sidebar-header">
+                                {$section[title]}
+                            </h6>
+                            <div class="nav flex-column">
+                                <a n:foreach="$section[pages] as $page"
+                                   class="nav-item help-page-link {if $page[anchor] === $anchor}active{/if}"
+                                   href="#{$page[anchor]}"
+                                   data-help-anchor="{$page[anchor]}"
+                                   data-help-title="{$page[title]}">
+                                    <span class="material-symbols-outlined me-2">{$page[icon]}</span>
+                                    <span>{$page[title]}</span>
+                                </a>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-9 d-flex flex-column h-100">
+                    <div class="overflow-auto flex-grow-1" id="help-content">
+                        <div class="help-page" data-help-page="welcome">{include "HelpPages/Welcome.latte"}</div>
+                        <div class="help-page d-none" data-help-page="create-project">{include "HelpPages/CreateProject.latte"}</div>
+                        <div class="help-page d-none" data-help-page="entities">{include "HelpPages/Entities.latte"}</div>
+                        <div class="help-page d-none" data-help-page="attributes">{include "HelpPages/Attributes.latte"}</div>
+                        <div class="help-page d-none" data-help-page="relationships">{include "HelpPages/Relationships.latte"}</div>
+                        <div class="help-page d-none" data-help-page="generate">{include "HelpPages/Generate.latte"}</div>
+                        <div id="help-no-results" class="d-none text-center text-muted p-5">
+                            <span class="material-symbols-outlined d-block mb-2" style="font-size: 48px;">search_off</span>
+                            <p class="mb-0">No help topics found.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+{block scripts}{/block}

@@ -76,6 +76,17 @@ export class DesktopBridge {
         })
     }
 
+    public async showHelp(anchor?: string): Promise<void> {
+        const suffix = anchor ? `#${anchor}` : ""
+        await this.showWindow({
+            url: `${window.location.origin}/Help${suffix}`,
+            overrideBrowserWindowOptions: {
+                width: 900,
+                height: 640,
+            },
+        })
+    }
+
     public async browse(title = "Select folder", prompt: string | undefined = undefined, defaultButton = "OK", options: readonly string[] = ["openDirectory", "promptToCreate"]): Promise<string | undefined> {
         const result = await this.showOpenDialog(title, prompt, defaultButton, undefined, options)
         return result?.filePaths.find(Boolean)

@@ -30,6 +30,11 @@ const initializeApp = async (): Promise<void> => {
             module.bootstrapPreferences()
             return
         }
+        case "help": {
+            const module = await import("@/Bootstraps/help")
+            module.bootstrapHelp()
+            return
+        }
         default:
             break
     }

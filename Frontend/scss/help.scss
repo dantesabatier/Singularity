@@ -1,0 +1,161 @@
+/* Help Book View Styles */
+
+:root {
+    --navbar-height: 40px;
+}
+
+#main[data-view="help"] .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 6px;
+    margin: 2px 0;
+    transition: all 0.15s ease;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#main[data-view="help"] .nav-item:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-bright);
+}
+
+#main[data-view="help"] .nav-item.active {
+    background-color: var(--bg-active);
+    color: var(--accent-blue);
+    font-weight: 500;
+}
+
+#main[data-view="help"] .sidebar-header {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+#main[data-view="help"] .help-titlebar {
+    padding-right: calc(100% - env(titlebar-area-width, calc(100% - 138px)));
+}
+
+#main[data-view="help"] .help-search {
+    width: 200px;
+    -webkit-app-region: no-drag;
+}
+
+#main[data-view="help"] .help-search input {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+#main[data-view="help"] .help-search input:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(74, 136, 199, 0.1);
+}
+
+/* Article typography */
+#main[data-view="help"] .help-article {
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+    color: var(--text-primary);
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+#main[data-view="help"] .help-article-header {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#main[data-view="help"] .help-article-icon {
+    font-size: 40px;
+    color: var(--accent-blue);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+#main[data-view="help"] .help-article-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 0.5rem;
+}
+
+#main[data-view="help"] .help-article-lead {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+#main[data-view="help"] .help-heading {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+#main[data-view="help"] .help-list,
+#main[data-view="help"] .help-steps {
+    padding-left: 1.25rem;
+}
+
+#main[data-view="help"] .help-list li,
+#main[data-view="help"] .help-steps li {
+    margin-bottom: 0.6rem;
+}
+
+#main[data-view="help"] .help-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#main[data-view="help"] .help-link:hover {
+    color: var(--accent-blue-hover);
+    text-decoration: underline;
+}
+
+/* Callout */
+#main[data-view="help"] .help-callout {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+}
+
+#main[data-view="help"] .help-callout .material-symbols-outlined {
+    color: var(--accent-blue);
+    flex-shrink: 0;
+}
+
+/* Placeholder for unwritten topics */
+#main[data-view="help"] .help-placeholder {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+}
+
+#main[data-view="help"] .help-placeholder .material-symbols-outlined {
+    font-size: 3rem;
+    opacity: 0.35;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+/* Electron drag regions */
+#main[data-view="help"] .navbar {
+    -webkit-app-region: drag;
+}
+
+#main[data-view="help"] input,
+#main[data-view="help"] button,
+#main[data-view="help"] .nav-item,
+#main[data-view="help"] .help-link {
+    -webkit-app-region: no-drag;
+}

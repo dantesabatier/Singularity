@@ -1,0 +1,51 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">table</span>
+        <h1 class="help-article-title">Working with Entities</h1>
+        <p class="help-article-lead">
+            An entity describes one kind of object in your model &mdash; the equivalent of a table in
+            a relational database. Every attribute and relationship you add belongs to an entity.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Add an entity</h2>
+    <ol class="help-steps">
+        <li>
+            <strong>Open the main menu</strong> in the Editor and choose <em>Add Entity</em>.
+            A new entity appears in the source list on the left.
+        </li>
+        <li>
+            <strong>Select it</strong> to reveal its properties in the Inspector on the right.
+        </li>
+        <li>
+            <strong>Give it a name.</strong> Use a singular noun, capitalized &mdash; for example
+            <em>Customer</em> or <em>Invoice</em>. The name identifies the entity throughout the model
+            and in the generated code.
+        </li>
+    </ol>
+
+    <h2 class="help-heading">Entity identity</h2>
+    <p>The Inspector's <strong>Entity Identity</strong> section controls how the entity behaves:</p>
+    <ul class="help-list">
+        <li><strong>Parent</strong> &mdash; make this entity inherit from another. Subentities share the parent's attributes and relationships.</li>
+        <li><strong>Abstract Entity</strong> &mdash; mark an entity as abstract when it exists only to be inherited from and is never instantiated on its own.</li>
+        <li><strong>Type</strong> &mdash; sets the entity's authorization role, which the generated service uses for access control.</li>
+    </ul>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">key</span>
+        <div>
+            <strong>Uniqueness constraints.</strong>
+            Under <em>Class Generation &rarr; Constraints</em> you can require that an attribute's value be
+            unique across all records. Add an attribute first &mdash; a constraint references an existing attribute.
+        </div>
+    </div>
+
+    <h2 class="help-heading">Next steps</h2>
+    <p>
+        An entity with no fields can't hold data yet. Continue by
+        <a class="help-link" href="#attributes" data-help-anchor="attributes">adding attributes</a>,
+        then connect entities together by
+        <a class="help-link" href="#relationships" data-help-anchor="relationships">adding relationships</a>.
+    </p>
+</article>

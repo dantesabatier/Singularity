@@ -1,0 +1,48 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">compare_arrows</span>
+        <h1 class="help-article-title">Adding Relationships</h1>
+        <p class="help-article-lead">
+            Relationships connect one entity to another, so your objects can reference each other &mdash;
+            an <em>Invoice</em> belonging to a <em>Customer</em>, a <em>Customer</em> with many <em>Invoices</em>.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Add a relationship</h2>
+    <ol class="help-steps">
+        <li>
+            <strong>Select an entity</strong> in the source list.
+        </li>
+        <li>
+            <strong>Open the main menu</strong> and choose <em>Add Relationship</em>.
+        </li>
+        <li>
+            <strong>Name it and choose a destination entity</strong> in the Inspector &mdash; the entity
+            this relationship points to.
+        </li>
+    </ol>
+
+    <h2 class="help-heading">Configuring the relationship</h2>
+    <ul class="help-list">
+        <li><strong>Type</strong> &mdash; a to-one relationship points to a single object; a to-many relationship points to a collection. To-many relationships can also be <strong>Ordered</strong>.</li>
+        <li><strong>Inverse</strong> &mdash; the matching relationship on the destination entity. Pairing inverses keeps both sides of the graph consistent.</li>
+        <li><strong>Delete Rule</strong> &mdash; what happens to related objects when this object is deleted (for example, nullify or cascade).</li>
+        <li><strong>Optional</strong> &mdash; whether the relationship may be empty.</li>
+        <li><strong>Owner</strong> &mdash; marks which side owns the record, which the generated service uses to enforce ownership.</li>
+    </ul>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">sync_alt</span>
+        <div>
+            <strong>Set both sides.</strong>
+            A relationship and its inverse describe the same link from two directions. Define the inverse on
+            each side so navigating the graph works in both directions.
+        </div>
+    </div>
+
+    <h2 class="help-heading">Next steps</h2>
+    <p>
+        Once your entities, attributes, and relationships describe your data, you're ready to
+        <a class="help-link" href="#generate" data-help-anchor="generate">generate your project</a>.
+    </p>
+</article>

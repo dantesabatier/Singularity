@@ -37,6 +37,9 @@ export class EditorController extends ViewController {
             case "showPreferences":
                 void this.context.desktopBridge.showPreferences()
                 return
+            case "showHelp":
+                void this.context.desktopBridge.showHelp()
+                return
             case "saveProject":
                 void this.saveProject(element)
                 return
