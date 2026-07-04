@@ -27,17 +27,14 @@
                         <input class="form-check-input" type="checkbox" name="isAbstract" id="isAbstract" value="{$selectedEntity->isAbstract|json}" {$selectedEntity->isAbstract ? checked}>
                         <label class="form-check-label small text-secondary" for="isAbstract">Abstract Entity</label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input authorization-role" type="checkbox" name="isAuthorizable" id="isAuthorizable" value="{$selectedEntity->isAuthorizable|json}" {$selectedEntity->isAuthorizable ? checked} {$selectedEntity->isAuthorizableRole || $selectedEntity->isAuthorization ? disabled}>
-                        <label class="form-check-label small text-secondary" for="isAuthorizable">Authorizable Entity</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input authorization-role" type="checkbox" name="isAuthorizableRole" id="isAuthorizableRole" value="{$selectedEntity->isAuthorizableRole|json}" {$selectedEntity->isAuthorizableRole ? checked} {$selectedEntity->isAuthorizable || $selectedEntity->isAuthorization ? disabled}>
-                        <label class="form-check-label small text-secondary" for="isAuthorizableRole">Authorizable Role</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input authorization-role" type="checkbox" name="isAuthorization" id="isAuthorization" value="{$selectedEntity->isAuthorization|json}" {$selectedEntity->isAuthorization ? checked} {$selectedEntity->isAuthorizable || $selectedEntity->isAuthorizableRole ? disabled}>
-                        <label class="form-check-label small text-secondary" for="isAuthorization">Authorization</label>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label class="col-sm-4 inspector-label">Type</label>
+                <div class="col-sm-8">
+                    <div class="form-check" n:foreach="$entityTypes as $entityType">
+                        <input class="form-check-input" type="radio" name="type" id="type{$entityType->value}" value="{$entityType->value}" {$entityType->value === $selectedEntity->type->value ? checked}>
+                        <label class="form-check-label small text-secondary" for="type{$entityType->value}">{$entityType->name}</label>
                     </div>
                 </div>
             </div>

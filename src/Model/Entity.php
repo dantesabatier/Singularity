@@ -19,9 +19,9 @@ use Sabatier\Foundation\Set;
  * @property string|null $versionHashModifier
  * @property bool $isAbstract
  * @property bool $isExpanded
- * @property bool $isAuthorizable
- * @property bool $isAuthorizableRole
- * @property bool $isAuthorization
+ * @property-read bool $isAuthorizable
+ * @property-read bool $isAuthorizableRole
+ * @property-read bool $isAuthorization
  * @property bool $isLeaf
  * @property bool $isFinal
  * @property Dictionary<float> $position
@@ -160,39 +160,15 @@ final class Entity extends ManagedObject
         if ($versionHashModifier = $this->versionHashModifier) {
             $this->versionHashModifier = $versionHashModifier |> trim(...);
         }
-        $this->enforceExclusiveAuthorizationRole();
         $this->isLeaf = $this->subentities->isEmpty;
         $this->isFinal = $this->isLeaf;
     }
 
-    public function validateEntityType(EntityType|int|null &$type): bool
+    public function validateType(EntityType|int|null &$type): bool
     {
         if (is_int($type)) {
             $type = EntityType::tryFrom($type);
         }
         return true;
-    }
-
-    /**
-     * The authorization roles {@see isAuthorizable}, {@see isAuthorizableRole} and {@see isAuthorization} are mutually
-     * exclusive: an entity may implement at most one of the corresponding Service contracts. When the user turns one on,
-     * the other two are cleared so the generated class never declares conflicting interfaces.
-     */
-    private function enforceExclusiveAuthorizationRole(): void
-    {
-        $changedValues = $this->changedValuesForCurrentEvent();
-        $enabledRole = new Set(["isAuthorizable", "isAuthorizableRole", "isAuthorization"])->first(fn(string $role): bool => $changedValues[$role] === true);
-        if ($enabledRole === null) {
-            return;
-        }
-        if ($enabledRole !== "isAuthorizable") {
-            $this->isAuthorizable = false;
-        }
-        if ($enabledRole !== "isAuthorizableRole") {
-            $this->isAuthorizableRole = false;
-        }
-        if ($enabledRole !== "isAuthorization") {
-            $this->isAuthorization = false;
-        }
     }
 }

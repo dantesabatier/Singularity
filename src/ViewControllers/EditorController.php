@@ -17,6 +17,7 @@ use App\Model\CompositeType;
 use App\Model\Configuration;
 use App\Model\Conversation;
 use App\Model\Entity;
+use App\Model\EntityType;
 use App\Model\FetchIndex;
 use App\Model\FetchIndexElement;
 use App\Model\FetchRequestTemplate;
@@ -279,6 +280,16 @@ final class EditorController extends ProjectController
             AuthorizationScope::all => "All",
             AuthorizationScope::own => "Own"
         }, "value" => $scope->value]);
+    }
+    /** @var ArrayClass<object{name: string, value: int}> */
+    #[Outlet]
+    private(set) ArrayClass $entityTypes {
+        get => $this->entityTypes ??= new ArrayClass(EntityType::cases())->map(fn(EntityType $type): object => (object)["name" => match ($type) {
+            EntityType::none => "None",
+            EntityType::authorizable => "Authorizable",
+            EntityType::authorizableRole => "Authorizable Role",
+            EntityType::authorization => "Authorization"
+        }, "value" => $type->value]);
     }
     private(set) int $totalAttributeCount {
         get {
