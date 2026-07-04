@@ -239,18 +239,9 @@ export class EditorController extends ViewController {
                 return
             }
         }
-        const partialUrl = new URL(nextUrl.href)
-        partialUrl.searchParams.set("partial", "1")
-        const html = await this.context.viewNavigator.load(partialUrl.href)
-        if (html === undefined) {
-            return
-        }
-        this.updateSourceListActiveState(nextUrl)
-        this.context.viewNavigator.replaceZones(html, nextUrl.href)
-        const current = new URL(window.location.href)
-        if (current.href !== nextUrl.href) {
-            history.pushState({url: nextUrl.href}, "", nextUrl.href)
-        }
+        await this.context.viewNavigator.navigatePartial(nextUrl, {
+            beforeReplace: (url) => this.updateSourceListActiveState(url),
+        })
     }
 
     private updateSourceListActiveState(nextUrl: URL): void {
@@ -410,16 +401,9 @@ export class EditorController extends ViewController {
         }
         const nextUrl = new URL(window.location.href)
         nextUrl.searchParams.delete("conversation")
-        const partialUrl = new URL(nextUrl.href)
-        partialUrl.searchParams.set("partial", "1")
-        const html = await this.context.viewNavigator.load(partialUrl.href)
-        if (html === undefined) {
-            history.pushState({url: nextUrl.href}, "", nextUrl.href)
-            return
-        }
-        this.updateSourceListActiveState(nextUrl)
-        this.context.viewNavigator.replaceZones(html, nextUrl.href)
-        history.pushState({url: nextUrl.href}, "", nextUrl.href)
+        await this.context.viewNavigator.navigatePartial(nextUrl, {
+            beforeReplace: (url) => this.updateSourceListActiveState(url),
+        })
     }
 
     private async deleteConversation(element: HTMLElement): Promise<void> {

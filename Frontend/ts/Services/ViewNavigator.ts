@@ -40,6 +40,22 @@ export class ViewNavigator {
         return true
     }
 
+    public async navigatePartial(nextUrl: URL, options: {zones?: string[]; beforeReplace?: (nextUrl: URL) => void} = {}): Promise<boolean> {
+        const partialUrl = new URL(nextUrl.href)
+        partialUrl.searchParams.set("partial", "1")
+        const html = await this.load(partialUrl.href)
+        if (html === undefined) {
+            return false
+        }
+        options.beforeReplace?.(nextUrl)
+        this.replaceZones(html, nextUrl.href, options.zones)
+        const current = new URL(window.location.href)
+        if (current.href !== nextUrl.href) {
+            history.pushState({url: nextUrl.href}, "", nextUrl.href)
+        }
+        return true
+    }
+
     public replaceZones(html: string, url: string, zones = ["content", "inspector-pane", "ai-copilot-pane", "editor-actions-menu", "breadcrumb-list"]): void {
         const doc = new DOMParser().parseFromString(html, "text/html")
         for (const id of zones) {

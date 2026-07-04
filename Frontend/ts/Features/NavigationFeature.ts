@@ -39,18 +39,10 @@ export class NavigationFeature extends Feature {
     }
 
     private async navigatePartial(nextUrl: URL): Promise<void> {
-        const partialUrl = new URL(nextUrl.href)
-        partialUrl.searchParams.set("partial", "1")
-        const html = await this.context.viewNavigator.load(partialUrl.href)
-        if (html === undefined) {
-            return
-        }
-        this.updateSourceListActiveState(nextUrl)
-        this.context.viewNavigator.replaceZones(html, nextUrl.href, ["content", "inspector-pane", "editor-actions-menu", "breadcrumb-list"])
-        const current = new URL(window.location.href)
-        if (current.href !== nextUrl.href) {
-            history.pushState({url: nextUrl.href}, "", nextUrl.href)
-        }
+        await this.context.viewNavigator.navigatePartial(nextUrl, {
+            zones: ["content", "inspector-pane", "editor-actions-menu", "breadcrumb-list"],
+            beforeReplace: (url) => this.updateSourceListActiveState(url),
+        })
     }
 
     private updateSourceListActiveState(nextUrl: URL): void {

@@ -566,15 +566,7 @@ export class EditorChatController {
     private async reloadSelectedConversation(): Promise<void> {
         const nextUrl = new URL(window.location.href)
         nextUrl.searchParams.delete("conversation")
-        const partialUrl = new URL(nextUrl.href)
-        partialUrl.searchParams.set("partial", "1")
-        const html = await this.context.viewNavigator.load(partialUrl.href)
-        if (html === undefined) {
-            history.pushState({url: nextUrl.href}, "", nextUrl.href)
-            return
-        }
-        this.context.viewNavigator.replaceZones(html, nextUrl.href)
-        history.pushState({url: nextUrl.href}, "", nextUrl.href)
+        await this.context.viewNavigator.navigatePartial(nextUrl)
     }
 
     private appendMessageBubble(message: ChatMessage): HTMLElement | undefined {
