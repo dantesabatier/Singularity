@@ -12,6 +12,12 @@ export class AutosaveFeature extends Feature {
             await this.context.formSubmissionService.submit(checkboxForm)
             return
         }
+        const radioForm = target.closest<HTMLInputElement>("input[type=radio]")?.form
+        if (radioForm) {
+            event.stopPropagation()
+            await this.context.formSubmissionService.submit(radioForm)
+            return
+        }
         const selectForm = target.closest<HTMLSelectElement>("select[data-autosave=true]")?.form
         if (selectForm) {
             event.stopPropagation()
