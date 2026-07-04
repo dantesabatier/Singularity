@@ -11,8 +11,8 @@ Singularity is the **authoring environment for the Sabatier stack** — an IDE f
 ### PHP Backend
 ```bash
 composer install
-composer psalm                   # static analysis (error level 4)
-vendor/bin/rector process src    # code modernization
+psalm                # static analysis (error level 4) — installed globally, NOT in vendor/bin
+rector process src   # code modernization — installed globally, NOT in vendor/bin
 ```
 
 ### Frontend (Vite + TypeScript)
