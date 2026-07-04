@@ -28,6 +28,7 @@
         <li><strong>Inverse</strong> &mdash; the matching relationship on the destination entity. Pairing inverses keeps both sides of the graph consistent.</li>
         <li><strong>Delete Rule</strong> &mdash; what happens to related objects when this object is deleted (for example, nullify or cascade).</li>
         <li><strong>Optional</strong> &mdash; whether the relationship may be empty.</li>
+        <li><strong>Count</strong> &mdash; for to-many relationships, optional minimum and maximum bounds.</li>
         <li><strong>Owner</strong> &mdash; marks which side owns the record, which the generated service uses to enforce ownership.</li>
     </ul>
 
@@ -43,6 +44,8 @@
     <h2 class="help-heading">Next steps</h2>
     <p>
         Once your entities, attributes, and relationships describe your data, you're ready to
+        <a class="help-link" href="#fetch-requests" data-help-anchor="fetch-requests">add fetch requests</a>,
+        <a class="help-link" href="#fetch-indexes" data-help-anchor="fetch-indexes">tune indexes</a>, or
         <a class="help-link" href="#generate" data-help-anchor="generate">generate your project</a>.
     </p>
 </article>

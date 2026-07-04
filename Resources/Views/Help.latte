@@ -12,7 +12,7 @@
                 </div>
                 <div class="help-search position-relative">
                     <span class="material-symbols-outlined position-absolute top-50 translate-middle-y ms-2 text-muted">search</span>
-                    <input type="search" id="help-search-input" class="form-control form-control-sm ps-5" placeholder="Search Help" autocomplete="off" spellcheck="false">
+                    <input type="search" id="help-search-input" class="form-control form-control-sm ps-5" placeholder="Search Help" autocomplete="off" spellcheck="false" aria-label="Search Help">
                 </div>
             </div>
         </nav>
@@ -41,10 +41,20 @@
                     <div class="overflow-auto flex-grow-1" id="help-content">
                         <div class="help-page" data-help-page="welcome">{include "HelpPages/Welcome.latte"}</div>
                         <div class="help-page d-none" data-help-page="create-project">{include "HelpPages/CreateProject.latte"}</div>
+                        <div class="help-page d-none" data-help-page="editor">{include "HelpPages/Editor.latte"}</div>
                         <div class="help-page d-none" data-help-page="entities">{include "HelpPages/Entities.latte"}</div>
                         <div class="help-page d-none" data-help-page="attributes">{include "HelpPages/Attributes.latte"}</div>
                         <div class="help-page d-none" data-help-page="relationships">{include "HelpPages/Relationships.latte"}</div>
+                        <div class="help-page d-none" data-help-page="fetched-properties">{include "HelpPages/FetchedProperties.latte"}</div>
+                        <div class="help-page d-none" data-help-page="composite-types">{include "HelpPages/CompositeTypes.latte"}</div>
+                        <div class="help-page d-none" data-help-page="fetch-requests">{include "HelpPages/FetchRequests.latte"}</div>
+                        <div class="help-page d-none" data-help-page="fetch-indexes">{include "HelpPages/FetchIndexes.latte"}</div>
+                        <div class="help-page d-none" data-help-page="configurations">{include "HelpPages/Configurations.latte"}</div>
+                        <div class="help-page d-none" data-help-page="access-control">{include "HelpPages/AccessControl.latte"}</div>
                         <div class="help-page d-none" data-help-page="generate">{include "HelpPages/Generate.latte"}</div>
+                        <div class="help-page d-none" data-help-page="sql-viewer">{include "HelpPages/SQLViewer.latte"}</div>
+                        <div class="help-page d-none" data-help-page="preferences">{include "HelpPages/Preferences.latte"}</div>
+                        <div class="help-page d-none" data-help-page="copilot">{include "HelpPages/Copilot.latte"}</div>
                         <div id="help-no-results" class="d-none text-center text-muted p-5">
                             <span class="material-symbols-outlined d-block mb-2" style="font-size: 48px;">search_off</span>
                             <p class="mb-0">No help topics found.</p>

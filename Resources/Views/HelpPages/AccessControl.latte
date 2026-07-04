@@ -1,0 +1,34 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">verified_user</span>
+        <h1 class="help-article-title">Access Control</h1>
+        <p class="help-article-lead">
+            Access controls describe whether a property is readable or writable, which roles may use it,
+            and whether access applies to all records or only owned records.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Property controls</h2>
+    <p>
+        Select an attribute or relationship to manage its access controls. Add <strong>#Readable</strong>
+        or <strong>#Writable</strong> entries from the access control toolbar, enable or disable them,
+        and choose the scope.
+    </p>
+
+    <h2 class="help-heading">Roles and scopes</h2>
+    <ul class="help-list">
+        <li><strong>Roles</strong> &mdash; add built-in roles such as Moderator, Editor, and Viewer, or create a custom role.</li>
+        <li><strong>All</strong> &mdash; allows the role to access matching properties across all records.</li>
+        <li><strong>Own</strong> &mdash; limits access to records owned by the current user or authorization context.</li>
+        <li><strong>Owner relationships</strong> &mdash; mark the relationship that identifies ownership for generated access checks.</li>
+    </ul>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">lock</span>
+        <div>
+            <strong>Access control starts in the model.</strong>
+            The generated service uses these declarations to decide which fields can be read or written
+            by each role and scope.
+        </div>
+    </div>
+</article>

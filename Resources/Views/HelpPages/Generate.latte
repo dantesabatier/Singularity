@@ -3,8 +3,8 @@
         <span class="material-symbols-outlined help-article-icon">code</span>
         <h1 class="help-article-title">Generating Your Project</h1>
         <p class="help-article-lead">
-            Once your model is ready, Singularity turns it into a complete, working PHP web service &mdash;
-            managed-object subclasses, model files, and the project scaffolding, all from your design.
+            Once your model is ready, Singularity writes it to disk and generates the code artifacts that
+            keep your Sabatier project in step with the design.
         </p>
     </header>
 
@@ -14,9 +14,9 @@
         model file so your changes are persisted with the project folder.
     </p>
 
-    <h2 class="help-heading">Generate code</h2>
+    <h2 class="help-heading">Project actions</h2>
     <ul class="help-list">
-        <li><strong>Create ManagedObject Subclass&hellip;</strong> &mdash; generates a PHP subclass for an entity, giving you typed access to its attributes and relationships.</li>
+        <li><strong>Create ManagedObject Subclass&hellip;</strong> &mdash; generates PHP subclasses for the managed objects in the project.</li>
         <li><strong>Show SQL Schema&hellip;</strong> &mdash; opens the SQL schema derived from your model, so you can review the tables and columns it will produce.</li>
         <li><strong>Import&hellip;</strong> &mdash; brings an existing model into the project.</li>
     </ul>
@@ -25,15 +25,14 @@
         <span class="material-symbols-outlined">lightbulb</span>
         <div>
             <strong>Never write boilerplate by hand.</strong>
-            The generated classes and files follow the Sabatier conventions automatically. Design the model,
-            regenerate, and the code stays in step with your data.
+            The generated classes follow the Sabatier conventions automatically. Design the model, save,
+            regenerate subclasses when needed, and the code stays in step with your data.
         </div>
     </div>
 
     <h2 class="help-heading">Where to go from here</h2>
     <p>
-        That's the core loop: design entities, add attributes and relationships, then generate. To revisit
-        the basics, return to
-        <a class="help-link" href="#welcome" data-help-anchor="welcome">Welcome to Singularity</a>.
+        After generating, review the database shape in the
+        <a class="help-link" href="#sql-viewer" data-help-anchor="sql-viewer">SQL Schema Viewer</a>.
     </p>
 </article>

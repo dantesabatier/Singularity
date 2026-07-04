@@ -1,0 +1,33 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">bolt</span>
+        <h1 class="help-article-title">Fetch Indexes</h1>
+        <p class="help-article-lead">
+            Fetch indexes help describe how stored entities should be indexed for common fetch patterns.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Add an index</h2>
+    <ol class="help-steps">
+        <li><strong>Select an entity</strong> that already has attributes.</li>
+        <li><strong>Open the main menu</strong> and choose <em>Add Fetch Index</em>.</li>
+        <li><strong>Name the index</strong> and choose its collation type in the Inspector.</li>
+        <li><strong>Add index elements</strong> in the center pane and choose the property or expression each element uses.</li>
+    </ol>
+
+    <h2 class="help-heading">Index elements</h2>
+    <ul class="help-list">
+        <li><strong>Property</strong> &mdash; choose one of the entity's attributes, or Expression for a calculated element.</li>
+        <li><strong>Ascending</strong> &mdash; controls sort direction for the element.</li>
+        <li><strong>Expression Result Type</strong> and <strong>Format</strong> &mdash; used when the element is an expression.</li>
+        <li><strong>Partial Index Predicate</strong> &mdash; limits the rows included in the index.</li>
+    </ul>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">speed</span>
+        <div>
+            <strong>Index for repeated queries.</strong>
+            Add indexes for properties that appear often in fetch predicates, sorting, or uniqueness-like lookup flows.
+        </div>
+    </div>
+</article>

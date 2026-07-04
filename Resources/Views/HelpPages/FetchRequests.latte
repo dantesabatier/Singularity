@@ -1,0 +1,34 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">search</span>
+        <h1 class="help-article-title">Fetch Requests</h1>
+        <p class="help-article-lead">
+            Fetch request templates package a named query: the entity to fetch, the result shape,
+            execution options, and an NSPredicate format.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Create a template</h2>
+    <ol class="help-steps">
+        <li><strong>Open the main menu</strong> and choose <em>Add Fetch Request</em>.</li>
+        <li><strong>Select an entity</strong> and result type in the Inspector.</li>
+        <li><strong>Set execution options</strong> such as fetch limit, batch size, subentities, faults, pending changes, and distinct results.</li>
+        <li><strong>Write the predicate</strong> in the center pane.</li>
+    </ol>
+
+    <h2 class="help-heading">Predicate format</h2>
+    <p>
+        Use NSPredicate syntax with key paths, comparison operators, logical operators, string operators,
+        aggregate operators, and substitution variables such as <code>$NAME</code> or <code>$START</code>.
+        The predicate editor includes a syntax popover with copyable examples.
+    </p>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">functions</span>
+        <div>
+            <strong>Prefer variables for runtime values.</strong>
+            A template such as <code>email CONTAINS[cd] $QUERY</code> can be reused with different
+            substitution values without changing the model.
+        </div>
+    </div>
+</article>

@@ -7,14 +7,29 @@
 #main[data-view="help"] .nav-item {
     display: flex;
     align-items: center;
+    min-height: 34px;
+    min-width: 0;
     padding: 8px 16px;
     color: var(--text-primary);
     text-decoration: none;
     border-radius: 6px;
     margin: 2px 0;
-    transition: all 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
     font-size: 13px;
     cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#main[data-view="help"] .nav-item .material-symbols-outlined {
+    flex: 0 0 auto;
+}
+
+#main[data-view="help"] .nav-item span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #main[data-view="help"] .nav-item:hover {
@@ -34,10 +49,27 @@
 }
 
 #main[data-view="help"] .help-titlebar {
+    height: var(--navbar-height);
+    min-height: var(--navbar-height);
+    flex-wrap: nowrap;
     padding-right: calc(100% - env(titlebar-area-width, calc(100% - 138px)));
+    overflow: hidden;
+}
+
+#main[data-view="help"] .navbar-brand {
+    min-width: 0;
+    overflow: hidden;
+}
+
+#main[data-view="help"] .navbar-brand span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #main[data-view="help"] .help-search {
+    flex: 0 0 200px;
     width: 200px;
     -webkit-app-region: no-drag;
 }
@@ -52,6 +84,15 @@
     box-shadow: 0 0 0 3px rgba(74, 136, 199, 0.1);
 }
 
+#main[data-view="help"] #help-index,
+#main[data-view="help"] #help-content {
+    scrollbar-gutter: stable;
+}
+
+#main[data-view="help"] #help-content {
+    overflow-y: scroll !important;
+}
+
 /* Article typography */
 #main[data-view="help"] .help-article {
     max-width: 680px;
@@ -60,6 +101,12 @@
     color: var(--text-primary);
     -webkit-user-select: text;
     user-select: text;
+    overflow-wrap: anywhere;
+}
+
+#main[data-view="help"] .help-article code {
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 #main[data-view="help"] .help-article-header {
@@ -150,6 +197,9 @@
 
 /* Electron drag regions */
 #main[data-view="help"] .navbar {
+    height: var(--navbar-height);
+    min-height: var(--navbar-height);
+    overflow: hidden;
     -webkit-app-region: drag;
 }
 

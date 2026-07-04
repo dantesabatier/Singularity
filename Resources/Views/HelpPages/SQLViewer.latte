@@ -1,0 +1,32 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">data_object</span>
+        <h1 class="help-article-title">SQL Schema Viewer</h1>
+        <p class="help-article-lead">
+            The SQL Schema Viewer shows the database schema derived from your model and can export it
+            as a MariaDB-compatible SQL file.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Open the viewer</h2>
+    <p>
+        In the Editor, choose <em>Show SQL Schema...</em> from the main menu. This action is available
+        when the project supports SQL output.
+    </p>
+
+    <h2 class="help-heading">Review and export</h2>
+    <ul class="help-list">
+        <li>Use zoom controls to zoom in, zoom out, reset zoom, or center the schema view.</li>
+        <li>Choose <em>Export Schema</em> to save a SQL file to a selected folder.</li>
+        <li>Enable <strong>Include sample data</strong> or <strong>Include comments</strong> before exporting.</li>
+        <li>The exported schema targets MariaDB and is compatible with MySQL 5.7+ and MariaDB 10.2+.</li>
+    </ul>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">database</span>
+        <div>
+            <strong>Use the viewer as a sanity check.</strong>
+            Review tables, columns, and relationships before relying on the generated schema downstream.
+        </div>
+    </div>
+</article>

@@ -1,0 +1,33 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">move_to_inbox</span>
+        <h1 class="help-article-title">Fetched Properties</h1>
+        <p class="help-article-lead">
+            Fetched properties describe a derived relationship-like value that is resolved by a fetch
+            instead of being stored as a normal relationship.
+        </p>
+    </header>
+
+    <h2 class="help-heading">Add a fetched property</h2>
+    <ol class="help-steps">
+        <li><strong>Select an entity</strong> in the Navigator.</li>
+        <li><strong>Open the main menu</strong> and choose <em>Add Fetched Property</em>.</li>
+        <li><strong>Select the property</strong> and configure it in the Inspector.</li>
+    </ol>
+
+    <h2 class="help-heading">When to use one</h2>
+    <ul class="help-list">
+        <li>Use a fetched property when the target collection should be computed by a predicate.</li>
+        <li>Use a relationship when the model needs a stored link with an inverse, delete rule, or ownership semantics.</li>
+        <li>Keep the predicate narrow enough that the generated service can resolve it efficiently.</li>
+    </ul>
+
+    <div class="help-callout">
+        <span class="material-symbols-outlined">info</span>
+        <div>
+            <strong>Fetched is not stored.</strong>
+            A fetched property gives convenient access to related objects without creating a persisted
+            foreign-key style relationship in the model.
+        </div>
+    </div>
+</article>
