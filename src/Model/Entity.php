@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Override;
@@ -11,6 +13,7 @@ use Sabatier\Foundation\Set;
 
 /**
  * @property string $name
+ * @property EntityType $type
  * @property string|null $managedObjectClassName
  * @property string|null $renamingIdentifier
  * @property string|null $versionHashModifier
@@ -160,6 +163,14 @@ final class Entity extends ManagedObject
         $this->enforceExclusiveAuthorizationRole();
         $this->isLeaf = $this->subentities->isEmpty;
         $this->isFinal = $this->isLeaf;
+    }
+
+    public function validateEntityType(EntityType|int|null &$type): bool
+    {
+        if (is_int($type)) {
+            $type = EntityType::tryFrom($type);
+        }
+        return true;
     }
 
     /**

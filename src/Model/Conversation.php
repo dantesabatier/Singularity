@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Override;
@@ -10,7 +12,7 @@ use Sabatier\Foundation\Set;
 
 /**
  * @property Date $creationDate
- * @property Date $lastModifiedDate
+ * @property Date|null $lastModifiedDate
  * @property string $title
  * @property string $provider
  * @property string $model
