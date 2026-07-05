@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-Singularity is the **authoring environment for the Sabatier stack** — an IDE for designing data models and generating complete PHP web service projects. It is itself built with the Sabatier stack, making it a self-referential proof of concept.
+Singularity is the **authoring environment for the Sabatier stack** — an IDE for designing data models and generating the Sabatier Service project that backs them. It generates the project structure and managed-object classes; from there the service already answers requests for the modeled entities, and business logic or a frontend are added on top. It is itself built with the Sabatier stack, making it a self-referential proof of concept.
 
 ## Commands
 
@@ -62,11 +62,15 @@ public function save(): void { /* POST /Editor/save */ }
 public ArrayClass $projects { get { /* auto-injected lazy property */ } }
 ```
 
-Key controllers in `src/ViewControllers/`:
-- `WelcomeController` — root `/`, project CRUD
-- `EditorController` — `/Editor`, main IDE interface, model editing, code generation
-- `ProjectController` — base class that loads a project from query string reference
-- `FetchController` — base for endpoints that return managed objects by ID/predicate
+The eight controllers in `src/ViewControllers/`:
+- `WelcomeController` — root `/`, project CRUD (`open`, `create`, `rename`, `remove`)
+- `EditorController` — `/Editor`, main IDE interface, model editing, code generation, and the AI Copilot (`save`, `subclass`, `import`, `reorder`, `chat`)
+- `ViewerController` — `/Viewer`, the SQL Schema Viewer (`export`, `moved`)
+- `PreferencesController` — `/Preferences`, app-wide settings and AI provider config (`synchronize`)
+- `HelpController` — `/Help`, the structured Help book (5 sections, 15 pages under `Resources/Views/HelpPages/`)
+- `AboutController` — `/About`, bundle metadata
+- `ProjectController` — abstract base that loads a project from query string reference
+- `FetchController` — abstract base for endpoints that fetch managed objects by ID/predicate
 
 ### Responder Data Pattern
 
@@ -151,8 +155,13 @@ Server-rendered with **Latte** (`latte/latte`). Templates live in `Resources/Vie
 ### Code Generation Pipeline
 `src/Bundles/` handles project scaffolding and updates. `src/FileWriters/` generates actual PHP files (managed object subclasses, delegates, `.env`, `.mom` model files). Writers use an AST-style `ClassFileAssembler` rather than string templates.
 
-### AI Model Patching
-`src/AI/` implements a pipeline for applying AI-suggested changes to the data model. A `ModelPatch` goes through `*PatchProcessor` stages (classify → normalize → translate → validate) before being applied. `AIModelPatchResponder` handles the HTTP endpoint.
+### AI Copilot
+The in-editor AI Copilot is driven by `EditorController::chat` (`POST /Editor/chat`) and lives in `src/LLM/` and `src/MCPTools/`. There is no `ModelPatch`/`*PatchProcessor` pipeline — it runs an agent loop:
+
+- `src/LLM/Provider.php` resolves the configured provider (Anthropic and others) and builds the client for the selected model.
+- `EditorController::chat` assembles the `LLMMessage` history, builds a system prompt via `buildSystemPrompt` (which injects the selected project/entity/property context plus `MCPInstructionsProvider` output), then runs `Sabatier\Service\LLM\LLMAgent` with a `ToolRegistry`.
+- The agent's tools are the MCP tools in `src/MCPTools/` — `DesignModelTool`, `GenerateSubclassesTool`, `SaveProjectTool` — resolved and registered through `ToolResolver`. They operate directly on the live managed objects.
+- Conversations persist as `Conversation → Message → ToolCall` managed objects, with input/output token accounting on the conversation.
 
 ## Key Conventions
 

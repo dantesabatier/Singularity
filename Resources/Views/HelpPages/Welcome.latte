@@ -4,14 +4,16 @@
         <h1 class="help-article-title">Welcome to Singularity</h1>
         <p class="help-article-lead">
             Singularity is the authoring environment for the Sabatier stack &mdash; an IDE for designing
-            data models and generating complete PHP web service projects.
+            data models and generating the PHP web service project that backs them.
         </p>
     </header>
 
     <p>
         With Singularity you design your application's data model visually &mdash; its entities, their
-        attributes, and the relationships between them &mdash; and Singularity generates a fully working
-        PHP web service from that model. There is no boilerplate to write by hand.
+        attributes, and the relationships between them &mdash; and Singularity generates a Sabatier Service
+        backend from that model: the project structure and the managed-object classes, with none of that
+        scaffolding written by hand. From the moment you generate, the service already answers requests for
+        your entities. Business logic and a frontend are what you add on top.
     </p>
 
     <h2 class="help-heading">What you can do</h2>
@@ -23,12 +25,24 @@
         <li>Use the AI Copilot to ask questions or make model changes in the selected context.</li>
     </ul>
 
+    <h2 class="help-heading">From model to running service</h2>
+    <p>
+        What you generate is a <strong>Sabatier Service</strong> backend, and how far you take it is up to you.
+        The same design tool spans the whole range:
+    </p>
+    <ul class="help-list">
+        <li><strong>A working API with no code.</strong> Once you model your entities and generate the project, Sabatier Service already answers HTTP requests for them &mdash; listing, filtering, creating, updating, and deleting records &mdash; with the access control you defined in the model applied automatically. You write no endpoints to get a usable API from your design.</li>
+        <li><strong>A backend with your own logic.</strong> When you need more, add responders and domain code alongside the generated model and subclasses.</li>
+        <li><strong>A full-stack app with any frontend.</strong> The backend exposes a clear HTTP contract, so the frontend is free &mdash; Singularity's own approach, or a framework such as Vue or React.</li>
+    </ul>
+
     <div class="help-callout">
         <span class="material-symbols-outlined">lightbulb</span>
         <div>
             <strong>Self-referential by design.</strong>
-            Singularity is itself built with the Sabatier stack &mdash; it is a proof of concept of what
-            you can build with the projects it generates.
+            Singularity was modeled in its own editor: the app you are using was designed as a Sabatier
+            model, saved, and generated the same way any project you create here is. It is a working
+            proof of what you can build with the projects it generates &mdash; not an example, the real thing.
         </div>
     </div>
 

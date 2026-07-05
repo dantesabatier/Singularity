@@ -47,6 +47,7 @@ final class HelpController extends ViewController
                 "title" => "Querying and Storage",
                 "pages" => new ArrayClass([
                     new Dictionary(["anchor" => "fetch-requests", "title" => "Fetch Requests", "icon" => "search"]),
+                    new Dictionary(["anchor" => "predicate-syntax", "title" => "Predicate Syntax", "icon" => "rule"]),
                     new Dictionary(["anchor" => "fetch-indexes", "title" => "Fetch Indexes", "icon" => "bolt"]),
                     new Dictionary(["anchor" => "configurations", "title" => "Configurations", "icon" => "settings"]),
                 ]),

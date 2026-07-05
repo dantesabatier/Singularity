@@ -1,0 +1,139 @@
+<article class="help-article p-4">
+    <header class="help-article-header mb-4">
+        <span class="material-symbols-outlined help-article-icon">rule</span>
+        <h1 class="help-article-title">Predicate Syntax</h1>
+        <p class="help-article-lead">
+            The complete predicate grammar understood by Sabatier Foundation. This is the syntax the
+            predicate editor and fetch request templates accept, and the reference behind the
+            <em>Syntax Help</em> popover in the editor.
+        </p>
+    </header>
+
+    <h2 class="help-heading">One grammar, resolved by the store</h2>
+    <p>
+        A predicate describes <em>what</em> you want, not how to obtain it. You write the condition once,
+        as a string, and build a predicate from it. That one predicate can be used two ways:
+    </p>
+    <ul class="help-list">
+        <li><strong>Directly, over a collection in memory</strong> &mdash; hand the predicate to a sequence's
+            <code>filtered(…)</code> and it is evaluated object by object.</li>
+        <li><strong>Through a fetch</strong> &mdash; set the predicate on a <code>FetchRequest</code> and run
+            it through the context with <code>fetch(…)</code>.</li>
+    </ul>
+    <div class="sp-group">
+        <div class="sp-example">$predicate = Predicate::format(<b>"name BEGINSWITH[cd] $Q AND ANY orders.total &gt; $MIN"</b>)</div>
+        <div class="sp-example">$matches = $sequence-&gt;filtered($predicate)</div>
+        <div class="sp-example">$request-&gt;predicate = $predicate; $results = $context-&gt;fetch($request)</div>
+    </div>
+    <p>
+        The interesting part is what <code>fetch(…)</code> does with it. The context does not evaluate the
+        predicate itself &mdash; it hands the request to the persistent store, and each store resolves it in
+        its own way. A store backed by an in-memory collection runs the predicate through the very same
+        <code>filtered(…)</code> shown above; a relational store compiles the same predicate to SQL and lets
+        the database run it. The condition you wrote never changes. Where the objects live &mdash; already in
+        memory, or as rows in a database &mdash; is the store's concern, not yours.
+    </p>
+
+    <h2 class="help-heading">Comparison operators</h2>
+    <ul class="help-list">
+        <li><code>==</code> or <code>=</code> &mdash; equal; <code>!=</code> or <code>&lt;&gt;</code> &mdash; not equal.</li>
+        <li><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> (also <code>=&lt;</code>), <code>&gt;=</code> (also <code>=&gt;</code>).</li>
+        <li><code>IN</code> &mdash; membership in a collection; <code>BETWEEN {l} lower, upper {r}</code> &mdash; inclusive range.</li>
+    </ul>
+
+    <h2 class="help-heading">Compound predicates</h2>
+    <ul class="help-list">
+        <li><code>AND</code> (or <code>&amp;&amp;</code>), <code>OR</code> (or <code>||</code>), <code>NOT</code> (or <code>!</code>).</li>
+        <li>Group with parentheses: <code>(a == 1 OR a == 2) AND b == 3</code>.</li>
+        <li><code>TRUEPREDICATE</code> and <code>FALSEPREDICATE</code> &mdash; always true / always false.</li>
+    </ul>
+
+    <h2 class="help-heading">String operators</h2>
+    <ul class="help-list">
+        <li><code>CONTAINS</code>, <code>BEGINSWITH</code>, <code>ENDSWITH</code>.</li>
+        <li><code>LIKE</code> &mdash; wildcard match: <code>?</code> matches one character, <code>*</code> matches any number.</li>
+        <li><code>MATCHES</code> &mdash; regular-expression match.</li>
+    </ul>
+    <div class="help-callout">
+        <span class="material-symbols-outlined">match_case</span>
+        <div>
+            <strong>Case and diacritic modifiers.</strong>
+            String comparisons are case- and diacritic-sensitive by default. Append a modifier immediately
+            after the operator: <code>[c]</code> case-insensitive, <code>[l]</code> locale-sensitive, and the
+            combinations <code>[cd]</code>, <code>[cl]</code>, <code>[cdl]</code>, <code>[cdn]</code>,
+            <code>[cdnl]</code>. Note that <code>[d]</code> and <code>[n]</code> are not valid on their own &mdash;
+            combine <code>d</code> and <code>n</code> with <code>c</code>, e.g. <code>CONTAINS[cd]</code>.
+        </div>
+    </div>
+
+    <h2 class="help-heading">Aggregate operators</h2>
+    <ul class="help-list">
+        <li><code>ANY</code> (or <code>SOME</code>) &mdash; at least one element of a to-many key path matches.</li>
+        <li><code>ALL</code> &mdash; every element matches; <code>NONE</code> &mdash; no element matches.</li>
+        <li><code>SUBQUERY(collection, $item, predicate)</code> &mdash; filter a collection, then chain, e.g. <code>.@count &gt; 0</code>.</li>
+    </ul>
+
+    <h2 class="help-heading">Expressions</h2>
+    <ul class="help-list">
+        <li><strong>Key paths</strong> &mdash; dotted, e.g. <code>address.city</code>, and to-many aggregates such as <code>@count</code>, <code>@sum</code>, <code>@avg</code>.</li>
+        <li><strong>Arithmetic</strong> &mdash; <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code> (modulo), <code>**</code> (power).</li>
+        <li><strong>Collection indexing</strong> &mdash; <code>[FIRST]</code>, <code>[LAST]</code>, <code>[SIZE]</code>, or <code>[n]</code> for a specific index.</li>
+        <li><strong>Set expressions</strong> &mdash; <code>UNION</code>, <code>INTERSECT</code>, <code>MINUS</code>.</li>
+        <li><strong>TERNARY</strong> &mdash; <code>TERNARY(condition, ifTrue, ifFalse)</code>. This is the form used by derived attributes, e.g. <code>TERNARY(x == n, 1, 0)</code>.</li>
+        <li><strong>FUNCTION</strong> &mdash; <code>FUNCTION(operand, "selector", arguments…)</code> for built-in functions.</li>
+    </ul>
+
+    <h2 class="help-heading">Values</h2>
+    <ul class="help-list">
+        <li><strong>Literals</strong> &mdash; numbers, quoted strings (<code>"..."</code> or <code>'...'</code>), <code>TRUE</code>/<code>YES</code>, <code>FALSE</code>/<code>NO</code>, <code>NULL</code>/<code>nil</code>.</li>
+        <li><strong><code>SELF</code></strong> &mdash; the object being evaluated.</li>
+        <li><strong>Substitution variables</strong> &mdash; <code>$NAME</code>. Filled in when the predicate runs. <strong>Use these in fetch request templates</strong>, so one template serves many values.</li>
+    </ul>
+    <div class="help-callout">
+        <span class="material-symbols-outlined">info</span>
+        <div>
+            <strong>Substitution variables vs. format placeholders.</strong>
+            <code>$VARIABLE</code> is resolved at evaluation time and is what a saved template should use.
+            The format placeholders <code>%K</code> (key path), <code>%@</code> (object value), and the
+            printf-style <code>%d</code>, <code>%f</code>, <code>%s</code>, etc. are different: they are filled
+            positionally from arguments passed when a predicate is built in code. A fetch request template is
+            parsed without those arguments, so use <code>$VARIABLE</code> there, not <code>%K</code>/<code>%@</code>.
+        </div>
+    </div>
+
+    <h2 class="help-heading">Examples</h2>
+    <ul class="help-list">
+        <li><code>name == $NAME AND status == 1</code></li>
+        <li><code>email CONTAINS[cd] $QUERY</code></li>
+        <li><code>date &gt;= $START AND date &lt; $END</code></li>
+        <li><code>amount BETWEEN {l} $MIN, $MAX {r}</code></li>
+        <li><code>ANY tags.name IN {l} $TAG1, $TAG2 {r}</code></li>
+        <li><code>SUBQUERY(items, $x, $x.price &gt; $MIN).@count &gt; 0</code></li>
+    </ul>
+
+    <h2 class="help-heading">Store compatibility</h2>
+    <p>
+        The full grammar above is what the parser accepts, and it all evaluates against an <strong>XML
+        store</strong>, which resolves predicates in memory. A <strong>SQL store</strong> is different: it
+        translates the predicate into SQL, so it supports the subset that has a SQL equivalent &mdash;
+        comparisons, logical and string operators, <code>IN</code>/<code>BETWEEN</code>, aggregates,
+        <code>SUBQUERY</code>, arithmetic, and a fixed set of built-in functions.
+    </p>
+    <div class="help-callout">
+        <span class="material-symbols-outlined">warning</span>
+        <div>
+            <strong>Not everything translates to SQL.</strong>
+            Constructs with no SQL equivalent &mdash; most notably block predicates (<code>BLOCK(...)</code>,
+            which wrap a closure) and any function outside the store's built-in set &mdash; work against an
+            XML store but are rejected by a SQL store. If your generated project uses a SQL store, keep
+            template and index predicates to the translatable subset.
+        </div>
+    </div>
+
+    <p>
+        These operators are available anywhere a predicate is accepted &mdash;
+        <a class="help-link" href="#fetch-requests" data-help-anchor="fetch-requests">fetch request templates</a>,
+        partial index predicates, and derived
+        <a class="help-link" href="#attributes" data-help-anchor="attributes">attributes</a>.
+    </p>
+</article>

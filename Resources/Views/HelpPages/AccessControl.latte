@@ -3,10 +3,25 @@
         <span class="material-symbols-outlined help-article-icon">verified_user</span>
         <h1 class="help-article-title">Access Control</h1>
         <p class="help-article-lead">
-            Access controls describe whether a property is readable or writable, which roles may use it,
-            and whether access applies to all records or only owned records.
+            Access control works at two levels: the entity declares its role in authorization, and each
+            property declares whether it is readable or writable, by which roles, and for which records.
         </p>
     </header>
+
+    <h2 class="help-heading">Entity roles</h2>
+    <p>
+        Authorization starts with the entities. In an entity's <strong>Entity Identity</strong> section, the
+        <strong>Type</strong> assigns its role in the authorization model:
+    </p>
+    <ul class="help-list">
+        <li><strong>Authorizable</strong> &mdash; the entity that authenticates: the account a request is made as.</li>
+        <li><strong>Authorizable Role</strong> &mdash; the entity that carries roles, such as Moderator, Editor, or Viewer.</li>
+        <li><strong>Authorization</strong> &mdash; the record that links an authorizable to its roles.</li>
+    </ul>
+    <p>
+        These entity-level choices are what give the per-property roles and scopes below their meaning. Set
+        them first &mdash; see <a class="help-link" href="#entities" data-help-anchor="entities">Working with Entities</a>.
+    </p>
 
     <h2 class="help-heading">Property controls</h2>
     <p>

@@ -79,11 +79,11 @@
                                         <span class="sp-label">Wildcard — ? one, * any</span><code class="sp-chip" data-copy="LIKE">&nbsp;LIKE&nbsp;</code>
                                     </div>
                                     <div class="sp-row">
-                                        <span class="sp-label">Regex (ICU v3)</span><code class="sp-chip" data-copy="MATCHES">&nbsp;MATCHES&nbsp;</code>
+                                        <span class="sp-label">Regular expression</span><code class="sp-chip" data-copy="MATCHES">&nbsp;MATCHES&nbsp;</code>
                                     </div>
                                     <div class="sp-modifier-note">
-                                        Case and diacritic sensitive by default.<br> Append <code>[c]</code>,
-                                        <code>[d]</code>, or <code>[cd]</code> — e.g. <code>CONTAINS[cd]</code>
+                                        Case and diacritic sensitive by default.<br> Append <code>[c]</code> or
+                                        <code>[cd]</code> — e.g. <code>CONTAINS[cd]</code>
                                     </div>
                                 </div>
                                 <div class="sp-divider"></div>
@@ -109,16 +109,15 @@
                                         <span class="sp-label">Substitution variable</span><code class="sp-chip" data-copy="$VARIABLE">&nbsp;$VARIABLE&nbsp;</code>
                                     </div>
                                     <div class="sp-row">
-                                        <span class="sp-label">Key path substitution</span><code class="sp-chip" data-copy="%K">&nbsp;%K&nbsp;</code>
-                                    </div>
-                                    <div class="sp-row">
-                                        <span class="sp-label">Object value</span><code class="sp-chip" data-copy="%@">&nbsp;%@&nbsp;</code>
-                                    </div>
-                                    <div class="sp-row">
                                         <span class="sp-label">Null</span><code class="sp-chip" data-copy="nil">&nbsp;nil&nbsp;</code>
                                     </div>
                                     <div class="sp-row">
                                         <span class="sp-label">Self</span><code class="sp-chip" data-copy="SELF">&nbsp;SELF&nbsp;</code>
+                                    </div>
+                                    <div class="sp-modifier-note">
+                                        In a template, use <code>$VARIABLE</code> for runtime values. The format
+                                        placeholders <code>%K</code> and <code>%@</code> are filled from arguments
+                                        when a predicate is built in code, not in a saved template.
                                     </div>
                                 </div>
                                 <div class="sp-divider"></div>

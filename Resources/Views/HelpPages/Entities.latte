@@ -30,7 +30,7 @@
         <li><strong>Parent</strong> &mdash; make this entity inherit from another. Subentities share the parent's attributes and relationships.</li>
         <li><strong>Abstract Entity</strong> &mdash; mark an entity as abstract when it exists only to be inherited from and is never instantiated on its own.</li>
         <li><strong>Class Name</strong> &mdash; controls the generated managed-object class name.</li>
-        <li><strong>Type</strong> &mdash; marks entities used by authorization flows, such as authorizable records, roles, and authorization links.</li>
+        <li><strong>Type</strong> &mdash; the entity's role in authorization. <em>Authorizable</em> marks the entity that authenticates (the account), <em>Authorizable Role</em> the entity that carries roles, and <em>Authorization</em> the record that links them. These entity-level choices are what make the per-property roles and scopes meaningful &mdash; see <a class="help-link" href="#access-control" data-help-anchor="access-control">Access Control</a>.</li>
         <li><strong>Hash Modifier and Renaming ID</strong> &mdash; help version or rename model elements while preserving migration intent.</li>
     </ul>
 
