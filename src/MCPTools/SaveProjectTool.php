@@ -25,7 +25,7 @@ final class SaveProjectTool extends AbstractTool
     }
     #[Override]
     public string $description {
-        get => "Regenerates and writes the bundle files (model, .env, delegate) for a project to disk and commits all pending model changes. Pass the project's objectID.";
+        get => "Persists pending model edits (create/update/delete of entities, attributes, relationships) to Singularity's own store and regenerates the project's bundle files (model, .env, delegate) on disk. This is NOT a Git commit; it saves Singularity's managed object context. Call this after mutating a model, or the changes are lost. Pass the project's objectID.";
     }
     #[Override]
     public array $inputSchema {
