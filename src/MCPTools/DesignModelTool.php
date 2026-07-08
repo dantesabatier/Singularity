@@ -23,10 +23,6 @@ final class DesignModelTool extends AbstractTool
         get => "design_model";
     }
     #[Override]
-    public string $description {
-        get => "Returns the modelling constraints, expected output format, and current model state so you can propose a complete data model for the given application description. After calling this tool, produce the proposal yourself and apply it using create.";
-    }
-    #[Override]
     public array $inputSchema {
         get => [
             "type" => "object",

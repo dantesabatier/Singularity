@@ -238,5 +238,19 @@
       "description": "role name",
       "aliases": ["role", "access profile name"]
     }
+  },
+  "tools": {
+    "design_model": {
+      "title": "Design Model",
+      "description": "Returns the modelling constraints, expected output format, and current model state so you can propose a complete data model for the given application description. After calling this tool, produce the proposal yourself and apply it using create."
+    },
+    "generate_subclasses": {
+      "title": "Generate Subclasses",
+      "description": "Generates a ManagedObject subclass PHP file for every entity in the project's model, assigns each entity its managedObjectClassName, then regenerates the bundle and commits. Pass the project's objectID."
+    },
+    "save_project": {
+      "title": "Save Project",
+      "description": "Persists pending model edits (create/update/delete of entities, attributes, relationships) to Singularity's own store and regenerates the project's bundle files (model, .env, delegate) on disk. This is NOT a Git commit; it saves Singularity's managed object context. Call this after mutating a model, or the changes are lost. Pass the project's objectID."
+    }
   }
 }

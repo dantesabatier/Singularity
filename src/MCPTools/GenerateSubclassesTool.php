@@ -25,10 +25,6 @@ final class GenerateSubclassesTool extends AbstractTool
         get => "generate_subclasses";
     }
     #[Override]
-    public string $description {
-        get => "Generates a ManagedObject subclass PHP file for every entity in the project's model, assigns each entity its managedObjectClassName, then regenerates the bundle and commits. Pass the project's objectID.";
-    }
-    #[Override]
     public array $inputSchema {
         get => [
             "type" => "object",
