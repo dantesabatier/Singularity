@@ -39,37 +39,9 @@ final class DesignModelTool extends AbstractTool
             "required" => ["objectID", "description"],
         ];
     }
-
-    /**
-     * @return ArrayClass<ContentItem>
-     * @throws Exception
-     */
-    #[Override]
-    public function execute(Dictionary $arguments): ArrayClass
-    {
-        /** @var int $objectID */
-        $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
-        /** @var string $description */
-        $description = $arguments["description"] ?? fatal_error("description is required");
-        $request = $this->fetchRequest("Project");
-        $request->predicate = $this->buildPredicate("%K = %d", new ArrayClass([ManagedObjectObjectIDKey, $objectID]));
-        /** @var Project $project */
-        $project = $this->context->fetch($request)->first ?? throw new NotFoundException("Project $objectID was not found");
-        $existingEntityNames = $project->model?->entities->map(fn(Entity $entity): string => $entity->name)->join(", ") ?: "none";
-        return $this->jsonResult([
-            "description" => $description,
-            "existingEntities" => $existingEntityNames,
-            "instructions" => $this->instructions(),
-            "outputFormat" => $this->outputFormat(),
-        ]);
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function instructions(): array
-    {
-        return [
+    /** @var list<string> */
+    public array $instructions {
+        get => [
             "Propose a complete, well-normalised data model for the application described above.",
             "Entity names must be singular PascalCase (Order, not Orders).",
             "Attribute and relationship names must be camelCase.",
@@ -86,13 +58,9 @@ final class DesignModelTool extends AbstractTool
             "Valid delete rules: nullify, cascade, deny, noAction.",
         ];
     }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function outputFormat(): array
-    {
-        return [
+    /** @var array<string, mixed> */
+    public array $outputFormat {
+        get => [
             "summary" => "One-paragraph description of the proposed model and its main design decisions.",
             "entities" => [[
                 "name" => "PascalCaseEntityName",
@@ -116,5 +84,29 @@ final class DesignModelTool extends AbstractTool
                 ]],
             ]],
         ];
+    }
+
+    /**
+     * @return ArrayClass<ContentItem>
+     * @throws Exception
+     */
+    #[Override]
+    public function execute(Dictionary $arguments): ArrayClass
+    {
+        /** @var int $objectID */
+        $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
+        /** @var string $description */
+        $description = $arguments["description"] ?? fatal_error("description is required");
+        $request = $this->fetchRequest("Project");
+        $request->predicate = $this->buildPredicate("%K = %d", new ArrayClass([ManagedObjectObjectIDKey, $objectID]));
+        /** @var Project $project */
+        $project = $this->context->fetch($request)->first ?? throw new NotFoundException("Project $objectID was not found");
+        $existingEntityNames = $project->model?->entities->map(fn(Entity $entity): string => $entity->name)->join(", ") ?: "none";
+        return $this->jsonResult([
+            "description" => $description,
+            "existingEntities" => $existingEntityNames,
+            "instructions" => $this->instructions,
+            "outputFormat" => $this->outputFormat,
+        ]);
     }
 }

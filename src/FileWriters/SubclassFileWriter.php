@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\FileWriters;
 
 use App\FileWriters\Generators\AuthorizableCodeGenerator;
@@ -73,9 +75,9 @@ final class SubclassFileWriter extends FileWriter
             $existingMethods = $parsed["methods"];
             $declaration = $parsed["declaration"] ?? $this->fileAssembler->createDefaultDeclaration($this->class, $this->entity);
             $reservedPropertyNames = match (true) {
-                $this->entity->isAuthorizable => $this->authorizableCodeGenerator->getReservedPropertyNames(),
-                $this->entity->isAuthorizableRole => $this->authorizableRoleCodeGenerator->getReservedPropertyNames(),
-                $this->entity->isAuthorization => $this->authorizationCodeGenerator->getReservedPropertyNames(),
+                $this->entity->isAuthorizable => $this->authorizableCodeGenerator->reservedPropertyNames,
+                $this->entity->isAuthorizableRole => $this->authorizableRoleCodeGenerator->reservedPropertyNames,
+                $this->entity->isAuthorization => $this->authorizationCodeGenerator->reservedPropertyNames,
                 default => [],
             };
             $uses = $this->useStatementGenerator->generate($this->entity, $existingUses);

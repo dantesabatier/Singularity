@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\FileWriters\Generators;
 
 use App\FileWriters\ValueObjects\GeneratedProperty;
