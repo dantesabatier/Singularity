@@ -6,6 +6,7 @@ import * as dagre from "dagre"
 import {Application} from "@/Application/Application"
 import {AutosaveFeature} from "@/Features/AutosaveFeature"
 import {ColorPickerFeature} from "@/Features/ColorPickerFeature"
+import {ConditionPopoverFeature} from "@/Features/ConditionPopoverFeature"
 import {FormSubmissionFeature} from "@/Features/FormSubmissionFeature"
 import {HistoryFeature} from "@/Features/HistoryFeature"
 import {ModalResetFeature} from "@/Features/ModalResetFeature"
@@ -39,6 +40,7 @@ export const bootstrapEditor = (): void => {
             new PopoverFeature(context),
             new PredicateHighlighterFeature(context),
             new RolePopoverFeature(context),
+            new ConditionPopoverFeature(context),
             new SortableTableFeature(context),
             new ColorPickerFeature(context),
         ],

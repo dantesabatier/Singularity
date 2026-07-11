@@ -36,7 +36,8 @@ final readonly class PropertyAttributeGenerator
         $attributes->formUnion($property->accessControls->map(function (AccessControl $accessControl) use ($uses): string {
             $uses->insert("use Sabatier\\Service\\$accessControl->name;");
             $uses->insert("use " . AuthorizationScope::class . ";");
-            return "#[$accessControl->name({$accessControl->roles->map(fn(Role $role) => "\"$role->name\"")}, $this->scopeClass::{$accessControl->scope->name})]";
+            $where = ($predicateString = $accessControl->predicateString) ? ", where: \"" . addcslashes($predicateString, "\\\"\$") . "\"" : "";
+            return "#[$accessControl->name({$accessControl->roles->map(fn(Role $role) => "\"$role->name\"")}, $this->scopeClass::{$accessControl->scope->name}$where)]";
         }));
         return $attributes;
     }

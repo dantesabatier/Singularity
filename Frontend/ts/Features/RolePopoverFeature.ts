@@ -1,43 +1,25 @@
-import {Feature} from "@/Application/Feature"
-import {Popover} from "bootstrap"
+import {PopoverEditorFeature} from "@/Features/PopoverEditorFeature"
 
-export class RolePopoverFeature extends Feature {
-    private activePopover: Popover | null = null
-    private readonly popoverByElement = new WeakMap<HTMLElement, Popover>()
+export class RolePopoverFeature extends PopoverEditorFeature {
+    protected readonly triggerSelector = '[data-bs-toggle="popover"][data-role]'
+    protected readonly popoverClass = "role-popover"
+    protected readonly templateId = "roles-popover-content"
+    protected readonly loadErrorMessage = "Failed to load role editor"
 
-    private readonly onDocumentClick = (event: MouseEvent): void => {
-        const target = event.target
-        if (!(target instanceof Element)) {
-            return
+    protected override prepareRequestURL(pageURL: URL, trigger: HTMLElement): string | null {
+        if (trigger.dataset.accessControl) {
+            pageURL.searchParams.set("accessControl", trigger.dataset.accessControl)
         }
-        const trigger = target.closest<HTMLElement>('[data-bs-toggle="popover"]')
-        if (trigger) {
-            event.preventDefault()
-            event.stopPropagation()
-            event.stopImmediatePropagation()
-            void this.openRolePopover(trigger)
-            return
+        if (!pageURL.searchParams.has("accessControl")) {
+            return "Please select an access control first"
         }
-        if (!this.activePopover || target.closest(".popover")) {
-            return
+        if (trigger.dataset.role) {
+            pageURL.searchParams.set("role", trigger.dataset.role)
         }
-        this.activePopover.hide()
-        this.activePopover = null
+        return null
     }
 
-    private readonly onDocumentEscape = (event: KeyboardEvent): void => {
-        if (event.key !== "Escape" || !this.activePopover) {
-            return
-        }
-        this.activePopover.hide()
-        this.activePopover = null
-    }
-
-    private readonly onShownPopover = (): void => {
-        const popoverBody = document.querySelector(".popover-body")
-        if (!popoverBody) {
-            return
-        }
+    protected override configurePopover(popoverBody: Element): void {
         const form = popoverBody.querySelector<HTMLFormElement>(".role-popover-form")
         const select = form?.querySelector<HTMLSelectElement>(".role-select")
         const customField = form?.querySelector<HTMLElement>(".role-custom-field")
@@ -56,11 +38,7 @@ export class RolePopoverFeature extends Feature {
             customField.style.display = "none"
         })
         cancelButton.addEventListener("click", () => {
-            if (!this.activePopover) {
-                return
-            }
-            this.activePopover.hide()
-            this.activePopover = null
+            this.hideActivePopover()
         })
         saveButton.addEventListener("click", async (event) => {
             event.preventDefault()
@@ -70,11 +48,7 @@ export class RolePopoverFeature extends Feature {
                 return
             }
             await this.context.formSubmissionService.submit(form)
-            if (!this.activePopover) {
-                return
-            }
-            this.activePopover.hide()
-            this.activePopover = null
+            this.hideActivePopover()
         })
         customInput?.addEventListener("keypress", (event) => {
             if (event.key !== "Enter") {
@@ -88,93 +62,5 @@ export class RolePopoverFeature extends Feature {
             return
         }
         customInput?.focus()
-    }
-
-    public override start(): void {
-        document.addEventListener("click", this.onDocumentClick)
-        document.addEventListener("keydown", this.onDocumentEscape)
-        document.addEventListener("shown.bs.popover", this.onShownPopover as EventListener)
-    }
-
-    private async openRolePopover(trigger: HTMLElement): Promise<void> {
-        const popover = this.popoverFor(trigger)
-        if (this.activePopover === popover) {
-            popover.hide()
-            this.activePopover = null
-            return
-        }
-        if (this.activePopover) {
-            this.activePopover.hide()
-            this.activePopover = null
-        }
-
-        const pageURL = new URL(window.location.href)
-        if (!pageURL.searchParams.has("accessControl")) {
-            this.showError(popover, "Please select an access control first")
-            return
-        }
-
-        trigger.classList.add("loading")
-        if (trigger.dataset.role) {
-            pageURL.searchParams.set("role", trigger.dataset.role)
-        }
-
-        try {
-            const response = await this.context.httpClient.get(pageURL.href)
-            if (!response.ok) {
-                const message = await this.context.httpClient.tryGetErrorMessage(response)
-                await this.context.desktopBridge.showErrorBox(message)
-                return
-            }
-            const html = await response.text()
-            const doc = new DOMParser().parseFromString(html, "text/html")
-            const template = doc.getElementById("roles-popover-content")
-            if (!template) {
-                this.showError(popover, "Failed to load role editor")
-                return
-            }
-            popover.setContent({".popover-body": template.innerHTML})
-            popover.show()
-            this.activePopover = popover
-        } catch (error) {
-            console.error("Failed to load role popover:", error)
-            this.showError(popover, "Failed to load role editor")
-        } finally {
-            trigger.classList.remove("loading")
-        }
-    }
-
-    private popoverFor(trigger: HTMLElement): Popover {
-        const existing = this.popoverByElement.get(trigger)
-        if (existing) {
-            return existing
-        }
-        const popover = new Popover(trigger, {
-            container: "body",
-            html: true,
-            sanitize: false,
-            trigger: "manual",
-            content: "Loading...",
-            customClass: "role-popover",
-            placement: "auto",
-            fallbackPlacements: ["top", "bottom", "left", "right"],
-        })
-        this.popoverByElement.set(trigger, popover)
-        return popover
-    }
-
-    private showError(popover: Popover, message: string): void {
-        popover.setContent({
-            ".popover-body": `<div class="p-3 text-danger"><span class="material-symbols-outlined">warning</span><span class="px-2">${message}</span></div>`,
-        })
-        popover.show()
-        this.activePopover = popover
-        setTimeout(() => {
-            if (this.activePopover !== popover) {
-                return
-            }
-            popover.hide()
-            this.activePopover = null
-        }, 2000)
     }
 }
