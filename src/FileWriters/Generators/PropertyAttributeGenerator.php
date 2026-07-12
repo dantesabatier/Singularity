@@ -33,7 +33,7 @@ final readonly class PropertyAttributeGenerator
             $uses->insert("use Sabatier\\Service\\Owner;");
             $attributes->insert("#[Owner]");
         }
-        $attributes->formUnion($property->accessControls->map(function (AccessControl $accessControl) use ($uses): string {
+        $attributes->formUnion($property->accessControls->filter(fn(AccessControl $accessControl): bool => $accessControl->isEnabled)->map(function (AccessControl $accessControl) use ($uses): string {
             $uses->insert("use Sabatier\\Service\\$accessControl->name;");
             $uses->insert("use " . AuthorizationScope::class . ";");
             $where = ($predicateString = $accessControl->predicateString) ? ", where: \"" . addcslashes($predicateString, "\\\"\$") . "\"" : "";
@@ -44,6 +44,6 @@ final readonly class PropertyAttributeGenerator
 
     public function shouldGenerateAttributes(Property $property): bool
     {
-        return ($property instanceof Relationship && $property->isOwner) || !$property->accessControls->isEmpty;
+        return ($property instanceof Relationship && $property->isOwner) || $property->accessControls->contains(fn(AccessControl $accessControl): bool => $accessControl->isEnabled);
     }
 }
