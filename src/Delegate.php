@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\LLM\Provider;
 use Override;
 use Sabatier\CoreData\MergePolicy;
 use Sabatier\CoreData\PersistentStore;
@@ -12,7 +13,6 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
 use Sabatier\Foundation\UserDefaults;
-use App\LLM\Provider;
 use Sabatier\Service\Application;
 use Sabatier\Service\ApplicationDelegate;
 use Sabatier\Service\PublicAccessPolicy;
