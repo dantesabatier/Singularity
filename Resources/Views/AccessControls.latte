@@ -1,9 +1,11 @@
 {templateType App\ViewControllers\EditorController}
-{define accessControls}
+{define accessControls, $owner}
+    {var $accessControls = $owner?->accessControls ?? []}
+    {var bool $isEntityOwner = $owner instanceof App\Model\Entity}
     <div class="inspector-header">Access Control</div>
     <div class="ide-list-control">
         <div class="accessControl-cards">
-            <div n:foreach="$selectedProperty?->accessControls ?? [] as $accessControl" id="accessControl-{$accessControl->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}&property={$selectedProperty->objectID|json}&accessControl={$accessControl->objectID|json}" n:class="'accessControl-card', $accessControl->isEqual($selectedAccessControl) ? active">
+            <div n:foreach="$accessControls as $accessControl" id="accessControl-{$accessControl->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}{if !$isEntityOwner}&property={$selectedProperty->objectID|json}{/if}&accessControl={$accessControl->objectID|json}" n:class="'accessControl-card', $accessControl->isEqual($selectedAccessControl) ? active">
                 <div class="accessControl-card-header">
                     <form action="/AccessControl" method="POST" class="accessControl-enabled-form">
                         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
@@ -54,7 +56,7 @@
                     {/if}
                 </button>
             </div>
-            <div n:if="$selectedProperty?->accessControls?->isEmpty ?? true" class="accessControl-empty">
+            <div n:if="$owner?->accessControls?->isEmpty ?? true" class="accessControl-empty">
                 Readable and writable by any role
             </div>
         </div>
@@ -68,14 +70,14 @@
                     <li>
                         <button class="dropdown-item"
                                 data-editor-action="addReadableAccessControl"
-                                data-parent="{$selectedProperty|json}">
+                                data-parent="{$owner|json}">
                             <span class="accessControl-name-badge accessControl-type-Readable">#Readable</span>
                         </button>
                     </li>
                     <li>
                         <button class="dropdown-item"
                                 data-editor-action="addWritableAccessControl"
-                                data-parent="{$selectedProperty|json}">
+                                data-parent="{$owner|json}">
                             <span class="accessControl-name-badge accessControl-type-Writable">#Writable</span>
                         </button>
                     </li>

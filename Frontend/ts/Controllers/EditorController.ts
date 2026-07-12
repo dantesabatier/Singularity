@@ -320,12 +320,16 @@ export class EditorController extends ViewController {
                     entityProperty: parent,
                 })
                 return
-            case "AccessControl":
-                await this.context.actionDispatcher.dispatch(entity, {
-                    name,
-                    property: parent,
-                })
+            case "AccessControl": {
+                const body: Record<string, unknown> = {name}
+                if (parent.entityName === "Entity") {
+                    body.entityProperty = parent
+                } else {
+                    body.property = parent
+                }
+                await this.context.actionDispatcher.dispatch(entity, body)
                 return
+            }
             case "Role":
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,

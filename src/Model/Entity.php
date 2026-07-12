@@ -34,6 +34,7 @@ use Sabatier\Foundation\Set;
  * @property Set<Property> $properties
  * @property Set<FetchIndex> $indexes
  * @property Set<UniquenessConstraint> $uniquenessConstraints
+ * @property Set<AccessControl> $accessControls
  * @property-read ArrayClass<Attribute> $attributes
  * @property-read ArrayClass<Relationship> $relationships
  * @property-read ArrayClass<FetchedProperty> $fetchedProperties
@@ -61,6 +62,12 @@ use Sabatier\Foundation\Set;
  * @method void removeUniquenessConstraints(Set<UniquenessConstraint> $objects)
  * @method Set<UniquenessConstraint> intersectUniquenessConstraints(Set<UniquenessConstraint> $objects)
  * @method void setUniquenessConstraints(Set<UniquenessConstraint> $objects)
+ * @method void addAccessControlsObject(AccessControl $object)
+ * @method void removeAccessControlsObject(AccessControl $object)
+ * @method void addAccessControls(Set<AccessControl> $objects)
+ * @method void removeAccessControls(Set<AccessControl> $objects)
+ * @method Set<AccessControl> intersectAccessControls(Set<AccessControl> $objects)
+ * @method void setAccessControls(Set<AccessControl> $objects)
  */
 final class Entity extends ManagedObject
 {

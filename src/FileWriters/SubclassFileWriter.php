@@ -42,6 +42,7 @@ final class SubclassFileWriter extends FileWriter
     private readonly AuthorizationCodeGenerator $authorizationCodeGenerator;
     private readonly ClassDeclarationInjector $declarationInjector;
     private readonly ClassFileAssembler $fileAssembler;
+    private readonly PropertyAttributeGenerator $accessControlGenerator;
 
     public function __construct(URL $url, Entity $entity, string $class, string $namespace, Closure $classNameGenerator)
     {
@@ -52,6 +53,7 @@ final class SubclassFileWriter extends FileWriter
         $this->existingClassParser = new ExistingClassParser();
         $this->useStatementGenerator = new UseStatementGenerator();
         $accessControlGenerator = new PropertyAttributeGenerator();
+        $this->accessControlGenerator = $accessControlGenerator;
         $this->propertyDocBlockGenerator = new PropertyDocBlockGenerator($accessControlGenerator);
         $this->propertyBlockGenerator = new PropertyBlockGenerator($accessControlGenerator);
         $this->authorizableCodeGenerator = new AuthorizableCodeGenerator($accessControlGenerator);
@@ -102,7 +104,8 @@ final class SubclassFileWriter extends FileWriter
             } elseif ($this->entity->isAuthorization) {
                 $propertyBlocks->appendContentsOf($this->authorizationCodeGenerator->generatePropertyBlocks($this->entity, $existingClassProperties, $uses));
             }
-            return $this->fileAssembler->assemble($this->namespace, $this->entity, $uses, $properties, $methods, $this->declarationInjector->inject($declaration, $propertyBlocks));
+            $classAttributes = $this->accessControlGenerator->generateFieldAttributes($this->entity->accessControls, $uses);
+            return $this->fileAssembler->assemble($this->namespace, $this->entity, $uses, $properties, $methods, $this->declarationInjector->inject($declaration, $propertyBlocks), $classAttributes);
         }
     }
 }

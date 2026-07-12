@@ -105,7 +105,7 @@
             {/if}
             <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
-        {include accessControls from "AccessControls.latte"}
+        {include accessControls from "AccessControls.latte", $selectedProperty}
         {if $selectedAccessControl}
             {include roles from "Roles.latte"}
         {/if}

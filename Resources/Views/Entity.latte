@@ -83,7 +83,7 @@
             </div>
             <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
         </form>
-        <div class="inspector-header">Access Control</div>
+        <div class="inspector-header">Entity Type</div>
         <div class="row mb-2">
             <label class="col-sm-4 inspector-label">Type</label>
             <div class="col-sm-8">
@@ -93,6 +93,10 @@
                 </div>
             </div>
         </div>
+        {include accessControls from "AccessControls.latte", $selectedEntity}
+        {if $selectedAccessControl}
+            {include roles from "Roles.latte"}
+        {/if}
         <div class="modal fade ide-modal" id="addUniquenessConstraint" tabindex="-1" aria-labelledby="addUniquenessConstraintLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content">

@@ -16,8 +16,9 @@ final class ClassFileAssembler
      * @param Set<string> $uses
      * @param Set<string> $properties
      * @param ArrayClass<string> $methods
+     * @param Set<string> $classAttributes
      */
-    public function assemble(string $namespace, Entity $entity, Set $uses, Set $properties, ArrayClass $methods, string $declaration): string
+    public function assemble(string $namespace, Entity $entity, Set $uses, Set $properties, ArrayClass $methods, string $declaration, Set $classAttributes = new Set()): string
     {
         $content = "<?php\n\ndeclare(strict_types=1);\n\n";
         $content .= "namespace $namespace;\n";
@@ -45,6 +46,9 @@ final class ClassFileAssembler
             }
             $content .= "\n";
             $content .= " */\n";
+        }
+        if (!$classAttributes->isEmpty) {
+            $content .= $classAttributes->sort()->join("\n") . "\n";
         }
         if ($entity->isAbstract) {
             $content .= "abstract ";

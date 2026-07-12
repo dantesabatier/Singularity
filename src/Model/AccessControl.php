@@ -15,6 +15,7 @@ use Sabatier\Service\AuthorizationScope;
  * @property bool $isEnabled
  * @property string|null $predicateString
  * @property Property|null $property
+ * @property Entity|null $entityProperty
  * @property Set<Role> $roles
  * @method void addRolesObject(Role $object)
  * @method void removeRolesObject(Role $object)

@@ -33,13 +33,23 @@ final readonly class PropertyAttributeGenerator
             $uses->insert("use Sabatier\\Service\\Owner;");
             $attributes->insert("#[Owner]");
         }
-        $attributes->formUnion($property->accessControls->filter(fn(AccessControl $accessControl): bool => $accessControl->isEnabled)->map(function (AccessControl $accessControl) use ($uses): string {
+        $attributes->formUnion($this->generateFieldAttributes($property->accessControls, $uses));
+        return $attributes;
+    }
+
+    /**
+     * @param Set<AccessControl> $accessControls
+     * @param Set<string> $uses Reference to uses set to add necessary imports
+     * @return Set<non-empty-string>
+     */
+    public function generateFieldAttributes(Set $accessControls, Set $uses): Set
+    {
+        return $accessControls->filter(fn(AccessControl $accessControl): bool => $accessControl->isEnabled)->map(function (AccessControl $accessControl) use ($uses): string {
             $uses->insert("use Sabatier\\Service\\$accessControl->name;");
             $uses->insert("use " . AuthorizationScope::class . ";");
             $where = ($predicateString = $accessControl->predicateString) ? ", where: \"" . addcslashes($predicateString, "\\\"\$") . "\"" : "";
             return "#[$accessControl->name({$accessControl->roles->map(fn(Role $role) => "\"$role->name\"")}, $this->scopeClass::{$accessControl->scope->name}$where)]";
-        }));
-        return $attributes;
+        });
     }
 
     public function shouldGenerateAttributes(Property $property): bool
