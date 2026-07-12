@@ -291,32 +291,6 @@ final class EditorController extends ProjectController
             EntityType::authorization => "Authorization"
         }, "value" => $type->value]);
     }
-    private(set) int $totalAttributeCount {
-        get {
-            if (isset($this->totalAttributeCount)) {
-                return $this->totalAttributeCount;
-            }
-            $count = 0;
-            /** @var Entity $entity */
-            foreach ($this->project->model?->entities ?? [] as $entity) {
-                $count += $entity->attributes->count;
-            }
-            return $this->totalAttributeCount = $count;
-        }
-    }
-    private(set) int $totalRelationshipCount {
-        get {
-            if (isset($this->totalRelationshipCount)) {
-                return $this->totalRelationshipCount;
-            }
-            $count = 0;
-            /** @var Entity $entity */
-            foreach ($this->project->model?->entities ?? [] as $entity) {
-                $count += $entity->relationships->count;
-            }
-            return $this->totalRelationshipCount = $count;
-        }
-    }
     /** @var ArrayClass<string> */
     #[Outlet]
     private(set) ArrayClass $defaultRoles {
