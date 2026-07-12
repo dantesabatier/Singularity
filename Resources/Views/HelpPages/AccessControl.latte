@@ -3,8 +3,9 @@
         <span class="material-symbols-outlined help-article-icon">verified_user</span>
         <h1 class="help-article-title">Access Control</h1>
         <p class="help-article-lead">
-            Access control works at two levels: the entity declares its role in authorization, and each
-            property declares whether it is readable or writable, by which roles, and for which records.
+            Access control works at three levels: the entity declares its role in authorization, a resource
+            declares who may read or write its rows, and each property declares whether it is readable or
+            writable, by which roles, scopes, and conditions.
         </p>
     </header>
 
@@ -23,11 +24,25 @@
         them first &mdash; see <a class="help-link" href="#entities" data-help-anchor="entities">Working with Entities</a>.
     </p>
 
+    <h2 class="help-heading">Resource controls</h2>
+    <p>
+        Select an entity to manage access controls on the resource as a whole. Add <strong>#Readable</strong>
+        or <strong>#Writable</strong> entries from the entity's <strong>Access Control</strong> section. A
+        resource-level control gates the whole row, not a single field:
+    </p>
+    <ul class="help-list">
+        <li><strong>#Readable</strong> on an entity &mdash; rows the caller may not read are excluded from
+            results at query time, so a listing omits them and a fetch by id returns nothing.</li>
+        <li><strong>#Writable</strong> on an entity &mdash; a create, update, or delete of a row the caller
+            may not write is rejected with <code>403 Forbidden</code>.</li>
+    </ul>
+
     <h2 class="help-heading">Property controls</h2>
     <p>
         Select an attribute or relationship to manage its access controls. Add <strong>#Readable</strong>
         or <strong>#Writable</strong> entries from the access control toolbar, enable or disable them,
-        and choose the scope.
+        and choose the scope. Property controls filter individual fields within a row the caller is already
+        allowed to see &mdash; they apply after any resource control has admitted the row.
     </p>
 
     <h2 class="help-heading">Roles and scopes</h2>
@@ -38,12 +53,57 @@
         <li><strong>Owner relationships</strong> &mdash; mark the relationship that identifies ownership for generated access checks.</li>
     </ul>
 
+    <h2 class="help-heading">Conditions</h2>
+    <p>
+        Beyond roles and scope, a control can carry a <strong>condition</strong> &mdash; a predicate that
+        must hold for access to be granted. Conditions are evaluated against the record, with these
+        substitution variables available:
+    </p>
+    <ul class="help-list">
+        <li><code>$SUBJECT</code> &mdash; the authenticated account, e.g. <code>department == $SUBJECT.department</code>.</li>
+        <li><code>$ENVIRONMENT</code> &mdash; the service environment.</li>
+        <li><code>$REQUEST</code> &mdash; the incoming request: <code>$REQUEST.ip</code>, <code>$REQUEST.host</code>,
+            and <code>$REQUEST.country</code> (an ISO country code, present only when the service has a
+            geolocation resolver configured).</li>
+    </ul>
+
+    <h3 class="help-subheading">When &mdash; time of access</h3>
+    <p>
+        Restrict access by time using predicate functions; no extra configuration is needed. For example,
+        readable only during business hours:
+    </p>
+    <pre class="help-code"><code>hour(now()) &gt;= 9 AND hour(now()) &lt; 18</code></pre>
+    <p>
+        Other useful functions: <code>dayOfWeek(now())</code>, <code>date(now())</code>, and
+        <code>dateSub(now(), 30, DAY)</code> for rolling windows.
+    </p>
+
+    <h3 class="help-subheading">Where &mdash; origin of access</h3>
+    <p>
+        Restrict access by where the request comes from. By network, matching a prefix of the client address:
+    </p>
+    <pre class="help-code"><code>$REQUEST.ip BEGINSWITH "10.0."</code></pre>
+    <p>
+        Or by country, when a geolocation resolver is configured &mdash; for example, readable only from
+        Mexico during business hours:
+    </p>
+    <pre class="help-code"><code>$REQUEST.country == "MX" AND hour(now()) &gt;= 9 AND hour(now()) &lt; 18</code></pre>
+    <div class="help-callout">
+        <span class="material-symbols-outlined">warning</span>
+        <div>
+            <strong>Origin is a signal, not a wall.</strong>
+            Client addresses can be shared, proxied, or spoofed, and country lookups can be wrong. A
+            country condition denies access whenever the country is unknown &mdash; it fails closed &mdash;
+            but treat network and geo checks as one layer of defense, not the only one.
+        </div>
+    </div>
+
     <div class="help-callout">
         <span class="material-symbols-outlined">lock</span>
         <div>
             <strong>Access control starts in the model.</strong>
-            The generated service uses these declarations to decide which fields can be read or written
-            by each role and scope.
+            The generated service uses these declarations to decide which rows and fields can be read or
+            written, by each role, scope, and condition.
         </div>
     </div>
 </article>
