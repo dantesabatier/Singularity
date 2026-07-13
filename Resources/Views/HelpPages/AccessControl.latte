@@ -72,22 +72,22 @@
         Restrict access by time using predicate functions; no extra configuration is needed. For example,
         readable only during business hours:
     </p>
-    <pre class="help-code"><code>hour(now()) &gt;= 9 AND hour(now()) &lt; 18</code></pre>
+    <pre class="help-code"><code>hour:(now:()) &gt;= 9 AND hour:(now:()) &lt; 18</code></pre>
     <p>
-        Other useful functions: <code>dayOfWeek(now())</code>, <code>date(now())</code>, and
-        <code>dateSub(now(), 30, DAY)</code> for rolling windows.
+        Other useful functions: <code>dayOfWeek:(now:())</code>, <code>date:(now:())</code>, and
+        <code>dateSub:(now:(), 30, DAY)</code> for rolling windows.
     </p>
 
     <h3 class="help-subheading">Where &mdash; origin of access</h3>
     <p>
         Restrict access by where the request comes from. By network, matching a prefix of the client address:
     </p>
-    <pre class="help-code"><code>$REQUEST.ip BEGINSWITH "10.0."</code></pre>
+    <pre class="help-code"><code>$IP BEGINSWITH "10.0."</code></pre>
     <p>
         Or by country, when a geolocation resolver is configured &mdash; for example, readable only from
         Mexico during business hours:
     </p>
-    <pre class="help-code"><code>$REQUEST.country == "MX" AND hour(now()) &gt;= 9 AND hour(now()) &lt; 18</code></pre>
+    <pre class="help-code"><code>hour:(now:()) &gt;= 9 AND hour:(now:()) &lt; 18</code></pre>
     <div class="help-callout">
         <span class="material-symbols-outlined">warning</span>
         <div>

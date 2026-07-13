@@ -99,16 +99,12 @@
                 <input type="hidden" name="objectID" value="{$selectedAccessControl->objectID|json}">
                 <div class="condition-popover-field">
                     <label for="conditionPredicate" class="condition-popover-label">Predicate Format</label>
-                    <textarea name="predicateString" id="conditionPredicate" class="form-control form-control-sm code-editor condition-textarea" rows="4" autocomplete="off" spellcheck="false" placeholder="status == 1 AND department == $SUBJECT.department">{$selectedAccessControl->predicateString}</textarea>
+                    <textarea name="predicateString" id="conditionPredicate" class="form-control form-control-sm code-editor condition-textarea" rows="4" autocomplete="off" spellcheck="false" placeholder="status == 1 AND hour:(now:()) < 23">{$selectedAccessControl->predicateString}</textarea>
                 </div>
                 <div class="condition-popover-vars">
                     <span class="condition-vars-label">Access variables</span>
-                    <code class="sp-chip" data-copy="$SUBJECT">$SUBJECT</code>
-                    <code class="sp-chip" data-copy="$ENVIRONMENT">$ENVIRONMENT</code>
                     <code class="sp-chip" data-copy="$FETCH_SOURCE">$FETCH_SOURCE</code>
-                    <code class="sp-chip" data-copy="$REQUEST.ip">$REQUEST.ip</code>
-                    <code class="sp-chip" data-copy="$REQUEST.country">$REQUEST.country</code>
-                    <code class="sp-chip" data-copy="hour(now())">hour(now())</code>
+                    <code class="sp-chip" data-copy="hour:(now:())">hour:(now:())</code>
                 </div>
                 <div class="condition-popover-actions">
                     <button type="button" class="btn btn-sm btn-secondary condition-cancel-btn">Cancel</button>
