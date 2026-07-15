@@ -30,7 +30,7 @@ final class Attachment extends ManagedObject
             if (!($url = $this->url)) {
                 return $this->fileURL = null;
             }
-            return $this->fileURL = new URL($url->path, FileManager::default()->documentRootDirectory);
+            return $this->fileURL = FileManager::default()->documentRootDirectory->appendingPathComponent($url->path);
         }
     }
     public string $dataURL {
