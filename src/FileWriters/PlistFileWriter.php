@@ -9,6 +9,7 @@ use Override;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\UserDefaults;
+use function Sabatier\Foundation\slug;
 use const App\CompanyNamePreferencesKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDevelopmentRegionKey;
@@ -32,7 +33,7 @@ final class PlistFileWriter extends FileWriter
             return PropertyListSerialization::data(Dictionary::dictionaryWithArray([
                 kCFBundleDevelopmentRegionKey => "English",
                 kCFBundleExecutableKey => $name,
-                kCFBundleIdentifierKey => sprintf("com.%s.%s", strtolower(str_replace(" ", "", (string)UserDefaults::standard()->string(CompanyNamePreferencesKey))), strtolower($name)),
+                kCFBundleIdentifierKey => sprintf("com.%s.%s", slug((string)UserDefaults::standard()->string(CompanyNamePreferencesKey)), slug($name)),
                 kCFBundleNameKey => $name,
                 kCFBundleVersionKey => "1",
                 kCFBundleShortVersionStringKey => "0.1",
