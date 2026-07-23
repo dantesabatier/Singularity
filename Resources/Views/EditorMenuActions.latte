@@ -131,6 +131,11 @@
         </button>
     </li>
     <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="extractLocalizables" data-project-id="{$project->objectID|json}">
+            <span class="material-symbols-outlined">translate</span> <span>Extract Localizables...</span>
+        </button>
+    </li>
+    <li>
         <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="importModel" data-project-id="{$project->objectID|json}" data-model-path="{$project->model?->url?->path}">
             <span class="material-symbols-outlined">upload</span> <span>Import...</span>
         </button>

@@ -49,6 +49,9 @@ export class EditorController extends ViewController {
             case "createSubclass":
                 void this.createSubclass(element)
                 return
+            case "extractLocalizables":
+                void this.extractLocalizables(element)
+                return
             case "importModel":
                 void this.importModel(element)
                 return
@@ -180,6 +183,14 @@ export class EditorController extends ViewController {
             return
         }
         await this.context.actionDispatcher.dispatch("Subclass", {project: projectID})
+    }
+
+    private async extractLocalizables(element: HTMLElement): Promise<void> {
+        const projectID = element.dataset.projectId
+        if (!projectID) {
+            return
+        }
+        await this.context.actionDispatcher.dispatch("localize", {project: projectID})
     }
 
     private async importModel(element: HTMLElement): Promise<void> {
