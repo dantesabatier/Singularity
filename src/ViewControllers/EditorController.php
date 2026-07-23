@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace App\ViewControllers;
 
 use App\Bundles\BundleUpdater;
+use App\Bundles\ExtractLocalizablesTransaction;
 use App\Bundles\SaveBundleTransaction;
 use App\Bundles\SubclassTransaction;
 use App\LLM\Provider;
@@ -426,6 +427,18 @@ final class EditorController extends ProjectController
         $transaction = new SubclassTransaction($this->project);
         $transaction->execute();
         $this->save();
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Action(transformers: [JSONTransformer::class])]
+    public function localize(): void
+    {
+        $languages = $this->request->parameters["languages"] ?? new ArrayClass(["en", "es"]);
+        $transaction = new ExtractLocalizablesTransaction($this->project, new ArrayClass($languages));
+        $transaction->execute();
+        $this->data = $this->project;
     }
 
     /**
