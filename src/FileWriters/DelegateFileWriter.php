@@ -32,6 +32,8 @@ final class DelegateFileWriter extends FileWriter
             ]);
             $content = "<?php\n";
             $content .= "\n";
+            $content .= "declare(strict_types=1);\n";
+            $content .= "\n";
             $content .= "namespace App;\n";
             $content .= "\n";
             $content .= $uses->sort()->join("\n");

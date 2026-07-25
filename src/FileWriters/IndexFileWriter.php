@@ -14,6 +14,8 @@ final class IndexFileWriter extends FileWriter
         get {
             $content = "<?php\n";
             $content .= "\n";
+            $content .= "declare(strict_types=1);\n";
+            $content .= "\n";
             $content .= "require_once __DIR__ . \"/vendor/autoload.php\";\n";
             $content .= "\n";
             $content .= "use " . Application::class . ";\n";
