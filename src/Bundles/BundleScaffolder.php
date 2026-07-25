@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Bundles;
 
+use App\FileWriters\CliFileWriter;
 use App\FileWriters\ComposerJsonFileWriter;
 use App\FileWriters\DelegateFileWriter;
 use App\FileWriters\DotEnvFileWriter;
@@ -59,6 +60,7 @@ final readonly class BundleScaffolder
         $this->createIfMissing(new ComposerJsonFileWriter($this->bundleURL->appendingPathComponent("composer")->appendingPathExtension("json")));
         $this->createIfMissing(new DotEnvFileWriter($this->bundleURL->appendingPathComponent(".env"), $this->options->withCORS, $this->options->withJWT));
         $this->createIfMissing(new IndexFileWriter($this->bundleURL->appendingPathComponent("index")->appendingPathExtension("php")));
+        $this->createIfMissing(new CliFileWriter($this->bundleURL->appendingPathComponent("cli")->appendingPathExtension("php")));
         $this->createIfMissing(new DelegateFileWriter($this->bundleURL->appendingPathComponent("src")->appendingPathComponent("Delegate")->appendingPathExtension("php"), $this->options->withSecurity));
     }
 
