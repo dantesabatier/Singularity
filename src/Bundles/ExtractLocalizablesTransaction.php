@@ -10,7 +10,6 @@ use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\LocalizationExtractor;
-use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\fatal_error;
 
 /**
@@ -19,13 +18,13 @@ use function Sabatier\Foundation\fatal_error;
  * project's bundle, so Singularity provides this capability to every project
  * it authors without each project shipping an extraction script of its own.
  */
-final class ExtractLocalizablesTransaction implements Transaction
+final readonly class ExtractLocalizablesTransaction implements Transaction
 {
     /**
      * @param Project $project The project whose source tree is scanned.
      * @param ArrayClass<string> $languages The language codes to extract.
      */
-    public function __construct(private readonly Project $project, private readonly ArrayClass $languages)
+    public function __construct(private Project $project, private ArrayClass $languages)
     {
     }
 
