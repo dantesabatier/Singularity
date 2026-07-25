@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Responders;
 
 use Override;
+use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\MethodNotAllowedException;
@@ -15,6 +17,10 @@ use Sabatier\Service\ResponsePipeline;
 #[Endpoint("Info", transformers: [HTMLTransformer::class])]
 final class InfoResponder extends Responder
 {
+    /** @var ArrayClass<string> */
+    protected ArrayClass $allowedMethods {
+        get => new ArrayClass([HTTPRequestMethod::get]);
+    }
     #[Override]
     public bool $isProtectedContentAvailable = true;
     #[Override]
