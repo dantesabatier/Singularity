@@ -295,7 +295,10 @@ final class EditorController extends ProjectController
     /** @var ArrayClass<string> */
     #[Outlet]
     private(set) ArrayClass $defaultRoles {
-        get => $this->defaultRoles ??= new ArrayClass(["Moderator", "Editor", "Viewer"]);
+        /**
+         * @throws Exception
+         */
+        get => $this->defaultRoles ??= $this->managedObjectContext->fetch(Role::fetchRequest())->map(fn(Role $role): string => $role->name);
     }
     /** @var Set<string> */
     #[Outlet]
