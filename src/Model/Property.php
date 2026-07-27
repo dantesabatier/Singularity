@@ -46,7 +46,9 @@ abstract class Property extends ManagedObject
         }
         if (!$this->isInserted && ($entity = $this->entityProperty)) {
             $all = $entity->properties->map(fn(Property $property): Property => $property);
-            $this->position = $all->indexOf($this) ?? $all->count;
+            /** @var int<0, max> $position */
+            $position = $all->indexOf($this) ?? $all->count;
+            $this->position = $position;
         }
     }
 }
