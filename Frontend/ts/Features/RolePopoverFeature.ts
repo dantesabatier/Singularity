@@ -29,20 +29,27 @@ export class RolePopoverFeature extends PopoverEditorFeature {
         if (!form || !select || !customField || !cancelButton || !saveButton) {
             return
         }
+        const synchronizeCustomField = (): void => {
+            const isCustom = select.value === "Custom..."
+            customField.style.display = isCustom ? "block" : "none"
+            if (customInput) {
+                customInput.disabled = !isCustom
+            }
+        }
+        synchronizeCustomField()
         select.addEventListener("change", () => {
-            if (select.value === "Custom...") {
-                customField.style.display = "block"
-                customInput?.focus()
+            synchronizeCustomField()
+            if (select.value !== "Custom...") {
                 return
             }
-            customField.style.display = "none"
+            customInput?.focus()
         })
         cancelButton.addEventListener("click", () => {
             this.hideActivePopover()
         })
         saveButton.addEventListener("click", async (event) => {
             event.preventDefault()
-            const value = select.value === "Custom..." ? customInput?.value : select.value
+            const value = select.value === "Custom..." ? customInput?.value.trim() : select.value
             if (!value || value === "Custom...") {
                 customInput?.focus()
                 return

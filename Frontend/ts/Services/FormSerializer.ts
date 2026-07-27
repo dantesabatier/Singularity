@@ -9,7 +9,7 @@ export class FormSerializer {
             return element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement || element instanceof HTMLButtonElement
         })
         const body = elements.filter((element) => {
-            if (element.name.length === 0 || element.type === "submit" || element.name === "X-Http-Method-Override") {
+            if (element.name.length === 0 || element.disabled || element.type === "submit" || element.name === "X-Http-Method-Override") {
                 return false
             }
             if (element instanceof HTMLInputElement && element.type === "radio") {

@@ -316,7 +316,7 @@ final class EditorController extends ProjectController
     }
     #[Outlet]
     private(set) bool $isCustomRole {
-        get => $this->isCustomRole ??= $this->defaultRoles->contains(fn(string $s): bool => $s === $this->selectedRole?->name);
+        get => $this->isCustomRole ??= $this->selectedRole !== null && !$this->defaultRoles->contains(fn(string $s): bool => $s === $this->selectedRole?->name);
     }
     private ModelDescriptor $descriptor {
         get => $this->descriptor ??= new ModelDescriptor(new ModelSchemaExtractor($this->managedObjectContext, new AttributeSchemaFactory()), new VocabularyRepository(), new SchemaLocalizer(), new PredicateGuideFactory());
