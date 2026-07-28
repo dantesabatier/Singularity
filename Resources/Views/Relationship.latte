@@ -76,8 +76,9 @@
                     <div class="col-sm-4"></div>
                     <div class="col-sm-8">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered|json}" id="isOrdered" {$selectedProperty->isOrdered ? checked}>
+                            <input class="form-check-input" type="checkbox" name="isOrdered" value="{$selectedProperty->isOrdered|json}" id="isOrdered" {$selectedProperty->isOrdered ? checked} {!$selectedProperty->canBeOrdered ? disabled}>
                             <label class="form-check-label small text-secondary" for="isOrdered">Ordered</label>
+                            <div n:if="!$selectedProperty->canBeOrdered" class="form-text small">A many-to-many is stored in a correlation table, which keeps no position.</div>
                         </div>
                     </div>
                 </div>

@@ -34,6 +34,13 @@ final class Relationship extends Property
     private(set) ?Relationship $inverseRelationship {
         get => $this->inverseRelationship ??= $this->destinationEntity?->relationships?->first(fn(Relationship $relationship): bool => $relationship->name === $this->lazyInverseRelationshipName);
     }
+    /**
+     * A many-to-many is persisted as a correlation table, which has no column to keep a position in,
+     * so the SQL store cannot honour an order for one.
+     */
+    public bool $canBeOrdered {
+        get => $this->isToMany && !($this->inverseRelationship?->isToMany ?? false);
+    }
     /** @var list<string> */
     private const array relationshipDescriptionKeys = ["name", "isOptional", "isTransient", "renamingIdentifier", "versionHashModifier", "lazyDestinationEntityName", "lazyInverseRelationshipName", "isToMany", "isOrdered", "deleteRule", "minCount", "maxCount", "isSensitive"];
     /** @var ArrayClass<string> */
@@ -78,6 +85,12 @@ final class Relationship extends Property
         if (is_int($deleteRule)) {
             $deleteRule = DeleteRule::from($deleteRule);
         }
+        return true;
+    }
+
+    public function validateIsOrdered(bool|int|null &$isOrdered): bool
+    {
+        $isOrdered = (bool)$isOrdered && $this->canBeOrdered;
         return true;
     }
 }
