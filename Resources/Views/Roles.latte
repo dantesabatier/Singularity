@@ -1,5 +1,5 @@
 {templateType App\ViewControllers\EditorController}
-{varType Sabatier\Foundation\ArrayClass $allRoles}
+{varType Sabatier\Foundation\Set $allRoles}
 {define roles}
     <template id="roles-popover-content">
         <div class="role-popover-container">
@@ -19,11 +19,17 @@
                     <input type="text" name="name" id="scopeName" class="form-control form-control-sm" placeholder="custom_role" value="{$isCustomRole ? $selectedRole?->name : ''}" pattern="^[A-Z](?:\w*)?$" title="Letters and numbers only" {!$isCustomRole ? disabled}>
                     <small class="role-hint">Use letters: Guest, User</small>
                 </div>
-                <div class="role-popover-actions">
-                    <button type="button" class="btn btn-sm btn-secondary role-cancel-btn">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-primary role-save-btn">Save</button>
+                <div n:if="$selectedRole !== null && $roleUsageCount > 1" class="role-popover-note">
+                    Renaming affects {$roleUsageCount} access controls.
                 </div>
             </form>
+            <div class="role-popover-actions">
+                <button n:if="$selectedRole !== null" type="button" class="btn btn-sm btn-link role-delete-btn" data-item="{['objectID' => $selectedRole->objectID->referenceObject, 'entityName' => $selectedRole->entityName, 'name' => $selectedRole->name]|json}" title="Delete role from the model">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary role-cancel-btn">Cancel</button>
+                <button type="button" class="btn btn-sm btn-primary role-save-btn">Save</button>
+            </div>
         </div>
     </template>
 {/define}

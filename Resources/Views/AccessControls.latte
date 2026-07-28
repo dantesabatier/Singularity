@@ -5,7 +5,7 @@
     <div class="inspector-header">Access Control</div>
     <div class="ide-list-control">
         <div class="accessControl-cards">
-            <div n:foreach="$accessControls as $accessControl" id="accessControl-{$accessControl->objectID|json}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}{if !$isEntityOwner}&property={$selectedProperty->objectID|json}{/if}&accessControl={$accessControl->objectID|json}" n:class="'accessControl-card', $accessControl->isEqual($selectedAccessControl) ? active">
+            <div n:foreach="$accessControls as $accessControl" id="accessControl-{$accessControl->objectID|json}" data-entity-name="{$accessControl->entityName}" data-name="{$accessControl->name}" data-href="/Editor?project={$project->objectID|json}&entity={$selectedEntity->objectID|json}{if !$isEntityOwner}&property={$selectedProperty->objectID|json}{/if}&accessControl={$accessControl->objectID|json}" n:class="'accessControl-card', $accessControl->isEqual($selectedAccessControl) ? active">
                 <div class="accessControl-card-header">
                     <form action="/AccessControl" method="POST" class="accessControl-enabled-form">
                         <input type="hidden" name="X-Http-Method-Override" value="PATCH">
@@ -31,8 +31,9 @@
                         </span>
                         <button type="button"
                                 class="role-badge-delete"
-                                data-editor-action="removeSelection"
-                                data-item="{$role|json}"
+                                data-editor-action="unassignRole"
+                                data-role="{$role->objectID|json}"
+                                data-access-control="{$accessControl->objectID|json}"
                                 title="Remove role"
                                 aria-label="Remove {$role->name}">
                             <span class="material-symbols-outlined">close</span>
@@ -42,7 +43,9 @@
                     <button type="button"
                             class="role-add-btn"
                             data-editor-action="addRole"
-                            data-parent="{$accessControl|json}"
+                            data-parent="{['objectID' => $accessControl->objectID->referenceObject, 'entityName' => $accessControl->entityName, 'name' => $accessControl->name]|json}"
+                            data-model="{$project->model|json}"
+                            data-available-roles="{$roles->map(fn(App\Model\Role $role) => ['objectID' => $role->objectID->referenceObject, 'entityName' => $role->entityName, 'name' => $role->name])|json}"
                             title="Add role"
                             aria-label="Add role">
                         <span class="material-symbols-outlined">add</span>

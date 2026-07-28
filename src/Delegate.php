@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 declare(strict_types=1);
 
 namespace App;
@@ -9,6 +11,8 @@ use Override;
 use Sabatier\CoreData\MergePolicy;
 use Sabatier\CoreData\PersistentStore;
 use Sabatier\CoreData\RedisRowCache;
+use Sabatier\CoreData\SQLCore;
+use Sabatier\CoreData\SQLDebugLevel;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\ObjectClass;
@@ -28,6 +32,8 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
     #[Override]
     public static function initialize(): void
     {
+        SQLCore::$debugLevel = SQLDebugLevel::none;
+        SQLCore::$debugColorOutputDefault = true;
         PersistentStore::$rowCacheClass = RedisRowCache::class;
         ViewController::$rendererClass = LatteRenderer::class;
         UserDefaults::standard()->register(new Dictionary([

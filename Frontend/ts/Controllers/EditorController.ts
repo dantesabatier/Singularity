@@ -14,6 +14,10 @@ type RemovableReference = ManagedReference & {
     stringValue?: string
 }
 
+type RoleReference = ManagedReference & {
+    name?: string
+}
+
 export class EditorController extends ViewController {
     private readonly compositeTypeAttributeValue = "2100"
     private readonly splitController = new EditorSplitViewController(this.context)
@@ -93,6 +97,9 @@ export class EditorController extends ViewController {
                 return
             case "addRole":
                 void this.add("Role", "Role", element)
+                return
+            case "unassignRole":
+                void this.unassignRole(element)
                 return
             case "removeSelection":
                 void this.removeSelection(element)
@@ -341,12 +348,26 @@ export class EditorController extends ViewController {
                 await this.context.actionDispatcher.dispatch(entity, body)
                 return
             }
-            case "Role":
+            case "Role": {
+                // Roles are shared across access controls: the relationship is many-to-many, and the
+                // popover renames a Role in place for every access control holding it. Creating a new
+                // row for a name the model already carries would fork that identity, so assign the
+                // existing Role by PATCHing the access control's relationship and only POST a new
+                // Role when the name is genuinely new.
+                const existing = (this.parseJSON<RoleReference[]>(element.dataset.availableRoles) ?? [])
+                    .find((role) => role.name === name)
+                if (existing) {
+                    await this.assignRole(parent, existing)
+                    return
+                }
+                const model = this.parseJSON<ManagedReference>(element.dataset.model)
                 await this.context.actionDispatcher.dispatch(entity, {
                     name,
-                    accessControl: parent,
+                    model,
+                    accessControls: [parent],
                 })
                 return
+            }
             default:
                 return
         }
@@ -362,6 +383,61 @@ export class EditorController extends ViewController {
             propertyName,
             index: parent,
         })
+    }
+
+    /**
+     * Adds an already-existing Role to an access control by rewriting the whole relationship: the
+     * roles it already holds plus the new one. Mirrors unassignRole, which sends the ones that remain.
+     */
+    private async assignRole(parent: RoleReference, role: RoleReference): Promise<void> {
+        const card = document.getElementById(`accessControl-${parent.objectID}`)
+        const current = Array.from(card?.querySelectorAll<HTMLElement>(".role-badge-delete") ?? [])
+            .map((badge) => badge.dataset.role)
+            .filter((id): id is string => !!id)
+        if (current.includes(String(role.objectID))) {
+            return
+        }
+        const roles = Array.from(card?.querySelectorAll<HTMLElement>(".role-badge-delete") ?? [])
+            .filter((badge) => !!badge.dataset.role)
+            .map((badge) => ({
+                objectID: badge.dataset.role as string,
+                entityName: "Role",
+                name: badge.parentElement?.querySelector(".role-badge")?.textContent?.trim() ?? "",
+            }))
+            .concat([{objectID: String(role.objectID), entityName: "Role", name: role.name ?? ""}])
+        await this.context.actionDispatcher.dispatch("AccessControl", {
+            objectID: parent.objectID,
+            entityName: parent.entityName ?? "AccessControl",
+            name: parent.name ?? "",
+            roles,
+        }, "PATCH")
+    }
+
+    private async unassignRole(element: HTMLElement): Promise<void> {
+        const accessControlID = element.dataset.accessControl
+        const roleID = element.dataset.role
+        if (!accessControlID || !roleID) {
+            return
+        }
+        const label = element.parentElement?.querySelector(".role-badge")?.textContent?.trim() ?? "role"
+        const result = await this.context.desktopBridge.showMessageBox(`Remove "${label}"?`, "The role stays in the model and can be assigned again.", ["Cancel", "OK"])
+        if (!result?.response) {
+            return
+        }
+        const card = document.getElementById(`accessControl-${accessControlID}`)
+        const roles = Array.from(card?.querySelectorAll<HTMLElement>(".role-badge-delete") ?? [])
+            .filter((badge) => !!badge.dataset.role && badge.dataset.role !== roleID)
+            .map((badge) => ({
+                objectID: badge.dataset.role as string,
+                entityName: "Role",
+                name: badge.parentElement?.querySelector(".role-badge")?.textContent?.trim() ?? "",
+            }))
+        await this.context.actionDispatcher.dispatch("AccessControl", {
+            objectID: accessControlID,
+            entityName: card?.dataset.entityName ?? "AccessControl",
+            name: card?.dataset.name ?? "",
+            roles,
+        }, "PATCH")
     }
 
     private async removeSelection(element: HTMLElement): Promise<void> {
