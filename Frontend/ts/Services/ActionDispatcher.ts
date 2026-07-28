@@ -87,6 +87,8 @@ export class ActionDispatcher {
             case "Configuration":
             case "CompositeType":
                 return ["project"]
+            case "Role":
+                return ["project", "entity", "property", "accessControl"]
             case "Attribute":
                 if (location.searchParams.get("entity")) {
                     return ["project", "entity"]
@@ -137,6 +139,8 @@ export class ActionDispatcher {
                 return "configuration"
             case "CompositeType":
                 return "composite"
+            case "Role":
+                return "role"
             case "Attribute":
             case "Relationship":
             case "FetchedProperty":

@@ -146,7 +146,7 @@ final class Entity extends ManagedObject
             }));
             $entityDescription->properties = new ArrayClass(new Set($this->attributes->map(fn(Attribute $attribute) => $attribute->attributeDescription))->union($this->relationships->map(fn(Relationship $relationship) => $relationship->relationshipDescription))->union($this->fetchedProperties->map(fn(FetchedProperty $fetchedProperty) => $fetchedProperty->fetchedPropertyDescription)));
             $entityDescription->indexes = new ArrayClass($this->indexes->map(fn(FetchIndex $index) => $index->fetchIndexDescription));
-            $entityDescription->uniquenessConstraints = new ArrayClass($this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => new ArrayClass(explode(",", $uniquenessConstraint->stringValue))->map(trim(...))));
+            $entityDescription->uniquenessConstraints = new ArrayClass($this->uniquenessConstraints->map(fn(UniquenessConstraint $uniquenessConstraint): ArrayClass => new ArrayClass(explode(",", $uniquenessConstraint->stringValue))));
             return $this->entityDescription = $entityDescription;
         }
     }

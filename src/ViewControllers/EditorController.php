@@ -292,13 +292,15 @@ final class EditorController extends ProjectController
             EntityType::authorization => "Authorization"
         }, "value" => $type->value]);
     }
-    /** @var ArrayClass<string> */
+    /** @var Set<Role> */
     #[Outlet]
-    private(set) ArrayClass $defaultRoles {
-        /**
-         * @throws Exception
-         */
-        get => $this->defaultRoles ??= $this->managedObjectContext->fetch(Role::fetchRequest())->map(fn(Role $role): string => $role->name);
+    private(set) Set $roles {
+        get => $this->roles ??= $this->project->model?->roles ?? new Set();
+    }
+    /** @var Set<string> */
+    #[Outlet]
+    private(set) Set $defaultRoles {
+        get => $this->defaultRoles ??= $this->roles->map(fn(Role $role): string => $role->name);
     }
     /** @var Set<string> */
     #[Outlet]
@@ -307,16 +309,18 @@ final class EditorController extends ProjectController
             if (isset($this->allRoles)) {
                 return $this->allRoles;
             }
-            /** @var Set<string> $allRoles */
-            $allRoles = $this->selectedAccessControl?->roles?->map(fn(Role $role): string => $role->name) ?? new Set();
-            $allRoles->formUnion($this->defaultRoles);
+            $allRoles = $this->defaultRoles->map(fn(string $name): string => $name);
             $allRoles->insert("Custom...");
             return $this->allRoles = $allRoles;
         }
     }
     #[Outlet]
     private(set) bool $isCustomRole {
-        get => $this->isCustomRole ??= $this->selectedRole !== null && !$this->defaultRoles->contains(fn(string $s): bool => $s === $this->selectedRole?->name);
+        get => $this->isCustomRole ??= $this->selectedRole !== null && !$this->defaultRoles->contains(fn(string $name): bool => $name === $this->selectedRole?->name);
+    }
+    #[Outlet]
+    private(set) int $roleUsageCount {
+        get => $this->roleUsageCount ??= $this->selectedRole?->accessControls->count ?? 0;
     }
     private ModelDescriptor $descriptor {
         get => $this->descriptor ??= new ModelDescriptor(new ModelSchemaExtractor($this->managedObjectContext, new AttributeSchemaFactory()), new VocabularyRepository(), new SchemaLocalizer(), new PredicateGuideFactory());

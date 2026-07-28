@@ -2517,6 +2517,32 @@ a.breadcrumb-link:hover {
   transform: scale(1);
 }
 
+.role-popover-note {
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  background-color: rgba(199, 125, 74, 0.12);
+  color: var(--accent-orange);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.role-delete-btn {
+  margin-right: auto;
+  padding: 2px 4px;
+  min-width: 0 !important;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.role-delete-btn:hover {
+  color: var(--accent-red);
+}
+
+.role-delete-btn .material-symbols-outlined {
+  font-size: 16px;
+}
+
 /* ============================================
    15. Role Popover Editor
    ============================================ */
@@ -2595,7 +2621,7 @@ a.breadcrumb-link:hover {
   gap: 6px;
   justify-content: flex-end;
   align-items: center;
-  padding-top: 4px;
+  padding: 8px 12px;
   border-top: 1px solid var(--border-color);
 }
 

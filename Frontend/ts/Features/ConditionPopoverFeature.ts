@@ -1,7 +1,7 @@
 import {PopoverEditorFeature} from "@/Features/PopoverEditorFeature"
 
 export class ConditionPopoverFeature extends PopoverEditorFeature {
-    protected readonly triggerSelector = '[data-bs-toggle="popover"][data-access-control]:not([data-role])'
+    protected readonly triggerSelector = '[data-bs-toggle="popover"][data-bs-custom-class="condition-popover"]'
     protected readonly popoverClass = "condition-popover"
     protected readonly templateId = "condition-popover-content"
     protected readonly loadErrorMessage = "Failed to load condition editor"

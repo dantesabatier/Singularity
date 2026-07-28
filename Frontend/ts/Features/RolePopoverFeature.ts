@@ -1,5 +1,10 @@
 import {PopoverEditorFeature} from "@/Features/PopoverEditorFeature"
 
+type RoleReference = {
+    objectID?: string
+    name?: string
+}
+
 export class RolePopoverFeature extends PopoverEditorFeature {
     protected readonly triggerSelector = '[data-bs-toggle="popover"][data-role]'
     protected readonly popoverClass = "role-popover"
@@ -24,11 +29,25 @@ export class RolePopoverFeature extends PopoverEditorFeature {
         const select = form?.querySelector<HTMLSelectElement>(".role-select")
         const customField = form?.querySelector<HTMLElement>(".role-custom-field")
         const customInput = form?.querySelector<HTMLInputElement>("#scopeName")
-        const cancelButton = form?.querySelector<HTMLButtonElement>(".role-cancel-btn")
-        const saveButton = form?.querySelector<HTMLButtonElement>(".role-save-btn")
+        const cancelButton = popoverBody.querySelector<HTMLButtonElement>(".role-cancel-btn")
+        const saveButton = popoverBody.querySelector<HTMLButtonElement>(".role-save-btn")
+        const deleteButton = popoverBody.querySelector<HTMLButtonElement>(".role-delete-btn")
         if (!form || !select || !customField || !cancelButton || !saveButton) {
             return
         }
+        deleteButton?.addEventListener("click", async (event) => {
+            event.preventDefault()
+            const role = this.parseRole(deleteButton.dataset.item)
+            this.hideActivePopover()
+            if (!role) {
+                return
+            }
+            const result = await this.context.desktopBridge.showMessageBox(`Remove "${role.name}"?`, "This action cannot be undone.", ["Cancel", "OK"])
+            if (!result?.response) {
+                return
+            }
+            await this.context.actionDispatcher.dispatch("Role", {objectID: role.objectID}, "DELETE")
+        })
         const synchronizeCustomField = (): void => {
             const isCustom = select.value === "Custom..."
             customField.style.display = isCustom ? "block" : "none"
@@ -69,5 +88,17 @@ export class RolePopoverFeature extends PopoverEditorFeature {
             return
         }
         customInput?.focus()
+    }
+
+    private parseRole(raw: string | undefined): RoleReference | null {
+        if (!raw) {
+            return null
+        }
+        try {
+            const role = JSON.parse(raw) as RoleReference
+            return role.objectID ? role : null
+        } catch {
+            return null
+        }
     }
 }
