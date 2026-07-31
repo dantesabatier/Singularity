@@ -468,15 +468,15 @@ final class EditorController extends ProjectController
         }
         /** @var ArrayClass<Property> $subset */
         $subset = $entity->valueForKey($key);
-        $subset = $subset->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]);
+        $subset = $subset->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position")]);
         /** @var Property $moved */
         $moved = $subset[$fromIndex];
         /** @var Property $target */
         $target = $subset[$toIndex];
         /** @var ArrayClass<Property> $properties */
-        $properties = $entity->attributes->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]);
-        $properties->appendContentsOf($entity->relationships->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
-        $properties->appendContentsOf($entity->fetchedProperties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position", false)]));
+        $properties = $entity->attributes->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position")]);
+        $properties->appendContentsOf($entity->relationships->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position")]));
+        $properties->appendContentsOf($entity->fetchedProperties->map(fn(Property $property): Property => $property)->sorted([new SortDescriptor("position")]));
         $properties->remove($moved);
         /** @var int<0, max> $globalToIndex */
         $globalToIndex = $properties->indexOf($target);

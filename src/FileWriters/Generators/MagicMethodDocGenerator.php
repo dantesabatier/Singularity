@@ -34,7 +34,7 @@ final readonly class MagicMethodDocGenerator
      */
     public function generate(Entity $entity, string $namespace): ArrayClass
     {
-        $relationships = $entity->relationships->sorted([new SortDescriptor("position", false)]);
+        $relationships = $entity->relationships->sorted([new SortDescriptor("position")]);
         $className = class_name(Set::class);
         /** @var ArrayClass<string> */
         return $relationships->compactMap(fn(Relationship $relationship) => $this->generateMethodsForRelationship($relationship, $namespace, $className));

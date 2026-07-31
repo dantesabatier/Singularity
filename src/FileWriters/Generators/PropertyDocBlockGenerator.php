@@ -50,7 +50,7 @@ final readonly class PropertyDocBlockGenerator
     private function generateFromAttributes(Entity $entity, Set $properties, array $reservedPropertyNames, string $declaration): void
     {
         /** @var Set<string> $attributeProperties */
-        $attributeProperties = new Set($entity->attributes->sorted([new SortDescriptor("position", false)]))->compactMap(fn(Attribute $attr) => $this->generateAttributeProperty($attr, $reservedPropertyNames, $declaration));
+        $attributeProperties = new Set($entity->attributes->sorted([new SortDescriptor("position")]))->compactMap(fn(Attribute $attr) => $this->generateAttributeProperty($attr, $reservedPropertyNames, $declaration));
         $properties->formUnion($attributeProperties);
     }
 
@@ -127,7 +127,7 @@ final readonly class PropertyDocBlockGenerator
     private function generateFromRelationships(Entity $entity, Set $properties, array $reservedPropertyNames, string $declaration): void
     {
         /** @var ArrayClass<string> $relationships */
-        $relationships = $entity->relationships->sorted([new SortDescriptor("position", false)])->compactMap(fn(Relationship $relationship) => $this->generateRelationshipProperty($relationship, $reservedPropertyNames, $declaration, class_name(Set::class)));
+        $relationships = $entity->relationships->sorted([new SortDescriptor("position")])->compactMap(fn(Relationship $relationship) => $this->generateRelationshipProperty($relationship, $reservedPropertyNames, $declaration, class_name(Set::class)));
         $properties->formUnion($relationships);
     }
 
@@ -156,7 +156,7 @@ final readonly class PropertyDocBlockGenerator
     private function generateFromFetchedProperties(Entity $entity, Set $properties, string $declaration): void
     {
         /** @var Set<string> $fetchedProperties */
-        $fetchedProperties = $entity->fetchedProperties->sorted([new SortDescriptor("position", false)])->compactMap(fn(FetchedProperty $fp) => $this->generateFetchedProperty($fp, $declaration, class_name(ArrayClass::class)));
+        $fetchedProperties = $entity->fetchedProperties->sorted([new SortDescriptor("position")])->compactMap(fn(FetchedProperty $fp) => $this->generateFetchedProperty($fp, $declaration, class_name(ArrayClass::class)));
         $properties->formUnion($fetchedProperties);
     }
 
