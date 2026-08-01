@@ -52,6 +52,13 @@
                             <option n:foreach="$destinationEntity->relationships as $relationship" value="{$relationship->name}" {$relationship->name === $selectedProperty->lazyInverseRelationshipName ? selected}>{$relationship->name}</option>
                         {/if}
                     </select>
+                    <div n:if="$selectedProperty->destinationEntity && !$selectedProperty->inverseRelationship" class="inspector-inline-warning" role="status">
+                        <span class="material-symbols-outlined ms-filled">warning</span>
+                        <div>
+                            This relationship has no inverse.
+                            <span class="help-note">Core Data uses the inverse to keep the object graph consistent.</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="inspector-header">Configuration</div>

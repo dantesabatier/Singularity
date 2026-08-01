@@ -50,7 +50,9 @@
                             </select>
                         </form>
                     </td>
-                    <td class="col-flex"></td>
+                    <td class="col-flex">
+                        <span n:if="$relationship->destinationEntity && !$relationship->inverseRelationship" class="cell-warning-icon material-symbols-outlined ms-filled" title="This relationship has no inverse">warning</span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
