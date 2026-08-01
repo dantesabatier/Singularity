@@ -524,6 +524,41 @@ button {
   margin-top: 2px;
 }
 
+.inspector-inline-warning {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background-color: rgba(199, 166, 81, 0.1);
+  border-left: 2px solid var(--accent-yellow);
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.inspector-inline-warning .material-symbols-outlined {
+  color: var(--accent-yellow);
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+.inspector-inline-warning-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.inspector-inline-warning-tokens code {
+  padding: 1px 5px;
+  border-radius: 3px;
+  background-color: rgba(199, 166, 81, 0.16);
+  color: var(--text-primary);
+  font-size: 10px;
+}
+
 .modal-footer .btn {
   min-width: 80px;
 }

@@ -81,18 +81,27 @@
                     <input type="text" name="renamingIdentifier" id="renamingIdentifier" placeholder="Renaming Identifier" class="form-control form-control-sm text-truncate" value="{$selectedEntity->renamingIdentifier}" autocomplete="off" spellcheck="false">
                 </div>
             </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
-        </form>
-        <div class="inspector-header">Entity Type</div>
-        <div class="row mb-2">
-            <label class="col-sm-4 inspector-label">Type</label>
-            <div class="col-sm-8">
-                <div class="form-check" n:foreach="$entityTypes as $entityType">
-                    <input class="form-check-input" type="radio" name="type" id="type{$entityType->value}" value="{$entityType->value}" {$entityType->value === $selectedEntity->type->value ? checked}>
-                    <label class="form-check-label small text-secondary" for="type{$entityType->value}">{$entityType->name}</label>
+            <div class="inspector-header">Entity Type</div>
+            <div class="row mb-2">
+                <label class="col-sm-4 inspector-label">Type</label>
+                <div class="col-sm-8">
+                    <div class="form-check" n:foreach="$entityTypes as $entityType">
+                        <input class="form-check-input" type="radio" name="type" id="type{$entityType->value}" value="{$entityType->value}" {$entityType->value === $selectedEntity->type->value ? checked}>
+                        <label class="form-check-label small text-secondary" for="type{$entityType->value}">{$entityType->name}</label>
+                    </div>
+                    <div n:if="!$missingReservedProperties->isEmpty" class="inspector-inline-warning" role="status">
+                        <span class="material-symbols-outlined ms-filled">warning</span>
+                        <div>
+                            This entity is missing {$missingReservedProperties->count === 1 ? "a property" : "properties"} required by its type:
+                            <span class="inspector-inline-warning-tokens">
+                                <code n:foreach="$missingReservedProperties as $missingProperty">{$missingProperty}</code>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+        </form>
         {include accessControls from "AccessControls.latte", $selectedEntity}
         {if $selectedAccessControl}
             {include roles from "Roles.latte"}

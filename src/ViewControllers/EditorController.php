@@ -10,6 +10,10 @@ use App\Bundles\BundleUpdater;
 use App\Bundles\ExtractLocalizablesTransaction;
 use App\Bundles\SaveBundleTransaction;
 use App\Bundles\SubclassTransaction;
+use App\FileWriters\Generators\AuthorizableCodeGenerator;
+use App\FileWriters\Generators\AuthorizableRoleCodeGenerator;
+use App\FileWriters\Generators\AuthorizationCodeGenerator;
+use App\FileWriters\Generators\PropertyAttributeGenerator;
 use App\LLM\Provider;
 use App\Model\AccessControl;
 use App\Model\Attachment;
@@ -291,6 +295,28 @@ final class EditorController extends ProjectController
             EntityType::authorizableRole => "Authorizable Role",
             EntityType::authorization => "Authorization"
         }, "value" => $type->value]);
+    }
+    /** @var Set<string> */
+    #[Outlet]
+    private(set) Set $missingReservedProperties {
+        get {
+            if (isset($this->missingReservedProperties)) {
+                return $this->missingReservedProperties;
+            }
+            $entity = $this->selectedEntity;
+            if ($entity === null || $entity->type === EntityType::none) {
+                return $this->missingReservedProperties = new Set();
+            }
+            $accessControlGenerator = new PropertyAttributeGenerator();
+            $reservedPropertyNames = match ($entity->type) {
+                EntityType::authorizable => new AuthorizableCodeGenerator($accessControlGenerator)->reservedPropertyNames,
+                EntityType::authorizableRole => new AuthorizableRoleCodeGenerator($accessControlGenerator)->reservedPropertyNames,
+                EntityType::authorization => new AuthorizationCodeGenerator($accessControlGenerator)->reservedPropertyNames,
+                EntityType::none => [],
+            };
+            $existing = new Set($entity->attributesByName->keys)->union($entity->relationshipsByName->keys);
+            return $this->missingReservedProperties = new Set($reservedPropertyNames)->subtracting($existing);
+        }
     }
     /** @var Set<Role> */
     #[Outlet]
