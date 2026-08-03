@@ -206,7 +206,7 @@ final class EditorController extends ProjectController
             if (isset($this->selectedConversation)) {
                 return $this->selectedConversation;
             }
-            if (($this->request->parameters["fresh"] ?? null) === "1") {
+            if ($this->request->parameters["fresh"] === "1") {
                 return null;
             }
             return $this->selectedConversation = $this->project->selectedConversation;
@@ -361,7 +361,7 @@ final class EditorController extends ProjectController
     #[Override]
     public function viewWillLoad(): void
     {
-        if (($this->request->parameters["partial"] ?? null) === "1") {
+        if ($this->request->parameters["partial"] === "1") {
             $this->name = "EditorSelection";
         }
         $project = $this->project;
