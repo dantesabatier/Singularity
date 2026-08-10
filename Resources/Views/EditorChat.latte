@@ -1,6 +1,6 @@
 {templateType App\ViewControllers\EditorController}
 {define editorChat}
-    <div id="ai-chat-panel" class="ai-chat-panel" data-project-object-id="{$project->objectID|json}" data-ai-provider="{($selectedConversation?->provider ?? $selectedLLMProviderIdentifier) ?? 'anthropic'}" data-ai-model="{($selectedConversation?->model ?? $selectedAIModel) ?? 'claude-opus-4-8'}" {if $selectedConversation && !$selectedConversation->messages->isEmpty}data-conversation-locked="true"{/if}>
+    <div id="ai-chat-panel" class="ai-chat-panel" data-project-object-id="{$project->objectID|json}" data-ai-provider="{($selectedConversation?->provider ?? $selectedLLMProviderIdentifier) ?? 'anthropic'}" data-ai-model="{$selectedAIModel ?? 'claude-opus-4-8'}" {if $selectedConversation && !$selectedConversation->messages->isEmpty}data-conversation-locked="true"{/if}>
         <div class="ai-chat-header">
             <div class="dropdown">
                 <button class="btn btn-icon ai-chat-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Conversations">
@@ -34,22 +34,38 @@
                 </ul>
             </div>
             <span class="ai-chat-title text-truncate flex-grow-1">{$selectedConversation?->title ?? ""}</span>
+            {* Selector de proveedor (secundario y discreto): solo el ícono-tier + caret.
+               Queda fijo una vez que la conversación tiene mensajes, porque cambiar de
+               proveedor invalidaría el modelo elegido. *}
             <div class="dropdown">
-                <button class="btn ai-model-picker-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Select AI Model" id="chat-model-picker-btn" {if $selectedConversation && !$selectedConversation->messages->isEmpty}disabled{/if}>
+                <button class="btn ai-provider-picker-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Select AI Provider" id="chat-provider-picker-btn" {if $selectedConversation && !$selectedConversation->messages->isEmpty}disabled{/if}>
+                    <span class="ai-provider-icon" id="chat-provider-icon"></span>
+                    <span class="material-symbols-outlined" style="font-size: 8px; opacity: 0.5;">expand_more</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end ai-provider-dropdown">
+                    {foreach $aiProviders as $provider}
+                        <li>
+                            <button class="dropdown-item ai-provider-item" type="button" data-provider="{$provider->identifier}" data-label="{$provider->name}">
+                                <span class="ai-provider-icon tier-{$provider->identifier}">{$provider->name|first}</span>
+                                <span class="ai-provider-item-name">{$provider->name}</span>
+                            </button>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
+            {* Selector de modelo (primario): el usuario puede cambiarlo en cualquier
+               momento, incluso con mensajes. Lista solo los modelos del proveedor
+               seleccionado; se repuebla desde el TS al cambiar de proveedor. *}
+            <div class="dropdown">
+                <button class="btn ai-model-picker-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Select AI Model" id="chat-model-picker-btn">
                     <span class="ai-model-indicator" id="chat-model-indicator"></span>
                     <span class="ai-model-name" id="chat-model-name">Opus 4.8</span>
                     <span class="material-symbols-outlined" style="font-size: 8px; opacity: 0.5;">expand_more</span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end ai-model-dropdown">
+                <ul class="dropdown-menu dropdown-menu-end ai-model-dropdown" id="chat-model-dropdown">
                     {foreach $aiProviders as $provider}
-                        <li>
-                            <h6 class="dropdown-header ai-provider-header">
-                                <span class="ai-provider-icon tier-{$provider->identifier}">{$provider->name|first}</span>
-                                {$provider->name}
-                            </h6>
-                        </li>
                         {foreach $provider->models as $model}
-                            <li>
+                            <li class="ai-model-option" data-provider="{$provider->identifier}"{if $provider->identifier !== (($selectedConversation?->provider ?? $selectedLLMProviderIdentifier) ?? 'anthropic')} hidden{/if}>
                                 <button class="dropdown-item ai-model-item" type="button" data-provider="{$provider->identifier}" data-model="{$model->identifier}" data-label="{$model->name}" data-tier="{$model->tier}">
                                     <span class="ai-model-item-dot tier-{$model->tier}"></span>
                                     <span class="ai-model-item-name">{$model->name}</span>
@@ -57,10 +73,6 @@
                                 </button>
                             </li>
                         {/foreach}
-                        {if !$iterator->last}
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>{/if}
                     {/foreach}
                 </ul>
             </div>

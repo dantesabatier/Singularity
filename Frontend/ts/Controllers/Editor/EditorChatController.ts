@@ -72,6 +72,7 @@ export class EditorChatController {
     private currentSendBtn: HTMLButtonElement | null = null
     private currentInput: HTMLTextAreaElement | null = null
     private currentModelMenu: Element | null = null
+    private currentProviderMenu: Element | null = null
     private currentFileInput: HTMLInputElement | null = null
     private currentAttachBtn: Element | null = null
     private currentMessages: Element | null = null
@@ -102,10 +103,17 @@ export class EditorChatController {
         if (!btn?.dataset.model) {
             return
         }
-        const provider = btn.dataset.provider ?? DEFAULT_PROVIDER
-        const model = btn.dataset.model
-        this.applyProvider(provider, true)
-        this.applyModel(model, true)
+        // El menú de modelo ya está filtrado al proveedor activo, así que solo
+        // cambia el modelo. El modelo es libre: puede cambiarse aun con mensajes.
+        this.applyModel(btn.dataset.model, true)
+    }
+
+    private readonly onProviderMenuClick = (e: Event): void => {
+        const btn = (e.target as Element).closest<HTMLElement>("[data-provider]")
+        if (!btn?.dataset.provider) {
+            return
+        }
+        this.applyProvider(btn.dataset.provider, true)
     }
 
     public constructor(private readonly context: ApplicationContext) {
@@ -180,22 +188,60 @@ export class EditorChatController {
         this.applyProvider(provider, false)
         this.applyModel(model, false)
         if (panel.dataset.conversationLocked === "true") {
-            this.lockModelPicker()
+            this.lockProviderPicker()
         }
     }
 
     private bindModelPicker(): void {
         const menu = document.querySelector(".ai-model-dropdown")
-        if (!menu || menu === this.currentModelMenu) {
-            return
+        if (menu && menu !== this.currentModelMenu) {
+            this.currentModelMenu?.removeEventListener("click", this.onModelMenuClick)
+            menu.addEventListener("click", this.onModelMenuClick)
+            this.currentModelMenu = menu
         }
-        this.currentModelMenu?.removeEventListener("click", this.onModelMenuClick)
-        menu.addEventListener("click", this.onModelMenuClick)
-        this.currentModelMenu = menu
+        const providerMenu = document.querySelector(".ai-provider-dropdown")
+        if (providerMenu && providerMenu !== this.currentProviderMenu) {
+            this.currentProviderMenu?.removeEventListener("click", this.onProviderMenuClick)
+            providerMenu.addEventListener("click", this.onProviderMenuClick)
+            this.currentProviderMenu = providerMenu
+        }
     }
 
     private applyProvider(provider: string, persist: boolean): void {
         this.selectedProvider = provider
+
+        // Refleja el proveedor en su botón (el ícono-tier con la inicial).
+        const providerBtn = document.querySelector<HTMLElement>(`.ai-provider-item[data-provider="${provider}"]`)
+        const label = providerBtn?.dataset.label ?? provider
+        const icon = document.getElementById("chat-provider-icon")
+        if (icon) {
+            icon.textContent = label.charAt(0)
+            icon.className = `ai-provider-icon tier-${provider}`
+        }
+        const pickerBtn = document.getElementById("chat-provider-picker-btn")
+        if (pickerBtn) {
+            pickerBtn.title = label
+        }
+
+        // El menú de modelo solo debe ofrecer los modelos de este proveedor.
+        let firstModelOfProvider: string | null = null
+        let currentStillValid = false
+        document.querySelectorAll<HTMLElement>("#chat-model-dropdown .ai-model-option").forEach((option) => {
+            const matches = option.dataset.provider === provider
+            option.hidden = !matches
+            if (matches) {
+                const model = option.querySelector<HTMLElement>("[data-model]")?.dataset.model ?? null
+                firstModelOfProvider ??= model
+                if (model === this.selectedModel) {
+                    currentStillValid = true
+                }
+            }
+        })
+        // Si el modelo activo no pertenece al nuevo proveedor, cae al primero suyo.
+        if (!currentStillValid && firstModelOfProvider) {
+            this.applyModel(firstModelOfProvider, persist)
+        }
+
         if (persist) {
             void this.context.actionDispatcher.dispatch("Synchronize", {
                 editorAIProvider: provider,
@@ -302,7 +348,7 @@ export class EditorChatController {
                 }
             }
             this.setStatus("idle")
-            this.lockModelPicker()
+            this.lockProviderPicker()
 
             if (modelWasChanged) {
                 await this.context.viewNavigator.push(window.location.href)
@@ -669,11 +715,13 @@ export class EditorChatController {
         return group
     }
 
-    private lockModelPicker(): void {
-        const btn = document.getElementById("chat-model-picker-btn")
+    private lockProviderPicker(): void {
+        // El proveedor queda fijo una vez que la conversación tiene mensajes; el
+        // modelo sigue libre. Cambiar de proveedor invalidaría el modelo elegido.
+        const btn = document.getElementById("chat-provider-picker-btn")
         if (btn instanceof HTMLButtonElement && !btn.disabled) {
             btn.disabled = true
-            btn.title = "Model locked for this conversation"
+            btn.title = "Provider locked for this conversation"
         }
     }
 

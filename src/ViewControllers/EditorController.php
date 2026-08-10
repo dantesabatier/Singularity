@@ -583,7 +583,6 @@ final class EditorController extends ProjectController
         $conversation = new Conversation($this->managedObjectContext);
         $conversation->updateFromSnapshot($snapshot);
         $conversation->provider = $providerID;
-        $conversation->model = $model;
         $userMessage = new Message($this->managedObjectContext);
         $userMessage->role = LLMMessageRole::user;
         $userMessage->content = $content;

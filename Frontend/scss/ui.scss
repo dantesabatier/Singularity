@@ -836,6 +836,50 @@ button {
   pointer-events: none;
 }
 
+/* Selector de proveedor: control secundario, más callado que el de modelo.
+   Solo el ícono-tier y el caret, sin texto, para no competir por el ancho del header. */
+.ai-provider-picker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 4px;
+  height: 20px;
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.1s ease;
+}
+
+.ai-provider-picker-btn:hover:not(:disabled) {
+  background-color: var(--bg-active);
+  border-color: var(--border-light);
+}
+
+.ai-provider-picker-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+.ai-provider-dropdown {
+  min-width: 160px;
+}
+
+.ai-provider-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+}
+
+.ai-provider-item-name {
+  font-weight: 600;
+  font-size: 12px;
+}
+
 .ai-model-indicator {
   width: 5px;
   height: 5px;

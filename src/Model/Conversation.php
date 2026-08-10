@@ -15,7 +15,6 @@ use Sabatier\Foundation\Set;
  * @property Date|null $lastModifiedDate
  * @property string $title
  * @property string $provider
- * @property string $model
  * @property int<0, max> $totalTokens
  * @property int<0, max> $inputTokens
  * @property int<0, max> $outputTokens
@@ -33,7 +32,7 @@ final class Conversation extends ManagedObject
 {
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
-        get => new Dictionary(["objectID" => $this->objectID, "title" => $this->title, "provider" => $this->provider, "model" => $this->model, "messages" => $this->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
+        get => new Dictionary(["objectID" => $this->objectID, "title" => $this->title, "provider" => $this->provider, "messages" => $this->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
     }
 
     #[Override]
