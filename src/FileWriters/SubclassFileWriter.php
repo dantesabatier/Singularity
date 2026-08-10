@@ -44,6 +44,13 @@ final class SubclassFileWriter extends FileWriter
     private readonly ClassFileAssembler $fileAssembler;
     private readonly PropertyAttributeGenerator $accessControlGenerator;
 
+    /**
+     * @param URL $url The destination file this writer generates.
+     * @param Entity $entity The entity the generated subclass models.
+     * @param string $class The unqualified class name to generate.
+     * @param string $namespace The namespace the generated class belongs to.
+     * @param Closure $classNameGenerator Resolves the class name for a given entity, used for related-entity type hints.
+     */
     public function __construct(URL $url, Entity $entity, string $class, string $namespace, Closure $classNameGenerator)
     {
         parent::__construct($url);

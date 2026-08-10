@@ -12,6 +12,9 @@ final readonly class OpenBundleTransaction implements Transaction
 {
     public Project $project;
 
+    /**
+     * @param ProjectBundleLoader $loader The loader used to open the project from its bundle.
+     */
     public function __construct(private ProjectBundleLoader $loader)
     {
     }

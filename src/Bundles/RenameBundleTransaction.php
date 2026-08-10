@@ -21,6 +21,10 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 
 final readonly class RenameBundleTransaction implements Transaction
 {
+    /**
+     * @param Project $project The project whose bundle is renamed.
+     * @param string $newName The new bundle name.
+     */
     public function __construct(private Project $project, private string $newName)
     {
     }

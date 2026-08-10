@@ -14,6 +14,10 @@ use const Sabatier\Foundation\kCFBundleNameKey;
 
 final readonly class ProjectBundleLoader
 {
+    /**
+     * @param URL $url The bundle directory to load the project from.
+     * @param ManagedObjectContext $context The context the loaded project is inserted into.
+     */
     public function __construct(private URL $url, private ManagedObjectContext $context)
     {
     }

@@ -100,6 +100,7 @@ final class WelcomeController extends ViewController
     public function open(): void
     {
         $parameters = $this->request->parameters;
+        /** @var string $path */
         $path = $parameters["directory"] ?? throw new BadRequestException("`directory` is required");
         $url = URL::fileURL($path);
         $loader = new ProjectBundleLoader($url, $this->managedObjectContext);
@@ -117,6 +118,7 @@ final class WelcomeController extends ViewController
     public function create(): void
     {
         $parameters = $this->request->parameters;
+        /** @var string $path */
         $path = $parameters["directory"] ?? throw new BadRequestException("`directory` is required");
         $options = new BundleGenerationOptions($parameters["generateWithSecurity"] ?? false, $parameters["generateWithCORS"] ?? false, $parameters["generateWithJWT"] ?? false);
         $url = URL::fileURL($path);
@@ -136,7 +138,9 @@ final class WelcomeController extends ViewController
     public function rename(): void
     {
         $parameters = $this->request->parameters;
+        /** @var string $newName */
         $newName = $parameters["name"] ?? throw new BadRequestException("`name` is required");
+        /** @var int $objectID */
         $objectID = $parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException("`objectID` is required");
         $project = $this->projectWithID($objectID);
         $transaction = new RenameBundleTransaction($project, $newName);
@@ -151,6 +155,7 @@ final class WelcomeController extends ViewController
     #[Action(HTTPRequestMethod::delete)]
     public function remove(): void
     {
+        /** @var int $objectID */
         $objectID = $this->request->parameters[ManagedObjectObjectIDKey] ?? throw new BadRequestException("`objectID` is required");
         $context = $this->managedObjectContext;
         $project = $this->projectWithID($objectID);

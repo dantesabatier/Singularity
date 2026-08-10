@@ -17,6 +17,10 @@ final class ModelFileWriter extends FileWriter
     }
     private readonly Model $model;
 
+    /**
+     * @param URL $url The destination file this writer generates.
+     * @param Model $model The model whose managed-object model is archived to the file.
+     */
     public function __construct(URL $url, Model $model)
     {
         parent::__construct($url);

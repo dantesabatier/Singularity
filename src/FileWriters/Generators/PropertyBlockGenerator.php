@@ -22,6 +22,9 @@ use function Sabatier\Foundation\class_name;
 
 final readonly class PropertyBlockGenerator
 {
+    /**
+     * @param PropertyAttributeGenerator $propertyAttributeGenerator Generates the PHP attributes attached to each generated property.
+     */
     public function __construct(private PropertyAttributeGenerator $propertyAttributeGenerator)
     {
     }

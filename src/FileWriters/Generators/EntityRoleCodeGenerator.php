@@ -24,6 +24,9 @@ abstract class EntityRoleCodeGenerator
         get => array_keys($this->properties);
     }
 
+    /**
+     * @param PropertyAttributeGenerator $accessControlGenerator Generates the access-control PHP attributes for the role's properties.
+     */
     public function __construct(private readonly PropertyAttributeGenerator $accessControlGenerator)
     {
     }

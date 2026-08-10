@@ -41,6 +41,11 @@ final class DotEnvFileWriter extends FileWriter
     private readonly bool $isGeneratedWithCORS;
     private readonly bool $isGeneratedWithJWT;
 
+    /**
+     * @param URL $url The destination file this writer generates.
+     * @param bool $isGeneratedWithCORS Whether the generated `.env` includes CORS configuration.
+     * @param bool $isGeneratedWithJWT Whether the generated `.env` includes JWT authentication configuration.
+     */
     public function __construct(URL $url, bool $isGeneratedWithCORS, bool $isGeneratedWithJWT)
     {
         parent::__construct($url);

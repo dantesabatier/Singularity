@@ -60,6 +60,11 @@ final class ExportDatabaseTransaction implements Transaction
         get => $this->command ??= sprintf("mariadb-dump --user=%s --password=%s --host=%s%s %s > %s", escapeshellarg($this->user), escapeshellarg($this->password), escapeshellarg($this->host), " $this->flags", escapeshellarg($this->database), escapeshellarg($this->fileURL->path));
     }
 
+    /**
+     * @param Project $project The project whose database is exported.
+     * @param URL $destinationDirectory The directory the dump file is written into.
+     * @param DatabaseExportationOptions $options The options controlling what the dump includes.
+     */
     public function __construct(private readonly Project $project, private readonly URL $destinationDirectory, private readonly DatabaseExportationOptions $options)
     {
     }

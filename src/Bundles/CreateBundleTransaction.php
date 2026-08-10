@@ -13,6 +13,10 @@ final class CreateBundleTransaction implements CompensableTransaction
 {
     private bool $executed = false;
 
+    /**
+     * @param BundleScaffolder $scaffolder The scaffolder used to generate the bundle's files.
+     * @param URL $bundleURL The destination directory the bundle is created in, used to roll back on failure.
+     */
     public function __construct(private readonly BundleScaffolder $scaffolder, private readonly URL $bundleURL)
     {
     }

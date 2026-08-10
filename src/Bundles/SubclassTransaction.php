@@ -21,6 +21,9 @@ use function Sabatier\Foundation\fatal_error;
 
 final readonly class SubclassTransaction implements Transaction
 {
+    /**
+     * @param Project $project The project whose entities get generated managed-object subclasses.
+     */
     public function __construct(private Project $project)
     {
     }

@@ -69,6 +69,7 @@ final class ViewerController extends ProjectController
     public function export(): void
     {
         $parameters = $this->request->parameters;
+        /** @var string $directory */
         $directory = $parameters["directory"] ?? throw new BadRequestException("`directory` is required");
         $destinationDirectory = URL::fileURL($directory);
         $options = new DatabaseExportationOptions($this->exportIncludeData, $this->exportIncludeComments);

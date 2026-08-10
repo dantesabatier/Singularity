@@ -481,9 +481,13 @@ final class EditorController extends ProjectController
     public function reorder(): void
     {
         $parameters = $this->request->parameters;
+        /** @var int $fromIndex */
         $fromIndex = $parameters["fromIndex"] ?? throw new BadRequestException("`fromIndex` is required");
+        /** @var int $toIndex */
         $toIndex = $parameters["toIndex"] ?? throw new BadRequestException("`toIndex` is required");
+        /** @var string $key */
         $key = $parameters["key"] ?? throw new BadRequestException("`key` is required");
+        /** @var string $name */
         $name = $parameters["entity"] ?? throw new BadRequestException("`entity` is required");
         $model = $this->project->model;
         /** @var Entity $entity */
@@ -575,8 +579,11 @@ final class EditorController extends ProjectController
     {
         $project = $this->project;
         $parameters = $this->request->parameters;
+        /** @var string $content */
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
+        /** @var string $model */
         $model = $parameters["model"] ?? UserDefaults::standard()->string(LLMModelPreferencesKey) ?? throw new BadRequestException("No model configured.");
+        /** @var string $providerID */
         $providerID = $parameters["provider"] ?? UserDefaults::standard()->string(LLMProviderPreferencesKey) ?? throw new BadRequestException("No provider configured.");
         /** @var Dictionary<mixed> $snapshot */
         $snapshot = $parameters["conversation"] ?? throw new BadRequestException("`conversation` is required");

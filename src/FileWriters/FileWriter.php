@@ -20,6 +20,9 @@ abstract class FileWriter
         get => request_concrete_implementation($this, __PROPERTY__);
     }
 
+    /**
+     * @param URL $url The destination file this writer generates.
+     */
     public function __construct(public readonly URL $url)
     {
     }

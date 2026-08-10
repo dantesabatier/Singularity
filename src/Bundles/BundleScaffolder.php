@@ -22,6 +22,11 @@ use Sabatier\Foundation\URL;
 
 final readonly class BundleScaffolder
 {
+    /**
+     * @param URL $bundleURL The destination directory the bundle is scaffolded into.
+     * @param Project $project The project whose model backs the generated bundle.
+     * @param BundleGenerationOptions $options The optional capabilities to scaffold into the bundle.
+     */
     public function __construct(private URL $bundleURL, private Project $project, private BundleGenerationOptions $options)
     {
     }

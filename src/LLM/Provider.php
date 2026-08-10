@@ -37,7 +37,7 @@ final class Provider
 
     /**
      * @param ArrayClass<Model> $models
-     * @param Dictionary<mixed> $options Campos extra de generación fusionados en el cuerpo de cada petición (p. ej. temperature, o los num_ctx/num_predict de Ollama).
+     * @param Dictionary<mixed> $options Extra generation fields merged into the body of every request (e.g. temperature, or Ollama's num_ctx/num_predict).
      */
     public function __construct(public readonly string $name, public readonly string $identifier, public readonly URL $url, public readonly string $apiKey, public readonly ArrayClass $models, public readonly Dictionary $options = new Dictionary())
     {

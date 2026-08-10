@@ -13,6 +13,9 @@ use Sabatier\Foundation\FileManager;
 
 final readonly class BundleUpdater
 {
+    /**
+     * @param Project $project The project whose generated bundle is brought up to date.
+     */
     public function __construct(private Project $project)
     {
     }

@@ -14,6 +14,9 @@ final class GeneratedMethod extends ObjectClass
         get => " * @method $this->signature";
     }
 
+    /**
+     * @param string $signature The method signature to render in the `@method` docblock tag.
+     */
     public function __construct(public readonly string $signature)
     {
     }

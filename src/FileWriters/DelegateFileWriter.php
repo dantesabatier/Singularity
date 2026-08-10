@@ -73,6 +73,10 @@ final class DelegateFileWriter extends FileWriter
     }
     private readonly bool $isGeneratedWithSecurity;
 
+    /**
+     * @param URL $url The destination file this writer generates.
+     * @param bool $isGeneratedWithSecurity Whether the generated delegate includes the security scaffolding.
+     */
     public function __construct(URL $url, bool $isGeneratedWithSecurity)
     {
         parent::__construct($url);
