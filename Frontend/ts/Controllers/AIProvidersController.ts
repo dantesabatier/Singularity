@@ -2,12 +2,16 @@ import {ApplicationContext} from "@/Application/ApplicationContext"
 import {ViewController} from "@/Application/ViewController"
 
 type LLMModel = { name: string; identifier: string; tier: string }
-type LLMProvider = { name: string; identifier: string; url: string; apiKey?: string; models: LLMModel[] }
+// Las opciones de generación se guardan como diccionario plano en el provider
+// (p. ej. {num_ctx: 16384, temperature: 0.15}); en el editor se manejan como
+// filas {key, value} para poder listarlas, añadirlas y borrarlas.
+type LLMProvider = { name: string; identifier: string; url: string; apiKey?: string; models: LLMModel[]; options?: Record<string, string | number> }
 
 export class AIProvidersController extends ViewController {
     private providers: LLMProvider[] = []
     private editingIndex: number | null = null
     private editingModels: LLMModel[] = []
+    private editingOptions: Array<{ key: string; value: string }> = []
     private abortController: AbortController | null = null
 
     public constructor(context: ApplicationContext) {
@@ -53,6 +57,7 @@ export class AIProvidersController extends ViewController {
         document.getElementById("addLLMProvider")?.addEventListener("hidden.bs.modal", () => {
             this.editingIndex = null
             this.editingModels = []
+            this.editingOptions = []
         }, { signal })
 
         document.getElementById("addLLMProvider")?.addEventListener("click", (e) => {
@@ -71,6 +76,16 @@ export class AIProvidersController extends ViewController {
                     const idx = parseInt(btn.dataset.modelIndex ?? "-1", 10)
                     if (idx >= 0) {
                         this.removeModel(idx)
+                    }
+                    break
+                }
+                case "addOption":
+                    this.addOption()
+                    break
+                case "removeOption": {
+                    const idx = parseInt(btn.dataset.optionIndex ?? "-1", 10)
+                    if (idx >= 0) {
+                        this.removeOption(idx)
                     }
                     break
                 }
@@ -106,6 +121,7 @@ export class AIProvidersController extends ViewController {
         }
         this.editingIndex = index
         this.editingModels = [...provider.models]
+        this.editingOptions = Object.entries(provider.options ?? {}).map(([key, value]) => ({key, value: String(value)}))
         this.populateForm(provider)
         const label = document.getElementById("addLLMProviderLabel")
         if (label) {
@@ -116,6 +132,7 @@ export class AIProvidersController extends ViewController {
             confirmBtn.textContent = "Save"
         }
         this.renderModels()
+        this.renderOptions()
         window.bootstrap.Modal.getOrCreateInstance(document.getElementById("addLLMProvider")!).show()
     }
 
@@ -134,6 +151,8 @@ export class AIProvidersController extends ViewController {
         ;(document.getElementById("pf-model-name") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-model-id") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-model-tier") as HTMLInputElement).value = ""
+        ;(document.getElementById("pf-option-key") as HTMLInputElement).value = ""
+        ;(document.getElementById("pf-option-value") as HTMLInputElement).value = ""
         const label = document.getElementById("addLLMProviderLabel")
         if (label) {
             label.textContent = "Add Provider"
@@ -143,7 +162,9 @@ export class AIProvidersController extends ViewController {
             confirmBtn.textContent = "Add Provider"
         }
         this.editingModels = []
+        this.editingOptions = []
         this.renderModels()
+        this.renderOptions()
     }
 
     private addModel(): void {
@@ -185,6 +206,56 @@ export class AIProvidersController extends ViewController {
         }
     }
 
+    private addOption(): void {
+        const key = (document.getElementById("pf-option-key") as HTMLInputElement).value.trim()
+        const value = (document.getElementById("pf-option-value") as HTMLInputElement).value.trim()
+        if (!key) {
+            return
+        }
+        this.editingOptions.push({key, value})
+        ;(document.getElementById("pf-option-key") as HTMLInputElement).value = ""
+        ;(document.getElementById("pf-option-value") as HTMLInputElement).value = ""
+        this.renderOptions()
+    }
+
+    private removeOption(index: number): void {
+        this.editingOptions.splice(index, 1)
+        this.renderOptions()
+    }
+
+    private renderOptions(): void {
+        const list = document.getElementById("pf-options-list")
+        if (!list) {
+            return
+        }
+        list.innerHTML = ""
+        for (const [i, option] of this.editingOptions.entries()) {
+            const row = document.createElement("div")
+            row.className = "d-flex align-items-center gap-2 p-1 rounded"
+            row.innerHTML = `
+                <span class="small flex-grow-1">${option.key}</span>
+                <code class="ai-model-item-id">${option.value}</code>
+                <button type="button" class="btn btn-sm btn-icon text-danger flex-shrink-0" data-ai-action="removeOption" data-option-index="${i}">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            `
+            list.appendChild(row)
+        }
+    }
+
+    // Colapsa las filas del editor a un diccionario plano, con coerción numérica:
+    // un valor que parsea a número se guarda como número, el resto como texto.
+    private collectOptions(): Record<string, string | number> {
+        return this.editingOptions.reduce<Record<string, string | number>>((carry, {key, value}) => {
+            const name = key.trim()
+            if (name) {
+                const number = Number(value)
+                carry[name] = value.trim() !== "" && !Number.isNaN(number) ? number : value
+            }
+            return carry
+        }, {})
+    }
+
     private async confirmSaveProvider(): Promise<void> {
         const name = (document.getElementById("pf-name") as HTMLInputElement).value.trim()
         const identifier = (document.getElementById("pf-identifier") as HTMLInputElement).value.trim()
@@ -199,9 +270,20 @@ export class AIProvidersController extends ViewController {
         if (pendingName && pendingId) {
             this.editingModels.push({name: pendingName, identifier: pendingId, tier: pendingTier})
         }
+        // Incorpora también la fila de opción a medio escribir que el usuario no
+        // llegó a confirmar con el botón +, igual que con el modelo pendiente.
+        const pendingOptionKey = (document.getElementById("pf-option-key") as HTMLInputElement).value.trim()
+        const pendingOptionValue = (document.getElementById("pf-option-value") as HTMLInputElement).value.trim()
+        if (pendingOptionKey) {
+            this.editingOptions.push({key: pendingOptionKey, value: pendingOptionValue})
+        }
         const provider: LLMProvider = {name, identifier, url, models: [...this.editingModels]}
         if (apiKey) {
             provider.apiKey = apiKey
+        }
+        const options = this.collectOptions()
+        if (Object.keys(options).length > 0) {
+            provider.options = options
         }
         if (this.editingIndex !== null) {
             this.providers[this.editingIndex] = provider

@@ -142,6 +142,17 @@
                                                         </button>
                                                     </div>
                                                 </div>
+                                                <div class="modal-form-field">
+                                                    <label class="modal-form-label">Generation options</label>
+                                                    <div id="pf-options-list" class="d-flex flex-column gap-1 mb-2"></div>
+                                                    <div class="d-flex gap-2 align-items-center">
+                                                        <input name="optionKey" aria-label="option key" type="text" id="pf-option-key" class="form-control form-control-sm" placeholder="Key (e.g. num_ctx)" autocomplete="off">
+                                                        <input name="optionValue" aria-label="option value" type="text" id="pf-option-value" class="form-control form-control-sm" placeholder="Value (e.g. 16384)" autocomplete="off">
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary flex-shrink-0" data-ai-action="addOption">
+                                                            <span class="material-symbols-outlined">add</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>

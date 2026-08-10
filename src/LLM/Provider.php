@@ -10,6 +10,7 @@ use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\LLM\LLMClient;
 use Sabatier\Service\LLM\AnthropicClient;
+use Sabatier\Service\LLM\OllamaClient;
 use Sabatier\Service\LLM\StandardLLMClient;
 use const App\LLMProvidersPreferencesKey;
 
@@ -30,20 +31,27 @@ final class Provider
             "url" => $this->url,
             "apiKey" => $this->apiKey,
             "models" => $this->models->map(fn(Model $model): Dictionary => $model->dictionaryRepresentation),
+            "options" => $this->options,
         ]);
     }
 
-    /** @param ArrayClass<Model> $models */
-    public function __construct(public readonly string $name, public readonly string $identifier, public readonly URL $url, public readonly string $apiKey, public readonly ArrayClass $models)
+    /**
+     * @param ArrayClass<Model> $models
+     * @param Dictionary<mixed> $options Campos extra de generación fusionados en el cuerpo de cada petición (p. ej. temperature, o los num_ctx/num_predict de Ollama).
+     */
+    public function __construct(public readonly string $name, public readonly string $identifier, public readonly URL $url, public readonly string $apiKey, public readonly ArrayClass $models, public readonly Dictionary $options = new Dictionary())
     {
     }
 
     public function client(?string $model = null): LLMClient
     {
-        return match ($this->identifier) {
+        $client = match ($this->identifier) {
             "anthropic" => new AnthropicClient($model, $this->url, $this->apiKey),
+            "ollama" => new OllamaClient($model, $this->url, $this->apiKey),
             default => new StandardLLMClient($model, $this->url, $this->apiKey),
         };
+        $client->extraBody = $this->options;
+        return $client;
     }
 
     /**
