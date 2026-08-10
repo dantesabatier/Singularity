@@ -253,15 +253,10 @@ export class EditorChatController {
         this.selectedModel = model
         const modelBtn = document.querySelector<HTMLElement>(`.ai-model-item[data-model="${model}"]`)
         const label = modelBtn?.dataset.label ?? model
-        const tier = modelBtn?.dataset.tier ?? "opus"
 
         const nameEl = document.getElementById("chat-model-name")
         if (nameEl) {
             nameEl.textContent = label
-        }
-        const indicator = document.getElementById("chat-model-indicator")
-        if (indicator) {
-            indicator.className = `ai-model-indicator tier-${tier}`
         }
         if (persist) {
             void this.context.actionDispatcher.dispatch("Synchronize", {

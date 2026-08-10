@@ -1,7 +1,7 @@
 import {ApplicationContext} from "@/Application/ApplicationContext"
 import {ViewController} from "@/Application/ViewController"
 
-type LLMModel = { name: string; identifier: string; tier: string }
+type LLMModel = { name: string; identifier: string }
 // Las opciones de generación se guardan como diccionario plano en el provider
 // (p. ej. {num_ctx: 16384, temperature: 0.15}); en el editor se manejan como
 // filas {key, value} para poder listarlas, añadirlas y borrarlas.
@@ -150,7 +150,6 @@ export class AIProvidersController extends ViewController {
         ;(document.getElementById("pf-apiKey") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-model-name") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-model-id") as HTMLInputElement).value = ""
-        ;(document.getElementById("pf-model-tier") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-option-key") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-option-value") as HTMLInputElement).value = ""
         const label = document.getElementById("addLLMProviderLabel")
@@ -170,11 +169,10 @@ export class AIProvidersController extends ViewController {
     private addModel(): void {
         const name = (document.getElementById("pf-model-name") as HTMLInputElement).value.trim()
         const identifier = (document.getElementById("pf-model-id") as HTMLInputElement).value.trim()
-        const tier = (document.getElementById("pf-model-tier") as HTMLInputElement).value.trim()
         if (!name || !identifier) {
             return
         }
-        this.editingModels.push({name, identifier, tier})
+        this.editingModels.push({name, identifier})
         ;(document.getElementById("pf-model-name") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-model-id") as HTMLInputElement).value = ""
         this.renderModels()
@@ -195,7 +193,6 @@ export class AIProvidersController extends ViewController {
             const row = document.createElement("div")
             row.className = "d-flex align-items-center gap-2 p-1 rounded"
             row.innerHTML = `
-                <span class="ai-model-item-dot tier-${model.tier}"></span>
                 <span class="small flex-grow-1">${model.name}</span>
                 <code class="ai-model-item-id">${model.identifier}</code>
                 <button type="button" class="btn btn-sm btn-icon text-danger flex-shrink-0" data-ai-action="removeModel" data-model-index="${i}">
@@ -266,9 +263,8 @@ export class AIProvidersController extends ViewController {
         }
         const pendingName = (document.getElementById("pf-model-name") as HTMLInputElement).value.trim()
         const pendingId = (document.getElementById("pf-model-id") as HTMLInputElement).value.trim()
-        const pendingTier = (document.getElementById("pf-model-tier") as HTMLInputElement).value.trim()
         if (pendingName && pendingId) {
-            this.editingModels.push({name: pendingName, identifier: pendingId, tier: pendingTier})
+            this.editingModels.push({name: pendingName, identifier: pendingId})
         }
         // Incorpora también la fila de opción a medio escribir que el usuario no
         // llegó a confirmar con el botón +, igual que con el modelo pendiente.

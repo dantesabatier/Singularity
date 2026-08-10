@@ -11,6 +11,6 @@ final class ModelBuilder
 {
     public static function build(Dictionary $dictionary): Model
     {
-        return new Model($dictionary["name"] ?? "", $dictionary["identifier"] ?? "", $dictionary["tier"] ?? "");
+        return new Model($dictionary["name"] ?? "", $dictionary["identifier"] ?? "");
     }
 }

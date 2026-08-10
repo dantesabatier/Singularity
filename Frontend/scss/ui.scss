@@ -886,19 +886,6 @@ button {
   border-radius: 50%;
   flex-shrink: 0;
   background-color: var(--text-disabled);
-  transition: background-color 0.2s ease;
-}
-
-.ai-model-indicator.tier-opus {
-  background-color: var(--accent-yellow);
-}
-
-.ai-model-indicator.tier-sonnet {
-  background-color: var(--accent-blue);
-}
-
-.ai-model-indicator.tier-haiku {
-  background-color: var(--accent-green);
 }
 
 .ai-model-name {
@@ -946,18 +933,7 @@ button {
   height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
-}
-
-.ai-model-item-dot.tier-opus {
-  background-color: var(--accent-yellow);
-}
-
-.ai-model-item-dot.tier-sonnet {
-  background-color: var(--accent-blue);
-}
-
-.ai-model-item-dot.tier-haiku {
-  background-color: var(--accent-green);
+  background-color: var(--text-disabled);
 }
 
 .ai-model-item-name {

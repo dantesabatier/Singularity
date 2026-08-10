@@ -66,8 +66,8 @@
                     {foreach $aiProviders as $provider}
                         {foreach $provider->models as $model}
                             <li class="ai-model-option" data-provider="{$provider->identifier}"{if $provider->identifier !== (($selectedConversation?->provider ?? $selectedLLMProviderIdentifier) ?? 'anthropic')} hidden{/if}>
-                                <button class="dropdown-item ai-model-item" type="button" data-provider="{$provider->identifier}" data-model="{$model->identifier}" data-label="{$model->name}" data-tier="{$model->tier}">
-                                    <span class="ai-model-item-dot tier-{$model->tier}"></span>
+                                <button class="dropdown-item ai-model-item" type="button" data-provider="{$provider->identifier}" data-model="{$model->identifier}" data-label="{$model->name}">
+                                    <span class="ai-model-item-dot"></span>
                                     <span class="ai-model-item-name">{$model->name}</span>
                                     <code class="ai-model-item-id">{$model->identifier}</code>
                                 </button>

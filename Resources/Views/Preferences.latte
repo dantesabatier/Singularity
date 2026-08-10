@@ -96,7 +96,6 @@
                                                 <div class="mt-2 d-flex flex-column gap-1 ps-1">
                                                     {foreach $provider->models as $model}
                                                         <div class="d-flex align-items-center gap-2">
-                                                            <span class="ai-model-item-dot tier-{$model->tier}"></span>
                                                             <span class="small">{$model->name}</span>
                                                             <code class="ai-model-item-id">{$model->identifier}</code>
                                                             <span n:if="$editorAIModel === $model->identifier" class="material-symbols-outlined ms-filled text-success ms-auto">check_circle</span>
@@ -136,7 +135,6 @@
                                                     <div class="d-flex gap-2 align-items-center">
                                                         <input name="name" aria-label="name" type="text" id="pf-model-name" class="form-control form-control-sm" placeholder="Name (e.g. Opus 4.8)" autocomplete="off">
                                                         <input name="identifier" aria-label="identifier" type="text" id="pf-model-id" class="form-control form-control-sm" placeholder="Identifier" autocomplete="off">
-                                                        <input name="tier" aria-label="ter" type="text" id="pf-model-tier" class="form-control form-control-sm" placeholder="Tier" style="min-width: 80px;" autocomplete="off">
                                                         <button type="button" class="btn btn-sm btn-outline-secondary flex-shrink-0" data-ai-action="addModel">
                                                             <span class="material-symbols-outlined">add</span>
                                                         </button>
