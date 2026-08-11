@@ -185,8 +185,14 @@ export class EditorChatController {
         }
         const provider = panel.dataset.aiProvider ?? DEFAULT_PROVIDER
         const model = panel.dataset.aiModel ?? DEFAULT_MODEL
+        // El proveedor puede venir de la conversación y el modelo de las preferencias,
+        // así que el modelo guardado no siempre le pertenece: aplicarlo primero deja
+        // que applyProvider caiga al primer modelo válido en vez de sobrescribirlo.
+        this.selectedModel = model
         this.applyProvider(provider, false)
-        this.applyModel(model, false)
+        if (this.selectedModel === model) {
+            this.applyModel(model, false)
+        }
         if (panel.dataset.conversationLocked === "true") {
             this.lockProviderPicker()
         }
