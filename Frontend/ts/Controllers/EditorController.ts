@@ -474,12 +474,10 @@ export class EditorController extends ViewController {
             counter++
         }
         const provider = panel.dataset.aiProvider ?? "anthropic"
-        const model = panel.dataset.aiModel ?? "claude-opus-4-8"
         const response = await this.context.httpClient.post("/Conversation", {
             title,
             project: {objectID: projectID},
             provider,
-            model,
         })
         if (!response.ok) {
             return
