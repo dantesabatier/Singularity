@@ -246,6 +246,20 @@ export class EditorController extends ViewController {
         }
     }
 
+    // Core Data compara el snapshot recibido con el actual para detectar el cambio,
+    // así que la relación viaja acompañada de los atributos elementales: un cuerpo
+    // con solo el objectID se guarda sin llegar a asignar la conversación.
+    private projectSelectionSnapshot(projectID: string, conversationID: string): Record<string, unknown> {
+        const panel = document.getElementById("ai-chat-panel")
+        const name = panel instanceof HTMLElement ? panel.dataset.projectName : undefined
+        return {
+            entityName: "Project",
+            objectID: projectID,
+            ...(name === undefined ? {} : {name}),
+            selectedConversation: {entityName: "Conversation", objectID: conversationID},
+        }
+    }
+
     private async selectConversation(element: HTMLElement): Promise<void> {
         const conversationID = element.dataset.conversationId
         if (!conversationID) {
@@ -255,7 +269,7 @@ export class EditorController extends ViewController {
         nextUrl.searchParams.delete("conversation")
         const projectID = nextUrl.searchParams.get("project")
         if (projectID) {
-            const response = await this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: conversationID})
+            const response = await this.context.httpClient.patch("/Project", this.projectSelectionSnapshot(projectID, conversationID))
             if (!response.ok) {
                 return
             }
@@ -487,7 +501,7 @@ export class EditorController extends ViewController {
         if (!conversationID) {
             return
         }
-        const updateResponse = await this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: conversationID})
+        const updateResponse = await this.context.httpClient.patch("/Project", this.projectSelectionSnapshot(projectID, conversationID))
         if (!updateResponse.ok) {
             return
         }

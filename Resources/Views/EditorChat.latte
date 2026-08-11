@@ -1,6 +1,6 @@
 {templateType App\ViewControllers\EditorController}
 {define editorChat}
-    <div id="ai-chat-panel" class="ai-chat-panel" data-project-object-id="{$project->objectID|json}" data-ai-provider="{($selectedConversation?->provider ?? $selectedLLMProviderIdentifier) ?? 'anthropic'}" data-ai-model="{$selectedAIModel ?? 'claude-opus-4-8'}" {if $selectedConversation && !$selectedConversation->messages->isEmpty}data-conversation-locked="true"{/if}>
+    <div id="ai-chat-panel" class="ai-chat-panel" data-project-object-id="{$project->objectID|json}" data-project-name="{$project->name}" data-ai-provider="{($selectedConversation?->provider ?? $selectedLLMProviderIdentifier) ?? 'anthropic'}" data-ai-model="{$selectedAIModel ?? 'claude-opus-4-8'}" {if $selectedConversation && !$selectedConversation->messages->isEmpty}data-conversation-locked="true"{/if}>
         <div class="ai-chat-header">
             <div class="dropdown">
                 <button class="btn btn-icon ai-chat-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Conversations">
