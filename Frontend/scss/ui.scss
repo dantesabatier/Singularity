@@ -302,6 +302,17 @@ button {
   justify-content: center;
 }
 
+/* Acción destructiva en una fila: callada en reposo, roja al apuntarla.
+   El rojo permanente pierde su valor de alarma y desbalancea la jerarquía. */
+.btn-icon-danger {
+  color: var(--text-secondary);
+}
+
+.btn-icon-danger:hover:not(:disabled) {
+  color: var(--accent-red);
+  background-color: rgba(199, 84, 80, 0.1);
+}
+
 .btn-primary {
   background-color: var(--accent-blue);
   border-color: var(--accent-blue);
@@ -837,7 +848,7 @@ button {
 }
 
 /* Selector de proveedor: control secundario, más callado que el de modelo.
-   Solo el ícono-tier y el caret, sin texto, para no competir por el ancho del header. */
+   Solo el ícono y el caret, sin texto, para no competir por el ancho del header. */
 .ai-provider-picker-btn {
   display: inline-flex;
   align-items: center;
@@ -888,6 +899,10 @@ button {
   background-color: var(--text-disabled);
 }
 
+.ai-model-indicator-selected {
+  background-color: var(--accent-green);
+}
+
 .ai-model-name {
   font-size: 10px;
   font-family: var(--font-mono);
@@ -903,6 +918,21 @@ button {
   gap: 6px;
 }
 
+.provider-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.provider-card:hover {
+  border-color: var(--border-light);
+}
+
 .ai-provider-icon {
   display: inline-flex;
   align-items: center;
@@ -914,11 +944,100 @@ button {
   font-weight: 800;
   font-family: var(--font-mono);
   flex-shrink: 0;
+  background-color: rgba(74, 136, 199, 0.16);
+  color: var(--accent-blue);
+  text-transform: uppercase;
 }
 
-.ai-provider-icon.tier-anthropic {
-  background-color: var(--accent-yellow);
-  color: rgba(0, 0, 0, 0.65);
+.ai-provider-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+  background-color: rgba(74, 136, 199, 0.16);
+  color: var(--accent-blue);
+}
+
+.ai-provider-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ai-provider-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.ai-provider-url {
+  font-size: 11px;
+  color: var(--text-disabled);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-provider-models {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.ai-model-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 6px 2px 4px;
+}
+
+.ai-model-chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(--text-disabled);
+}
+
+.ai-model-chip-dot-selected {
+  background-color: var(--accent-green);
+}
+
+.ai-model-chip-name {
+  font-size: 10px;
+  color: var(--text-primary);
+}
+
+.ai-provider-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.ai-provider-actions .btn-icon {
+  color: var(--text-secondary);
+}
+
+.ai-provider-actions .btn-icon:not(.btn-icon-danger):hover:not(:disabled) {
+  color: var(--text-bright);
+  background-color: var(--bg-tertiary);
+}
+
+.ai-provider-actions .btn-icon-danger:hover:not(:disabled) {
+  color: var(--accent-red);
+  background-color: rgba(199, 84, 80, 0.1);
 }
 
 .ai-model-item {
@@ -934,6 +1053,10 @@ button {
   border-radius: 50%;
   flex-shrink: 0;
   background-color: var(--text-disabled);
+}
+
+.ai-model-item-dot-selected {
+  background-color: var(--accent-green);
 }
 
 .ai-model-item-name {
@@ -2171,19 +2294,20 @@ button {
   font-family: var(--font-mono);
 }
 
-.project-actions-btn {
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
-.list-group-item:hover .project-actions-btn {
-  opacity: 1;
-}
-
+/* La opacidad va en el botón, no en el contenedor: el menú desplegado es
+   descendiente del contenedor y heredaría el apagado al salir de la fila,
+   desapareciendo aunque siguiera abierto. */
 .project-actions-btn .btn-icon {
   width: 24px;
   height: 24px;
   color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.list-group-item:hover .project-actions-btn .btn-icon,
+.project-actions-btn .btn-icon.show {
+  opacity: 1;
 }
 
 .project-actions-btn .btn-icon:hover {

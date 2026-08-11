@@ -24,7 +24,7 @@
                                         <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{$conversation->title}</span>
                                         <span n:if="$conversation->isEqual($selectedConversation)" class="material-symbols-outlined ms-1" style="flex-shrink: 0;">check</span>
                                     </button>
-                                    <button class="btn btn-sm btn-icon text-danger" type="button" data-editor-action="deleteConversation" data-conversation-id="{$conversation->objectID|json}">
+                                    <button class="btn btn-sm btn-icon btn-icon-danger" type="button" data-editor-action="deleteConversation" data-conversation-id="{$conversation->objectID|json}">
                                         <span class="material-symbols-outlined">delete</span>
                                     </button>
                                 </div>
@@ -34,7 +34,7 @@
                 </ul>
             </div>
             <span class="ai-chat-title text-truncate flex-grow-1">{$selectedConversation?->title ?? ""}</span>
-            {* Selector de proveedor (secundario y discreto): solo el ícono-tier + caret.
+            {* Selector de proveedor (secundario y discreto): solo el ícono + caret.
                Queda fijo una vez que la conversación tiene mensajes, porque cambiar de
                proveedor invalidaría el modelo elegido. *}
             <div class="dropdown">
@@ -46,7 +46,7 @@
                     {foreach $aiProviders as $provider}
                         <li>
                             <button class="dropdown-item ai-provider-item" type="button" data-provider="{$provider->identifier}" data-label="{$provider->name}">
-                                <span class="ai-provider-icon tier-{$provider->identifier}">{$provider->name|first}</span>
+                                <span class="ai-provider-icon">{$provider->name|first}</span>
                                 <span class="ai-provider-item-name">{$provider->name}</span>
                             </button>
                         </li>
@@ -58,7 +58,7 @@
                seleccionado; se repuebla desde el TS al cambiar de proveedor. *}
             <div class="dropdown">
                 <button class="btn ai-model-picker-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Select AI Model" id="chat-model-picker-btn">
-                    <span class="ai-model-indicator" id="chat-model-indicator"></span>
+                    <span class="ai-model-indicator ai-model-indicator-selected" id="chat-model-indicator"></span>
                     <span class="ai-model-name" id="chat-model-name">Opus 4.8</span>
                     <span class="material-symbols-outlined" style="font-size: 8px; opacity: 0.5;">expand_more</span>
                 </button>
@@ -67,7 +67,7 @@
                         {foreach $provider->models as $model}
                             <li class="ai-model-option" data-provider="{$provider->identifier}"{if $provider->identifier !== (($selectedConversation?->provider ?? $selectedLLMProviderIdentifier) ?? 'anthropic')} hidden{/if}>
                                 <button class="dropdown-item ai-model-item" type="button" data-provider="{$provider->identifier}" data-model="{$model->identifier}" data-label="{$model->name}">
-                                    <span class="ai-model-item-dot"></span>
+                                    <span class="ai-model-item-dot {$selectedAIModel === $model->identifier ? 'ai-model-item-dot-selected'}"></span>
                                     <span class="ai-model-item-name">{$model->name}</span>
                                     <code class="ai-model-item-id">{$model->identifier}</code>
                                 </button>

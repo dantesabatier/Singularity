@@ -210,13 +210,11 @@ export class EditorChatController {
     private applyProvider(provider: string, persist: boolean): void {
         this.selectedProvider = provider
 
-        // Refleja el proveedor en su botón (el ícono-tier con la inicial).
         const providerBtn = document.querySelector<HTMLElement>(`.ai-provider-item[data-provider="${provider}"]`)
         const label = providerBtn?.dataset.label ?? provider
         const icon = document.getElementById("chat-provider-icon")
         if (icon) {
             icon.textContent = label.charAt(0)
-            icon.className = `ai-provider-icon tier-${provider}`
         }
         const pickerBtn = document.getElementById("chat-provider-picker-btn")
         if (pickerBtn) {
@@ -258,6 +256,10 @@ export class EditorChatController {
         if (nameEl) {
             nameEl.textContent = label
         }
+        document.querySelectorAll<HTMLElement>("#chat-model-dropdown .ai-model-item").forEach((item) => {
+            item.querySelector(".ai-model-item-dot")?.classList.toggle("ai-model-item-dot-selected", item.dataset.model === model)
+        })
+        document.getElementById("chat-model-indicator")?.classList.add("ai-model-indicator-selected")
         if (persist) {
             void this.context.actionDispatcher.dispatch("Synchronize", {
                 editorAIModel: model,
