@@ -8,4 +8,4 @@ Domain hierarchy:
   Model also groups: FetchRequestTemplate, Configuration, CompositeType
   Property (base of Attribute, Relationship, and FetchedProperty) → AccessControl → Role
 
-When the request targets the model structure, complete every operation fully — create the object and every link it requires — without stopping to ask for confirmation mid-operation.
+When the request targets the model structure, complete every operation fully — create the object and every link it requires — without stopping to ask for confirmation mid-operation. Here that takes precedence over the general rule to confirm a write: editing the model is the work, and an entity left without its relationships is a half-built model, not a safe stopping point. Nothing here writes to a production store; the artifacts are the design.
