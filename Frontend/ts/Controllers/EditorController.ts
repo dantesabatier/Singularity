@@ -18,6 +18,12 @@ type RoleReference = ManagedReference & {
     name?: string
 }
 
+type ServiceError = {
+    localizedDescription?: string | null
+    localizedFailureReason?: string | null
+    localizedRecoverySuggestion?: string | null
+}
+
 export class EditorController extends ViewController {
     private readonly compositeTypeAttributeValue = "2100"
     private readonly splitController = new EditorSplitViewController(this.context)
@@ -246,6 +252,28 @@ export class EditorController extends ViewController {
         }
     }
 
+    // El servicio responde con el error descrito ({error: {localizedDescription, ...}});
+    // se propaga tal cual porque showErrorBox presenta esos mismos campos.
+    private async requireOK(response: Response): Promise<Response> {
+        if (response.ok) {
+            return response
+        }
+        const described = await response.clone().json().then(
+            (body: {error?: ServiceError}) => body?.error,
+            () => undefined,
+        )
+        throw described ?? {
+            localizedDescription: await this.context.httpClient.tryGetErrorMessage(response) ?? `${response.status} ${response.statusText}`,
+        }
+    }
+
+    // El puente IPC clona el payload, así que un Error no sobrevive el viaje con su mensaje.
+    private async presentError(error: unknown): Promise<void> {
+        await this.context.desktopBridge.showErrorBox(
+            error instanceof Error ? {localizedDescription: error.message} : error,
+        )
+    }
+
     // Core Data compara el snapshot recibido con el actual para detectar el cambio,
     // así que la relación viaja acompañada de los atributos elementales: un cuerpo
     // con solo el objectID se guarda sin llegar a asignar la conversación.
@@ -268,15 +296,16 @@ export class EditorController extends ViewController {
         const nextUrl = new URL(window.location.href)
         nextUrl.searchParams.delete("conversation")
         const projectID = nextUrl.searchParams.get("project")
-        if (projectID) {
-            const response = await this.context.httpClient.patch("/Project", this.projectSelectionSnapshot(projectID, conversationID))
-            if (!response.ok) {
-                return
+        try {
+            if (projectID) {
+                await this.requireOK(await this.context.httpClient.patch("/Project", this.projectSelectionSnapshot(projectID, conversationID)))
             }
+            await this.context.viewNavigator.navigatePartial(nextUrl, {
+                beforeReplace: (url) => this.updateSourceListActiveState(url),
+            })
+        } catch (error) {
+            await this.presentError(error)
         }
-        await this.context.viewNavigator.navigatePartial(nextUrl, {
-            beforeReplace: (url) => this.updateSourceListActiveState(url),
-        })
     }
 
     private updateSourceListActiveState(nextUrl: URL): void {
@@ -488,21 +517,20 @@ export class EditorController extends ViewController {
             counter++
         }
         const provider = panel.dataset.aiProvider ?? "anthropic"
-        const response = await this.context.httpClient.post("/Conversation", {
-            title,
-            project: {objectID: projectID},
-            provider,
-        })
-        if (!response.ok) {
-            return
-        }
-        const data = await response.json() as {objectID?: string | number}
-        const conversationID = data.objectID ? String(data.objectID) : null
-        if (!conversationID) {
-            return
-        }
-        const updateResponse = await this.context.httpClient.patch("/Project", this.projectSelectionSnapshot(projectID, conversationID))
-        if (!updateResponse.ok) {
+        try {
+            const response = await this.requireOK(await this.context.httpClient.post("/Conversation", {
+                title,
+                project: {objectID: projectID},
+                provider,
+            }))
+            const data = await response.json() as {objectID?: string | number}
+            const conversationID = data.objectID ? String(data.objectID) : null
+            if (!conversationID) {
+                throw new Error("The created conversation did not return an objectID.")
+            }
+            await this.requireOK(await this.context.httpClient.patch("/Project", this.projectSelectionSnapshot(projectID, conversationID)))
+        } catch (error) {
+            await this.presentError(error)
             return
         }
         const nextUrl = new URL(window.location.href)
@@ -525,11 +553,14 @@ export class EditorController extends ViewController {
         const projectID = panel instanceof HTMLElement ? panel.dataset.projectObjectId : null
         const messagesContainer = document.getElementById("chat-messages")
         const selectedID = messagesContainer instanceof HTMLElement ? messagesContainer.dataset.conversationId : null
-        if (projectID && selectedID === conversationID) {
-            void this.context.httpClient.patch("/Project", {objectID: projectID, selectedConversationID: null})
-        }
-        const response = await this.context.httpClient.delete("/Conversation", {objectID: conversationID})
-        if (!response.ok) {
+        try {
+            if (projectID && selectedID === conversationID) {
+                const snapshot = this.projectSelectionSnapshot(projectID, conversationID)
+                await this.requireOK(await this.context.httpClient.patch("/Project", {...snapshot, selectedConversation: null}))
+            }
+            await this.requireOK(await this.context.httpClient.delete("/Conversation", {objectID: conversationID}))
+        } catch (error) {
+            await this.presentError(error)
             return
         }
         const nextUrl = new URL(window.location.href)
