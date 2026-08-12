@@ -75,7 +75,7 @@ final class Message extends ManagedObject
     public function willSave(): void
     {
         if ($this->content !== null) {
-            $this->content = $this->content |> trim(...);
+            $this->content = ($this->content |> trim(...)) ?: null;
         }
         $this->lastModifiedDate = new Date();
     }

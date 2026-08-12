@@ -344,7 +344,7 @@ export class EditorChatController {
                 titleEl.textContent = data.title
             }
             let modelWasChanged = false
-            for (const msg of data.messages.slice(1)) {
+            for (const msg of this.groupToolCallRounds(data.messages.slice(1))) {
                 this.appendMessageBubble(msg)
                 if (msg.toolCalls && msg.toolCalls.length > 0) {
                     modelWasChanged = true
@@ -676,6 +676,40 @@ export class EditorChatController {
         container.appendChild(wrapper)
         this.scrollToBottom()
         return wrapper
+    }
+
+    // El bucle del agente persiste un mensaje por ronda, así que una respuesta que
+    // consultó tres veces llega como tres mensajes de "Used 1 tool". Aquí se pliegan
+    // las rondas consecutivas sin texto sobre el siguiente mensaje del asistente que
+    // sí lo trae: se ve un único "Used 3 tools". Un mensaje con contenido cierra el
+    // grupo — su texto y sus llamadas van juntos. Si la última ronda queda sin
+    // respuesta (error, o todavía en curso), el mensaje que la acarrea se conserva
+    // para no perder el bloque.
+    private groupToolCallRounds(messages: ChatMessage[]): ChatMessage[] {
+        const grouped: ChatMessage[] = []
+        let pending: NonNullable<ChatMessage["toolCalls"]> = []
+        let carrier: ChatMessage | null = null
+        for (const msg of messages) {
+            if (msg.role === "assistant" && !msg.content) {
+                pending.push(...(msg.toolCalls ?? []))
+                carrier ??= msg
+                continue
+            }
+            if (pending.length > 0 && msg.role === "assistant") {
+                grouped.push({...msg, toolCalls: [...pending, ...(msg.toolCalls ?? [])]})
+            } else {
+                if (carrier) {
+                    grouped.push({...carrier, toolCalls: pending})
+                }
+                grouped.push(msg)
+            }
+            pending = []
+            carrier = null
+        }
+        if (carrier) {
+            grouped.push({...carrier, toolCalls: pending})
+        }
+        return grouped
     }
 
     private buildToolGroup(toolCalls: Array<{ id: string; name: string; input: unknown; isError?: boolean }>): HTMLElement {

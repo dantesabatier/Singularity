@@ -83,7 +83,8 @@
             <p>Select a conversation or start typing below</p>
         </div>
         <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" data-conversation-title="{$selectedConversation->title|json}" class="scroll-view ai-chat-messages flex-grow-1">
-            {foreach $selectedConversation->messages as $message}
+            {foreach $selectedConversation->rounds as $round}
+                {var $message = $round->message}
                 <div class="ai-msg ai-msg--{$message->role->value}" data-message-id="{$message->objectID|json}">
                     {if $message->role === Sabatier\Service\LLM\LLMMessageRole::tool}
                     {elseif $message->role === Sabatier\Service\LLM\LLMMessageRole::user}
@@ -109,15 +110,15 @@
                                 {$message->content}
                             </div>
                         {/if}
-                        {if !$message->toolCalls->isEmpty}
-                            {var $failedCount = $message->toolCalls->filter(fn(App\Model\ToolCall $toolCall) => $toolCall->status === App\Model\ToolCallStatus::error)->count}
+                        {if !$round->toolCalls->isEmpty}
+                            {var $failedCount = $round->failedToolCallCount}
                             <div class="ai-tool-group">
                                 <button class="ai-tool-group__header{if $failedCount > 0} ai-tool-group__header--error{/if}" type="button" data-action="toggle-tools">
                                     <span class="material-symbols-outlined ai-tool-group__arrow">chevron_right</span>
-                                    <span class="ai-tool-group__label">Used {$message->toolCalls->count} {$message->toolCalls->count === 1 ? "tool" : "tools"}{if $failedCount > 0} · {$failedCount} failed{/if}</span>
+                                    <span class="ai-tool-group__label">Used {$round->toolCalls->count} {$round->toolCalls->count === 1 ? "tool" : "tools"}{if $failedCount > 0} · {$failedCount} failed{/if}</span>
                                 </button>
                                 <div class="ai-tool-list" hidden>
-                                    {foreach $message->toolCalls as $toolCall}
+                                    {foreach $round->toolCalls as $toolCall}
                                         {var $isError = $toolCall->status === App\Model\ToolCallStatus::error}
                                         <div class="ai-tool-item{if $isError} ai-tool-item--error{/if}">
                                             <span class="material-symbols-outlined ai-tool-item__icon">{$isError ? "error" : "manufacturing"}</span>
