@@ -78,12 +78,12 @@
             </div>
             <span id="ai-status" class="ai-status-pill is-idle">Idle</span>
         </div>
-        <div n:if="!$selectedConversation" class="ai-chat-empty flex-grow-1">
-            <span class="material-symbols-outlined">auto_awesome</span>
-            <p>Select a conversation or start typing below</p>
-        </div>
-        <div n:if="$selectedConversation" id="chat-messages" data-conversation-id="{$selectedConversation->objectID|json}" data-conversation-title="{$selectedConversation->title|json}" class="scroll-view ai-chat-messages flex-grow-1">
-            {foreach $selectedConversation->rounds as $round}
+        <div id="chat-messages" class="scroll-view ai-chat-messages flex-grow-1"{if $selectedConversation} data-conversation-id="{$selectedConversation->objectID|json}" data-conversation-title="{$selectedConversation->title|json}"{/if}>
+            <div n:if="!$selectedConversation" class="ai-chat-empty">
+                <span class="material-symbols-outlined">auto_awesome</span>
+                <p>Select a conversation or start typing below</p>
+            </div>
+            {foreach $selectedConversation?->rounds ?? [] as $round}
                 {var $message = $round->message}
                 <div class="ai-msg ai-msg--{$message->role->value}" data-message-id="{$message->objectID|json}">
                     {if $message->role === Sabatier\Service\LLM\LLMMessageRole::tool}

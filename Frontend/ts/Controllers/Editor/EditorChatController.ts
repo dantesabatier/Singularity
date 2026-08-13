@@ -597,8 +597,14 @@ export class EditorChatController {
         return errorMessage
     }
 
-    private appendErrorBubble(message: string): void {
+    private messagesContainer(): HTMLElement | null {
         const container = document.getElementById("chat-messages")
+        container?.querySelector(".ai-chat-empty")?.remove()
+        return container
+    }
+
+    private appendErrorBubble(message: string): void {
+        const container = this.messagesContainer()
         if (!container) {
             return
         }
@@ -608,8 +614,12 @@ export class EditorChatController {
         bubble.className = "ai-bubble"
         bubble.textContent = message
         wrapper.appendChild(bubble)
-        container.appendChild(wrapper)
+        this.insertBeforeThinking(container, wrapper)
         this.scrollToBottom()
+    }
+
+    private insertBeforeThinking(container: HTMLElement, wrapper: HTMLElement): void {
+        container.insertBefore(wrapper, document.getElementById("chat-thinking"))
     }
 
     private async reloadSelectedConversation(): Promise<void> {
@@ -623,7 +633,7 @@ export class EditorChatController {
             return undefined
         }
 
-        const container = document.getElementById("chat-messages")
+        const container = this.messagesContainer()
         if (!container) {
             return
         }
@@ -673,7 +683,7 @@ export class EditorChatController {
             wrapper.appendChild(this.buildActionBar(message.role as "user" | "assistant"))
         }
 
-        container.appendChild(wrapper)
+        this.insertBeforeThinking(container, wrapper)
         this.scrollToBottom()
         return wrapper
     }
