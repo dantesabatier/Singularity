@@ -100,6 +100,14 @@ export class AIProvidersController extends ViewController {
             const card = btn.closest<HTMLElement>(".provider-card")
             const index = card ? Array.from(document.querySelectorAll(".provider-card")).indexOf(card) : -1
             switch (btn.dataset.aiAction) {
+                case "selectDefaultModel": {
+                    const providerId = btn.dataset.provider
+                    const modelId = btn.dataset.model
+                    if (providerId && modelId) {
+                        void this.setDefaultModel(providerId, modelId)
+                    }
+                    break
+                }
                 case "editProvider":
                     if (index >= 0) {
                         this.openForEditing(index)
@@ -290,6 +298,17 @@ export class AIProvidersController extends ViewController {
         await this.persist()
     }
 
+    private async setDefaultModel(providerId: string, modelId: string): Promise<void> {
+        const isAlreadySelected = document.querySelector(`.ai-model-chip-selected[data-provider="${providerId}"][data-model="${modelId}"]`) !== null
+        if (isAlreadySelected) {
+            return
+        }
+        await this.context.actionDispatcher.dispatch("Synchronize", {
+            editorAIProvider: providerId,
+            editorAIModel: modelId,
+        })
+    }
+
     private async deleteProvider(index: number): Promise<void> {
         const provider = this.providers[index]
         if (!provider) {
@@ -299,8 +318,22 @@ export class AIProvidersController extends ViewController {
         if (!result?.response) {
             return
         }
+        const wasSelected = document.querySelector(`.ai-model-chip-selected[data-provider="${provider.identifier}"]`) !== null
         this.providers.splice(index, 1)
-        await this.persist()
+
+        const payload: Record<string, unknown> = {
+            editorAIProviders: this.providers,
+        }
+        if (wasSelected && this.providers.length > 0) {
+            const firstProvider = this.providers[0]
+            if (firstProvider) {
+                payload.editorAIProvider = firstProvider.identifier
+                if (firstProvider.models.length > 0 && firstProvider.models[0]) {
+                    payload.editorAIModel = firstProvider.models[0].identifier
+                }
+            }
+        }
+        await this.context.actionDispatcher.dispatch("Synchronize", payload)
     }
 
     private async persist(): Promise<void> {

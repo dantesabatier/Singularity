@@ -15,19 +15,19 @@
         <div class="container-fluid p-0 h-content">
             <div class="row g-0 h-100">
                 <div class="col-3 bg-dark-subtle border-end d-flex flex-column h-content">
-                    <div class="p-2 overflow-auto flex-grow-1">
+                    <div id="preferences-sidebar" class="p-2 scroll-view overflow-auto flex-grow-1">
                         <h6 class="text-secondary text-uppercase fw-semibold px-2 mb-2 sidebar-header">
                             Settings
                         </h6>
                         <nav class="nav flex-column">
-                            <a class="nav-item active" href="#general"><span class="material-symbols-outlined me-2">settings</span><span>General</span></a>
+                            <a class="nav-item" href="#general"><span class="material-symbols-outlined me-2">settings</span><span>General</span></a>
                             <a class="nav-item" href="#projects"><span class="material-symbols-outlined me-2">folder</span><span>Projects</span></a>
                             <a class="nav-item" href="#ai"><span class="material-symbols-outlined me-2">auto_awesome</span><span>AI</span></a>
                         </nav>
                     </div>
                 </div>
                 <div class="col-9 d-flex flex-column h-content">
-                    <div class="overflow-auto flex-grow-1 p-4">
+                    <div id="preferences-content" class="scroll-view overflow-auto flex-grow-1 p-4">
                         <form action="/Synchronize" method="POST" class="needs-validation">
                             <section id="general" class="mb-5">
                                 <h5 class="fw-semibold mb-3 pb-2 border-bottom">General</h5>
@@ -72,6 +72,7 @@
                                         <span class="material-symbols-outlined me-1">add</span> Add Provider
                                     </button>
                                 </div>
+                                <p class="text-muted small mb-3">Click a model to set it as default in chat.</p>
                                 <div id="providers-list" class="d-flex flex-column gap-2 mb-3">
                                     {foreach $aiProviders as $provider}
                                         <div class="provider-card" data-provider="{$provider->dictionaryRepresentation|json}">
@@ -80,10 +81,16 @@
                                                 <div class="ai-provider-name">{$provider->name}</div>
                                                 <div class="ai-provider-url">{$provider->url}</div>
                                                 <div n:if="!$provider->models->isEmpty" class="ai-provider-models">
-                                                    <span n:foreach="$provider->models as $model" class="ai-model-chip" title="{$model->identifier}">
-                                                        <span class="ai-model-chip-dot {$editorAIModel === $model->identifier ? 'ai-model-chip-dot-selected'}"></span>
+                                                    <button n:foreach="$provider->models as $model"
+                                                        type="button"
+                                                        class="ai-model-chip{if $editorAIProvider === $provider->identifier && $editorAIModel === $model->identifier} ai-model-chip-selected{/if}"
+                                                        data-ai-action="selectDefaultModel"
+                                                        data-provider="{$provider->identifier}"
+                                                        data-model="{$model->identifier}"
+                                                        title="{if $editorAIProvider === $provider->identifier && $editorAIModel === $model->identifier}Default model{else}Use as default{/if}">
+                                                        <span class="ai-model-chip-dot{if $editorAIProvider === $provider->identifier && $editorAIModel === $model->identifier} ai-model-chip-dot-selected{/if}"></span>
                                                         <span class="ai-model-chip-name">{$model->name}</span>
-                                                    </span>
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="ai-provider-actions">

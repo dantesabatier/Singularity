@@ -16,6 +16,18 @@ export class ViewNavigator {
         const nextMain = documentFragment.getElementById("main")
         const currentMain = document.getElementById("main")
         if (currentMain && nextMain) {
+            const currentActiveHrefs = Array.from(currentMain.querySelectorAll(".nav-item.active, .nav-link.active"))
+                .map((el) => el.getAttribute("href"))
+                .filter((href): href is string => href !== null)
+
+            if (currentActiveHrefs.length > 0) {
+                nextMain.querySelectorAll(".nav-item, .nav-link").forEach((el) => {
+                    const href = el.getAttribute("href")
+                    if (href) {
+                        el.classList.toggle("active", currentActiveHrefs.includes(href))
+                    }
+                })
+            }
             currentMain.innerHTML = nextMain.innerHTML
         }
         this.restoreScrollPositions(scrollPositions)
@@ -58,6 +70,7 @@ export class ViewNavigator {
 
     public replaceZones(html: string, url: string, zones = ["content", "inspector-pane", "ai-copilot-pane", "editor-actions-menu", "breadcrumb-list"]): void {
         const doc = new DOMParser().parseFromString(html, "text/html")
+        const scrollPositions = this.captureScrollPositions()
         for (const id of zones) {
             const source = doc.getElementById(id)
             const target = document.getElementById(id)
@@ -65,6 +78,7 @@ export class ViewNavigator {
                 target.innerHTML = source.innerHTML
             }
         }
+        this.restoreScrollPositions(scrollPositions)
         document.dispatchEvent(new CustomEvent("view:updated", {detail: {url}}))
     }
 
@@ -84,22 +98,32 @@ export class ViewNavigator {
         return await response.text()
     }
 
-    private captureScrollPositions(): Record<string, number> {
-        return Array.from(document.querySelectorAll<HTMLElement>(`[class*="scroll-view"]`)).reduce<Record<string, number>>((result, element) => {
+    private captureScrollPositions(): Record<string, { top: number; left: number }> {
+        const positions: Record<string, { top: number; left: number }> = {
+            window: { top: window.scrollY, left: window.scrollX },
+        }
+        document.querySelectorAll<HTMLElement>(`[class*="scroll-view"], [class*="overflow-auto"], [class*="overflow-y-auto"]`).forEach((element) => {
             if (element.id.length > 0) {
-                result[element.id] = element.scrollTop
-            }
-            return result
-        }, {})
-    }
-
-    private restoreScrollPositions(scrollPositions: Record<string, number>): void {
-        document.querySelectorAll<HTMLElement>(`[class*="scroll-view"]`).forEach((element) => {
-            const position = scrollPositions[element.id]
-            if (position !== undefined) {
-                element.scroll(0, position)
+                positions[element.id] = {
+                    top: element.scrollTop,
+                    left: element.scrollLeft,
+                }
             }
         })
+        return positions
+    }
+
+    private restoreScrollPositions(scrollPositions: Record<string, { top: number; left: number }>): void {
+        document.querySelectorAll<HTMLElement>(`[class*="scroll-view"], [class*="overflow-auto"], [class*="overflow-y-auto"]`).forEach((element) => {
+            const position = scrollPositions[element.id]
+            if (position !== undefined) {
+                element.scrollTop = position.top
+                element.scrollLeft = position.left
+            }
+        })
+        if (scrollPositions.window !== undefined) {
+            window.scrollTo(scrollPositions.window.left, scrollPositions.window.top)
+        }
     }
 
     private resetBodyState(): void {
