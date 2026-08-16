@@ -252,8 +252,7 @@ export class EditorController extends ViewController {
         }
     }
 
-    // El servicio responde con el error descrito ({error: {localizedDescription, ...}});
-    // se propaga tal cual porque showErrorBox presenta esos mismos campos.
+    // The service replies with the error described ({error: {localizedDescription, ...}}); propagate it as-is since showErrorBox presents exactly those fields.
     private async requireOK(response: Response): Promise<Response> {
         if (response.ok) {
             return response
@@ -267,16 +266,14 @@ export class EditorController extends ViewController {
         }
     }
 
-    // El puente IPC clona el payload, así que un Error no sobrevive el viaje con su mensaje.
+    // The IPC bridge clones the payload, so an Error does not survive the trip with its message.
     private async presentError(error: unknown): Promise<void> {
         await this.context.desktopBridge.showErrorBox(
             error instanceof Error ? {localizedDescription: error.message} : error,
         )
     }
 
-    // Core Data compara el snapshot recibido con el actual para detectar el cambio,
-    // así que la relación viaja acompañada de los atributos elementales: un cuerpo
-    // con solo el objectID se guarda sin llegar a asignar la conversación.
+    // Core Data compares the incoming snapshot with the current one to detect the change, so the relationship travels with its elementary attributes: a body with only the objectID is saved without ever assigning the conversation.
     private projectSelectionSnapshot(projectID: string, conversationID: string): Record<string, unknown> {
         const panel = document.getElementById("ai-chat-panel")
         const name = panel instanceof HTMLElement ? panel.dataset.projectName : undefined
@@ -392,11 +389,7 @@ export class EditorController extends ViewController {
                 return
             }
             case "Role": {
-                // Roles are shared across access controls: the relationship is many-to-many, and the
-                // popover renames a Role in place for every access control holding it. Creating a new
-                // row for a name the model already carries would fork that identity, so assign the
-                // existing Role by PATCHing the access control's relationship and only POST a new
-                // Role when the name is genuinely new.
+                // Roles are shared across access controls: the relationship is many-to-many, and the popover renames a Role in place for every access control holding it. Creating a new row for a name the model already carries would fork that identity, so assign the existing Role by PATCHing the access control's relationship and only POST a new Role when the name is genuinely new.
                 const existing = (this.parseJSON<RoleReference[]>(element.dataset.availableRoles) ?? [])
                     .find((role) => role.name === name)
                 if (existing) {
@@ -428,10 +421,7 @@ export class EditorController extends ViewController {
         })
     }
 
-    /**
-     * Adds an already-existing Role to an access control by rewriting the whole relationship: the
-     * roles it already holds plus the new one. Mirrors unassignRole, which sends the ones that remain.
-     */
+    // Adds an already-existing Role to an access control by rewriting the whole relationship: the roles it already holds plus the new one. Mirrors unassignRole, which sends the ones that remain.
     private async assignRole(parent: RoleReference, role: RoleReference): Promise<void> {
         const card = document.getElementById(`accessControl-${parent.objectID}`)
         const current = Array.from(card?.querySelectorAll<HTMLElement>(".role-badge-delete") ?? [])

@@ -103,8 +103,7 @@ export class EditorChatController {
         if (!btn?.dataset.model) {
             return
         }
-        // El menú de modelo ya está filtrado al proveedor activo, así que solo
-        // cambia el modelo. El modelo es libre: puede cambiarse aun con mensajes.
+        // The model menu is already filtered to the active provider, so this only changes the model; the model stays free and can be switched even with messages.
         this.applyModel(btn.dataset.model, true)
     }
 
@@ -185,9 +184,7 @@ export class EditorChatController {
         }
         const provider = panel.dataset.aiProvider ?? DEFAULT_PROVIDER
         const model = panel.dataset.aiModel ?? DEFAULT_MODEL
-        // El proveedor puede venir de la conversación y el modelo de las preferencias,
-        // así que el modelo guardado no siempre le pertenece: aplicarlo primero deja
-        // que applyProvider caiga al primer modelo válido en vez de sobrescribirlo.
+        // The provider may come from the conversation and the model from preferences, so the saved model does not always belong to it: applying it first lets applyProvider fall back to the first valid model instead of overwriting it.
         this.selectedModel = model
         this.applyProvider(provider, false)
         if (this.selectedModel === model) {
@@ -227,7 +224,7 @@ export class EditorChatController {
             pickerBtn.title = label
         }
 
-        // El menú de modelo solo debe ofrecer los modelos de este proveedor.
+        // The model menu must only offer this provider's models.
         let firstModelOfProvider: string | null = null
         let currentStillValid = false
         document.querySelectorAll<HTMLElement>("#chat-model-dropdown .ai-model-option").forEach((option) => {
@@ -241,7 +238,7 @@ export class EditorChatController {
                 }
             }
         })
-        // Si el modelo activo no pertenece al nuevo proveedor, cae al primero suyo.
+        // If the active model does not belong to the new provider, fall back to its first one.
         if (!currentStillValid && firstModelOfProvider) {
             this.applyModel(firstModelOfProvider, persist)
         }
@@ -688,13 +685,7 @@ export class EditorChatController {
         return wrapper
     }
 
-    // El bucle del agente persiste un mensaje por ronda, así que una respuesta que
-    // consultó tres veces llega como tres mensajes de "Used 1 tool". Aquí se pliegan
-    // las rondas consecutivas sin texto sobre el siguiente mensaje del asistente que
-    // sí lo trae: se ve un único "Used 3 tools". Un mensaje con contenido cierra el
-    // grupo — su texto y sus llamadas van juntos. Si la última ronda queda sin
-    // respuesta (error, o todavía en curso), el mensaje que la acarrea se conserva
-    // para no perder el bloque.
+    // The agent loop persists one message per round, so a reply that queried three times arrives as three "Used 1 tool" messages; consecutive text-less rounds are folded onto the next assistant message that carries text, showing a single "Used 3 tools". A message with content closes the group, keeping its text and calls together, and if the last round ends without a reply (error or still in flight) the carrier message is kept so the block is not lost.
     private groupToolCallRounds(messages: ChatMessage[]): ChatMessage[] {
         const grouped: ChatMessage[] = []
         let pending: NonNullable<ChatMessage["toolCalls"]> = []
@@ -763,8 +754,7 @@ export class EditorChatController {
     }
 
     private lockProviderPicker(): void {
-        // El proveedor queda fijo una vez que la conversación tiene mensajes; el
-        // modelo sigue libre. Cambiar de proveedor invalidaría el modelo elegido.
+        // The provider is locked once the conversation has messages; the model stays free, since changing provider would invalidate the chosen model.
         const btn = document.getElementById("chat-provider-picker-btn")
         if (btn instanceof HTMLButtonElement && !btn.disabled) {
             btn.disabled = true

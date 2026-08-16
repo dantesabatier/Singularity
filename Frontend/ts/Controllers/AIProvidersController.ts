@@ -2,9 +2,7 @@ import {ApplicationContext} from "@/Application/ApplicationContext"
 import {ViewController} from "@/Application/ViewController"
 
 type LLMModel = { name: string; identifier: string }
-// Las opciones de generación se guardan como diccionario plano en el provider
-// (p. ej. {num_ctx: 16384, temperature: 0.15}); en el editor se manejan como
-// filas {key, value} para poder listarlas, añadirlas y borrarlas.
+// Generation options are stored as a flat dictionary on the provider (e.g. {num_ctx: 16384, temperature: 0.15}); the editor edits them as {key, value} rows so they can be listed, added and removed.
 type LLMProvider = { name: string; identifier: string; url: string; apiKey?: string; models: LLMModel[]; options?: Record<string, string | number> }
 
 export class AIProvidersController extends ViewController {
@@ -248,8 +246,7 @@ export class AIProvidersController extends ViewController {
         }
     }
 
-    // Colapsa las filas del editor a un diccionario plano, con coerción numérica:
-    // un valor que parsea a número se guarda como número, el resto como texto.
+    // Flattens the editor rows into a plain dictionary with numeric coercion: values that parse as numbers are stored as numbers, everything else as text.
     private collectOptions(): Record<string, string | number> {
         return this.editingOptions.reduce<Record<string, string | number>>((carry, {key, value}) => {
             const name = key.trim()
@@ -274,8 +271,7 @@ export class AIProvidersController extends ViewController {
         if (pendingName && pendingId) {
             this.editingModels.push({name: pendingName, identifier: pendingId})
         }
-        // Incorpora también la fila de opción a medio escribir que el usuario no
-        // llegó a confirmar con el botón +, igual que con el modelo pendiente.
+        // Also folds in the half-typed option row the user never confirmed with the + button, just like the pending model.
         const pendingOptionKey = (document.getElementById("pf-option-key") as HTMLInputElement).value.trim()
         const pendingOptionValue = (document.getElementById("pf-option-value") as HTMLInputElement).value.trim()
         if (pendingOptionKey) {
@@ -324,13 +320,15 @@ export class AIProvidersController extends ViewController {
         const payload: Record<string, unknown> = {
             editorAIProviders: this.providers,
         }
-        if (wasSelected && this.providers.length > 0) {
-            const firstProvider = this.providers[0]
-            if (firstProvider) {
-                payload.editorAIProvider = firstProvider.identifier
-                if (firstProvider.models.length > 0 && firstProvider.models[0]) {
-                    payload.editorAIModel = firstProvider.models[0].identifier
-                }
+        if (wasSelected) {
+            // Reassign the default to the first provider with models; if none remain, clear the preferences so they don't point at a deleted provider (the chat falls back to its own defaults).
+            const nextProvider = this.providers.find((candidate) => candidate.models.length > 0)
+            if (nextProvider) {
+                payload.editorAIProvider = nextProvider.identifier
+                payload.editorAIModel = nextProvider.models[0]!.identifier
+            } else {
+                payload.editorAIProvider = null
+                payload.editorAIModel = null
             }
         }
         await this.context.actionDispatcher.dispatch("Synchronize", payload)

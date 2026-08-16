@@ -7,8 +7,7 @@ export class TreeToggleFeature extends Feature {
     }
 
     public start(): void {
-        // Bootstrap owns the visual collapse and fires these on the target after the state
-        // settles, so we read the final state from the event instead of racing aria-expanded.
+        // Bootstrap owns the visual collapse and fires these on the target after the state settles, so we read the final state from the event instead of racing aria-expanded.
         document.addEventListener("shown.bs.collapse", this.handleToggle)
         document.addEventListener("hidden.bs.collapse", this.handleToggle)
     }

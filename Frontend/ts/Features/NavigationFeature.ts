@@ -46,13 +46,7 @@ export class NavigationFeature extends Feature {
     }
 
     private updateSourceListActiveState(nextUrl: URL): void {
-        // A row's selection params are its query params minus "project". A row is a
-        // candidate when every one of its params matches the target (it's a prefix of
-        // the selection). The active row is the most specific candidate — the one whose
-        // params fully cover the deepest sidebar level present for this selection. This
-        // keeps a fetch index highlighted when one of its elements (a deeper level with
-        // no sidebar row of its own) is selected, while never lighting up the ancestor
-        // entity at the same time.
+        // A row's selection params are its query params minus "project"; a row is a candidate when every one of its params matches the target (it's a prefix of the selection). The active row is the most specific candidate — the one whose params fully cover the deepest sidebar level present for this selection. This keeps a fetch index highlighted when one of its elements (a deeper level with no sidebar row of its own) is selected, while never lighting up the ancestor entity at the same time.
         const rows = [...document.querySelectorAll<HTMLElement>("#source [data-href]")]
         let bestSpecificity = -1
         const specificities = rows.map((el) => {
