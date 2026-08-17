@@ -16,6 +16,7 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\fatal_error;
+use const Sabatier\CoreData\ManagedObjectModelFileExtension;
 use const Sabatier\CoreData\ManagedObjectModelURLOption;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
@@ -64,8 +65,8 @@ final readonly class RenameBundleTransaction implements Transaction
     private function resolveModelURLs(Bundle $bundle, string $oldName): array
     {
         $resourceURL = $bundle->resourceURL ?? throw new Exception("Invalid resources URL");
-        $destination = $resourceURL->appendingPathComponent($this->newName)->appendingPathExtension("mom");
-        $source = $resourceURL->appendingPathComponent($oldName)->appendingPathExtension("mom");
+        $destination = $resourceURL->appendingPathComponent($this->newName)->appendingPathExtension(ManagedObjectModelFileExtension);
+        $source = $resourceURL->appendingPathComponent($oldName)->appendingPathExtension(ManagedObjectModelFileExtension);
         if (!FileManager::default()->fileExists($source->path)) {
             throw new Exception("Source model not found");
         }

@@ -31,6 +31,7 @@ use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use function Sabatier\Foundation\random_color;
+use const Sabatier\CoreData\ManagedObjectModelFileExtension;
 use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
 #[Endpoint("/", transformers: [HTMLTransformer::class])]
@@ -83,7 +84,7 @@ final class WelcomeController extends ViewController
         $name = $url->lastPathComponent;
         $context = $this->managedObjectContext;
         $model = new Model($context);
-        $model->url = $url->appendingPathComponent("Resources")->appendingPathComponent($name)->appendingPathExtension("mom");
+        $model->url = $url->appendingPathComponent("Resources")->appendingPathComponent($name)->appendingPathExtension(ManagedObjectModelFileExtension);
         $project = new Project($context);
         $project->creationDate = new Date();
         $project->name = $name;
