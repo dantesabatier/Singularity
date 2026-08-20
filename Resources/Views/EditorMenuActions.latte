@@ -140,4 +140,18 @@
             <span class="material-symbols-outlined">upload</span> <span>Import...</span>
         </button>
     </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li><h6 class="dropdown-header">Model Versions</h6></li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="newModelVersion" data-project-id="{$project->objectID|json}">
+            <span class="material-symbols-outlined">history</span> <span>New Version...</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" data-editor-action="openMappingModels" data-project-id="{$project->objectID|json}">
+            <span class="material-symbols-outlined">swap_horiz</span> <span>Mapping Models...</span>
+        </button>
+    </li>
 {/define}

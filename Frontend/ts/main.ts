@@ -10,6 +10,11 @@ const initializeApp = async (): Promise<void> => {
             module.bootstrapEditor()
             return
         }
+        case "mapping": {
+            const module = await import("@/Bootstraps/mapping")
+            module.bootstrapMapping()
+            return
+        }
         case "viewer": {
             const module = await import("@/Bootstraps/viewer")
             module.bootstrapViewer()

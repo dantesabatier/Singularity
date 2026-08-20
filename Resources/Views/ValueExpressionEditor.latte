@@ -1,0 +1,66 @@
+{define valueExpressionEditor}
+    {* Shared value-expression editor body. Parameters:
+       $action          — form POST target (e.g. "/PropertyMap")
+       $objectID        — objectID of the row being edited
+       $expression      — current valueExpressionFormat value (may be null)
+       $isRelationship  — whether the map belongs to the relationship collection, which binds $source differently
+       $sourceNames     — the source entity's property names, offered as copyable chips
+    *}
+    <form action="{$action}" method="POST">
+        <input type="hidden" name="objectID" value="{$objectID|json}">
+        <div class="form-section">
+            <div class="form-section-header">
+                <label for="valueExpressionFormat" class="form-section-label">Value Expression</label>
+                <div class="popover-anchor">
+                    <button type="button" class="form-section-help" id="expression-help-btn" data-popover="expression-help-pop" aria-expanded="false">
+                        <span class="material-symbols-outlined">help</span> <span>Expression Help</span>
+                    </button>
+                    <div class="ide-popover" id="expression-help-pop" aria-hidden="true">
+                        <div class="ide-popover-header">
+                            <span class="ide-popover-title">Value Expression Syntax</span>
+                            <button type="button" class="ide-popover-close" data-popover-close="expression-help-pop">✕</button>
+                        </div>
+                        <div class="ide-popover-body">
+                            <div class="sp-group">
+                                <div class="sp-group-title">Source</div>
+                                {if $isRelationship}
+                                    <div class="sp-row"><span class="sp-label">The migrated objects</span><code class="sp-chip" data-copy="$source">&nbsp;$source&nbsp;</code></div>
+                                    <div class="sp-modifier-note">In a relationship map the engine binds <code>$source</code> to a <b>collection</b> of the destination objects the source related to.</div>
+                                {else}
+                                    <div class="sp-row"><span class="sp-label">The source object</span><code class="sp-chip" data-copy="$source">&nbsp;$source&nbsp;</code></div>
+                                    <div class="sp-modifier-note">In an attribute map the engine binds <code>$source</code> to the <b>single object</b> being migrated.</div>
+                                {/if}
+                            </div>
+                            <div class="sp-divider"></div>
+                            <div class="sp-group">
+                                <div class="sp-group-title">Key Paths</div>
+                                <div class="sp-row"><span class="sp-label">A property of the source</span><code class="sp-chip" data-copy="$source.">&nbsp;$source.name&nbsp;</code></div>
+                                <div class="sp-example">$source.title</div>
+                            </div>
+                            <div class="sp-divider"></div>
+                            <div class="sp-group">
+                                <div class="sp-group-title">Functions</div>
+                                <div class="sp-row"><span class="sp-label">Read by key</span><code class="sp-chip" data-copy="FUNCTION($source, valueForKey, 'name')">&nbsp;FUNCTION&nbsp;</code></div>
+                                <div class="sp-example">FUNCTION($source, valueForKey, 'body')</div>
+                                <div class="sp-modifier-note">This is the form the inference emits for a renamed property.</div>
+                            </div>
+                            <div class="sp-divider"></div>
+                            <div class="sp-group">
+                                <div class="sp-group-title">Leaving It Empty</div>
+                                <div class="sp-modifier-note">A property with no expression keeps its default value after the migration.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <textarea name="valueExpressionFormat" id="valueExpressionFormat" class="form-control code-editor" rows="3" placeholder="$source.name" autocomplete="off" spellcheck="false">{$expression}</textarea>
+            <div n:if="!$sourceNames->isEmpty" class="sp-group" style="margin-top: 8px;">
+                <div class="sp-group-title">Source Properties</div>
+                <div>
+                    <code n:foreach="$sourceNames as $sourceName" class="sp-chip" data-copy="$source.{$sourceName}">&nbsp;$source.{$sourceName}&nbsp;</code>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+    </form>
+{/define}

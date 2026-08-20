@@ -1,0 +1,52 @@
+{templateType App\ViewControllers\MappingController}
+{define modelMap}
+    <div n:if="$selectedModelMap" class="px-3 pb-4">
+        <form action="/ModelMap" method="POST">
+            <input type="hidden" name="objectID" value="{$selectedModelMap->objectID|json}">
+            <div class="inspector-header">Mapping Model</div>
+            <div class="row mb-2">
+                <label for="name" class="col-sm-4 inspector-label">Name</label>
+                <div class="col-sm-8">
+                    <input type="text" name="name" id="name" placeholder="Mapping Model Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedModelMap->name}" autocomplete="off" spellcheck="false" required>
+                </div>
+            </div>
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+        </form>
+
+        <div class="inspector-header">Versions</div>
+        <div class="row mb-2">
+            <label for="sourceVersionName" class="col-sm-4 inspector-label">Source</label>
+            <div class="col-sm-8">
+                <input type="text" id="sourceVersionName" class="form-control form-control-sm text-truncate" value="{$selectedModelMap->sourceVersionName}" placeholder="No Source Version" readonly>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for="destinationVersion" class="col-sm-4 inspector-label">Destination</label>
+            <div class="col-sm-8">
+                <input type="text" id="destinationVersion" class="form-control form-control-sm text-truncate" value="{$project->name}" readonly>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for="sourceModelURL" class="col-sm-4 inspector-label">Source File</label>
+            <div class="col-sm-8">
+                <input type="text" id="sourceModelURL" class="form-control form-control-sm text-truncate font-monospace" style="font-size: 10px;" value="{$selectedModelMap->sourceModelURL?->lastPathComponent}" title="{$selectedModelMap->sourceModelURL?->path}" placeholder="Not set" readonly>
+            </div>
+        </div>
+        <div n:if="$selectedModelMap->sourceModel === null" class="inspector-inline-error">
+            <span class="material-symbols-outlined ms-filled">error</span>
+            <div>The frozen version is not where this map recorded it, so no mapping model can be written.</div>
+        </div>
+
+        <div class="inspector-header">Contents</div>
+        <div class="row mb-2">
+            <label for="entityMapCount" class="col-sm-4 inspector-label">Entity Maps</label>
+            <div class="col-sm-8">
+                <input type="text" id="entityMapCount" class="form-control form-control-sm" value="{$selectedModelMap->orderedEntityMaps->count}" readonly>
+            </div>
+        </div>
+        <div n:if="!$selectedModelMap->invalidEntityMaps->isEmpty" class="inspector-inline-error">
+            <span class="material-symbols-outlined ms-filled">error</span>
+            <div>{$selectedModelMap->invalidEntityMaps->count} of them {$selectedModelMap->invalidEntityMaps->count === 1 ? "is" : "are"} custom without a migration policy.</div>
+        </div>
+    </div>
+{/define}

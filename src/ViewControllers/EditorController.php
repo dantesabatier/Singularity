@@ -8,6 +8,7 @@ namespace App\ViewControllers;
 
 use App\Bundles\BundleUpdater;
 use App\Bundles\ExtractLocalizablesTransaction;
+use App\Bundles\NewModelVersionTransaction;
 use App\Bundles\SaveBundleTransaction;
 use App\Bundles\SubclassTransaction;
 use App\FileWriters\Generators\AuthorizableCodeGenerator;
@@ -449,6 +450,24 @@ final class EditorController extends ProjectController
         $model->url = URL::fileURL($path);
         $project->model = $model;
         $this->data = $project;
+    }
+
+    /**
+     * Freezes the model as it stands and opens the next version for editing.
+     * @throws Exception
+     */
+    #[Action(transformers: [JSONTransformer::class])]
+    public function version(): void
+    {
+        $project = $this->project;
+        $transaction = new NewModelVersionTransaction($project);
+        $transaction->execute();
+        $this->managedObjectContext->save();
+        $this->data = new Dictionary([
+            "project" => $project,
+            "frozenVersionName" => $transaction->frozenVersionName,
+            "currentVersionName" => $transaction->currentVersionName,
+        ]);
     }
 
     /**

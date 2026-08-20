@@ -1,0 +1,33 @@
+{templateType App\ViewControllers\MappingController}
+{define propertyMap}
+    {var bool $isRelationship = $selectedPropertyMap?->relationshipEntityMap !== null}
+    <div n:if="$selectedPropertyMap" class="px-3 pb-4">
+        <form action="/PropertyMap" method="POST">
+            <input type="hidden" name="objectID" value="{$selectedPropertyMap->objectID|json}">
+            <div class="inspector-header">{$isRelationship ? "Relationship Map" : "Attribute Map"}</div>
+            <div class="row mb-2">
+                <label for="name" class="col-sm-4 inspector-label">Property</label>
+                <div class="col-sm-8">
+                    <select name="name" id="name" class="form-select form-select-sm" data-autosave="true">
+                        <option value="">No Property</option>
+                        <option disabled>──────────</option>
+                        <option n:foreach="$isRelationship ? $destinationRelationshipNames : $destinationAttributeNames as $propertyName" value="{$propertyName}" {$propertyName === $selectedPropertyMap->name ? selected}>{$propertyName}</option>
+                    </select>
+                    <div class="form-help-text">
+                        <span class="material-symbols-outlined ms-filled">info</span>
+                        <div class="form-help-text-content">
+                            A property of the destination entity. The source property is named inside the expression.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+        </form>
+        {include valueExpressionEditor from "ValueExpressionEditor.latte",
+            action: "/PropertyMap",
+            objectID: $selectedPropertyMap->objectID,
+            expression: $selectedPropertyMap->valueExpressionFormat,
+            isRelationship: $isRelationship,
+            sourceNames: $isRelationship ? $sourceRelationshipNames : $sourceAttributeNames}
+    </div>
+{/define}

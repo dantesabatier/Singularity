@@ -1,0 +1,73 @@
+{templateType App\ViewControllers\MappingController}
+{define entityMaps}
+    <div n:if="$selectedModelMap" class="ide-list-control">
+        <div class="list-control-header">
+            <span class="list-control-title">Entity Maps</span>
+        </div>
+        <div class="list-control-content">
+            <table class="list-control-table" data-project="{$project->objectID|json}" data-model-map="{$selectedModelMap->objectID|json}">
+                <thead>
+                <tr>
+                    <th class="col-source-entity">Source Entity</th>
+                    <th class="col-map-arrow"></th>
+                    <th class="col-destination-entity">Destination Entity</th>
+                    <th class="col-map-type">Type</th>
+                    <th class="col-risk"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr n:foreach="$selectedModelMap->orderedEntityMaps as $entityMap" id="entityMap-{$entityMap->objectID|json}" data-href="/Mapping?project={$project->objectID|json}&modelMap={$selectedModelMap->objectID|json}&entityMap={$entityMap->objectID|json}" n:class="$entityMap->isEqual($selectedEntityMap) ? active">
+                    <td class="col-source-entity">
+                        <div class="cell-content">
+                            {if $entityMap->sourceEntityName}
+                                <img class="cell-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
+                                <span class="cell-text">{$entityMap->sourceEntityName}</span>
+                            {else}
+                                <span class="cell-text cell-absent">&#8212;</span>
+                            {/if}
+                        </div>
+                    </td>
+                    <td class="col-map-arrow cell-arrow">
+                        <span class="material-symbols-outlined">arrow_right_alt</span>
+                    </td>
+                    <td class="col-destination-entity">
+                        <div class="cell-content">
+                            {if $entityMap->destinationEntityName}
+                                <img class="cell-icon" src="/Resources/Images/E@1x.png" srcset="/Resources/Images/E@2x.png 2x, /Resources/Images/E@3x.png 3x" alt="">
+                                <span class="cell-text">{$entityMap->destinationEntityName}</span>
+                            {else}
+                                <span class="cell-text cell-absent">&#8212;</span>
+                            {/if}
+                        </div>
+                    </td>
+                    <td class="col-map-type">
+                        <form action="/EntityMap" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$entityMap->objectID|json}">
+                            <select name="type" aria-label="Type" class="form-select transparent" data-autosave="true">
+                                <option n:foreach="$entityMapTypes as $entityMapType" value="{$entityMapType->value}" {$entityMapType->value === $entityMap->type->value ? selected}>
+                                    {$entityMapType->value === $entityMap->inferredType->value ? "$entityMapType->name (inferred)" : $entityMapType->name}
+                                </option>
+                            </select>
+                        </form>
+                    </td>
+                    <td class="col-risk">
+                        <span n:if="$entityMap->isMissingMigrationPolicy" class="material-symbols-outlined ms-filled cell-error-icon" title="Custom mapping without a migration policy — the engine will refuse to migrate">error</span>
+                    </td>
+                </tr>
+                <tr n:if="$selectedModelMap->orderedEntityMaps->isEmpty">
+                    <td colspan="5" class="list-control-empty">No entity maps</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="list-control-toolbar">
+            <button class="btn btn-icon" type="button" title="Add Entity Map" data-mapping-action="addEntityMap" data-parent="{$selectedModelMap|json}" data-position="{$selectedModelMap->orderedEntityMaps->count}">
+                <span class="material-symbols-outlined">add</span>
+            </button>
+            <button class="btn btn-icon" type="button" title="Remove Entity Map" data-mapping-action="removeSelection" data-item="{$selectedEntityMap|json}" {!$selectedEntityMap instanceof App\Model\EntityMap ? disabled}>
+                <span class="material-symbols-outlined">remove</span>
+            </button>
+        </div>
+    </div>
+{/define}

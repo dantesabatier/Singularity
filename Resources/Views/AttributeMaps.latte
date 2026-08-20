@@ -1,0 +1,55 @@
+{templateType App\ViewControllers\MappingController}
+{define attributeMaps}
+    <div n:if="$selectedEntityMap" class="ide-list-control">
+        <div class="list-control-header">
+            <span class="list-control-title">Attribute Maps</span>
+        </div>
+        <div class="list-control-content">
+            <table class="list-control-table" data-project="{$project->objectID|json}" data-entity-map="{$selectedEntityMap->objectID|json}" data-key="attributes">
+                <thead>
+                <tr>
+                    <th class="col-map-property">Property</th>
+                    <th class="col-map-expression">Value Expression</th>
+                    <th class="col-risk"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr n:foreach="$orderedAttributeMaps as $propertyMap" id="propertyMap-{$propertyMap->objectID|json}" data-href="/Mapping?project={$project->objectID|json}&modelMap={$selectedModelMap?->objectID|json}&entityMap={$selectedEntityMap->objectID|json}&propertyMap={$propertyMap->objectID|json}" n:class="$propertyMap->isEqual($selectedPropertyMap) ? active">
+                    <td class="col-map-property">
+                        <form action="/PropertyMap" method="POST" class="cell-form">
+                            <input type="hidden" name="X-Http-Method-Override" value="PATCH">
+                            <input type="hidden" name="objectID" value="{$propertyMap->objectID|json}">
+                            <select name="name" aria-label="Property" class="form-select transparent" data-autosave="true">
+                                <option value="">No Property</option>
+                                <option disabled>──────────</option>
+                                <option n:foreach="$destinationAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $propertyMap->name ? selected}>{$attributeName}</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td class="col-map-expression">
+                        <div class="cell-content">
+                            {if $propertyMap->valueExpressionFormat}
+                                <span class="cell-code"><span class="cell-text">{$propertyMap->valueExpressionFormat}</span></span>
+                            {else}
+                                <span class="cell-text cell-absent-value">Default value</span>
+                            {/if}
+                        </div>
+                    </td>
+                    <td class="col-risk"></td>
+                </tr>
+                <tr n:if="$orderedAttributeMaps->isEmpty">
+                    <td colspan="3" class="list-control-empty">No attribute maps</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="list-control-toolbar">
+            <button class="btn btn-icon" type="button" title="Add Attribute Map" data-mapping-action="addAttributeMap" data-parent="{$selectedEntityMap|json}" data-position="{$orderedAttributeMaps->count}">
+                <span class="material-symbols-outlined">add</span>
+            </button>
+            <button class="btn btn-icon" type="button" title="Remove Attribute Map" data-mapping-action="removeSelection" data-item="{$selectedPropertyMap|json}" {!$selectedPropertyMap instanceof App\Model\PropertyMap || $selectedPropertyMap->relationshipEntityMap !== null ? disabled}>
+                <span class="material-symbols-outlined">remove</span>
+            </button>
+        </div>
+    </div>
+{/define}

@@ -1,0 +1,35 @@
+{templateType App\ViewControllers\MappingController}
+{define mappingContent}
+    {if $selectedModelMap === null}
+        {include mappingEmpty from "MappingEmpty.latte"}
+    {else}
+        <div class="content-panel">
+            <div class="content-panel-header">
+                <div class="content-panel-title">
+                    <span class="material-symbols-outlined">swap_horiz</span>{$selectedModelMap->name}
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="content-panel-badge">{$selectedModelMap->sourceVersionName ?? "No Source"}</span>
+                    <span class="material-symbols-outlined" style="font-size: 13px; color: var(--text-disabled);">arrow_right_alt</span>
+                    <span class="content-panel-badge">{$project->name}</span>
+                </div>
+            </div>
+            <div n:if="!$selectedModelMap->invalidEntityMaps->isEmpty" class="inspector-inline-error" style="margin: 0; border-radius: 0;">
+                <span class="material-symbols-outlined ms-filled">error</span>
+                <div>
+                    {$selectedModelMap->invalidEntityMaps->count} entity {$selectedModelMap->invalidEntityMaps->count === 1 ? "map is" : "maps are"} custom without a migration policy. The engine will refuse to migrate.
+                    <a class="mapping-inline-link" href="/Mapping?project={$project->objectID|json}&modelMap={$selectedModelMap->objectID|json}&entityMap={$selectedModelMap->invalidEntityMaps->first?->objectID|json}">Show it</a>
+                </div>
+            </div>
+            <div n:if="$selectedModelMap->inferenceFailureReason" class="form-help-text" style="margin: 0; border-radius: 0;">
+                <span class="material-symbols-outlined ms-filled">info</span>
+                <div class="form-help-text-content">{$selectedModelMap->inferenceFailureReason}</div>
+            </div>
+        </div>
+        {include entityMaps from "EntityMaps.latte"}
+        {if $selectedEntityMap}
+            {include attributeMaps from "AttributeMaps.latte"}
+            {include relationshipMaps from "RelationshipMaps.latte"}
+        {/if}
+    {/if}
+{/define}

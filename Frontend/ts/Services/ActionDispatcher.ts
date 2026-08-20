@@ -8,17 +8,22 @@ type Endpoint =
     | "CompositeType"
     | "Configuration"
     | "Entity"
+    | "EntityMap"
     | "FetchIndex"
     | "FetchIndexElement"
     | "FetchRequestTemplate"
     | "FetchedProperty"
+    | "ModelMap"
+    | "PropertyMap"
     | "Relationship"
     | "Reorder"
     | "Role"
     | "Save"
+    | "Seed"
     | "Subclass"
     | "Synchronize"
     | "UniquenessConstraint"
+    | "Version"
     | "import"
 
 export class ActionDispatcher {
@@ -106,6 +111,13 @@ export class ActionDispatcher {
                 return ["project", "entity", "index"]
             case "AccessControl":
                 return ["project", "entity", "property"]
+            case "ModelMap":
+            case "Seed":
+                return ["project"]
+            case "EntityMap":
+                return ["project", "modelMap"]
+            case "PropertyMap":
+                return ["project", "modelMap", "entityMap"]
             default:
                 return []
         }
@@ -153,6 +165,13 @@ export class ActionDispatcher {
                 return "element"
             case "AccessControl":
                 return "accessControl"
+            case "ModelMap":
+            case "Seed":
+                return "modelMap"
+            case "EntityMap":
+                return "entityMap"
+            case "PropertyMap":
+                return "propertyMap"
             default:
                 return undefined
         }

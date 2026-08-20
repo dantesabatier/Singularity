@@ -1,0 +1,31 @@
+{templateType App\ViewControllers\MappingController}
+{define mappingSourceList}
+    <div class="source-section-header">Mapping Models</div>
+    <div class="source-section-content" style="flex: 1; overflow-y: auto;">
+        <div n:foreach="$modelMaps as $modelMap" class="source-row{$modelMap->isEqual($selectedModelMap) ? ' active'}" id="modelMap-{$modelMap->objectID|json}" data-href="/Mapping?project={$project->objectID|json}&modelMap={$modelMap->objectID|json}" title="{$modelMap->name}">
+            <span class="tree-spacer"></span>
+            <span class="material-symbols-outlined source-icon">swap_horiz</span>
+            <span class="source-label flex-grow-1">{$modelMap->name}</span>
+        </div>
+        <div n:if="$modelMaps->isEmpty" class="list-control-empty">No mapping models</div>
+    </div>
+    <div class="list-control-toolbar">
+        <div class="dropdown dropup">
+            <button class="btn btn-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="New Mapping Model" {$sourceVersionNames->isEmpty ? disabled}>
+                <span class="material-symbols-outlined">add</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><h6 class="dropdown-header">New Map From Version</h6></li>
+                <li n:foreach="$sourceVersionNames as $versionName">
+                    <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="seedModelMap" data-version="{$versionName}" {$mappedVersionNames->containsElement($versionName) ? disabled}>
+                        <span class="material-symbols-outlined" style="font-size: 13px;">{$mappedVersionNames->containsElement($versionName) ? "check" : "history"}</span>
+                        <span class="text-truncate">{$versionName}</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <button class="btn btn-icon" type="button" title="Remove Mapping Model" data-mapping-action="removeSelection" data-item="{$selectedModelMap|json}" {!$selectedModelMap instanceof App\Model\ModelMap ? disabled}>
+            <span class="material-symbols-outlined">remove</span>
+        </button>
+    </div>
+{/define}

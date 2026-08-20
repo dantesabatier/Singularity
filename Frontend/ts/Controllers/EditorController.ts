@@ -56,6 +56,12 @@ export class EditorController extends ViewController {
             case "openSQLViewer":
                 void this.openSQLViewer(element)
                 return
+            case "newModelVersion":
+                void this.newModelVersion(element)
+                return
+            case "openMappingModels":
+                void this.openMappingModels(element)
+                return
             case "createSubclass":
                 void this.createSubclass(element)
                 return
@@ -186,6 +192,37 @@ export class EditorController extends ViewController {
             overrideBrowserWindowOptions: {
                 width: 1090,
                 height: 600,
+            },
+        })
+    }
+
+    private async newModelVersion(element: HTMLElement): Promise<void> {
+        const projectID = element.dataset.projectId
+        if (!projectID) {
+            return
+        }
+        const result = await this.context.desktopBridge.showMessageBox(
+            "Start a new model version?",
+            "The model as it stands is frozen to a file and stays available as a migration source. A frozen version cannot be edited.",
+            ["Cancel", "OK"],
+        )
+        if (!result?.response) {
+            return
+        }
+        await this.context.actionDispatcher.dispatch("Version", {project: projectID})
+    }
+
+    private async openMappingModels(element: HTMLElement): Promise<void> {
+        const projectID = element.dataset.projectId
+        if (!projectID) {
+            return
+        }
+        const url = `${window.location.origin}${this.context.routeBuilder.build("Mapping", {project: projectID})}`
+        await this.context.desktopBridge.showWindow({
+            url,
+            overrideBrowserWindowOptions: {
+                width: 1280,
+                height: 760,
             },
         })
     }

@@ -1,0 +1,16 @@
+{templateType App\ViewControllers\MappingController}
+<div id="source">
+    {include mappingSourceList from "MappingSourceList.latte"}
+</div>
+<div id="content">
+    {include mappingContent from "MappingContent.latte"}
+</div>
+<div id="inspector-pane">
+    {include mappingInspector from "MappingInspector.latte"}
+</div>
+<ul id="mapping-actions-menu">
+    {include menuActions from "MappingMenuActions.latte"}
+</ul>
+<ol id="breadcrumb-list">
+    {include breadcrumbItems from "MappingBreadcrumb.latte"}
+</ol>

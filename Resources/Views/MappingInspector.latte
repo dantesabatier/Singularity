@@ -1,0 +1,12 @@
+{templateType App\ViewControllers\MappingController}
+{define mappingInspector}
+    {if $selectedPropertyMap}
+        {include propertyMap from "PropertyMap.latte"}
+    {elseif $selectedEntityMap}
+        {include entityMap from "EntityMap.latte"}
+    {elseif $selectedModelMap}
+        {include modelMap from "ModelMap.latte"}
+    {else}
+        {include mappingNoSelection from "MappingNoSelection.latte"}
+    {/if}
+{/define}

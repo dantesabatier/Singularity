@@ -1,0 +1,28 @@
+{templateType App\ViewControllers\MappingController}
+{define mappingEmpty}
+    <div class="empty-state">
+        {if $sourceVersionNames->isEmpty}
+            <span class="material-symbols-outlined">history_toggle_off</span>
+            <p>No frozen versions</p>
+            <small>A mapping model goes from a frozen version of the model to the current one. Freeze the current model with <b>New Version</b> first.</small>
+        {else}
+            <span class="material-symbols-outlined">swap_horiz</span>
+            <p>No mapping models</p>
+            <small>A mapping model carries data from a frozen version of the model to the current one, for the changes a lightweight migration cannot express.</small>
+            <div class="dropdown mt-3">
+                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Create Mapping Model...
+                </button>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">New Map From Version</h6></li>
+                    <li n:foreach="$sourceVersionNames as $versionName">
+                        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="seedModelMap" data-version="{$versionName}">
+                            <span class="material-symbols-outlined" style="font-size: 13px;">history</span>
+                            <span class="text-truncate">{$versionName}</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        {/if}
+    </div>
+{/define}

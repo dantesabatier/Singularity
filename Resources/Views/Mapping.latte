@@ -1,0 +1,55 @@
+{layout "Layout.latte"}
+{templateType App\ViewControllers\MappingController}
+{block title}{$project->name}{/block}
+{block content}
+<div id="main" data-view="mapping" class="user-select-none">
+    <nav class="navbar sticky-top border-bottom user-select-none p-0" style="height: 40px; -webkit-app-region: drag; background-color: var(--bg-tertiary); border-color: var(--border-color) !important;">
+        <div class="container-fluid justify-content-start align-items-center px-2">
+            <div class="navbar-brand mb-0 me-2">
+                <img src="/Resources/Images/icon24@1x.png" srcset="/Resources/Images/icon24@2x.png 2x, /Resources/Images/icon24@3x.png 3x" alt="{$title}" class="d-inline-block">
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-icon px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="-webkit-app-region: no-drag;" data-bs-placement="bottom" data-bs-title="Main Menu">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <ul id="mapping-actions-menu" class="dropdown-menu">
+                    {include menuActions from "MappingMenuActions.latte"}
+                </ul>
+            </div>
+            <div class="ms-2 d-flex align-items-center gap-2 px-2" style="-webkit-app-region: no-drag; background-color: var(--bg-hover); border: 1px solid var(--border-color); border-radius: 6px; height: 28px;">
+                <span class="d-inline-flex align-items-center justify-content-center rounded text-center fw-semibold" style="width: 20px; height: 20px; background-color: {$project->color|noescape}; font-size: 11px;">
+                    {$project->name|first}
+                </span> <span class="text-truncate" style="max-width: 200px;">{$project->name}</span>
+            </div>
+            <div class="ms-auto d-flex align-items-center gap-1" style="-webkit-app-region: no-drag;">
+                <button id="btn-toggle-source" class="btn btn-icon btn-pane-toggle btn-sm active" type="button" data-bs-placement="bottom" data-bs-title="Toggle Navigator">
+                    <span class="material-symbols-outlined">left_panel_open</span>
+                </button>
+                <button id="btn-toggle-sidebar" class="btn btn-icon btn-pane-toggle btn-sm active" type="button" data-bs-placement="bottom" data-bs-title="Toggle Inspector">
+                    <span class="material-symbols-outlined">right_panel_open</span>
+                </button>
+            </div>
+            <div class="window-controls-spacer" style="width: 145px;"></div>
+        </div>
+    </nav>
+    <div id="mapping-runtime" data-project-object-id="{$project->objectID|json}" hidden></div>
+    <div id="split-container" class="split-container" data-split-sizes="[20, 60, 20]" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
+        <div id="source" class="split-panel scroll-view border-end border-black" style="width: 20%; flex-shrink: 0; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
+            {include mappingSourceList from "MappingSourceList.latte"}
+        </div>
+        <div id="content" class="split-panel scroll-view p-2" style="width: 60%; flex-shrink: 0;">
+            {include mappingContent from "MappingContent.latte"}
+        </div>
+        <div id="sidebar" class="split-panel border-start border-black" style="width: 20%; flex-shrink: 0; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
+            <div id="inspector-pane" class="scroll-view pe-1 p-2" style="flex: 1; overflow-y: auto;">
+                {include mappingInspector from "MappingInspector.latte"}
+            </div>
+        </div>
+    </div>
+    <nav class="breadcrumb-nav" aria-label="breadcrumb">
+        <ol id="breadcrumb-list" class="breadcrumb-list">
+            {include breadcrumbItems from "MappingBreadcrumb.latte"}
+        </ol>
+    </nav>
+</div>
+{/block}

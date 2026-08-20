@@ -1,0 +1,37 @@
+{templateType App\ViewControllers\MappingController}
+{define menuActions}
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-href="/Editor?project={$project->objectID|json}">
+            <span class="material-symbols-outlined">arrow_back</span> <span>Back to Model Editor</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li><h6 class="dropdown-header">Mapping Model</h6></li>
+    <li n:foreach="$sourceVersionNames as $versionName">
+        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="seedModelMap" data-version="{$versionName}" {$mappedVersionNames->containsElement($versionName) ? disabled}>
+            <span class="material-symbols-outlined">{$mappedVersionNames->containsElement($versionName) ? "check" : "add_circle"}</span>
+            <span class="text-truncate">New Map From {$versionName}</span>
+        </button>
+    </li>
+    <li n:if="$sourceVersionNames->isEmpty">
+        <span class="dropdown-item-text text-secondary small">No frozen versions yet</span>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="removeSelection" data-item="{$selection|json}" {!$selection instanceof Sabatier\CoreData\ManagedObject ? disabled}>
+            <span class="material-symbols-outlined">delete</span> <span>Remove</span>
+        </button>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="save">
+            <span class="material-symbols-outlined">save</span> <span>Save</span>
+        </button>
+    </li>
+{/define}

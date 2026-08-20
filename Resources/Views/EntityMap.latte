@@ -1,0 +1,95 @@
+{templateType App\ViewControllers\MappingController}
+{define entityMap}
+    <div n:if="$selectedEntityMap" class="px-3 pb-4">
+        <form action="/EntityMap" method="POST">
+            <input type="hidden" name="objectID" value="{$selectedEntityMap->objectID|json}">
+            <div class="inspector-header">Entity Map</div>
+            <div class="row mb-2">
+                <label for="name" class="col-sm-4 inspector-label">Name</label>
+                <div class="col-sm-8">
+                    <input type="text" name="name" id="name" placeholder="{$selectedEntityMap->mappingName}" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedEntityMap->name}" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="sourceEntityName" class="col-sm-4 inspector-label">Source</label>
+                <div class="col-sm-8">
+                    <select name="sourceEntityName" id="sourceEntityName" class="form-select form-select-sm" data-autosave="true">
+                        <option value="">No Source Entity</option>
+                        <option disabled>──────────</option>
+                        <option n:foreach="$sourceEntityNames as $entityName" value="{$entityName}" {$entityName === $selectedEntityMap->sourceEntityName ? selected}>{$entityName}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="destinationEntityName" class="col-sm-4 inspector-label">Destination</label>
+                <div class="col-sm-8">
+                    <select name="destinationEntityName" id="destinationEntityName" class="form-select form-select-sm" data-autosave="true">
+                        <option value="">No Destination Entity</option>
+                        <option disabled>──────────</option>
+                        <option n:foreach="$destinationEntityNames as $entityName" value="{$entityName}" {$entityName === $selectedEntityMap->destinationEntityName ? selected}>{$entityName}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="type" class="col-sm-4 inspector-label">Type</label>
+                <div class="col-sm-8">
+                    <select name="type" id="type" class="form-select form-select-sm" data-autosave="true">
+                        <option n:foreach="$entityMapTypes as $entityMapType" value="{$entityMapType->value}" {$entityMapType->value === $selectedEntityMap->type->value ? selected}>
+                            {$entityMapType->value === $selectedEntityMap->inferredType->value ? "$entityMapType->name (inferred)" : $entityMapType->name}
+                        </option>
+                    </select>
+                    <div n:if="$selectedEntityMap->type !== $selectedEntityMap->inferredType" class="form-help-text">
+                        <span class="material-symbols-outlined ms-filled">info</span>
+                        <div class="form-help-text-content">
+                            The two sides imply <code class="inline-code">{ucfirst($selectedEntityMap->inferredType->name)}</code>. This map overrides it.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inspector-header">Migration Policy</div>
+            <div class="row mb-2">
+                <label for="entityMigrationPolicyClassName" class="col-sm-4 inspector-label">Class</label>
+                <div class="col-sm-8">
+                    <input type="text" name="entityMigrationPolicyClassName" id="entityMigrationPolicyClassName" class="form-control form-control-sm text-truncate font-monospace" style="font-size: 11px;" placeholder="App\Migrations\Policy" value="{$selectedEntityMap->entityMigrationPolicyClassName}" autocomplete="off" spellcheck="false" {$selectedEntityMap->type !== App\Model\EntityMapType::custom ? disabled}>
+                    <div n:if="$selectedEntityMap->isMissingMigrationPolicy" class="inspector-inline-error">
+                        <span class="material-symbols-outlined ms-filled">error</span>
+                        <div>A custom mapping needs a subclass of <code class="inline-code">EntityMigrationPolicy</code>. Without it the engine refuses to migrate with this map.</div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
+        </form>
+
+        <div n:if="!$uncoveredAttributeNames->isEmpty" class="inspector-header">Coverage</div>
+        <div n:if="!$uncoveredAttributeNames->isEmpty" class="inspector-inline-warning">
+            <span class="material-symbols-outlined ms-filled">warning</span>
+            <div>
+                {$uncoveredAttributeNames->count} destination {$uncoveredAttributeNames->count === 1 ? "attribute has" : "attributes have"} no map and keep their default value.
+                <div class="inspector-inline-warning-tokens">
+                    <code n:foreach="$uncoveredAttributeNames as $attributeName">{$attributeName}</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="inspector-header">Versioning</div>
+        <div class="row mb-2">
+            <label for="sourceEntityVersionHash" class="col-sm-4 inspector-label">Source Hash</label>
+            <div class="col-sm-8">
+                <input type="text" id="sourceEntityVersionHash" class="form-control form-control-sm text-truncate font-monospace" style="font-size: 10px;" value="{$selectedEntityMap->sourceEntityVersionHash}" placeholder="Not set" readonly>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <label for="destinationEntityVersionHash" class="col-sm-4 inspector-label">Dest. Hash</label>
+            <div class="col-sm-8">
+                <input type="text" id="destinationEntityVersionHash" class="form-control form-control-sm text-truncate font-monospace" style="font-size: 10px;" value="{$selectedEntityMap->destinationEntityVersionHash}" placeholder="Not set" readonly>
+            </div>
+        </div>
+        <div class="form-help-text">
+            <span class="material-symbols-outlined ms-filled">info</span>
+            <div class="form-help-text-content">
+                The hashes come from the entities of the two versions. They are what locates this map when a store migrates.
+            </div>
+        </div>
+    </div>
+{/define}
