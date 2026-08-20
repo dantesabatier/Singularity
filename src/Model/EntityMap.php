@@ -98,7 +98,7 @@ final class EntityMap extends ManagedObject
             $entityMapping->entityMigrationPolicyClassName = $this->migrationPolicyClassName;
             $entityMapping->attributeMappings = $this->propertyMappings($this->attributes);
             $entityMapping->relationshipMappings = $this->propertyMappings($this->relationships);
-            if ($this->userInfo->count > 0) {
+            if (!$this->userInfo->isEmpty) {
                 $entityMapping->userInfo = $this->userInfo;
             }
             return $this->entityMapping = $entityMapping;
