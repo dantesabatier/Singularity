@@ -16,7 +16,6 @@ use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\PropertyListSerialization;
 use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\fatal_error;
-use const Sabatier\CoreData\ManagedObjectModelFileExtension;
 use const Sabatier\CoreData\ManagedObjectModelURLOption;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
@@ -41,11 +40,15 @@ final readonly class RenameBundleTransaction implements Transaction
         $oldName = $bundle->object(kCFBundleNameKey);
         $oldName !== $this->newName ?: throw new Exception("Bundle already has this name");
         $this->autoloadIfNeeded($bundle);
-        [$sourceModelURL, $destinationModelURL] = $this->resolveModelURLs($bundle, $oldName);
-        $this->migrateStore($oldName, $this->newName, $sourceModelURL, $destinationModelURL);
+        $sourceBundle = new ModelBundle($bundle->bundleURL, $oldName);
+        $destinationBundle = new ModelBundle($bundle->bundleURL, $this->newName);
+        $this->copyModel($sourceBundle, $destinationBundle);
+        // Only the package is renamed: a version's name is an identity a production store may already record against its checksum, so the copy keeps the names it held and the current one is still whatever its version information names.
+        $destinationModelURL = $sourceBundle->isVersioned ? $destinationBundle->urlForVersionNamed($sourceBundle->currentVersionName) : $destinationBundle->modelFileURL;
+        $this->migrateStore($oldName, $this->newName, $sourceBundle->currentVersionURL, $destinationModelURL);
         $this->updateInfoPlist($bundle);
         $this->project->name = $this->newName;
-        FileManager::default()->removeItem($sourceModelURL);
+        FileManager::default()->removeItem($sourceBundle->url);
     }
 
     private function autoloadIfNeeded(Bundle $bundle): void
@@ -57,21 +60,17 @@ final readonly class RenameBundleTransaction implements Transaction
     }
 
     /**
-     * @param Bundle $bundle
-     * @param string $oldName
-     * @return array{URL, URL}
+     * Copies the model to its new name, carrying every version a versioned project holds.
+     * @param ModelBundle $sourceBundle Where the model lives under the old name.
+     * @param ModelBundle $destinationBundle Where it lives under the new one.
      * @throws Exception
      */
-    private function resolveModelURLs(Bundle $bundle, string $oldName): array
+    private function copyModel(ModelBundle $sourceBundle, ModelBundle $destinationBundle): void
     {
-        $resourceURL = $bundle->resourceURL ?? throw new Exception("Invalid resources URL");
-        $destination = $resourceURL->appendingPathComponent($this->newName)->appendingPathExtension(ManagedObjectModelFileExtension);
-        $source = $resourceURL->appendingPathComponent($oldName)->appendingPathExtension(ManagedObjectModelFileExtension);
-        if (!FileManager::default()->fileExists($source->path)) {
+        if (!FileManager::default()->fileExists($sourceBundle->url->path)) {
             throw new Exception("Source model not found");
         }
-        FileManager::default()->copyItem($source, $destination);
-        return [$source, $destination];
+        FileManager::default()->copyItem($sourceBundle->url, $sourceBundle->isVersioned ? $destinationBundle->packageURL : $destinationBundle->modelFileURL);
     }
 
     /**

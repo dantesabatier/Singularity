@@ -10,7 +10,6 @@ use App\FileWriters\ModelFileWriter;
 use App\Model\Project;
 use Exception;
 use Sabatier\Foundation\FileManager;
-use const Sabatier\CoreData\ManagedObjectModelFileExtension;
 
 final readonly class BundleUpdater
 {
@@ -39,8 +38,8 @@ final readonly class BundleUpdater
         $model = $this->project->model;
         if ($model) {
             $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
-            $modelURL = $bundleURL->appendingPathComponent("Resources")->appendingPathComponent($bundleURL->lastPathComponent)->appendingPathExtension(ManagedObjectModelFileExtension);
-            new ModelFileWriter($modelURL, $model)->save();
+            $modelBundle = new ModelBundle($bundleURL, $bundleURL->lastPathComponent);
+            new ModelFileWriter($modelBundle->currentVersionURL, $model)->save();
         }
     }
 

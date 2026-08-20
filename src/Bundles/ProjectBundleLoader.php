@@ -10,7 +10,6 @@ use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\fatal_error;
-use const Sabatier\CoreData\ManagedObjectModelFileExtension;
 use const Sabatier\Foundation\kCFBundleNameKey;
 
 final readonly class ProjectBundleLoader
@@ -65,9 +64,9 @@ final readonly class ProjectBundleLoader
         if (!FileManager::default()->fileExists($resourcesURL->path)) {
             fatal_error("Missing Resources directory");
         }
-        $modelURL = $resourcesURL->appendingPathComponent($bundleName)->appendingPathExtension(ManagedObjectModelFileExtension);
-        if (!FileManager::default()->fileExists($modelURL->path)) {
-            fatal_error("Missing model file $bundleName.mom");
+        $modelBundle = new ModelBundle($this->url, $bundleName);
+        if (!FileManager::default()->fileExists($modelBundle->url->path)) {
+            fatal_error("Missing model $bundleName");
         }
     }
 }

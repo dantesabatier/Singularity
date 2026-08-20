@@ -19,7 +19,6 @@ use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
-use const Sabatier\CoreData\ManagedObjectModelFileExtension;
 
 final readonly class BundleScaffolder
 {
@@ -77,8 +76,8 @@ final readonly class BundleScaffolder
     {
         $model = $this->project->model;
         if ($model && $model->isInserted) {
-            $modelURL = $this->bundleURL->appendingPathComponent("Resources")->appendingPathComponent($this->bundleURL->lastPathComponent)->appendingPathExtension(ManagedObjectModelFileExtension);
-            new ModelFileWriter($modelURL, $model)->save();
+            $modelBundle = new ModelBundle($this->bundleURL, $this->bundleURL->lastPathComponent);
+            new ModelFileWriter($modelBundle->currentVersionURL, $model)->save();
         }
     }
 
