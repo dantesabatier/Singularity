@@ -48,6 +48,9 @@ final class ModelMap extends ManagedObject
     }
     /** @var ManagedObjectModel|null The frozen version this map starts from, or null when its file is not where the map recorded it. */
     private(set) ?ManagedObjectModel $sourceModel {
+        /**
+         * @throws Exception
+         */
         get {
             if ($this->isSourceModelResolved) {
                 return $this->sourceModel;
