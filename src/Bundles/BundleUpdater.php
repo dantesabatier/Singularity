@@ -7,6 +7,8 @@ namespace App\Bundles;
 use App\FileWriters\DelegateFileWriter;
 use App\FileWriters\DotEnvFileWriter;
 use App\FileWriters\ModelFileWriter;
+use App\FileWriters\ModelMapFileWriter;
+use App\Model\ModelMap;
 use App\Model\Project;
 use Exception;
 use Sabatier\Foundation\FileManager;
@@ -26,6 +28,7 @@ final readonly class BundleUpdater
     public function update(): void
     {
         $this->updateModelIfNeeded();
+        $this->updateModelMaps();
         $this->updateEnvIfNeeded();
         $this->updateDelegateIfNeeded();
     }
@@ -41,6 +44,28 @@ final readonly class BundleUpdater
             $modelBundle = new ModelBundle($bundleURL, $bundleURL->lastPathComponent);
             new ModelFileWriter($modelBundle->currentVersionURL, $model)->save();
         }
+    }
+
+    /**
+     * Emits a mapping model per map that declares the version it starts from.
+     *
+     * A map without a source has no pair to migrate between, and the archive carries both models, so
+     * there is nothing to write yet.
+     * @throws Exception
+     */
+    private function updateModelMaps(): void
+    {
+        $model = $this->project->model;
+        if (!$model) {
+            return;
+        }
+        $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
+        $modelBundle = new ModelBundle($bundleURL, $bundleURL->lastPathComponent);
+        $model->modelMaps->forEach(function (ModelMap $modelMap) use ($modelBundle): void {
+            if ($modelMap->sourceModelURL) {
+                new ModelMapFileWriter($modelBundle->urlForMappingModelNamed($modelMap->name), $modelMap)->save();
+            }
+        });
     }
 
     /**
