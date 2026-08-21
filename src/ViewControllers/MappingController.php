@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\ViewControllers;
 
 use App\Bundles\ModelBundle;
+use App\Bundles\UpgradeModelTransaction;
 use App\Model\EntityMap;
 use App\Model\EntityMapType;
 use App\Model\ModelMap;
 use App\Model\PropertyMap;
 use Exception;
 use Override;
-use Sabatier\CoreData\InferredMappingModelException;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\MappingModel;
@@ -23,6 +23,7 @@ use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
+use Sabatier\Service\ConflictException;
 use Sabatier\Service\Endpoint;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
@@ -48,7 +49,7 @@ final class MappingController extends ProjectController
     /** @var ArrayClass<ModelMap> The maps the project holds, oldest first. */
     #[Outlet]
     private(set) ArrayClass $modelMaps {
-        get => $this->modelMaps ??= new ArrayClass($this->project->model?->modelMaps->map(fn(ModelMap $modelMap): ModelMap => $modelMap)->sorted([new SortDescriptor("name")]) ?? new ArrayClass());
+        get => $this->modelMaps ??= new ArrayClass($this->project->modelMaps->map(fn(ModelMap $modelMap): ModelMap => $modelMap)->sorted([new SortDescriptor("name")]));
     }
     #[Outlet]
     private(set) ?ModelMap $selectedModelMap = null;
@@ -108,21 +109,33 @@ final class MappingController extends ProjectController
     /** @var ArrayClass<string> The destination entity's attribute names, which is what a property map may name. */
     #[Outlet]
     private(set) ArrayClass $destinationAttributeNames {
+        /**
+         * @throws Exception
+         */
         get => $this->destinationAttributeNames ??= $this->propertyNames($this->selectedEntityMap?->destinationEntityName, false);
     }
     /** @var ArrayClass<string> The destination entity's relationship names. */
     #[Outlet]
     private(set) ArrayClass $destinationRelationshipNames {
+        /**
+         * @throws Exception
+         */
         get => $this->destinationRelationshipNames ??= $this->propertyNames($this->selectedEntityMap?->destinationEntityName, true);
     }
     /** @var ArrayClass<string> The source entity's attribute names, offered as a palette because the source property is named inside the expression. */
     #[Outlet]
     private(set) ArrayClass $sourceAttributeNames {
+        /**
+         * @throws Exception
+         */
         get => $this->sourceAttributeNames ??= $this->sourcePropertyNames($this->selectedEntityMap?->sourceEntityName, false);
     }
     /** @var ArrayClass<string> The source entity's relationship names. */
     #[Outlet]
     private(set) ArrayClass $sourceRelationshipNames {
+        /**
+         * @throws Exception
+         */
         get => $this->sourceRelationshipNames ??= $this->sourcePropertyNames($this->selectedEntityMap?->sourceEntityName, true);
     }
     /** @var ArrayClass<string> The destination attributes no property map covers, which keep their default value on migration. */
@@ -204,21 +217,32 @@ final class MappingController extends ProjectController
         $modelBundle = $this->modelBundle ?? throw new BadRequestException("Project has no bundle URL");
         $sourceURL = $modelBundle->urlForVersionNamed($versionName);
         FileManager::default()->fileExists($sourceURL->path) ?: throw new NotFoundException("Version `$versionName` was not found in the model package");
+        !$this->mappedVersionNames->containsElement($versionName) ?: throw new ConflictException("Version `$versionName` already has a mapping model: a version pair is migrated by exactly one map");
         $sourceModel = new ManagedObjectModel($sourceURL);
         $destinationModel = $model->managedObjectModel;
-
         $modelMap = new ModelMap($this->managedObjectContext);
-        $modelMap->name = "{$versionName}To{$modelBundle->currentVersionName}";
+        $modelMap->name = "{$versionName}To$modelBundle->currentVersionName";
         $modelMap->sourceVersionName = $versionName;
         $modelMap->sourceModelURL = $sourceURL;
-        $model->addModelMapsObject($modelMap);
-        try {
-            $this->seedEntityMaps($modelMap, MappingModel::inferredMappingModel($sourceModel, $destinationModel));
-        } catch (InferredMappingModelException $exception) {
-            // The message names the entity the inference could not express, which is the one the programmer has to map by hand. The map is kept either way: an empty one is still where that work happens.
-            $modelMap->inferenceFailureReason = $exception->getMessage();
-        }
+        $this->project->addModelMapsObject($modelMap);
+        $this->seedEntityMaps($modelMap, MappingModel::inferredMappingModel($sourceModel, $destinationModel));
         $this->managedObjectContext->save();
+        $this->data = $modelMap;
+    }
+
+    /**
+     * Writes the selected map and hands the store over to the version it arrives at.
+     * @throws Exception
+     */
+    #[Action(transformers: [JSONTransformer::class])]
+    public function upgrade(): void
+    {
+        $objectID = $this->referenceObject("modelMap") ?? throw new BadRequestException("`modelMap` is required");
+        $modelMap = $this->fetchByReference(ModelMap::class, $objectID) ?? throw new NotFoundException("Mapping model with objectID `$objectID` was not found");
+        $modelMap->sourceModel ?? throw new NotFoundException("The frozen version `$modelMap->sourceVersionName` is not where this map recorded it");
+        $modelMap->invalidEntityMaps->isEmpty ?: throw new ConflictException("{$modelMap->invalidEntityMaps->count} entity maps are custom without a migration policy: the engine would refuse to migrate with this map");
+        $transaction = new UpgradeModelTransaction($modelMap);
+        $transaction->execute();
         $this->data = $modelMap;
     }
 

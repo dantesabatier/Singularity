@@ -23,6 +23,7 @@ type Endpoint =
     | "Subclass"
     | "Synchronize"
     | "UniquenessConstraint"
+    | "Upgrade"
     | "Version"
     | "import"
 

@@ -40,6 +40,9 @@ export class MappingController extends ViewController {
             case "save":
                 void this.save()
                 return
+            case "upgradeModel":
+                void this.upgradeModel(element)
+                return
             default:
                 return
         }
@@ -120,6 +123,23 @@ export class MappingController extends ViewController {
             return
         }
         await this.context.actionDispatcher.dispatch(item.entityName, {objectID: item.objectID}, "DELETE")
+    }
+
+    private async upgradeModel(element: HTMLElement): Promise<void> {
+        const item = this.parseJSON<ManagedReference>(element.dataset.item)
+        const projectID = this.projectID
+        if (!item?.objectID || !projectID) {
+            return
+        }
+        const result = await this.context.desktopBridge.showMessageBox(
+            "Upgrade the store to this version?",
+            "The mapping model is written to disk and the store is handed over to the version it arrives at. The migration runs the next time the store opens.",
+            ["Cancel", "OK"],
+        )
+        if (!result?.response) {
+            return
+        }
+        await this.context.actionDispatcher.dispatch(`Upgrade?project=${encodeURIComponent(projectID)}&modelMap=${encodeURIComponent(item.objectID)}`)
     }
 
     private async save(): Promise<void> {

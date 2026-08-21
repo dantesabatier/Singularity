@@ -1,13 +1,5 @@
 {templateType App\ViewControllers\MappingController}
 {define menuActions}
-    <li>
-        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-href="/Editor?project={$project->objectID|json}">
-            <span class="material-symbols-outlined">arrow_back</span> <span>Back to Model Editor</span>
-        </button>
-    </li>
-    <li>
-        <hr class="dropdown-divider">
-    </li>
     <li><h6 class="dropdown-header">Mapping Model</h6></li>
     <li n:foreach="$sourceVersionNames as $versionName">
         <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="seedModelMap" data-version="{$versionName}" {$mappedVersionNames->containsElement($versionName) ? disabled}>
@@ -32,6 +24,11 @@
     <li>
         <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="save">
             <span class="material-symbols-outlined">save</span> <span>Save</span>
+        </button>
+    </li>
+    <li>
+        <button class="dropdown-item d-flex align-items-center gap-2" type="button" data-mapping-action="upgradeModel" data-item="{$selectedModelMap|json}" {!$selectedModelMap instanceof App\Model\ModelMap || $selectedModelMap->sourceModel === null || !$selectedModelMap->invalidEntityMaps->isEmpty ? disabled}>
+            <span class="material-symbols-outlined">upgrade</span> <span>Upgrade Store...</span>
         </button>
     </li>
 {/define}

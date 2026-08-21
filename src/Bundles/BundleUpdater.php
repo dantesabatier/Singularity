@@ -39,11 +39,20 @@ final readonly class BundleUpdater
     private function updateModelIfNeeded(): void
     {
         $model = $this->project->model;
-        if ($model) {
-            $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
-            $modelBundle = new ModelBundle($bundleURL, $bundleURL->lastPathComponent);
-            new ModelFileWriter($modelBundle->currentVersionURL, $model)->save();
+        if (!$model) {
+            return;
         }
+        $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
+        $modelBundle = new ModelBundle($bundleURL, $bundleURL->lastPathComponent);
+        new ModelFileWriter($modelBundle->currentVersionURL, $model)->save();
+        if (!$modelBundle->isVersioned) {
+            return;
+        }
+        $currentVersionName = $modelBundle->currentVersionName;
+        $versionChecksums = $modelBundle->versionChecksums;
+        $versionChecksums[$currentVersionName] = $model->managedObjectModel->versionChecksum;
+        $modelBundle->writeVersionInfo($currentVersionName, $versionChecksums);
+        new CachedModelWriter($this->project)->write($model->managedObjectModel);
     }
 
     /**
@@ -55,13 +64,9 @@ final readonly class BundleUpdater
      */
     private function updateModelMaps(): void
     {
-        $model = $this->project->model;
-        if (!$model) {
-            return;
-        }
         $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
         $modelBundle = new ModelBundle($bundleURL, $bundleURL->lastPathComponent);
-        $model->modelMaps->forEach(function (ModelMap $modelMap) use ($modelBundle): void {
+        $this->project->modelMaps->forEach(function (ModelMap $modelMap) use ($modelBundle): void {
             if ($modelMap->sourceModelURL) {
                 new ModelMapFileWriter($modelBundle->urlForMappingModelNamed($modelMap->name), $modelMap)->save();
             }

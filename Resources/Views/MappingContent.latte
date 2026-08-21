@@ -21,10 +21,6 @@
                     <a class="mapping-inline-link" href="/Mapping?project={$project->objectID|json}&modelMap={$selectedModelMap->objectID|json}&entityMap={$selectedModelMap->invalidEntityMaps->first?->objectID|json}">Show it</a>
                 </div>
             </div>
-            <div n:if="$selectedModelMap->inferenceFailureReason" class="form-help-text" style="margin: 0; border-radius: 0;">
-                <span class="material-symbols-outlined ms-filled">info</span>
-                <div class="form-help-text-content">{$selectedModelMap->inferenceFailureReason}</div>
-            </div>
         </div>
         {include entityMaps from "EntityMaps.latte"}
         {if $selectedEntityMap}
