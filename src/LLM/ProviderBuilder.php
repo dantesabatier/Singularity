@@ -22,11 +22,9 @@ final class ProviderBuilder
         $apiKey = $dictionary["apiKey"] ?? "";
         /** @var ArrayClass<Dictionary<mixed>> $models */
         $models = $dictionary["models"] ?? new ArrayClass();
-        // A provider with no options is stored as an empty dictionary, but the
-        // format doesn't distinguish "{}" from "[]": empty materializes as a
-        // sequential ArrayClass. We normalize it to Dictionary for the constructor.
+        // A provider with no options is stored as an empty dictionary, but the format doesn't distinguish "{}" from "[]": empty materializes as a sequential ArrayClass. We normalize it to Dictionary for the constructor.
         $storedOptions = $dictionary["options"];
-        $options = $storedOptions instanceof Dictionary ? $storedOptions : new Dictionary($storedOptions ?? new ArrayClass());
+        $options = $storedOptions instanceof Dictionary ? $storedOptions : new Dictionary($storedOptions ?? []);
         return new Provider($name, $identifier, $url, $apiKey, $models->map(fn(Dictionary $model): Model => ModelBuilder::build($model)), $options);
     }
 }

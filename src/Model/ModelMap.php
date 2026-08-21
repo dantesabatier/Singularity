@@ -58,6 +58,13 @@ final class ModelMap extends ManagedObject
             return $this->sourceModel = ($url = $this->sourceModelURL) === null ? null : new ManagedObjectModel($url);
         }
     }
+    /** @var ArrayClass<string> The entity names the frozen version holds, which are what a map can come from. */
+    private(set) ArrayClass $sourceEntityNames {
+        /**
+         * @throws Exception
+         */
+        get => $this->sourceEntityNames ??= $this->sourceModel?->entitiesByName->keys->sort() ?? new ArrayClass();
+    }
     /** @var MappingModel The mapping model the engine reads, carrying the two versions the map was authored against. */
     public MappingModel $mappingModel {
         /**
@@ -89,7 +96,7 @@ final class ModelMap extends ManagedObject
                 $entityMap->name = $entityMapping->name;
                 $entityMap->sourceEntityName = $entityMapping->sourceEntityName;
                 $entityMap->destinationEntityName = $entityMapping->destinationEntityName;
-                $entityMap->type = EntityMapType::from($entityMapping->mappingType->value);
+                $entityMap->type = $entityMapping->mappingType;
                 $entityMap->entityMigrationPolicyClassName = $entityMapping->entityMigrationPolicyClassName;
                 $entityMap->position = $position++;
                 $this->addEntityMapsObject($entityMap);

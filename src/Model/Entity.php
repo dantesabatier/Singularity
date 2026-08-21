@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Closure;
 use Override;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\ManagedObject;
@@ -106,6 +107,14 @@ final class Entity extends ManagedObject
             return $result;
         });
     }
+    /** @var ArrayClass<Attribute> The attributes an instance of this entity holds, the superentities' own coming before its own. */
+    private(set) ArrayClass $inheritedAttributes {
+        get => $this->inheritedAttributes ??= $this->inheritedProperties(fn(Entity $entity): ArrayClass => $entity->attributes);
+    }
+    /** @var ArrayClass<Relationship> The relationships an instance of this entity holds, the superentities' own coming before its own. */
+    private(set) ArrayClass $inheritedRelationships {
+        get => $this->inheritedRelationships ??= $this->inheritedProperties(fn(Entity $entity): ArrayClass => $entity->relationships);
+    }
     /** @var ArrayClass<string> */
     private(set) ArrayClass $attributeNames {
         get {
@@ -169,6 +178,24 @@ final class Entity extends ManagedObject
         }
         $this->isLeaf = $this->subentities->isEmpty;
         $this->isFinal = $this->isLeaf;
+    }
+
+    /**
+     * Walks the inheritance chain upwards and gathers a property collection along the way.
+     * @template T of Property
+     * @param Closure(Entity): ArrayClass<T> $properties The collection to read off each entity.
+     * @return ArrayClass<T>
+     */
+    private function inheritedProperties(Closure $properties): ArrayClass
+    {
+        /** @var ArrayClass<Entity> $entities */
+        $entities = new ArrayClass([$this]);
+        $superentity = $this->superentity;
+        while ($superentity) {
+            $entities->insertAt($superentity, 0);
+            $superentity = $superentity->superentity;
+        }
+        return $entities->flatMap($properties);
     }
 
     public function validateType(EntityType|int|null &$type): bool

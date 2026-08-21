@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Override;
+use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\EntityMapping;
 use Sabatier\CoreData\EntityMigrationPolicy;
 use Sabatier\CoreData\ManagedObject;
@@ -62,9 +63,44 @@ final class EntityMap extends ManagedObject
             return $this->mappingName = $mappingName;
         }
     }
+    /** @var Entity|null The entity of the model being edited that this map arrives at, or null when its name names nothing. */
+    private(set) ?Entity $destinationEntity {
+        get => $this->destinationEntity ??= $this->modelMap?->project?->model?->entities?->first(fn(Entity $entity): bool => $entity->name === $this->destinationEntityName);
+    }
+    /** @var EntityDescription|null The entity of the frozen version this map starts from, or null when its name names nothing. */
+    private(set) ?EntityDescription $sourceEntity {
+        get => $this->sourceEntity ??= $this->modelMap?->sourceModel?->entitiesByName[$this->sourceEntityName ?? ""];
+    }
+    /** @var ArrayClass<string> The source entity's attribute names, offered as a palette because the source property is named inside the expression. */
+    private(set) ArrayClass $sourceAttributeNames {
+        get => $this->sourceAttributeNames ??= $this->sourceEntity?->attributesByName->keys ?? new ArrayClass();
+    }
+    /** @var ArrayClass<string> The source entity's relationship names. */
+    private(set) ArrayClass $sourceRelationshipNames {
+        get => $this->sourceRelationshipNames ??= $this->sourceEntity?->relationshipsByName->keys ?? new ArrayClass();
+    }
+    /** @var ArrayClass<PropertyMap> The attribute maps in the order the migration processes them. */
+    private(set) ArrayClass $orderedAttributes {
+        get => $this->orderedAttributes ??= $this->orderedPropertyMaps($this->attributes);
+    }
+    /** @var ArrayClass<PropertyMap> The relationship maps in the order the migration processes them. */
+    private(set) ArrayClass $orderedRelationships {
+        get => $this->orderedRelationships ??= $this->orderedPropertyMaps($this->relationships);
+    }
+    /** @var ArrayClass<string> The destination attributes no property map covers, which keep their default value on migration. */
+    private(set) ArrayClass $uncoveredAttributeNames {
+        get {
+            if (isset($this->uncoveredAttributeNames)) {
+                return $this->uncoveredAttributeNames;
+            }
+            $covered = $this->attributes->map(fn(PropertyMap $propertyMap): string => $propertyMap->name);
+            $attributeNames = $this->destinationEntity?->inheritedAttributes->map(fn(Attribute $attribute): string => $attribute->name) ?? new ArrayClass();
+            return $this->uncoveredAttributeNames = $attributeNames->filter(fn(string $name): bool => !$covered->containsElement($name));
+        }
+    }
     /** @var string|null The version hash of the source entity, read from the frozen version rather than stored: a stale one makes the engine reject the map or never find it. */
     public ?string $sourceEntityVersionHash {
-        get => $this->modelMap?->sourceModel?->entitiesByName[$this->sourceEntityName ?? ""]?->versionHash;
+        get => $this->sourceEntity?->versionHash;
     }
     /** @var string|null The version hash of the destination entity, read from the model being edited. */
     public ?string $destinationEntityVersionHash {
@@ -145,6 +181,15 @@ final class EntityMap extends ManagedObject
         return true;
     }
 
+    /**
+     * Returns a collection of property maps in the order the migration processes them.
+     * @param Set<PropertyMap> $propertyMaps The collection to order.
+     * @return ArrayClass<PropertyMap>
+     */
+    private function orderedPropertyMaps(Set $propertyMaps): ArrayClass
+    {
+        return new ArrayClass($propertyMaps->map(fn(PropertyMap $propertyMap): PropertyMap => $propertyMap)->sorted([new SortDescriptor("position")]));
+    }
     /**
      * Materializes the property maps a collection of mappings spells out.
      * @param ArrayClass<PropertyMapping>|null $propertyMappings The mappings to materialize.

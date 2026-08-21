@@ -18,7 +18,6 @@ use Sabatier\CoreData\MappingModel;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
-use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
@@ -80,77 +79,10 @@ final class MappingController extends ProjectController
             return $this->sourceVersionNames = $modelBundle?->versionChecksums->keys->filter(fn(string $name): bool => $name !== $currentVersionName) ?? new ArrayClass();
         }
     }
-    /** @var ArrayClass<PropertyMap> The selected entity map's attribute maps, in the order the migration processes them. */
-    #[Outlet]
-    private(set) ArrayClass $orderedAttributeMaps {
-        get => $this->orderedAttributeMaps ??= $this->orderedPropertyMaps($this->selectedEntityMap?->attributes);
-    }
-    /** @var ArrayClass<PropertyMap> The selected entity map's relationship maps, in the order the migration processes them. */
-    #[Outlet]
-    private(set) ArrayClass $orderedRelationshipMaps {
-        get => $this->orderedRelationshipMaps ??= $this->orderedPropertyMaps($this->selectedEntityMap?->relationships);
-    }
     /** @var ArrayClass<string> The versions a map already starts from, so the same pair is not authored twice. */
     #[Outlet]
     private(set) ArrayClass $mappedVersionNames {
         get => $this->mappedVersionNames ??= $this->modelMaps->compactMap(fn(ModelMap $modelMap): ?string => $modelMap->sourceVersionName);
-    }
-    /** @var ArrayClass<string> The entity names the frozen version holds, which are what a map can come from. */
-    #[Outlet]
-    private(set) ArrayClass $sourceEntityNames {
-        get => $this->sourceEntityNames ??= $this->selectedModelMap?->sourceModel?->entitiesByName->keys->sort() ?? new ArrayClass();
-    }
-    /** @var ArrayClass<string> The entity names the current version holds, which are what a map can arrive at. */
-    #[Outlet]
-    private(set) ArrayClass $destinationEntityNames {
-        get => $this->destinationEntityNames ??= $this->project->model?->managedObjectModel->entitiesByName->keys->sort() ?? new ArrayClass();
-    }
-    /** @var ArrayClass<string> The destination entity's attribute names, which is what a property map may name. */
-    #[Outlet]
-    private(set) ArrayClass $destinationAttributeNames {
-        /**
-         * @throws Exception
-         */
-        get => $this->destinationAttributeNames ??= $this->propertyNames($this->selectedEntityMap?->destinationEntityName, false);
-    }
-    /** @var ArrayClass<string> The destination entity's relationship names. */
-    #[Outlet]
-    private(set) ArrayClass $destinationRelationshipNames {
-        /**
-         * @throws Exception
-         */
-        get => $this->destinationRelationshipNames ??= $this->propertyNames($this->selectedEntityMap?->destinationEntityName, true);
-    }
-    /** @var ArrayClass<string> The source entity's attribute names, offered as a palette because the source property is named inside the expression. */
-    #[Outlet]
-    private(set) ArrayClass $sourceAttributeNames {
-        /**
-         * @throws Exception
-         */
-        get => $this->sourceAttributeNames ??= $this->sourcePropertyNames($this->selectedEntityMap?->sourceEntityName, false);
-    }
-    /** @var ArrayClass<string> The source entity's relationship names. */
-    #[Outlet]
-    private(set) ArrayClass $sourceRelationshipNames {
-        /**
-         * @throws Exception
-         */
-        get => $this->sourceRelationshipNames ??= $this->sourcePropertyNames($this->selectedEntityMap?->sourceEntityName, true);
-    }
-    /** @var ArrayClass<string> The destination attributes no property map covers, which keep their default value on migration. */
-    #[Outlet]
-    private(set) ArrayClass $uncoveredAttributeNames {
-        get {
-            if (isset($this->uncoveredAttributeNames)) {
-                return $this->uncoveredAttributeNames;
-            }
-            $entityMap = $this->selectedEntityMap;
-            if (!$entityMap) {
-                return $this->uncoveredAttributeNames = new ArrayClass();
-            }
-            $covered = $entityMap->attributes->map(fn(PropertyMap $propertyMap): string => $propertyMap->name);
-            return $this->uncoveredAttributeNames = $this->destinationAttributeNames->filter(fn(string $name): bool => !$covered->containsElement($name));
-        }
     }
     private ?ModelBundle $modelBundle {
         get {
@@ -245,56 +177,4 @@ final class MappingController extends ProjectController
         $this->data = $modelMap;
     }
 
-    /**
-     * Returns a collection of property maps in the order the migration processes them.
-     * @param Set<PropertyMap>|null $propertyMaps The collection to order, or null when nothing is selected.
-     * @return ArrayClass<PropertyMap>
-     */
-    private function orderedPropertyMaps(?Set $propertyMaps): ArrayClass
-    {
-        if ($propertyMaps === null) {
-            return new ArrayClass();
-        }
-        return new ArrayClass($propertyMaps->map(fn(PropertyMap $propertyMap): PropertyMap => $propertyMap)->sorted([new SortDescriptor("position")]));
-    }
-
-    /**
-     * Returns the property names of a destination entity, so a property map offers a menu rather than free text.
-     * @param string|null $entityName The destination entity's name.
-     * @param bool $isRelationship Whether to return relationship names rather than attribute names.
-     * @return ArrayClass<string>
-     * @throws Exception
-     */
-    private function propertyNames(?string $entityName, bool $isRelationship): ArrayClass
-    {
-        return $this->namesOfEntity($this->project->model?->managedObjectModel, $entityName, $isRelationship);
-    }
-
-    /**
-     * Returns the property names of a source entity, taken from the frozen version the map starts from.
-     * @param string|null $entityName The source entity's name.
-     * @param bool $isRelationship Whether to return relationship names rather than attribute names.
-     * @return ArrayClass<string>
-     * @throws Exception
-     */
-    private function sourcePropertyNames(?string $entityName, bool $isRelationship): ArrayClass
-    {
-        return $this->namesOfEntity($this->selectedModelMap?->sourceModel, $entityName, $isRelationship);
-    }
-
-    /**
-     * @param ManagedObjectModel|null $model The version to read the entity from.
-     * @param string|null $entityName The entity's name.
-     * @param bool $isRelationship Whether to return relationship names rather than attribute names.
-     * @return ArrayClass<string>
-     */
-    private function namesOfEntity(?ManagedObjectModel $model, ?string $entityName, bool $isRelationship): ArrayClass
-    {
-        if ($entityName === null) {
-            return new ArrayClass();
-        }
-        $entity = $model?->entitiesByName[$entityName];
-        $properties = $isRelationship ? $entity?->relationshipsByName : $entity?->attributesByName;
-        return $properties?->keys ?? new ArrayClass();
-    }
 }

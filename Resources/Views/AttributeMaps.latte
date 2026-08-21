@@ -14,7 +14,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr n:foreach="$orderedAttributeMaps as $propertyMap" id="propertyMap-{$propertyMap->objectID|json}" data-href="/Mapping?project={$project->objectID|json}&modelMap={$selectedModelMap?->objectID|json}&entityMap={$selectedEntityMap->objectID|json}&propertyMap={$propertyMap->objectID|json}" n:class="$propertyMap->isEqual($selectedPropertyMap) ? active">
+                <tr n:foreach="$selectedEntityMap->orderedAttributes as $propertyMap" id="propertyMap-{$propertyMap->objectID|json}" data-href="/Mapping?project={$project->objectID|json}&modelMap={$selectedModelMap?->objectID|json}&entityMap={$selectedEntityMap->objectID|json}&propertyMap={$propertyMap->objectID|json}" n:class="$propertyMap->isEqual($selectedPropertyMap) ? active">
                     <td class="col-map-property">
                         <form action="/PropertyMap" method="POST" class="cell-form">
                             <input type="hidden" name="X-Http-Method-Override" value="PATCH">
@@ -22,7 +22,10 @@
                             <select name="name" aria-label="Property" class="form-select transparent" data-autosave="true">
                                 <option value="">No Property</option>
                                 <option disabled>──────────</option>
-                                <option n:foreach="$destinationAttributeNames as $attributeName" value="{$attributeName}" {$attributeName === $propertyMap->name ? selected}>{$attributeName}</option>
+                                {var App\Model\Entity $destinationEntity = $selectedEntityMap->destinationEntity}
+                                {if $destinationEntity}
+                                    <option n:foreach="$destinationEntity->inheritedAttributes as $attribute" value="{$attribute->name}" {$attribute->name === $propertyMap->name ? selected}>{$attribute->name}</option>
+                                {/if}
                             </select>
                         </form>
                     </td>
@@ -37,14 +40,14 @@
                     </td>
                     <td class="col-risk"></td>
                 </tr>
-                <tr n:if="$orderedAttributeMaps->isEmpty">
+                <tr n:if="$selectedEntityMap->orderedAttributes->isEmpty">
                     <td colspan="3" class="list-control-empty">No attribute maps</td>
                 </tr>
                 </tbody>
             </table>
         </div>
         <div class="list-control-toolbar">
-            <button class="btn btn-icon" type="button" title="Add Attribute Map" data-mapping-action="addAttributeMap" data-parent="{$selectedEntityMap|json}" data-position="{$orderedAttributeMaps->count}">
+            <button class="btn btn-icon" type="button" title="Add Attribute Map" data-mapping-action="addAttributeMap" data-parent="{$selectedEntityMap|json}" data-position="{$selectedEntityMap->orderedAttributes->count}">
                 <span class="material-symbols-outlined">add</span>
             </button>
             <button class="btn btn-icon" type="button" title="Remove Attribute Map" data-mapping-action="removeSelection" data-item="{$selectedPropertyMap|json}" {!$selectedPropertyMap instanceof App\Model\PropertyMap || $selectedPropertyMap->relationshipEntityMap !== null ? disabled}>

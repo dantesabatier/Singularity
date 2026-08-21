@@ -11,7 +11,10 @@
                     <select name="name" id="name" class="form-select form-select-sm" data-autosave="true">
                         <option value="">No Property</option>
                         <option disabled>──────────</option>
-                        <option n:foreach="$isRelationship ? $destinationRelationshipNames : $destinationAttributeNames as $propertyName" value="{$propertyName}" {$propertyName === $selectedPropertyMap->name ? selected}>{$propertyName}</option>
+                        {var App\Model\Entity $destinationEntity = $selectedPropertyMap->entityMap?->destinationEntity}
+                        {if $destinationEntity}
+                            <option n:foreach="$isRelationship ? $destinationEntity->inheritedRelationships : $destinationEntity->inheritedAttributes as $property" value="{$property->name}" {$property->name === $selectedPropertyMap->name ? selected}>{$property->name}</option>
+                        {/if}
                     </select>
                     <div class="form-help-text">
                         <span class="material-symbols-outlined ms-filled">info</span>
@@ -28,6 +31,6 @@
             objectID: $selectedPropertyMap->objectID,
             expression: $selectedPropertyMap->valueExpressionFormat,
             isRelationship: $isRelationship,
-            sourceNames: $isRelationship ? $sourceRelationshipNames : $sourceAttributeNames}
+            sourceNames: $isRelationship ? $selectedPropertyMap->entityMap->sourceRelationshipNames : $selectedPropertyMap->entityMap->sourceAttributeNames}
     </div>
 {/define}
