@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 declare(strict_types=1);
 
 namespace App\Bundles;
@@ -10,7 +12,6 @@ use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\PersistentStoreCoordinator;
 use Sabatier\CoreData\SQLCore;
 use Sabatier\CoreData\SQLModel;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
 use function Sabatier\Foundation\parse_env_file;
@@ -31,13 +32,15 @@ final class CachedModelWriter
 {
     private string $schemaName {
         get {
+            if (isset($this->schemaName)) {
+                return $this->schemaName;
+            }
             $path = $this->project->url?->appendingPathComponent(".env")?->path;
             if (!$path || !FileManager::default()->fileExists($path)) {
-                return $this->project->name;
+                return $this->schemaName = $this->project->name;
             }
-            /** @var string $name */
-            $name = Dictionary::dictionaryWithArray(parse_env_file($path))[SQLSchemaName] ?? $this->project->name;
-            return $name;
+            $name = parse_env_file($path)[SQLSchemaName] ?? $this->project->name;
+            return $this->schemaName = $name;
         }
     }
 
