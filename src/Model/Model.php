@@ -108,6 +108,9 @@ final class Model extends ManagedObject
     }
     /** @var Dictionary<mixed> */
     public Dictionary $schema {
+        /**
+         * @throws Exception
+         */
         get {
             /** @var Project $project */
             $project = $this->project;

@@ -84,7 +84,7 @@ final class EntityMap extends ManagedObject
         get => $this->type === EntityMapType::custom && $this->migrationPolicyClassName === null;
     }
     /** @var EntityMapping The mapping the engine reads once the map is archived. */
-    private(set) EntityMapping $entityMapping {
+    public EntityMapping $entityMapping {
         get {
             if (isset($this->entityMapping)) {
                 return $this->entityMapping;
@@ -102,6 +102,20 @@ final class EntityMap extends ManagedObject
                 $entityMapping->userInfo = $this->userInfo;
             }
             return $this->entityMapping = $entityMapping;
+        }
+        set {
+            $this->entityMapping = $value;
+            $context = $this->managedObjectContext;
+            $this->attributes->forEach(fn(PropertyMap $propertyMap) => $context->delete($propertyMap));
+            $this->relationships->forEach(fn(PropertyMap $propertyMap) => $context->delete($propertyMap));
+            if ($context->hasChanges) {
+                $context->save();
+            }
+            $this->addPropertyMaps($value->attributeMappings, true);
+            $this->addPropertyMaps($value->relationshipMappings, false);
+            if ($context->hasChanges) {
+                $context->save();
+            }
         }
     }
     /** @var class-string<EntityMigrationPolicy>|null The policy class the engine instantiates, or null when the name does not resolve to one. */
@@ -129,6 +143,27 @@ final class EntityMap extends ManagedObject
             $type = EntityMapType::from($type);
         }
         return true;
+    }
+
+    /**
+     * Materializes the property maps a collection of mappings spells out.
+     * @param ArrayClass<PropertyMapping>|null $propertyMappings The mappings to materialize.
+     * @param bool $isAttribute Whether the mappings belong to the attribute collection.
+     */
+    private function addPropertyMaps(?ArrayClass $propertyMappings, bool $isAttribute): void
+    {
+        $position = 0;
+        foreach ($propertyMappings ?? new ArrayClass() as $propertyMapping) {
+            $propertyMap = new PropertyMap($this->managedObjectContext);
+            $propertyMap->name = $propertyMapping->name;
+            $propertyMap->valueExpressionFormat = $propertyMapping->valueExpression?->description;
+            $propertyMap->position = $position++;
+            if ($isAttribute) {
+                $this->addAttributesObject($propertyMap);
+            } else {
+                $this->addRelationshipsObject($propertyMap);
+            }
+        }
     }
 
     /**

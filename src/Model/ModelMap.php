@@ -59,7 +59,7 @@ final class ModelMap extends ManagedObject
         }
     }
     /** @var MappingModel The mapping model the engine reads, carrying the two versions the map was authored against. */
-    private(set) MappingModel $mappingModel {
+    public MappingModel $mappingModel {
         /**
          * @throws Exception
          */
@@ -72,6 +72,32 @@ final class ModelMap extends ManagedObject
             $mappingModel->destinationModel = $this->project?->model?->managedObjectModel;
             $mappingModel->entityMappings = $this->orderedEntityMaps->map(fn(EntityMap $entityMap): EntityMapping => $entityMap->entityMapping);
             return $this->mappingModel = $mappingModel;
+        }
+        /**
+         * @throws Exception
+         */
+        set {
+            $this->mappingModel = $value;
+            $context = $this->managedObjectContext;
+            $this->entityMaps->forEach(fn(EntityMap $entityMap) => $context->delete($entityMap));
+            if ($context->hasChanges) {
+                $context->save();
+            }
+            $position = 0;
+            foreach ($this->mappingModel->entityMappings as $entityMapping) {
+                $entityMap = new EntityMap($context);
+                $entityMap->name = $entityMapping->name;
+                $entityMap->sourceEntityName = $entityMapping->sourceEntityName;
+                $entityMap->destinationEntityName = $entityMapping->destinationEntityName;
+                $entityMap->type = EntityMapType::from($entityMapping->mappingType->value);
+                $entityMap->entityMigrationPolicyClassName = $entityMapping->entityMigrationPolicyClassName;
+                $entityMap->position = $position++;
+                $this->addEntityMapsObject($entityMap);
+                $entityMap->entityMapping = $entityMapping;
+            }
+            if ($context->hasChanges) {
+                $context->save();
+            }
         }
     }
     private bool $isSourceModelResolved = false;

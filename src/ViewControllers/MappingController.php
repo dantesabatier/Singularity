@@ -15,7 +15,6 @@ use Override;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\MappingModel;
-use Sabatier\CoreData\PropertyMapping;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
@@ -225,7 +224,7 @@ final class MappingController extends ProjectController
         $modelMap->sourceVersionName = $versionName;
         $modelMap->sourceModelURL = $sourceURL;
         $this->project->addModelMapsObject($modelMap);
-        $this->seedEntityMaps($modelMap, MappingModel::inferredMappingModel($sourceModel, $destinationModel));
+        $modelMap->mappingModel = MappingModel::inferredMappingModel($sourceModel, $destinationModel);
         $this->managedObjectContext->save();
         $this->data = $modelMap;
     }
@@ -244,52 +243,6 @@ final class MappingController extends ProjectController
         $transaction = new UpgradeModelTransaction($modelMap);
         $transaction->execute();
         $this->data = $modelMap;
-    }
-
-    /**
-     * Turns an inferred mapping model into the rows the editor shows.
-     * @param ModelMap $modelMap The map the rows belong to.
-     * @param MappingModel $mappingModel The inference to seed from.
-     * @throws Exception
-     */
-    private function seedEntityMaps(ModelMap $modelMap, MappingModel $mappingModel): void
-    {
-        $context = $this->managedObjectContext;
-        $position = 0;
-        foreach ($mappingModel->entityMappings as $entityMapping) {
-            $entityMap = new EntityMap($context);
-            $entityMap->name = $entityMapping->name;
-            $entityMap->sourceEntityName = $entityMapping->sourceEntityName;
-            $entityMap->destinationEntityName = $entityMapping->destinationEntityName;
-            $entityMap->type = EntityMapType::from($entityMapping->mappingType->value);
-            $entityMap->entityMigrationPolicyClassName = $entityMapping->entityMigrationPolicyClassName;
-            $entityMap->position = $position++;
-            $modelMap->addEntityMapsObject($entityMap);
-            $this->seedPropertyMaps($entityMap, $entityMapping->attributeMappings, true);
-            $this->seedPropertyMaps($entityMap, $entityMapping->relationshipMappings, false);
-        }
-    }
-
-    /**
-     * @param EntityMap $entityMap The entity map the property maps belong to.
-     * @param ArrayClass<PropertyMapping>|null $propertyMappings The inferred mappings.
-     * @param bool $isAttribute Whether the mappings belong to the attribute collection.
-     * @throws Exception
-     */
-    private function seedPropertyMaps(EntityMap $entityMap, ?ArrayClass $propertyMappings, bool $isAttribute): void
-    {
-        $position = 0;
-        foreach ($propertyMappings ?? new ArrayClass() as $propertyMapping) {
-            $propertyMap = new PropertyMap($this->managedObjectContext);
-            $propertyMap->name = $propertyMapping->name;
-            $propertyMap->valueExpressionFormat = $propertyMapping->valueExpression?->description;
-            $propertyMap->position = $position++;
-            if ($isAttribute) {
-                $entityMap->addAttributesObject($propertyMap);
-            } else {
-                $entityMap->addRelationshipsObject($propertyMap);
-            }
-        }
     }
 
     /**
