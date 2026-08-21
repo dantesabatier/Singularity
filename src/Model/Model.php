@@ -43,7 +43,6 @@ use const Sabatier\Foundation\kCFBundleNameKey;
  * @property Set<Configuration> $configurations
  * @property Set<CompositeType> $compositeTypes
  * @property Set<Role> $roles
- * @property Set<ModelMap> $modelMaps
  * @method void addEntitiesObject(Entity $object)
  * @method void removeEntitiesObject(Entity $object)
  * @method void addEntities(Set<Entity> $objects)
@@ -74,12 +73,6 @@ use const Sabatier\Foundation\kCFBundleNameKey;
  * @method void removeRoles(Set<Role> $objects)
  * @method Set<Role> intersectRoles(Set<Role> $objects)
  * @method void setRoles(Set<Role> $objects)
- * @method void addModelMapsObject(ModelMap $object)
- * @method void removeModelMapsObject(ModelMap $object)
- * @method void addModelMaps(Set<ModelMap> $objects)
- * @method void removeModelMaps(Set<ModelMap> $objects)
- * @method Set<ModelMap> intersectModelMaps(Set<ModelMap> $objects)
- * @method void setModelMaps(Set<ModelMap> $objects)
  */
 final class Model extends ManagedObject
 {

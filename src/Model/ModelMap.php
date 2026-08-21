@@ -26,8 +26,7 @@ use Sabatier\Foundation\URL;
  * @property string $name
  * @property URL|null $sourceModelURL
  * @property string|null $sourceVersionName
- * @property string|null $inferenceFailureReason
- * @property Model|null $model
+ * @property Project|null $project
  * @property Set<EntityMap> $entityMaps
  * @method void addEntityMapsObject(EntityMap $object)
  * @method void removeEntityMapsObject(EntityMap $object)
@@ -70,8 +69,7 @@ final class ModelMap extends ManagedObject
             }
             $mappingModel = new MappingModel();
             $mappingModel->sourceModel = $this->sourceModel;
-            $mappingModel->destinationModel = $this->model?->managedObjectModel;
-            // Assigning the mappings is what derives both version-hash dictionaries, which are what locate this map when a store migrates.
+            $mappingModel->destinationModel = $this->project?->model?->managedObjectModel;
             $mappingModel->entityMappings = $this->orderedEntityMaps->map(fn(EntityMap $entityMap): EntityMapping => $entityMap->entityMapping);
             return $this->mappingModel = $mappingModel;
         }

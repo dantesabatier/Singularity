@@ -68,7 +68,7 @@ final class EntityMap extends ManagedObject
     }
     /** @var string|null The version hash of the destination entity, read from the model being edited. */
     public ?string $destinationEntityVersionHash {
-        get => $this->modelMap?->model?->managedObjectModel->entitiesByName[$this->destinationEntityName ?? ""]?->versionHash;
+        get => $this->modelMap?->project?->model?->managedObjectModel->entitiesByName[$this->destinationEntityName ?? ""]?->versionHash;
     }
     /** @var EntityMapType The type the two sides imply: an entity only the destination has is added, one only the source has is removed, and one on both sides is copied when its hashes agree. */
     public EntityMapType $inferredType {

@@ -24,6 +24,7 @@ use function Sabatier\Foundation\random_color;
  * @property int<0, max> $position
  * @property Model|null $model
  * @property Set<Conversation> $conversations
+ * @property Set<ModelMap> $modelMaps
  * @property Conversation|null $selectedConversation
  * @method void addConversationsObject(Conversation $object)
  * @method void removeConversationsObject(Conversation $object)
@@ -31,6 +32,12 @@ use function Sabatier\Foundation\random_color;
  * @method void removeConversations(Set<Conversation> $objects)
  * @method Set<Conversation> intersectConversations(Set<Conversation> $objects)
  * @method void setConversations(Set<Conversation> $objects)
+ * @method void addModelMapsObject(ModelMap $object)
+ * @method void removeModelMapsObject(ModelMap $object)
+ * @method void addModelMaps(Set<ModelMap> $objects)
+ * @method void removeModelMaps(Set<ModelMap> $objects)
+ * @method Set<ModelMap> intersectModelMaps(Set<ModelMap> $objects)
+ * @method void setModelMaps(Set<ModelMap> $objects)
  */
 final class Project extends ManagedObject
 {
