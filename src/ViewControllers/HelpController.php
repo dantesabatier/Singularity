@@ -55,6 +55,12 @@ final class HelpController extends ViewController
                 ]),
             ]),
             new Dictionary([
+                "title" => "Versioning and Migration",
+                "pages" => new ArrayClass([
+                    new Dictionary(["anchor" => "mapping-models", "title" => "Mapping Models", "icon" => "swap_horiz"]),
+                ]),
+            ]),
+            new Dictionary([
                 "title" => "Security and Output",
                 "pages" => new ArrayClass([
                     new Dictionary(["anchor" => "access-control", "title" => "Access Control", "icon" => "verified_user"]),

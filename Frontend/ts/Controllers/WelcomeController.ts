@@ -153,8 +153,8 @@ export class WelcomeController extends ViewController {
         await this.context.desktopBridge.showWindow({
             url,
             overrideBrowserWindowOptions: {
-                width: 1090,
-                height: 600,
+                width: 1280,
+                height: 760,
             },
         })
     }
