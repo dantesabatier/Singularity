@@ -8,13 +8,13 @@ use App\Bundles\ModelBundle;
 use App\Bundles\NewModelVersionTransaction;
 use App\FileWriters\ModelFileWriter;
 use App\Model\EntityMap;
-use App\Model\EntityMapType;
 use App\Model\Model;
 use App\Model\ModelMap;
 use App\Model\Project;
 use App\Tests\Support\CoreDataTestCase;
 use Exception;
 use Override;
+use Sabatier\CoreData\EntityMappingType;
 use Sabatier\CoreData\EntityMigrationPolicy;
 use Sabatier\Foundation\FileManager;
 
@@ -40,7 +40,7 @@ final class EntityMapTest extends CoreDataTestCase
         $this->makeEntity($this->model, "Book");
         $this->modelMap = new ModelMap($this->context);
         $this->modelMap->name = "BookstoreToBookstore 2";
-        $this->modelMap->model = $this->model;
+        $this->project->addModelMapsObject($this->modelMap);
         $this->context->save();
     }
 
@@ -76,7 +76,7 @@ final class EntityMapTest extends CoreDataTestCase
     public function testAnEntityOnlyTheDestinationHasIsAdded(): void
     {
         $this->freeze();
-        self::assertSame(EntityMapType::add, $this->makeEntityMap(null, "Book")->inferredType);
+        self::assertSame(EntityMappingType::addEntityMappingType, $this->makeEntityMap(null, "Book")->inferredType);
     }
 
     /**
@@ -85,7 +85,7 @@ final class EntityMapTest extends CoreDataTestCase
     public function testAnEntityOnlyTheSourceHasIsRemoved(): void
     {
         $this->freeze();
-        self::assertSame(EntityMapType::remove, $this->makeEntityMap("Book", null)->inferredType);
+        self::assertSame(EntityMappingType::removeEntityMappingType, $this->makeEntityMap("Book", null)->inferredType);
     }
 
     /**
@@ -94,7 +94,7 @@ final class EntityMapTest extends CoreDataTestCase
     public function testAnEntityUnchangedBetweenTheTwoVersionsIsCopied(): void
     {
         $this->freeze();
-        self::assertSame(EntityMapType::copy, $this->makeEntityMap("Book", "Book")->inferredType);
+        self::assertSame(EntityMappingType::copyEntityMappingType, $this->makeEntityMap("Book", "Book")->inferredType);
     }
 
     /**
@@ -110,7 +110,7 @@ final class EntityMapTest extends CoreDataTestCase
         $sourceModelURL = $this->temporaryURL("source", "mom");
         new ModelFileWriter($sourceModelURL, $sourceModel)->save();
         $this->modelMap->sourceModelURL = $sourceModelURL;
-        self::assertSame(EntityMapType::transform, $this->makeEntityMap("Book", "Book")->inferredType);
+        self::assertSame(EntityMappingType::transformEntityMappingType, $this->makeEntityMap("Book", "Book")->inferredType);
     }
 
     /**
@@ -119,9 +119,9 @@ final class EntityMapTest extends CoreDataTestCase
     public function testAMapIsMissingItsPolicyOnlyWhenItIsCustomWithoutOne(): void
     {
         $entityMap = $this->makeEntityMap("Book", "Book");
-        $entityMap->type = EntityMapType::transform;
+        $entityMap->type = EntityMappingType::transformEntityMappingType;
         self::assertFalse($entityMap->isMissingMigrationPolicy);
-        $entityMap->type = EntityMapType::custom;
+        $entityMap->type = EntityMappingType::customEntityMappingType;
         self::assertTrue($entityMap->isMissingMigrationPolicy);
         $entityMap->entityMigrationPolicyClassName = MigrationPolicyStub::class;
         self::assertFalse($entityMap->isMissingMigrationPolicy);
@@ -133,7 +133,7 @@ final class EntityMapTest extends CoreDataTestCase
     public function testAPolicyNameThatIsNotAMigrationPolicyDoesNotCount(): void
     {
         $entityMap = $this->makeEntityMap("Book", "Book");
-        $entityMap->type = EntityMapType::custom;
+        $entityMap->type = EntityMappingType::customEntityMappingType;
         $entityMap->entityMigrationPolicyClassName = self::class;
         self::assertNull($entityMap->migrationPolicyClassName);
         self::assertTrue($entityMap->isMissingMigrationPolicy);
@@ -145,10 +145,27 @@ final class EntityMapTest extends CoreDataTestCase
     public function testAPolicyNameThatDoesNotResolveToAClassDoesNotCount(): void
     {
         $entityMap = $this->makeEntityMap("Book", "Book");
-        $entityMap->type = EntityMapType::custom;
+        $entityMap->type = EntityMappingType::customEntityMappingType;
         $entityMap->entityMigrationPolicyClassName = "App\Nowhere\NoSuchPolicy";
         self::assertNull($entityMap->migrationPolicyClassName);
         self::assertTrue($entityMap->isMissingMigrationPolicy);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testAPolicyFromTheProjectAutoloaderCounts(): void
+    {
+        $projectURL = $this->project->url ?? self::fail("Project has no bundle URL");
+        $autoloadURL = $projectURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php");
+        FileManager::default()->createDirectory($autoloadURL->deletingLastPathComponent(), true);
+        FileManager::default()->createFile($autoloadURL->path, '<?php final class ProjectMigrationPolicyStub extends \\Sabatier\\CoreData\\EntityMigrationPolicy {}');
+        $entityMap = $this->makeEntityMap("Book", "Book");
+        $entityMap->type = EntityMappingType::customEntityMappingType;
+        $entityMap->entityMigrationPolicyClassName = "ProjectMigrationPolicyStub";
+
+        self::assertSame("ProjectMigrationPolicyStub", $entityMap->migrationPolicyClassName);
+        self::assertFalse($entityMap->isMissingMigrationPolicy);
     }
 
     /**
@@ -175,5 +192,15 @@ final class EntityMapTest extends CoreDataTestCase
         $entityMap = $this->makeEntityMap("Book", "Publication");
         $entityMap->name = "RetitleBooks";
         self::assertSame("RetitleBooks", $entityMap->mappingName);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testAMappingWithoutUserInfoKeepsItAbsent(): void
+    {
+        $entityMap = $this->makeEntityMap("Book", "Book");
+        self::assertNull($entityMap->userInfo);
+        self::assertNull($entityMap->entityMapping->userInfo);
     }
 }

@@ -6,12 +6,17 @@ namespace App\Tests\Integration;
 
 use App\FileWriters\ModelFileWriter;
 use App\Model\EntityMap;
-use App\Model\EntityMapType;
 use App\Model\Model;
 use App\Model\ModelMap;
 use App\Tests\Support\CoreDataTestCase;
 use Exception;
 use Override;
+use Sabatier\CoreData\EntityMapping;
+use Sabatier\CoreData\EntityMappingType;
+use Sabatier\CoreData\MappingModel;
+use Sabatier\CoreData\PropertyMapping;
+use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\URL;
 
 final class ModelMapTest extends CoreDataTestCase
@@ -32,7 +37,7 @@ final class ModelMapTest extends CoreDataTestCase
         $this->makeEntity($this->model, "Author");
         $this->modelMap = new ModelMap($this->context);
         $this->modelMap->name = "BookstoreToBookstore 2";
-        $this->modelMap->model = $this->model;
+        $project->addModelMapsObject($this->modelMap);
         $this->context->save();
     }
 
@@ -78,9 +83,9 @@ final class ModelMapTest extends CoreDataTestCase
     public function testOnlyTheCustomMapsWithoutAPolicyAreReportedAsInvalid(): void
     {
         $valid = $this->makeEntityMap("Book", "Book", 0);
-        $valid->type = EntityMapType::copy;
+        $valid->type = EntityMappingType::copyEntityMappingType;
         $invalid = $this->makeEntityMap("Author", "Author", 1);
-        $invalid->type = EntityMapType::custom;
+        $invalid->type = EntityMappingType::customEntityMappingType;
         $this->context->save();
         $names = $this->modelMap->invalidEntityMaps->map(fn(EntityMap $entityMap): string => $entityMap->mappingName)->array;
         self::assertSame(["AuthorToAuthor"], $names);
@@ -127,6 +132,35 @@ final class ModelMapTest extends CoreDataTestCase
         $this->context->save();
         $names = $this->modelMap->mappingModel->entityMappings->map(fn($entityMapping): string => $entityMapping->name)->array;
         self::assertSame(["BookToBook", "AuthorToAuthor"], $names);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testMaterializingAMappingModelPreservesEntityAndPropertyUserInfo(): void
+    {
+        $propertyMapping = new PropertyMapping("title");
+        $propertyMapping->userInfo = new Dictionary(["scope" => "property"]);
+        $relationshipMapping = new PropertyMapping("author");
+        $relationshipMapping->userInfo = new Dictionary(["scope" => "relationship"]);
+        $entityMapping = new EntityMapping("BookToBook");
+        $entityMapping->sourceEntityName = "Book";
+        $entityMapping->destinationEntityName = "Book";
+        $entityMapping->mappingType = EntityMappingType::copyEntityMappingType;
+        $entityMapping->userInfo = new Dictionary(["scope" => "entity"]);
+        $entityMapping->attributeMappings = new ArrayClass([$propertyMapping]);
+        $entityMapping->relationshipMappings = new ArrayClass([$relationshipMapping]);
+        $mappingModel = new MappingModel();
+        $mappingModel->entityMappings = new ArrayClass([$entityMapping]);
+
+        $this->modelMap->mappingModel = $mappingModel;
+
+        $entityMap = $this->modelMap->entityMaps->first ?? self::fail("Mapping model has no entity map");
+        $propertyMap = $entityMap->attributes->first ?? self::fail("Entity map has no attribute map");
+        $relationshipMap = $entityMap->relationships->first ?? self::fail("Entity map has no relationship map");
+        self::assertSame("entity", $entityMap->userInfo?->valueForKey("scope"));
+        self::assertSame("property", $propertyMap->userInfo?->valueForKey("scope"));
+        self::assertSame("relationship", $relationshipMap->userInfo?->valueForKey("scope"));
     }
 
     /**

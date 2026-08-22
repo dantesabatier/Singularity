@@ -7,6 +7,7 @@ namespace App\Model;
 use Exception;
 use Override;
 use Sabatier\CoreData\ManagedObject;
+use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Set;
@@ -41,6 +42,20 @@ use function Sabatier\Foundation\random_color;
  */
 final class Project extends ManagedObject
 {
+    /** Makes the project's classes available to editor features that inspect their runtime types. */
+    public function autoloadBundle(): void
+    {
+        $url = $this->url;
+        if ($url === null) {
+            return;
+        }
+        $autoloadPath = Bundle::bundleWithURL($url)->bundleURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php")->path;
+        if (FileManager::default()->fileExists($autoloadPath)) {
+            /** @psalm-suppress UnresolvableInclude The path belongs to the project bundle selected at runtime. */
+            require_once $autoloadPath;
+        }
+    }
+
     #[Override]
     public function willSave(): void
     {

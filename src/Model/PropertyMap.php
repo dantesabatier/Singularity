@@ -20,7 +20,7 @@ use Sabatier\Foundation\Predicates\Expression;
  * @property string $name
  * @property string|null $valueExpressionFormat
  * @property int<0, max> $position
- * @property Dictionary<mixed> $userInfo
+ * @property Dictionary<mixed>|null $userInfo
  * @property EntityMap|null $attributeEntityMap
  * @property EntityMap|null $relationshipEntityMap
  */
@@ -37,9 +37,7 @@ final class PropertyMap extends ManagedObject
                 return $this->propertyMapping;
             }
             $propertyMapping = new PropertyMapping($this->name, $this->valueExpression);
-            if ($this->userInfo->count > 0) {
-                $propertyMapping->userInfo = $this->userInfo;
-            }
+            $propertyMapping->userInfo = $this->userInfo;
             return $this->propertyMapping = $propertyMapping;
         }
     }

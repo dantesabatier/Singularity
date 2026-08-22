@@ -1,6 +1,7 @@
 {templateType App\ViewControllers\MappingController}
 {define entityMap}
     <div n:if="$selectedEntityMap" class="px-3 pb-4">
+        {var $inferredEntityMapType = $entityMapTypes->first(fn($entityMapType) => $entityMapType->value === $selectedEntityMap->inferredType->value)}
         <form action="/EntityMap" method="POST">
             <input type="hidden" name="objectID" value="{$selectedEntityMap->objectID|json}">
             <div class="inspector-header">Entity Map</div>
@@ -41,7 +42,7 @@
                     <div n:if="$selectedEntityMap->type !== $selectedEntityMap->inferredType" class="form-help-text">
                         <span class="material-symbols-outlined ms-filled">info</span>
                         <div class="form-help-text-content">
-                            The two sides imply <code class="inline-code">{ucfirst($selectedEntityMap->inferredType->name)}</code>. This map overrides it.
+                            The two sides imply <code class="inline-code">{$inferredEntityMapType?->name}</code>. This map overrides it.
                         </div>
                     </div>
                 </div>
@@ -51,7 +52,7 @@
             <div class="row mb-2">
                 <label for="entityMigrationPolicyClassName" class="col-sm-4 inspector-label">Class</label>
                 <div class="col-sm-8">
-                    <input type="text" name="entityMigrationPolicyClassName" id="entityMigrationPolicyClassName" class="form-control form-control-sm text-truncate font-monospace" style="font-size: 11px;" placeholder="App\Migrations\Policy" value="{$selectedEntityMap->entityMigrationPolicyClassName}" autocomplete="off" spellcheck="false" {$selectedEntityMap->type !== App\Model\EntityMapType::custom ? disabled}>
+                    <input type="text" name="entityMigrationPolicyClassName" id="entityMigrationPolicyClassName" class="form-control form-control-sm text-truncate font-monospace" style="font-size: 11px;" placeholder="App\Migrations\Policy" value="{$selectedEntityMap->entityMigrationPolicyClassName}" autocomplete="off" spellcheck="false" {$selectedEntityMap->type !== Sabatier\CoreData\EntityMappingType::customEntityMappingType ? disabled}>
                     <div n:if="$selectedEntityMap->isMissingMigrationPolicy" class="inspector-inline-error">
                         <span class="material-symbols-outlined ms-filled">error</span>
                         <div>A custom mapping needs a subclass of <code class="inline-code">EntityMigrationPolicy</code>. Without it the engine refuses to migrate with this map.</div>

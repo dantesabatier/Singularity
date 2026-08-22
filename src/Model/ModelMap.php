@@ -98,6 +98,7 @@ final class ModelMap extends ManagedObject
                 $entityMap->destinationEntityName = $entityMapping->destinationEntityName;
                 $entityMap->type = $entityMapping->mappingType;
                 $entityMap->entityMigrationPolicyClassName = $entityMapping->entityMigrationPolicyClassName;
+                $entityMap->userInfo = $entityMapping->userInfo;
                 $entityMap->position = $position++;
                 $this->addEntityMapsObject($entityMap);
                 $entityMap->entityMapping = $entityMapping;

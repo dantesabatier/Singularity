@@ -25,7 +25,6 @@ use Sabatier\CoreData\SQLPrimaryKey;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Bundle;
 use Sabatier\Foundation\Dictionary;
-use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
@@ -117,11 +116,8 @@ final class Model extends ManagedObject
             /** @var URL $url */
             $url = $project->url;
             $name = $project->name;
+            $project->autoloadBundle();
             $bundle = Bundle::bundleWithURL($url);
-            $autoloadPath = $bundle->bundleURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php")->path;
-            if (FileManager::default()->fileExists($autoloadPath)) {
-                require_once $autoloadPath;
-            }
             /** @var string $configurationName */
             $configurationName = $bundle->object(kCFBundleNameKey);
             $managedObjectModel = new ManagedObjectModel($bundle->url($configurationName));

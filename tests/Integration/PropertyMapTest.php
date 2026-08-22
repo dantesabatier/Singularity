@@ -23,10 +23,10 @@ final class PropertyMapTest extends CoreDataTestCase
     {
         parent::setUp();
         $project = $this->makeProject();
-        $model = $project->model ?? self::fail("Project has no model");
+        $project->model ?? self::fail("Project has no model");
         $modelMap = new ModelMap($this->context);
         $modelMap->name = "BookstoreToBookstore 2";
-        $modelMap->model = $model;
+        $project->addModelMapsObject($modelMap);
         $this->entityMap = new EntityMap($this->context);
         $this->entityMap->sourceEntityName = "Book";
         $this->entityMap->destinationEntityName = "Book";
@@ -120,6 +120,16 @@ final class PropertyMapTest extends CoreDataTestCase
     public function testAMappingWithoutAFormatCarriesNoExpression(): void
     {
         self::assertNull($this->makePropertyMap("title")->propertyMapping->valueExpression);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testAMappingWithoutUserInfoKeepsItAbsent(): void
+    {
+        $propertyMap = $this->makePropertyMap("title");
+        self::assertNull($propertyMap->userInfo);
+        self::assertNull($propertyMap->propertyMapping->userInfo);
     }
 
     /**

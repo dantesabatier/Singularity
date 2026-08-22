@@ -7,11 +7,11 @@ namespace App\ViewControllers;
 use App\Bundles\ModelBundle;
 use App\Bundles\UpgradeModelTransaction;
 use App\Model\EntityMap;
-use App\Model\EntityMapType;
 use App\Model\ModelMap;
 use App\Model\PropertyMap;
 use Exception;
 use Override;
+use Sabatier\CoreData\EntityMappingType;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\MappingModel;
@@ -65,7 +65,14 @@ final class MappingController extends ProjectController
     /** @var ArrayClass<object{name: string, value: int}> The mapping types a menu offers. */
     #[Outlet]
     private(set) ArrayClass $entityMapTypes {
-        get => $this->entityMapTypes ??= new ArrayClass(EntityMapType::cases())->map(fn(EntityMapType $type): object => (object)["name" => ucfirst($type->name), "value" => $type->value]);
+        get => $this->entityMapTypes ??= new ArrayClass(EntityMappingType::cases())->map(fn(EntityMappingType $type): object => (object)["name" => match ($type) {
+            EntityMappingType::undefinedEntityMappingType => "Undefined",
+            EntityMappingType::customEntityMappingType => "Custom",
+            EntityMappingType::addEntityMappingType => "Add",
+            EntityMappingType::removeEntityMappingType => "Remove",
+            EntityMappingType::copyEntityMappingType => "Copy",
+            EntityMappingType::transformEntityMappingType => "Transform",
+        }, "value" => $type->value]);
     }
     /** @var ArrayClass<string> The versions frozen in the model package, which are what a map can start from. */
     #[Outlet]

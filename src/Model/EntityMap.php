@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Exception;
 use Override;
 use Sabatier\CoreData\EntityDescription;
 use Sabatier\CoreData\EntityMapping;
+use Sabatier\CoreData\EntityMappingType;
 use Sabatier\CoreData\EntityMigrationPolicy;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\PropertyMapping;
@@ -25,10 +27,10 @@ use Sabatier\Foundation\SortDescriptor;
  * @property string|null $name
  * @property string|null $sourceEntityName
  * @property string|null $destinationEntityName
- * @property EntityMapType $type
+ * @property EntityMappingType $type
  * @property string|null $entityMigrationPolicyClassName
  * @property int<0, max> $position
- * @property Dictionary<mixed> $userInfo
+ * @property Dictionary<mixed>|null $userInfo
  * @property ModelMap|null $modelMap
  * @property Set<PropertyMap> $attributes
  * @property Set<PropertyMap> $relationships
@@ -81,11 +83,11 @@ final class EntityMap extends ManagedObject
     }
     /** @var ArrayClass<PropertyMap> The attribute maps in the order the migration processes them. */
     private(set) ArrayClass $orderedAttributes {
-        get => $this->orderedAttributes ??= $this->orderedPropertyMaps($this->attributes);
+        get => $this->orderedAttributes ??= new ArrayClass($this->attributes->map(fn(PropertyMap $propertyMap): PropertyMap => $propertyMap)->sorted([new SortDescriptor("position")]));
     }
     /** @var ArrayClass<PropertyMap> The relationship maps in the order the migration processes them. */
     private(set) ArrayClass $orderedRelationships {
-        get => $this->orderedRelationships ??= $this->orderedPropertyMaps($this->relationships);
+        get => $this->orderedRelationships ??= new ArrayClass($this->relationships->map(fn(PropertyMap $propertyMap): PropertyMap => $propertyMap)->sorted([new SortDescriptor("position")]));
     }
     /** @var ArrayClass<string> The destination attributes no property map covers, which keep their default value on migration. */
     private(set) ArrayClass $uncoveredAttributeNames {
@@ -106,18 +108,18 @@ final class EntityMap extends ManagedObject
     public ?string $destinationEntityVersionHash {
         get => $this->modelMap?->project?->model?->managedObjectModel->entitiesByName[$this->destinationEntityName ?? ""]?->versionHash;
     }
-    /** @var EntityMapType The type the two sides imply: an entity only the destination has is added, one only the source has is removed, and one on both sides is copied when its hashes agree. */
-    public EntityMapType $inferredType {
+    /** @var EntityMappingType The type the two sides imply: an entity only the destination has is added, one only the source has is removed, and one on both sides is copied when its hashes agree. */
+    public EntityMappingType $inferredType {
         get => match (true) {
-            $this->sourceEntityName === null => EntityMapType::add,
-            $this->destinationEntityName === null => EntityMapType::remove,
-            $this->sourceEntityVersionHash !== null && $this->sourceEntityVersionHash === $this->destinationEntityVersionHash => EntityMapType::copy,
-            default => EntityMapType::transform,
+            $this->sourceEntityName === null => EntityMappingType::addEntityMappingType,
+            $this->destinationEntityName === null => EntityMappingType::removeEntityMappingType,
+            $this->sourceEntityVersionHash !== null && $this->sourceEntityVersionHash === $this->destinationEntityVersionHash => EntityMappingType::copyEntityMappingType,
+            default => EntityMappingType::transformEntityMappingType,
         };
     }
     /** @var bool Whether the mapping is custom without a policy to carry it out, which the engine refuses to migrate with. */
     public bool $isMissingMigrationPolicy {
-        get => $this->type === EntityMapType::custom && $this->migrationPolicyClassName === null;
+        get => $this->type === EntityMappingType::customEntityMappingType && $this->migrationPolicyClassName === null;
     }
     /** @var EntityMapping The mapping the engine reads once the map is archived. */
     public EntityMapping $entityMapping {
@@ -130,15 +132,16 @@ final class EntityMap extends ManagedObject
             $entityMapping->destinationEntityName = $this->destinationEntityName;
             $entityMapping->sourceEntityVersionHash = $this->sourceEntityVersionHash;
             $entityMapping->destinationEntityVersionHash = $this->destinationEntityVersionHash;
-            $entityMapping->mappingType = $this->type->entityMappingType();
+            $entityMapping->mappingType = $this->type;
             $entityMapping->entityMigrationPolicyClassName = $this->migrationPolicyClassName;
-            $entityMapping->attributeMappings = $this->propertyMappings($this->attributes);
-            $entityMapping->relationshipMappings = $this->propertyMappings($this->relationships);
-            if (!$this->userInfo->isEmpty) {
-                $entityMapping->userInfo = $this->userInfo;
-            }
+            $entityMapping->attributeMappings = new ArrayClass($this->orderedAttributes->map(fn(PropertyMap $propertyMap): PropertyMapping => $propertyMap->propertyMapping));
+            $entityMapping->relationshipMappings = new ArrayClass($this->orderedRelationships->map(fn(PropertyMap $propertyMap): PropertyMapping => $propertyMap->propertyMapping));
+            $entityMapping->userInfo = $this->userInfo;
             return $this->entityMapping = $entityMapping;
         }
+        /**
+         * @throws Exception
+         */
         set {
             $this->entityMapping = $value;
             $context = $this->managedObjectContext;
@@ -147,8 +150,22 @@ final class EntityMap extends ManagedObject
             if ($context->hasChanges) {
                 $context->save();
             }
-            $this->addPropertyMaps($value->attributeMappings, true);
-            $this->addPropertyMaps($value->relationshipMappings, false);
+            $this->attributes = new Set($this->entityMapping->attributeMappings?->map(function (PropertyMapping $propertyMapping, int $index): PropertyMap {
+                $propertyMap = new PropertyMap($this->managedObjectContext);
+                $propertyMap->name = $propertyMapping->name;
+                $propertyMap->valueExpressionFormat = $propertyMapping->valueExpression?->description;
+                $propertyMap->userInfo = $propertyMapping->userInfo;
+                $propertyMap->position = $index;
+                return $propertyMap;
+            }) ?? []);
+            $this->relationships = new Set($this->entityMapping->relationshipMappings?->map(function (PropertyMapping $propertyMapping, int $index): PropertyMap {
+                $propertyMap = new PropertyMap($this->managedObjectContext);
+                $propertyMap->name = $propertyMapping->name;
+                $propertyMap->valueExpressionFormat = $propertyMapping->valueExpression?->description;
+                $propertyMap->userInfo = $propertyMapping->userInfo;
+                $propertyMap->position = $index;
+                return $propertyMap;
+            }) ?? []);
             if ($context->hasChanges) {
                 $context->save();
             }
@@ -157,6 +174,7 @@ final class EntityMap extends ManagedObject
     /** @var class-string<EntityMigrationPolicy>|null The policy class the engine instantiates, or null when the name does not resolve to one. */
     public ?string $migrationPolicyClassName {
         get {
+            $this->modelMap?->project?->autoloadBundle();
             $className = $this->entityMigrationPolicyClassName;
             return $className !== null && is_subclass_of($className, EntityMigrationPolicy::class) ? $className : null;
         }
@@ -173,51 +191,11 @@ final class EntityMap extends ManagedObject
         }
     }
 
-    public function validateType(EntityMapType|int|null &$type): bool
+    public function validateType(EntityMappingType|int|null &$type): bool
     {
         if (is_int($type)) {
-            $type = EntityMapType::from($type);
+            $type = EntityMappingType::from($type);
         }
         return true;
-    }
-
-    /**
-     * Returns a collection of property maps in the order the migration processes them.
-     * @param Set<PropertyMap> $propertyMaps The collection to order.
-     * @return ArrayClass<PropertyMap>
-     */
-    private function orderedPropertyMaps(Set $propertyMaps): ArrayClass
-    {
-        return new ArrayClass($propertyMaps->map(fn(PropertyMap $propertyMap): PropertyMap => $propertyMap)->sorted([new SortDescriptor("position")]));
-    }
-    /**
-     * Materializes the property maps a collection of mappings spells out.
-     * @param ArrayClass<PropertyMapping>|null $propertyMappings The mappings to materialize.
-     * @param bool $isAttribute Whether the mappings belong to the attribute collection.
-     */
-    private function addPropertyMaps(?ArrayClass $propertyMappings, bool $isAttribute): void
-    {
-        $position = 0;
-        foreach ($propertyMappings ?? new ArrayClass() as $propertyMapping) {
-            $propertyMap = new PropertyMap($this->managedObjectContext);
-            $propertyMap->name = $propertyMapping->name;
-            $propertyMap->valueExpressionFormat = $propertyMapping->valueExpression?->description;
-            $propertyMap->position = $position++;
-            if ($isAttribute) {
-                $this->addAttributesObject($propertyMap);
-            } else {
-                $this->addRelationshipsObject($propertyMap);
-            }
-        }
-    }
-
-    /**
-     * Returns the mappings a collection of property maps spells out, in the order they are processed.
-     * @param Set<PropertyMap> $propertyMaps The property maps to translate.
-     * @return ArrayClass<PropertyMapping>
-     */
-    private function propertyMappings(Set $propertyMaps): ArrayClass
-    {
-        return new ArrayClass($propertyMaps->map(fn(PropertyMap $propertyMap): PropertyMap => $propertyMap)->sorted([new SortDescriptor("position")]))->map(fn(PropertyMap $propertyMap): PropertyMapping => $propertyMap->propertyMapping);
     }
 }

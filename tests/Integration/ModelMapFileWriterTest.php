@@ -36,7 +36,7 @@ final class ModelMapFileWriterTest extends CoreDataTestCase
         $this->makeEntity($this->model, "Book");
         $this->modelMap = new ModelMap($this->context);
         $this->modelMap->name = "BookstoreToBookstore 2";
-        $this->modelMap->model = $this->model;
+        $this->project->addModelMapsObject($this->modelMap);
         $this->context->save();
     }
 

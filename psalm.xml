@@ -16,11 +16,6 @@
         <InternalMethod errorLevel="suppress"/>
         <InternalProperty errorLevel="suppress"/>
         <RiskyTruthyFalsyComparison errorLevel="suppress"/>
-        <UnresolvableInclude>
-            <errorLevel type="suppress">
-                <file name="src/Bundles/RenameBundleTransaction.php"/>
-            </errorLevel>
-        </UnresolvableInclude>
         <InvalidAttribute errorLevel="suppress"/>
     </issueHandlers>
     <plugins>

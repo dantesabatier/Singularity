@@ -39,7 +39,7 @@ final readonly class RenameBundleTransaction implements Transaction
         $bundle = Bundle::bundleWithURL($url);
         $oldName = $bundle->object(kCFBundleNameKey);
         $oldName !== $this->newName ?: throw new Exception("Bundle already has this name");
-        $this->autoloadIfNeeded($bundle);
+        $this->project->autoloadBundle();
         $sourceBundle = new ModelBundle($bundle->bundleURL, $oldName);
         $destinationBundle = new ModelBundle($bundle->bundleURL, $this->newName);
         $this->copyModel($sourceBundle, $destinationBundle);
@@ -49,14 +49,6 @@ final readonly class RenameBundleTransaction implements Transaction
         $this->updateInfoPlist($bundle);
         $this->project->name = $this->newName;
         FileManager::default()->removeItem($sourceBundle->url);
-    }
-
-    private function autoloadIfNeeded(Bundle $bundle): void
-    {
-        $autoload = $bundle->bundleURL->appendingPathComponent("vendor")->appendingPathComponent("autoload")->appendingPathExtension("php")->path;
-        if (FileManager::default()->fileExists($autoload)) {
-            require_once $autoload;
-        }
     }
 
     /**
