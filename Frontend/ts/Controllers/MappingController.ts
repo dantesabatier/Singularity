@@ -60,6 +60,10 @@ export class MappingController extends ViewController {
         return document.getElementById("mapping-runtime")?.dataset.projectObjectId
     }
 
+    private get automaticallyDeleteMappingModelFiles(): boolean {
+        return document.getElementById("mapping-runtime")?.dataset.automaticallyDeleteMappingModelFiles === "true"
+    }
+
     private parseJSON<T>(raw: string | undefined): T | undefined {
         if (!raw) {
             return undefined
@@ -118,7 +122,10 @@ export class MappingController extends ViewController {
             return
         }
         const label = item.name ?? "item"
-        const result = await this.context.desktopBridge.showMessageBox(`Remove "${label}"?`, "This action cannot be undone.", ["Cancel", "OK"])
+        const detail = item.entityName === "ModelMap" && this.automaticallyDeleteMappingModelFiles
+            ? "Its generated mapping model file will also be deleted from disk. This action cannot be undone."
+            : "This action cannot be undone."
+        const result = await this.context.desktopBridge.showMessageBox(`Remove "${label}"?`, detail, ["Cancel", "OK"])
         if (!result?.response) {
             return
         }

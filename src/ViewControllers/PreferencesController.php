@@ -18,6 +18,7 @@ use App\LLM\Provider;
 use Sabatier\Service\Outlet;
 use Sabatier\Service\ViewController;
 use const App\AutomaticallyDeleteProjectFoldersPreferencesKey;
+use const App\AutomaticallyDeleteMappingModelFilesPreferencesKey;
 use const App\CompanyNamePreferencesKey;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorSelectedViewPreferencesKey;
@@ -51,6 +52,13 @@ final class PreferencesController extends ViewController
         get => UserDefaults::standard()->bool(AutomaticallyDeleteProjectFoldersPreferencesKey);
         set {
             UserDefaults::standard()->setBool($value, AutomaticallyDeleteProjectFoldersPreferencesKey);
+        }
+    }
+    #[Outlet]
+    public bool $automaticallyDeleteMappingModelFiles {
+        get => UserDefaults::standard()->bool(AutomaticallyDeleteMappingModelFilesPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, AutomaticallyDeleteMappingModelFilesPreferencesKey);
         }
     }
     #[Outlet]

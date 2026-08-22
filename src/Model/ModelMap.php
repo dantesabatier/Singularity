@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use App\Bundles\ModelBundle;
 use Exception;
 use Override;
 use Sabatier\CoreData\EntityMapping;
@@ -11,9 +12,12 @@ use Sabatier\CoreData\ManagedObject;
 use Sabatier\CoreData\ManagedObjectModel;
 use Sabatier\CoreData\MappingModel;
 use Sabatier\Foundation\ArrayClass;
+use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Set;
 use Sabatier\Foundation\SortDescriptor;
 use Sabatier\Foundation\URL;
+use Sabatier\Foundation\UserDefaults;
+use const App\AutomaticallyDeleteMappingModelFilesPreferencesKey;
 
 /**
  * A map from a frozen version of a model to the one being edited.
@@ -64,6 +68,18 @@ final class ModelMap extends ManagedObject
          * @throws Exception
          */
         get => $this->sourceEntityNames ??= $this->sourceModel?->entitiesByName->keys->sort() ?? new ArrayClass();
+    }
+    /** @var URL|null The generated mapping model file, or null when the project has no bundle URL. */
+    public ?URL $mappingModelURL {
+        get {
+            $project = $this->project;
+            if ($project === null && $this->isDeleted) {
+                /** @var Project|null $project */
+                $project = $this->committedValues(new ArrayClass(["project"]))->valueForKey("project");
+            }
+            $bundleURL = $project?->url;
+            return $bundleURL === null ? null : new ModelBundle($bundleURL, $bundleURL->lastPathComponent)->urlForMappingModelNamed($this->name);
+        }
     }
     /** @var MappingModel The mapping model the engine reads, carrying the two versions the map was authored against. */
     public MappingModel $mappingModel {
@@ -117,5 +133,25 @@ final class ModelMap extends ManagedObject
         if ($this->sourceVersionName) {
             $this->sourceVersionName = $this->sourceVersionName |> trim(...);
         }
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Override]
+    public function prepareForDeletion(): void
+    {
+        $url = $this->mappingModelURL;
+        if (UserDefaults::standard()->bool(AutomaticallyDeleteMappingModelFilesPreferencesKey) && $url !== null && FileManager::default()->fileExists($url->path)) {
+            FileManager::default()->removeItem($url);
+        }
+    }
+
+    public function validateName(?string &$name): bool
+    {
+        if (is_string($name)) {
+            $name = preg_replace("/\s+/", "", $name) ?? $name;
+        }
+        return true;
     }
 }

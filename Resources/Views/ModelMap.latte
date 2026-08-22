@@ -1,17 +1,13 @@
 {templateType App\ViewControllers\MappingController}
 {define modelMap}
     <div n:if="$selectedModelMap" class="px-3 pb-4">
-        <form action="/ModelMap" method="POST">
-            <input type="hidden" name="objectID" value="{$selectedModelMap->objectID|json}">
-            <div class="inspector-header">Mapping Model</div>
-            <div class="row mb-2">
-                <label for="name" class="col-sm-4 inspector-label">Name</label>
-                <div class="col-sm-8">
-                    <input type="text" name="name" id="name" placeholder="Mapping Model Name" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedModelMap->name}" autocomplete="off" spellcheck="false" required>
-                </div>
+        <div class="inspector-header">Mapping Model</div>
+        <div class="row mb-2">
+            <label for="mappingModelName" class="col-sm-4 inspector-label">Name</label>
+            <div class="col-sm-8">
+                <input type="text" id="mappingModelName" class="form-control form-control-sm text-truncate fw-bold" value="{$selectedModelMap->name}" readonly>
             </div>
-            <input type="hidden" name="X-Http-Method-Override" value="PATCH"> <input class="d-none" type="submit">
-        </form>
+        </div>
 
         <div class="inspector-header">Versions</div>
         <div class="row mb-2">

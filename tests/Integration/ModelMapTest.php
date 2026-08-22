@@ -17,7 +17,10 @@ use Sabatier\CoreData\MappingModel;
 use Sabatier\CoreData\PropertyMapping;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\URL;
+use Sabatier\Foundation\UserDefaults;
+use const App\AutomaticallyDeleteMappingModelFilesPreferencesKey;
 
 final class ModelMapTest extends CoreDataTestCase
 {
@@ -39,6 +42,13 @@ final class ModelMapTest extends CoreDataTestCase
         $this->modelMap->name = "BookstoreToBookstore 2";
         $project->addModelMapsObject($this->modelMap);
         $this->context->save();
+    }
+
+    #[Override]
+    protected function tearDown(): void
+    {
+        UserDefaults::standard()->setBool(false, AutomaticallyDeleteMappingModelFilesPreferencesKey);
+        parent::tearDown();
     }
 
     /**
@@ -200,6 +210,39 @@ final class ModelMapTest extends CoreDataTestCase
         $mappingModel = $this->modelMap->mappingModel;
         self::assertNotNull($mappingModel->sourceEntityVersionHashesByName->valueForKey("Book"));
         self::assertSame(0, $mappingModel->destinationEntityVersionHashesByName->count);
+    }
+
+    public function testANameCannotContainWhitespace(): void
+    {
+        $this->modelMap->name = " Bookstore 2 To Bookstore ";
+        self::assertSame("Bookstore2ToBookstore", $this->modelMap->name);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDeletingAMapKeepsItsFileWhenAutomaticDeletionIsDisabled(): void
+    {
+        $url = $this->modelMap->mappingModelURL ?? self::fail("Mapping model has no file URL");
+        FileManager::default()->createDirectory($url->deletingLastPathComponent(), true);
+        FileManager::default()->createFile($url->path, "mapping model");
+        $this->context->delete($this->modelMap);
+        $this->context->save();
+        self::assertTrue(FileManager::default()->fileExists($url->path));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDeletingAMapDeletesItsFileWhenAutomaticDeletionIsEnabled(): void
+    {
+        UserDefaults::standard()->setBool(true, AutomaticallyDeleteMappingModelFilesPreferencesKey);
+        $url = $this->modelMap->mappingModelURL ?? self::fail("Mapping model has no file URL");
+        FileManager::default()->createDirectory($url->deletingLastPathComponent(), true);
+        FileManager::default()->createFile($url->path, "mapping model");
+        $this->context->delete($this->modelMap);
+        $this->context->save();
+        self::assertFalse(FileManager::default()->fileExists($url->path));
     }
 
 }

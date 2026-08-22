@@ -39,9 +39,8 @@ final readonly class UpgradeModelTransaction implements Transaction
     public function execute(): void
     {
         $project = $this->modelMap->project ?? fatal_error("Mapping model does not belong to a project");
-        $bundleURL = $project->url ?? fatal_error("Project URL is required to upgrade a model");
         $sourceModel = $this->modelMap->sourceModel ?? fatal_error("Mapping model has no source version to migrate from");
-        $mappingModelURL = new ModelBundle($bundleURL, $bundleURL->lastPathComponent)->urlForMappingModelNamed($this->modelMap->name);
+        $mappingModelURL = $this->modelMap->mappingModelURL ?? fatal_error("Mapping model URL is required to upgrade a model");
         new ModelMapFileWriter($mappingModelURL, $this->modelMap)->save();
         new CachedModelWriter($project)->write($sourceModel);
         $this->mappingModelURL = $mappingModelURL;

@@ -32,7 +32,7 @@
             <div class="window-controls-spacer" style="width: 145px;"></div>
         </div>
     </nav>
-    <div id="mapping-runtime" data-project-object-id="{$project->objectID|json}" hidden></div>
+    <div id="mapping-runtime" data-project-object-id="{$project->objectID|json}" data-automatically-delete-mapping-model-files="{$automaticallyDeleteMappingModelFiles|json}" hidden></div>
     <div id="split-container" class="split-container" data-split-sizes="[20, 60, 20]" style="height: calc(100vh - 68px); display: flex; flex-direction: row;">
         <div id="source" class="split-panel scroll-view border-end border-black" style="width: 20%; flex-shrink: 0; background-color: var(--bg-secondary); border-color: var(--border-color) !important; display: flex; flex-direction: column;">
             {include mappingSourceList from "MappingSourceList.latte"}

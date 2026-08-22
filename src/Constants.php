@@ -6,6 +6,7 @@ namespace App;
 
 const CompanyNamePreferencesKey = "companyName";
 const AutomaticallyDeleteProjectFoldersPreferencesKey = "automaticallyDeleteProjectFolders";
+const AutomaticallyDeleteMappingModelFilesPreferencesKey = "automaticallyDeleteMappingModelFiles";
 const EntityPositionsMappingPreferencesKey = "entityPositionsMapping";
 const EditorSelectedViewPreferencesKey = "editorSelectedView";
 const EditorSplitSizesPreferencesKey = "editorSplitSizes";

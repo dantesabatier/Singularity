@@ -58,10 +58,26 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="card border-0 mb-3">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-start gap-3">
+                                            <div class="form-check mt-1">
+                                                <input class="form-check-input" type="checkbox" name="automaticallyDeleteMappingModelFiles" id="automaticallyDeleteMappingModelFiles" value="{$automaticallyDeleteMappingModelFiles|json}" {$automaticallyDeleteMappingModelFiles ? "checked" : ""}>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-check-label fw-medium mb-1 cursor-pointer" for="automaticallyDeleteMappingModelFiles"> Delete mapping model files automatically </label>
+                                                <p class="text-muted small mb-0">
+                                                    When enabled, deleting a mapping model will also remove its generated <code>.cdm</code> file from the project.
+                                                    Frozen model versions are not affected.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="alert alert-warning border-0 d-flex align-items-start gap-2" role="alert">
                                     <span class="material-symbols-outlined ms-filled mt-1">warning</span>
                                     <div>
-                                        <strong>Warning:</strong> Enabling this option will permanently delete project files from your system when removing a project.
+                                        <strong>Warning:</strong> These options permanently delete files from your system when removing projects or mapping models.
                                     </div>
                                 </div>
                             </section>

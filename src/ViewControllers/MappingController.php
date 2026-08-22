@@ -19,6 +19,7 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\FileManager;
 use Sabatier\Foundation\Networking\HTTPRequestMethod;
 use Sabatier\Foundation\SortDescriptor;
+use Sabatier\Foundation\UserDefaults;
 use Sabatier\Service\Action;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\ConflictException;
@@ -27,6 +28,7 @@ use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
+use const App\AutomaticallyDeleteMappingModelFilesPreferencesKey;
 
 /**
  * The editor for a project's mapping models.
@@ -57,6 +59,13 @@ final class MappingController extends ProjectController
     private(set) ?PropertyMap $selectedPropertyMap = null;
     #[Outlet]
     private(set) ?ManagedObject $selection = null;
+    #[Outlet]
+    public bool $automaticallyDeleteMappingModelFiles {
+        get => UserDefaults::standard()->bool(AutomaticallyDeleteMappingModelFilesPreferencesKey);
+        set {
+            UserDefaults::standard()->setBool($value, AutomaticallyDeleteMappingModelFilesPreferencesKey);
+        }
+    }
     /** @var ArrayClass<ManagedObject> */
     #[Outlet]
     private(set) ArrayClass $breadcrumb {
