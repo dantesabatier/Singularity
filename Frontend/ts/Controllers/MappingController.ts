@@ -37,9 +37,6 @@ export class MappingController extends ViewController {
             case "removeSelection":
                 void this.removeSelection(element)
                 return
-            case "save":
-                void this.save()
-                return
             case "upgradeModel":
                 void this.upgradeModel(element)
                 return
@@ -147,13 +144,5 @@ export class MappingController extends ViewController {
             return
         }
         await this.context.actionDispatcher.dispatch(`Upgrade?project=${encodeURIComponent(projectID)}&modelMap=${encodeURIComponent(item.objectID)}`)
-    }
-
-    private async save(): Promise<void> {
-        const projectID = this.projectID
-        if (!projectID) {
-            return
-        }
-        await this.context.actionDispatcher.dispatch("Save", {project: projectID})
     }
 }
