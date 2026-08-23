@@ -75,7 +75,7 @@ final class ModelMap extends ManagedObject
             $project = $this->project;
             if ($project === null && $this->isDeleted) {
                 /** @var Project|null $project */
-                $project = $this->committedValues(new ArrayClass(["project"]))->valueForKey("project");
+                $project = $this->committedValues(null)["project"];
             }
             $bundleURL = $project?->url;
             return $bundleURL === null ? null : new ModelBundle($bundleURL, $bundleURL->lastPathComponent)->urlForMappingModelNamed($this->name);
@@ -141,8 +141,7 @@ final class ModelMap extends ManagedObject
     #[Override]
     public function prepareForDeletion(): void
     {
-        $url = $this->mappingModelURL;
-        if (UserDefaults::standard()->bool(AutomaticallyDeleteMappingModelFilesPreferencesKey) && $url !== null && FileManager::default()->fileExists($url->path)) {
+        if (UserDefaults::standard()->bool(AutomaticallyDeleteMappingModelFilesPreferencesKey) && ($url = $this->mappingModelURL) && FileManager::default()->fileExists($url->path)) {
             FileManager::default()->removeItem($url);
         }
     }
