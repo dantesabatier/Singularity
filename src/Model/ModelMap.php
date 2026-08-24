@@ -129,7 +129,9 @@ final class ModelMap extends ManagedObject
     #[Override]
     public function willSave(): void
     {
-        $this->name = $this->name |> trim(...);
+        $this->name = $this->name
+                |> trim(...)
+                |> preg_replace("/\s+/", "", $this->name);
         if ($this->sourceVersionName) {
             $this->sourceVersionName = $this->sourceVersionName |> trim(...);
         }
@@ -144,13 +146,5 @@ final class ModelMap extends ManagedObject
         if (UserDefaults::standard()->bool(AutomaticallyDeleteMappingModelFilesPreferencesKey) && ($url = $this->mappingModelURL) && FileManager::default()->fileExists($url->path)) {
             FileManager::default()->removeItem($url);
         }
-    }
-
-    public function validateName(?string &$name): bool
-    {
-        if (is_string($name)) {
-            $name = preg_replace("/\s+/", "", $name) ?? $name;
-        }
-        return true;
     }
 }
