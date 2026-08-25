@@ -212,9 +212,13 @@ final class ModelMapTest extends CoreDataTestCase
         self::assertSame(0, $mappingModel->destinationEntityVersionHashesByName->count);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testANameCannotContainWhitespace(): void
     {
         $this->modelMap->name = " Bookstore 2 To Bookstore ";
+        $this->context->save();
         self::assertSame("Bookstore2ToBookstore", $this->modelMap->name);
     }
 

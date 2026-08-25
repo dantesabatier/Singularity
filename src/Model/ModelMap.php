@@ -131,7 +131,7 @@ final class ModelMap extends ManagedObject
     {
         $this->name = $this->name
                 |> trim(...)
-                |> preg_replace("/\s+/", "", $this->name);
+                |> (fn(string $name): string => (string)preg_replace("/\s+/", "", $name));
         if ($this->sourceVersionName) {
             $this->sourceVersionName = $this->sourceVersionName |> trim(...);
         }
