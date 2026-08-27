@@ -63,8 +63,10 @@ use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\JSONTransformer;
 use Sabatier\Service\LLM\LLMAgent;
+use Sabatier\Service\LLM\LLMExecutionPolicy;
 use Sabatier\Service\LLM\LLMMessage;
 use Sabatier\Service\LLM\LLMMessageRole;
+use Sabatier\Service\LLM\LLMToolCall;
 use Sabatier\Service\MCP\MCPInstructionsProvider;
 use Sabatier\Service\MCP\Schema\AttributeSchemaFactory;
 use Sabatier\Service\MCP\Schema\ModelDescriptor;
@@ -354,6 +356,20 @@ final class EditorController extends ProjectController
     }
     private ToolRegistry $registry {
         get => $this->registry ??= new ToolRegistry(new ToolResolver($this->managedObjectContext, $this->descriptor)->resolve());
+    }
+    /**
+     * @var LLMExecutionPolicy Aprueba las escrituras con las que el editor hace su trabajo.
+     *
+     * Editar el modelo es lo que se le pide al asistente, y una entidad sin sus relaciones es un
+     * modelo a medias, no un punto donde parar: por eso las instrucciones del servidor le mandan
+     * completar la operación entera sin pedir confirmación a mitad. La aprobación se enumera por
+     * nombre en lugar de aceptar cualquier escritura, para que una tool que se añada al catálogo
+     * más adelante llegue denegada y se decida entonces si entra.
+     *
+     * Nada de esto escribe en un store de producción: los artefactos son el diseño.
+     */
+    private LLMExecutionPolicy $executionPolicy {
+        get => $this->executionPolicy ??= new LLMExecutionPolicy(writeApproval: fn(LLMToolCall $toolCall): bool => new ArrayClass(["create", "update", "delete", "save_project", "generate_subclasses"])->containsElement($toolCall->name));
     }
 
     /**
@@ -645,7 +661,7 @@ final class EditorController extends ProjectController
             }
         }
         $provider = Provider::find($providerID) ?? throw new InternalServerErrorException("Provider `$providerID` not configured");
-        $agent = new LLMAgent($provider->client($model), $this->registry);
+        $agent = new LLMAgent($provider->client($model), $this->registry, executionPolicy: $this->executionPolicy);
         $run = $agent->run($history, $this->buildSystemPrompt());
         /** @var array<string, ToolCall> $toolCallMap */
         $toolCallMap = [];
