@@ -10,6 +10,7 @@ use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Service\AuthorizationType;
 use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\AbstractTool;
 use Sabatier\Service\NotFoundException;
@@ -101,8 +102,10 @@ final class DesignModelTool extends AbstractTool
         $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
         /** @var string $description */
         $description = $arguments["description"] ?? fatal_error("description is required");
+        $this->enforceEntityAuthorization("Project", AuthorizationType::read);
         $request = $this->fetchRequest("Project");
         $request->predicate = $this->buildPredicate("%K = %d", new ArrayClass([ManagedObjectObjectIDKey, $objectID]));
+        $this->applySecurityScope($request);
         /** @var Project $project */
         $project = $this->context->fetch($request)->first ?? throw new NotFoundException("Project $objectID was not found");
         $existingEntityNames = $project->model?->entities->map(fn(Entity $entity): string => $entity->name)->join(", ") ?: "none";
