@@ -51,18 +51,33 @@
     <h2 class="help-heading">String operators</h2>
     <ul class="help-list">
         <li><code>CONTAINS</code>, <code>BEGINSWITH</code>, <code>ENDSWITH</code>.</li>
-        <li><code>LIKE</code> &mdash; wildcard match: <code>?</code> matches one character, <code>*</code> matches any number.</li>
-        <li><code>MATCHES</code> &mdash; regular-expression match.</li>
+        <li><code>LIKE</code> &mdash; compares the whole string literally. No wildcard expands, in either
+            syntax: <code>*</code> and <code>?</code> match as themselves, and so do SQL's <code>%</code>
+            and <code>_</code>.</li>
+        <li><code>MATCHES</code> &mdash; regular-expression match, against the whole string.</li>
     </ul>
     <div class="help-callout">
         <span class="material-symbols-outlined">match_case</span>
         <div>
             <strong>Case and diacritic modifiers.</strong>
             String comparisons are case- and diacritic-sensitive by default. Append a modifier immediately
-            after the operator: <code>[c]</code> case-insensitive, <code>[l]</code> locale-sensitive, and the
-            combinations <code>[cd]</code>, <code>[cl]</code>, <code>[cdl]</code>, <code>[cdn]</code>,
-            <code>[cdnl]</code>. Note that <code>[d]</code> and <code>[n]</code> are not valid on their own &mdash;
-            combine <code>d</code> and <code>n</code> with <code>c</code>, e.g. <code>CONTAINS[cd]</code>.
+            after the operator: <code>[c]</code> case-insensitive, <code>[cd]</code> also
+            diacritic-insensitive, <code>[cdn]</code> also normalized. Each letter implies the ones before
+            it, so <code>[d]</code> and <code>[n]</code> are not valid on their own &mdash; combine them
+            with <code>c</code>, e.g. <code>CONTAINS[cd]</code>. The locale-sensitive <code>l</code> is not
+            supported: a predicate carrying it raises instead of comparing.
+        </div>
+    </div>
+    <div class="help-callout">
+        <span class="material-symbols-outlined">search</span>
+        <div>
+            <strong>Choosing a string operator.</strong>
+            Since <code>LIKE</code> expands no wildcard, use <code>BEGINSWITH</code>,
+            <code>CONTAINS</code> or <code>ENDSWITH</code> for a prefix, substring or suffix search, and
+            <code>MATCHES</code> when a real pattern is needed. What <code>LIKE</code> buys over
+            <code>==</code> is that a value holding a literal <code>%</code> or <code>_</code> &mdash;
+            common in SKUs, folios and part numbers &mdash; is found as written, in memory and through a
+            SQL store alike.
         </div>
     </div>
 
@@ -129,6 +144,25 @@
             template and index predicates to the translatable subset.
         </div>
     </div>
+
+    <h2 class="help-heading">Known limits</h2>
+    <ul class="help-list">
+        <li>A <code>(</code> at the start of a comparison always opens a predicate group, never a
+            parenthesised expression, so <code>(n) == 2</code> and <code>(n + 1) * 2 == 6</code> do not
+            parse. The same parentheses inside an expression do: write
+            <code>2 * (n + 1) == 6</code>.</li>
+        <li>A reducing operator cannot follow a flattening one:
+            <code>departments.employees.@unionOfObjects.salary.@sum</code> raises. Flatten to the values and
+            reduce separately.</li>
+        <li>A collection operator needs a Foundation collection &mdash; <code>ArrayClass</code>,
+            <code>Set</code> or <code>Dictionary</code>. A native PHP array cannot answer one.</li>
+        <li><code>@count</code> counts elements of any kind; <code>@sum</code> and <code>@avg</code> reduce
+            them, so over a collection of objects the key path has to reach the number itself. Inside a
+            predicate the operator has to come <strong>last</strong>: <code>employees.salary.@sum</code>
+            works and <code>employees.@sum.salary</code> raises, even though a direct
+            <code>valueForKeyPath(…)</code> accepts both orders. <code>employees.@sum</code> alone has
+            nothing to add up.</li>
+    </ul>
 
     <p>
         These operators are available anywhere a predicate is accepted &mdash;
