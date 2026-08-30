@@ -18,6 +18,7 @@ use Sabatier\Service\ResponsePipeline;
 final class InfoResponder extends Responder
 {
     /** @var ArrayClass<string> */
+    #[Override]
     protected ArrayClass $allowedMethods {
         get => new ArrayClass([HTTPRequestMethod::get]);
     }
