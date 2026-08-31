@@ -24,6 +24,7 @@ use const App\LLMProvidersPreferencesKey;
  */
 final class Provider
 {
+    /** @var Dictionary<mixed> The provider's serializable configuration. */
     public Dictionary $dictionaryRepresentation {
         get => new Dictionary([
             "name" => $this->name,
@@ -36,13 +37,21 @@ final class Provider
     }
 
     /**
-     * @param ArrayClass<Model> $models
+     * @param string $name The provider's display name.
+     * @param string $identifier The identifier selecting the client implementation.
+     * @param URL $url The provider endpoint.
+     * @param string $apiKey The provider credential.
+     * @param ArrayClass<Model> $models The available models.
      * @param Dictionary<mixed> $options Extra generation fields merged into the body of every request (e.g. temperature, or Ollama's num_ctx/num_predict).
      */
     public function __construct(public readonly string $name, public readonly string $identifier, public readonly URL $url, public readonly string $apiKey, public readonly ArrayClass $models, public readonly Dictionary $options = new Dictionary())
     {
     }
 
+    /**
+     * Builds the client while preserving explicit provider options.
+     * @param string|null $model The selected model, or null for the client's default.
+     */
     public function client(?string $model = null): LLMClient
     {
         $client = match ($this->identifier) {
@@ -50,6 +59,9 @@ final class Provider
             "ollama" => new OllamaClient($model, $this->url, $this->apiKey),
             default => new StandardLLMClient($model, $this->url, $this->apiKey),
         };
+        if ($client instanceof AnthropicClient) {
+            $client->cachePromptPrefix = true;
+        }
         $client->extraBody = $this->options;
         return $client;
     }
