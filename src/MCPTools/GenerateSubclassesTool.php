@@ -25,6 +25,10 @@ final class GenerateSubclassesTool extends AbstractTool
         get => "generate_subclasses";
     }
     #[Override]
+    public bool $isOpenWorld {
+        get => false;
+    }
+    #[Override]
     public array $inputSchema {
         get => [
             "type" => "object",

@@ -28,6 +28,10 @@ final class DesignModelTool extends AbstractTool
         get => true;
     }
     #[Override]
+    public bool $isOpenWorld {
+        get => false;
+    }
+    #[Override]
     public array $inputSchema {
         get => [
             "type" => "object",
