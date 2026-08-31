@@ -16,6 +16,7 @@ use App\FileWriters\Generators\AuthorizableRoleCodeGenerator;
 use App\FileWriters\Generators\AuthorizationCodeGenerator;
 use App\FileWriters\Generators\PropertyAttributeGenerator;
 use App\LLM\Provider;
+use App\LLM\RunStatus;
 use App\Model\AccessControl;
 use App\Model\Attachment;
 use App\Model\Attribute;
@@ -357,17 +358,7 @@ final class EditorController extends ProjectController
     private ToolRegistry $registry {
         get => $this->registry ??= new ToolRegistry(new ToolResolver($this->managedObjectContext, $this->descriptor)->resolve());
     }
-    /**
-     * @var LLMExecutionPolicy Aprueba las escrituras con las que el editor hace su trabajo.
-     *
-     * Editar el modelo es lo que se le pide al asistente, y una entidad sin sus relaciones es un
-     * modelo a medias, no un punto donde parar: por eso las instrucciones del servidor le mandan
-     * completar la operación entera sin pedir confirmación a mitad. La aprobación se enumera por
-     * nombre en lugar de aceptar cualquier escritura, para que una tool que se añada al catálogo
-     * más adelante llegue denegada y se decida entonces si entra.
-     *
-     * Nada de esto escribe en un store de producción: los artefactos son el diseño.
-     */
+    /** @var LLMExecutionPolicy Approves the editor's design writes by name, so newly registered tools remain denied until explicitly admitted; no production store is edited here. */
     private LLMExecutionPolicy $executionPolicy {
         get => $this->executionPolicy ??= new LLMExecutionPolicy(writeApproval: fn(LLMToolCall $toolCall): bool => new ArrayClass(["create", "update", "delete", "save_project", "generate_subclasses"])->containsElement($toolCall->name));
     }
@@ -655,20 +646,16 @@ final class EditorController extends ProjectController
             }
             $history->append($message->LLMMessage);
             foreach ($message->toolCalls as $toolCall) {
-                if ($toolCall->result !== null) {
-                    $history->append(new LLMMessage(LLMMessageRole::tool, $toolCall->result, toolCallId: $toolCall->identifier, isError: $toolCall->status === ToolCallStatus::error));
-                }
+                $history->append($toolCall->LLMResult);
             }
         }
         $provider = Provider::find($providerID) ?? throw new InternalServerErrorException("Provider `$providerID` not configured");
         $agent = new LLMAgent($provider->client($model), $this->registry, executionPolicy: $this->executionPolicy);
         $run = $agent->run($history, $this->buildSystemPrompt());
-        /** @var array<string, ToolCall> $toolCallMap */
-        $toolCallMap = [];
+        /** @var Dictionary<ToolCall> $toolCallMap */
+        $toolCallMap = new Dictionary();
         foreach ($run->messages as $llmMessage) {
-            if (($llmMessage->role === LLMMessageRole::tool) && ($id = $llmMessage->toolCallId) && isset($toolCallMap[$id])) {
-                $toolCallMap[$id]->result = $llmMessage->content;
-                $toolCallMap[$id]->status = $llmMessage->isError ? ToolCallStatus::error : ToolCallStatus::completed;
+            if ($llmMessage->role === LLMMessageRole::tool) {
                 continue;
             }
             $message = new Message($this->managedObjectContext);
@@ -678,12 +665,27 @@ final class EditorController extends ProjectController
             }
             $conversation->addMessagesObject($message);
         }
+        foreach ($run->toolCallResults as $result) {
+            /** @var ToolCall|null $toolCall */
+            $toolCall = $toolCallMap[$result->call->id];
+            if ($toolCall === null) {
+                continue;
+            }
+            $toolCall->result = $result->content;
+            $toolCall->status = match (true) {
+                $result->content === null => ToolCallStatus::pending,
+                $result->isError => ToolCallStatus::error,
+                default => ToolCallStatus::completed,
+            };
+        }
         $conversation->inputTokens += $run->inputTokens;
         $conversation->outputTokens += $run->outputTokens;
         $conversation->totalTokens = $conversation->inputTokens + $conversation->outputTokens;
         $project->addConversationsObject($conversation);
         $project->selectedConversation = $conversation;
         $this->managedObjectContext->save();
-        $this->data = $conversation->dictionaryRepresentation;
+        $data = $conversation->dictionaryRepresentation;
+        $data["run"] = new RunStatus($run);
+        $this->data = $data;
     }
 }

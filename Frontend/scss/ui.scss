@@ -1168,6 +1168,12 @@ button {
   background-color: rgba(206, 93, 93, 0.12);
 }
 
+.ai-status-pill.is-stopped {
+  border-color: var(--bs-warning);
+  color: var(--bs-warning-text-emphasis);
+  background-color: var(--bs-warning-bg-subtle);
+}
+
 /* Empty state */
 
 .ai-chat-empty {

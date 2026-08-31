@@ -9,8 +9,12 @@ use Sabatier\Foundation\ArrayClass;
 /** Pairs the message that carries a round's text with every tool call folded into that round. */
 final class MessageRound
 {
+    public int $pendingToolCallCount {
+        get => $this->toolCalls->filter(fn(ToolCall $toolCall): bool => $toolCall->status === ToolCallStatus::pending)->count;
+    }
+
     public int $failedToolCallCount {
-        get => $this->failedToolCallCount ??= $this->toolCalls->filter(fn(ToolCall $toolCall): bool => $toolCall->status === ToolCallStatus::error)->count;
+        get => $this->toolCalls->filter(fn(ToolCall $toolCall): bool => $toolCall->status === ToolCallStatus::error)->count;
     }
 
     /**

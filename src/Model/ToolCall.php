@@ -7,6 +7,8 @@ namespace App\Model;
 use Sabatier\CoreData\ManagedObject;
 use Sabatier\Foundation\Date;
 use Sabatier\Foundation\Dictionary;
+use Sabatier\Service\LLM\LLMMessage;
+use Sabatier\Service\LLM\LLMMessageRole;
 
 /**
  * @property string $name
@@ -19,6 +21,11 @@ use Sabatier\Foundation\Dictionary;
  */
 final class ToolCall extends ManagedObject
 {
+    /** History must close unanswered calls too, without executing them on continuation. */
+    public LLMMessage $LLMResult {
+        get => new LLMMessage(LLMMessageRole::tool, $this->result ?? "No result was received before the previous run stopped. Do not assume this call succeeded.", toolCallId: $this->identifier, isError: $this->result === null || $this->status === ToolCallStatus::error);
+    }
+
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
         get => new Dictionary(["id" => $this->identifier, "name" => $this->name, "input" => $this->arguments, "result" => $this->result, "status" => $this->status->value, "isError" => $this->status === ToolCallStatus::error]);

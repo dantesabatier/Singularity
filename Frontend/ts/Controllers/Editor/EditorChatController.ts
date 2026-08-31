@@ -32,11 +32,20 @@ function registerHighlightLanguages(): void {
     hljs.registerAliases(["sh", "shell", "zsh"], {languageName: "bash"})
 }
 
+type ChatToolCall = {id: string; name: string; input: unknown; isError?: boolean; status?: number}
+
+type RunStatus = {
+    stopReason: string
+    isComplete: boolean
+    isRetryable: boolean | null
+    message: string | null
+}
+
 type ChatMessage = {
     objectID?: string | null
     role: "user" | "assistant" | "tool"
     content: string | null
-    toolCalls?: Array<{ id: string; name: string; input: unknown; isError?: boolean }> | null
+    toolCalls?: ChatToolCall[] | null
     toolCallId?: string | null
     images?: Array<{ name: string; mimeType: string; data: string }>
     thumbnailURLs?: string[]
@@ -52,6 +61,7 @@ export class EditorChatController {
     private selectedProvider: string = DEFAULT_PROVIDER
     private selectedModel: string = DEFAULT_MODEL
     private pendingAttachments: File[] = []
+    private readonly runStatuses = new Map<string, RunStatus>()
 
     private readonly onSendClick = (): void => {
         if (this.abortController) {
@@ -126,6 +136,7 @@ export class EditorChatController {
         this.loadSelectionsFromDOM()
         this.bindModelPicker()
         this.renderServerMessages()
+        this.renderRunStatus()
         this.updateContextIndicator()
         window.removeEventListener("popstate", this.onPopState)
         window.addEventListener("popstate", this.onPopState)
@@ -280,6 +291,8 @@ export class EditorChatController {
             return
         }
         input.value = ""
+        if (this.currentConversationID) this.runStatuses.delete(this.currentConversationID)
+        document.getElementById("chat-run-status")?.remove()
         this.setStatus("thinking")
 
         const thumbnailURLs = this.pendingAttachments.map(f => URL.createObjectURL(f))
@@ -327,11 +340,12 @@ export class EditorChatController {
 
             if (!response.ok) {
                 this.appendErrorBubble(await this.extractErrorMessage(response))
-                this.setStatus("idle")
+                this.setStatus("error")
                 return
             }
 
-            const data = await response.json() as { objectID: string; title: string; messages: ChatMessage[] }
+            const data = await response.json() as {objectID: string; title: string; messages: ChatMessage[]; run: RunStatus}
+            this.runStatuses.set(String(data.objectID), data.run)
             if (!this.currentConversationID) {
                 this.currentConversationID = String(data.objectID)
             }
@@ -341,7 +355,8 @@ export class EditorChatController {
                 titleEl.textContent = data.title
             }
             let modelWasChanged = false
-            for (const msg of this.groupToolCallRounds(data.messages.slice(1))) {
+            const sentMessageIndex = data.messages.map(message => message.role).lastIndexOf("user")
+            for (const msg of this.groupToolCallRounds(data.messages.slice(sentMessageIndex + 1))) {
                 this.appendMessageBubble(msg)
                 if (msg.toolCalls && msg.toolCalls.length > 0) {
                     modelWasChanged = true
@@ -355,6 +370,7 @@ export class EditorChatController {
             } else if (isNewConversation) {
                 await this.reloadSelectedConversation()
             }
+            this.renderRunStatus()
         } catch (e) {
             if (e instanceof DOMException && e.name === "AbortError") {
                 optimisticBubble?.remove()
@@ -713,19 +729,20 @@ export class EditorChatController {
         return grouped
     }
 
-    private buildToolGroup(toolCalls: Array<{ id: string; name: string; input: unknown; isError?: boolean }>): HTMLElement {
+    private buildToolGroup(toolCalls: ChatToolCall[]): HTMLElement {
         const group = document.createElement("div")
         group.className = "ai-tool-group"
 
         const failedCount = toolCalls.filter(c => c.isError).length
+        const pendingCount = toolCalls.filter(c => c.status === 0).length
         const count = toolCalls.length
         const header = document.createElement("button")
         header.type = "button"
         header.className = "ai-tool-group__header"
         header.dataset.action = "toggle-tools"
-        const headerLabel = failedCount > 0
-            ? `Used ${count} ${count === 1 ? "tool" : "tools"} · ${failedCount} failed`
-            : `Used ${count} ${count === 1 ? "tool" : "tools"}`
+        const headerLabel = `${count} tool ${count === 1 ? "call" : "calls"}`
+            + (failedCount > 0 ? ` · ${failedCount} failed` : "")
+            + (pendingCount > 0 ? ` · ${pendingCount} without result` : "")
         header.classList.toggle("ai-tool-group__header--error", failedCount > 0)
         header.innerHTML = `<span class="material-symbols-outlined ai-tool-group__arrow">chevron_right</span><span class="ai-tool-group__label">${headerLabel}</span>`
         group.appendChild(header)
@@ -737,15 +754,15 @@ export class EditorChatController {
         for (const call of toolCalls) {
             const item = document.createElement("div")
             item.className = call.isError ? "ai-tool-item ai-tool-item--error" : "ai-tool-item"
-            const icon = call.isError ? "error" : "manufacturing"
+            const icon = call.status === 0 ? "pause_circle" : call.isError ? "error" : "manufacturing"
             item.innerHTML = `<span class="material-symbols-outlined ai-tool-item__icon">${icon}</span><span class="ai-tool-item__name">${this.escapeHTML(call.name)}</span>`
             list.appendChild(item)
         }
 
         const done = document.createElement("div")
         done.className = failedCount > 0 ? "ai-tool-done ai-tool-done--error" : "ai-tool-done"
-        const doneIcon = failedCount > 0 ? "warning" : "check_circle"
-        const doneLabel = failedCount > 0 ? "Completed with errors" : "Done"
+        const doneIcon = pendingCount > 0 ? "pause_circle" : failedCount > 0 ? "warning" : "check_circle"
+        const doneLabel = pendingCount > 0 ? "Not completed" : failedCount > 0 ? "Completed with errors" : "Done"
         done.innerHTML = `<span class="material-symbols-outlined ai-tool-done__icon">${doneIcon}</span><span class="ai-tool-done__label">${doneLabel}</span>`
         list.appendChild(done)
 
@@ -772,12 +789,35 @@ export class EditorChatController {
         arrow?.classList.toggle("ai-tool-group__arrow--open", !list.hidden)
     }
 
-    private setStatus(state: "idle" | "thinking" | "error"): void {
+    private renderRunStatus(): void {
+        document.getElementById("chat-run-status")?.remove()
+        const run = this.currentConversationID ? this.runStatuses.get(this.currentConversationID) : undefined
+        if (!run) return
+        this.setStatus(run.isComplete ? "done" : "stopped")
+        if (run.isComplete) return
+        const container = this.messagesContainer()
+        if (!container) return
+        const notice = document.createElement("div")
+        notice.id = "chat-run-status"
+        notice.className = "alert alert-warning"
+        notice.setAttribute("role", "status")
+        notice.title = run.stopReason
+        notice.textContent = run.message
+        if (run.isRetryable === true) {
+            notice.textContent += " This failure may be transient. Review completed actions before trying again."
+        } else if (run.isRetryable === false) {
+            notice.textContent += " Repeating the same request is not considered recoverable."
+        }
+        this.insertBeforeThinking(container, notice)
+        this.scrollToBottom()
+    }
+
+    private setStatus(state: "idle" | "thinking" | "error" | "done" | "stopped"): void {
         const statusEl = document.getElementById("ai-status")
         if (statusEl) {
-            statusEl.classList.remove("is-idle", "is-thinking", "is-error")
+            statusEl.classList.remove("is-idle", "is-thinking", "is-error", "is-done", "is-stopped")
             statusEl.classList.add(`is-${state}`)
-            statusEl.textContent = ({"idle": "Idle", "thinking": "Thinking…", "error": "Error"})[state]
+            statusEl.textContent = ({"idle": "Idle", "thinking": "Thinking…", "error": "Error", "done": "Done", "stopped": "Incomplete"})[state]
         }
         const thinkingEl = document.getElementById("chat-thinking")
         if (thinkingEl) {

@@ -112,22 +112,23 @@
                         {/if}
                         {if !$round->toolCalls->isEmpty}
                             {var $failedCount = $round->failedToolCallCount}
+                            {var $pendingCount = $round->pendingToolCallCount}
                             <div class="ai-tool-group">
                                 <button class="ai-tool-group__header{if $failedCount > 0} ai-tool-group__header--error{/if}" type="button" data-action="toggle-tools">
                                     <span class="material-symbols-outlined ai-tool-group__arrow">chevron_right</span>
-                                    <span class="ai-tool-group__label">Used {$round->toolCalls->count} {$round->toolCalls->count === 1 ? "tool" : "tools"}{if $failedCount > 0} · {$failedCount} failed{/if}</span>
+                                    <span class="ai-tool-group__label">{$round->toolCalls->count} tool {$round->toolCalls->count === 1 ? "call" : "calls"}{if $failedCount > 0} · {$failedCount} failed{/if}{if $pendingCount > 0} · {$pendingCount} without result{/if}</span>
                                 </button>
                                 <div class="ai-tool-list" hidden>
                                     {foreach $round->toolCalls as $toolCall}
                                         {var $isError = $toolCall->status === App\Model\ToolCallStatus::error}
                                         <div class="ai-tool-item{if $isError} ai-tool-item--error{/if}">
-                                            <span class="material-symbols-outlined ai-tool-item__icon">{$isError ? "error" : "manufacturing"}</span>
+                                            <span class="material-symbols-outlined ai-tool-item__icon">{$toolCall->status === App\Model\ToolCallStatus::pending ? "pause_circle" : ($isError ? "error" : "manufacturing")}</span>
                                             <span class="ai-tool-item__name">{$toolCall->name ?? $toolCall->identifier}</span>
                                         </div>
                                     {/foreach}
                                     <div class="ai-tool-done{if $failedCount > 0} ai-tool-done--error{/if}">
-                                        <span class="material-symbols-outlined ai-tool-done__icon">{$failedCount > 0 ? "warning" : "check_circle"}</span>
-                                        <span class="ai-tool-done__label">{$failedCount > 0 ? "Completed with errors" : "Done"}</span>
+                                        <span class="material-symbols-outlined ai-tool-done__icon">{$pendingCount > 0 ? "pause_circle" : ($failedCount > 0 ? "warning" : "check_circle")}</span>
+                                        <span class="ai-tool-done__label">{$pendingCount > 0 ? "Not completed" : ($failedCount > 0 ? "Completed with errors" : "Done")}</span>
                                     </div>
                                 </div>
                             </div>
