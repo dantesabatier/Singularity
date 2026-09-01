@@ -64,4 +64,17 @@ final class RunStatusTest extends TestCase
         $wire = json_encode(new Dictionary(["run" => $status]), JSON_THROW_ON_ERROR);
         $this->assertSame("{\"run\":{\"stopReason\":\"done\",\"isComplete\":true,\"isRetryable\":null,\"message\":null}}", $wire);
     }
+
+    #[Test]
+    public function cancelledRunHasItsOwnWireStatus(): void
+    {
+        $run = new LLMRun(new ArrayClass(), stopReason: LLMRunStopReason::deadline, isRetryable: false);
+
+        $this->assertSame([
+            "stopReason" => "cancelled",
+            "isComplete" => false,
+            "isRetryable" => false,
+            "message" => "The run was cancelled.",
+        ], new RunStatus($run, true)->jsonSerialize());
+    }
 }

@@ -91,7 +91,7 @@
                                 <p class="text-muted small mb-3">Click a model to set it as default in chat.</p>
                                 <div id="providers-list" class="d-flex flex-column gap-2 mb-3">
                                     {foreach $aiProviders as $provider}
-                                        <div class="provider-card" data-provider="{$provider->dictionaryRepresentation|json}">
+                                        <div class="provider-card" data-provider="{$provider->redactedDictionaryRepresentation|json}">
                                             <span class="ai-provider-avatar">{$provider->name|first|upper}</span>
                                             <div class="ai-provider-body">
                                                 <div class="ai-provider-name">{$provider->name}</div>

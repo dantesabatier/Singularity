@@ -157,13 +157,15 @@ final class PreferencesController extends ViewController
     {
         /** @var ArrayClass<Dictionary<mixed>> $storedProviders */
         $storedProviders = UserDefaults::standard()->array(LLMProvidersPreferencesKey) ?? new ArrayClass();
-        /** @var array<string, Dictionary<mixed>> $storedProvidersByIdentifier */
-        $storedProvidersByIdentifier = [];
-        foreach ($storedProviders as $storedProvider) {
-            $storedProvidersByIdentifier[(string)$storedProvider["identifier"]] = $storedProvider;
-        }
+        /** @var Dictionary<Dictionary<mixed>> $storedProvidersByIdentifier */
+        $storedProvidersByIdentifier = $storedProviders->reduce(new Dictionary(), function (Dictionary $result, Dictionary $storedProvider): Dictionary {
+            $result[(string)$storedProvider["identifier"]] = $storedProvider;
+            return $result;
+        });
         return $providers->map(function (Dictionary $provider) use ($storedProvidersByIdentifier): Dictionary {
             $identifier = (string)$provider["identifier"];
+            $credentialIdentifier = (string)($provider["credentialIdentifier"] ?? $identifier);
+            $provider->removeValueForKey("credentialIdentifier");
             if ($identifier === "") {
                 return $provider;
             }
@@ -171,7 +173,7 @@ final class PreferencesController extends ViewController
             if ($apiKey !== "") {
                 return $provider;
             }
-            $storedProvider = $storedProvidersByIdentifier[$identifier] ?? null;
+            $storedProvider = $storedProvidersByIdentifier[$credentialIdentifier];
             if (!$storedProvider) {
                 return $provider;
             }

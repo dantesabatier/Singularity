@@ -15,7 +15,10 @@ use App\FileWriters\Generators\AuthorizableCodeGenerator;
 use App\FileWriters\Generators\AuthorizableRoleCodeGenerator;
 use App\FileWriters\Generators\AuthorizationCodeGenerator;
 use App\FileWriters\Generators\PropertyAttributeGenerator;
+use App\LLM\AgentRunCancellationObserver;
+use App\LLM\AgentRunCancellationStore;
 use App\LLM\Provider;
+use App\LLM\RedisAgentRunCancellationStore;
 use App\LLM\RunStatus;
 use App\Model\AccessControl;
 use App\Model\Attachment;
@@ -67,6 +70,7 @@ use Sabatier\Service\LLM\LLMAgent;
 use Sabatier\Service\LLM\LLMExecutionPolicy;
 use Sabatier\Service\LLM\LLMMessage;
 use Sabatier\Service\LLM\LLMMessageRole;
+use Sabatier\Service\LLM\LLMRunObserverFailurePolicy;
 use Sabatier\Service\LLM\LLMToolCall;
 use Sabatier\Service\MCP\MCPInstructionsProvider;
 use Sabatier\Service\MCP\Schema\AttributeSchemaFactory;
@@ -80,6 +84,7 @@ use Sabatier\Service\MCP\Tools\ToolRegistry;
 use Sabatier\Service\NotFoundException;
 use Sabatier\Service\Outlet;
 use Throwable;
+use function Sabatier\Foundation\uuid_validate;
 use const App\EditorCopilotEnabledPreferencesKey;
 use const App\EditorGraphViewValue;
 use const App\EditorSelectedViewPreferencesKey;
@@ -362,6 +367,21 @@ final class EditorController extends ProjectController
     private LLMExecutionPolicy $executionPolicy {
         get => $this->executionPolicy ??= new LLMExecutionPolicy(writeApproval: fn(LLMToolCall $toolCall): bool => new ArrayClass(["create", "update", "delete", "save_project", "generate_subclasses"])->containsElement($toolCall->name));
     }
+    private AgentRunCancellationStore $cancellationStore {
+        get => $this->cancellationStore ??= new RedisAgentRunCancellationStore();
+    }
+    private string $runIdentifier {
+        get {
+            if (isset($this->runIdentifier)) {
+                return $this->runIdentifier;
+            }
+            $runIdentifier = $this->request->parameters["runID"] ?? throw new BadRequestException("`runID` is required");
+            if (!is_string($runIdentifier) || !uuid_validate($runIdentifier)) {
+                throw new BadRequestException("`runID` must be a UUID");
+            }
+            return $this->runIdentifier = $runIdentifier;
+        }
+    }
 
     /**
      * @throws Exception
@@ -605,6 +625,7 @@ final class EditorController extends ProjectController
     {
         $project = $this->project;
         $parameters = $this->request->parameters;
+        $runIdentifier = $this->runIdentifier;
         /** @var string $content */
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
         /** @var string $model */
@@ -650,8 +671,13 @@ final class EditorController extends ProjectController
             }
         }
         $provider = Provider::find($providerID) ?? throw new InternalServerErrorException("Provider `$providerID` not configured");
-        $agent = new LLMAgent($provider->client($model), $this->registry, executionPolicy: $this->executionPolicy);
-        $run = $agent->run($history, $this->buildSystemPrompt());
+        $observer = new AgentRunCancellationObserver($runIdentifier, $this->cancellationStore);
+        $agent = new LLMAgent($provider->client($model), $this->registry, executionPolicy: $this->executionPolicy, observer: $observer, observerFailurePolicy: LLMRunObserverFailurePolicy::strict);
+        try {
+            $run = $agent->run($history, $this->buildSystemPrompt());
+        } finally {
+            $this->cancellationStore->clear($runIdentifier);
+        }
         /** @var Dictionary<ToolCall> $toolCallMap */
         $toolCallMap = new Dictionary();
         foreach ($run->messages as $llmMessage) {
@@ -685,7 +711,15 @@ final class EditorController extends ProjectController
         $project->selectedConversation = $conversation;
         $this->managedObjectContext->save();
         $data = $conversation->dictionaryRepresentation;
-        $data["run"] = new RunStatus($run);
+        $data["run"] = new RunStatus($run, $observer->wasCancelled);
         $this->data = $data;
+    }
+
+    #[Action(transformers: [JSONTransformer::class])]
+    public function cancelChat(): void
+    {
+        $runIdentifier = $this->runIdentifier;
+        $this->cancellationStore->requestCancellation($runIdentifier);
+        $this->data = new Dictionary(["runID" => $runIdentifier, "cancelRequested" => true]);
     }
 }

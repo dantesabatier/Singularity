@@ -64,8 +64,8 @@ export class EditorChatController {
     private readonly runStatuses = new Map<string, RunStatus>()
 
     private readonly onSendClick = (): void => {
-        if (this.abortController) {
-            this.abortController.abort()
+        if (this.currentRunID) {
+            void this.cancelRun()
         } else {
             void this.sendMessage()
         }
@@ -86,7 +86,7 @@ export class EditorChatController {
     private currentFileInput: HTMLInputElement | null = null
     private currentAttachBtn: Element | null = null
     private currentMessages: Element | null = null
-    private abortController: AbortController | null = null
+    private currentRunID: string | null = null
 
     private readonly onPopState = (): void => { this.updateContextIndicator() }
 
@@ -290,6 +290,8 @@ export class EditorChatController {
         if (!content) {
             return
         }
+        const runID = crypto.randomUUID()
+        this.currentRunID = runID
         input.value = ""
         if (this.currentConversationID) this.runStatuses.delete(this.currentConversationID)
         document.getElementById("chat-run-status")?.remove()
@@ -300,7 +302,7 @@ export class EditorChatController {
         this.pendingAttachments = []
         this.clearAttachmentChips()
 
-        const optimisticBubble = this.appendMessageBubble({role: "user", content, images: images.length > 0 ? images : undefined, thumbnailURLs: thumbnailURLs.length > 0 ? thumbnailURLs : undefined})
+        this.appendMessageBubble({role: "user", content, images: images.length > 0 ? images : undefined, thumbnailURLs: thumbnailURLs.length > 0 ? thumbnailURLs : undefined})
 
         const isNewConversation = !this.currentConversationID
         const conversationTitle = (!this.currentConversationTitle || this.currentConversationTitle.startsWith("New conversation"))
@@ -309,6 +311,7 @@ export class EditorChatController {
 
         const body: Record<string, unknown> = {
             project: this.currentProjectID,
+            runID,
             conversation: {objectID: this.currentConversationID, title: conversationTitle},
             content,
             provider: this.selectedProvider,
@@ -326,7 +329,6 @@ export class EditorChatController {
             body.images = images
         }
 
-        this.abortController = new AbortController()
         try {
             const response = await fetch("/chat", {
                 method: "POST",
@@ -335,7 +337,6 @@ export class EditorChatController {
                     "X-Requested-With": "XmlHttpRequest",
                 },
                 body: JSON.stringify(body),
-                signal: this.abortController.signal,
             })
 
             if (!response.ok) {
@@ -371,15 +372,33 @@ export class EditorChatController {
                 await this.reloadSelectedConversation()
             }
             this.renderRunStatus()
-        } catch (e) {
-            if (e instanceof DOMException && e.name === "AbortError") {
-                optimisticBubble?.remove()
-                this.setStatus("idle")
-                return
-            }
-            throw e
         } finally {
-            this.abortController = null
+            this.currentRunID = null
+        }
+    }
+
+    private async cancelRun(): Promise<void> {
+        const runID = this.currentRunID
+        if (!runID) {
+            return
+        }
+        this.setStatus("cancelling")
+        try {
+            const response = await fetch("/cancelChat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-Requested-With": "XmlHttpRequest",
+                },
+                body: JSON.stringify({project: this.currentProjectID, runID}),
+            })
+            if (!response.ok) {
+                this.appendErrorBubble(await this.extractErrorMessage(response))
+                this.setStatus("thinking")
+            }
+        } catch {
+            this.appendErrorBubble("The cancellation request could not be sent.")
+            this.setStatus("thinking")
         }
     }
 
@@ -793,7 +812,7 @@ export class EditorChatController {
         document.getElementById("chat-run-status")?.remove()
         const run = this.currentConversationID ? this.runStatuses.get(this.currentConversationID) : undefined
         if (!run) return
-        this.setStatus(run.isComplete ? "done" : "stopped")
+        this.setStatus(run.isComplete ? "done" : run.stopReason === "cancelled" ? "cancelled" : "stopped")
         if (run.isComplete) return
         const container = this.messagesContainer()
         if (!container) return
@@ -812,17 +831,18 @@ export class EditorChatController {
         this.scrollToBottom()
     }
 
-    private setStatus(state: "idle" | "thinking" | "error" | "done" | "stopped"): void {
+    private setStatus(state: "idle" | "thinking" | "cancelling" | "cancelled" | "error" | "done" | "stopped"): void {
         const statusEl = document.getElementById("ai-status")
         if (statusEl) {
-            statusEl.classList.remove("is-idle", "is-thinking", "is-error", "is-done", "is-stopped")
+            statusEl.classList.remove("is-idle", "is-thinking", "is-cancelling", "is-cancelled", "is-error", "is-done", "is-stopped")
             statusEl.classList.add(`is-${state}`)
-            statusEl.textContent = ({"idle": "Idle", "thinking": "Thinking…", "error": "Error", "done": "Done", "stopped": "Incomplete"})[state]
+            statusEl.textContent = ({"idle": "Idle", "thinking": "Thinking…", "cancelling": "Stopping…", "cancelled": "Cancelled", "error": "Error", "done": "Done", "stopped": "Incomplete"})[state]
         }
         const thinkingEl = document.getElementById("chat-thinking")
+        const isRunning = state === "thinking" || state === "cancelling"
         if (thinkingEl) {
-            thinkingEl.classList.toggle("is-visible", state === "thinking")
-            if (state === "thinking") {
+            thinkingEl.classList.toggle("is-visible", isRunning)
+            if (isRunning) {
                 const container = document.getElementById("chat-messages")
                 if (container) {
                     container.scrollTop = container.scrollHeight
@@ -836,6 +856,10 @@ export class EditorChatController {
                 sendBtn.removeAttribute("disabled")
                 sendBtn.classList.add("is-stop")
                 if (icon) icon.textContent = "stop"
+            } else if (state === "cancelling") {
+                sendBtn.setAttribute("disabled", "")
+                sendBtn.classList.remove("is-stop")
+                if (icon) icon.textContent = "hourglass_top"
             } else {
                 sendBtn.classList.remove("is-stop")
                 if (icon) icon.textContent = "arrow_upward"

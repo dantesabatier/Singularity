@@ -3,7 +3,7 @@ import {ViewController} from "@/Application/ViewController"
 
 type LLMModel = { name: string; identifier: string }
 // Generation options are stored as a flat dictionary on the provider (e.g. {num_ctx: 16384, temperature: 0.15}); the editor edits them as {key, value} rows so they can be listed, added and removed.
-type LLMProvider = { name: string; identifier: string; url: string; apiKey?: string; models: LLMModel[]; options?: Record<string, string | number> }
+type LLMProvider = { name: string; identifier: string; url: string; apiKey?: string; credentialIdentifier?: string; models: LLMModel[]; options?: Record<string, string | number> }
 
 export class AIProvidersController extends ViewController {
     private providers: LLMProvider[] = []
@@ -146,7 +146,9 @@ export class AIProvidersController extends ViewController {
         ;(document.getElementById("pf-name") as HTMLInputElement).value = provider.name
         ;(document.getElementById("pf-identifier") as HTMLInputElement).value = provider.identifier
         ;(document.getElementById("pf-url") as HTMLInputElement).value = provider.url
-        ;(document.getElementById("pf-apiKey") as HTMLInputElement).value = provider.apiKey ?? ""
+        const apiKeyInput = document.getElementById("pf-apiKey") as HTMLInputElement
+        apiKeyInput.value = ""
+        apiKeyInput.placeholder = "Leave blank to keep the existing key"
     }
 
     private clearForm(): void {
@@ -154,6 +156,7 @@ export class AIProvidersController extends ViewController {
         ;(document.getElementById("pf-identifier") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-url") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-apiKey") as HTMLInputElement).value = ""
+        ;(document.getElementById("pf-apiKey") as HTMLInputElement).placeholder = "sk-…"
         ;(document.getElementById("pf-model-name") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-model-id") as HTMLInputElement).value = ""
         ;(document.getElementById("pf-option-key") as HTMLInputElement).value = ""
@@ -194,17 +197,19 @@ export class AIProvidersController extends ViewController {
         if (!list) {
             return
         }
-        list.innerHTML = ""
+        list.replaceChildren()
         for (const [i, model] of this.editingModels.entries()) {
             const row = document.createElement("div")
             row.className = "d-flex align-items-center gap-2 p-1 rounded"
-            row.innerHTML = `
-                <span class="small flex-grow-1">${model.name}</span>
-                <code class="ai-model-item-id">${model.identifier}</code>
-                <button type="button" class="btn btn-sm btn-icon text-danger flex-shrink-0" data-ai-action="removeModel" data-model-index="${i}">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            `
+            const name = document.createElement("span")
+            name.className = "small flex-grow-1"
+            name.textContent = model.name
+            const identifier = document.createElement("code")
+            identifier.className = "ai-model-item-id"
+            identifier.textContent = model.identifier
+            const removeButton = this.removeButton("removeModel")
+            removeButton.dataset.modelIndex = String(i)
+            row.append(name, identifier, removeButton)
             list.appendChild(row)
         }
     }
@@ -231,19 +236,33 @@ export class AIProvidersController extends ViewController {
         if (!list) {
             return
         }
-        list.innerHTML = ""
+        list.replaceChildren()
         for (const [i, option] of this.editingOptions.entries()) {
             const row = document.createElement("div")
             row.className = "d-flex align-items-center gap-2 p-1 rounded"
-            row.innerHTML = `
-                <span class="small flex-grow-1">${option.key}</span>
-                <code class="ai-model-item-id">${option.value}</code>
-                <button type="button" class="btn btn-sm btn-icon text-danger flex-shrink-0" data-ai-action="removeOption" data-option-index="${i}">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            `
+            const key = document.createElement("span")
+            key.className = "small flex-grow-1"
+            key.textContent = option.key
+            const value = document.createElement("code")
+            value.className = "ai-model-item-id"
+            value.textContent = option.value
+            const removeButton = this.removeButton("removeOption")
+            removeButton.dataset.optionIndex = String(i)
+            row.append(key, value, removeButton)
             list.appendChild(row)
         }
+    }
+
+    private removeButton(action: "removeModel" | "removeOption"): HTMLButtonElement {
+        const button = document.createElement("button")
+        button.type = "button"
+        button.className = "btn btn-sm btn-icon text-danger flex-shrink-0"
+        button.dataset.aiAction = action
+        const icon = document.createElement("span")
+        icon.className = "material-symbols-outlined"
+        icon.textContent = "close"
+        button.appendChild(icon)
+        return button
     }
 
     // Flattens the editor rows into a plain dictionary with numeric coercion: values that parse as numbers are stored as numbers, everything else as text.
@@ -286,6 +305,7 @@ export class AIProvidersController extends ViewController {
             provider.options = options
         }
         if (this.editingIndex !== null) {
+            provider.credentialIdentifier = this.providers[this.editingIndex]?.identifier
             this.providers[this.editingIndex] = provider
         } else {
             this.providers.push(provider)

@@ -35,6 +35,10 @@ final class Provider
             "options" => $this->options,
         ]);
     }
+    /** @var Dictionary<mixed> The provider configuration safe to expose to browser code. */
+    public Dictionary $redactedDictionaryRepresentation {
+        get => $this->dictionaryRepresentation->filter(fn(mixed $_, string $key): bool => $key !== "apiKey");
+    }
 
     /**
      * @param string $name The provider's display name.

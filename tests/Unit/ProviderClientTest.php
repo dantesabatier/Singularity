@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Unit;
 
 use App\LLM\Provider;
+use Latte\Engine;
+use Latte\Loaders\StringLoader;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +20,21 @@ use Sabatier\Service\LLM\StandardLLMClient;
 
 final class ProviderClientTest extends TestCase
 {
+    #[Test]
+    public function browserRepresentationOmitsTheAPIKey(): void
+    {
+        $provider = new Provider("Test", "anthropic", new URL("https://provider.invalid/messages"), "secret-key", new ArrayClass());
+        $engine = new Engine();
+        $engine->setLoader(new StringLoader());
+        $engine->addFilter("json", json_encode(...));
+        $html = $engine->renderToString('<div data-provider="{$provider->redactedDictionaryRepresentation|json}"></div>', ["provider" => $provider]);
+
+        $this->assertSame("secret-key", $provider->dictionaryRepresentation["apiKey"]);
+        $this->assertFalse($provider->redactedDictionaryRepresentation->offsetExists("apiKey"));
+        $this->assertStringNotContainsString("secret-key", $html);
+        $this->assertStringNotContainsString("apiKey", $html);
+    }
+
     /**
      * @param string $identifier The provider identifier selecting the client.
      * @param class-string<LLMClient> $expectedClass The expected implementation.

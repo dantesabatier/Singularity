@@ -1149,6 +1149,7 @@ button {
 }
 
 .ai-status-pill.is-thinking,
+.ai-status-pill.is-cancelling,
 .ai-status-pill.is-applying {
   border-color: rgba(74, 136, 199, 0.5);
   color: #9dc6ed;
@@ -1168,7 +1169,8 @@ button {
   background-color: rgba(206, 93, 93, 0.12);
 }
 
-.ai-status-pill.is-stopped {
+.ai-status-pill.is-stopped,
+.ai-status-pill.is-cancelled {
   border-color: var(--bs-warning);
   color: var(--bs-warning-text-emphasis);
   background-color: var(--bs-warning-bg-subtle);
