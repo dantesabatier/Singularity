@@ -38,5 +38,8 @@
     "material-symbols": "^0.44.6",
     "sortablejs": "^1.15.7",
     "split.js": "^1.6.5"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }
