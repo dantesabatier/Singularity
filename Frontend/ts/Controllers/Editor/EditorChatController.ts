@@ -62,13 +62,10 @@ export class EditorChatController {
     private selectedModel: string = DEFAULT_MODEL
     private pendingAttachments: File[] = []
     private readonly runStatuses = new Map<string, RunStatus>()
+    private isSending = false
 
     private readonly onSendClick = (): void => {
-        if (this.currentRunID) {
-            void this.cancelRun()
-        } else {
-            void this.sendMessage()
-        }
+        void this.sendMessage()
     }
     private readonly onInputKeydown = (event: KeyboardEvent): void => {
         if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
@@ -86,8 +83,6 @@ export class EditorChatController {
     private currentFileInput: HTMLInputElement | null = null
     private currentAttachBtn: Element | null = null
     private currentMessages: Element | null = null
-    private currentRunID: string | null = null
-
     private readonly onPopState = (): void => { this.updateContextIndicator() }
 
     private readonly onFileInputChange = (): void => {
@@ -282,6 +277,9 @@ export class EditorChatController {
     }
 
     private async sendMessage(): Promise<void> {
+        if (this.isSending) {
+            return
+        }
         const input = document.getElementById("chat-input")
         if (!(input instanceof HTMLTextAreaElement)) {
             return
@@ -290,8 +288,7 @@ export class EditorChatController {
         if (!content) {
             return
         }
-        const runID = crypto.randomUUID()
-        this.currentRunID = runID
+        this.isSending = true
         input.value = ""
         if (this.currentConversationID) this.runStatuses.delete(this.currentConversationID)
         document.getElementById("chat-run-status")?.remove()
@@ -311,7 +308,6 @@ export class EditorChatController {
 
         const body: Record<string, unknown> = {
             project: this.currentProjectID,
-            runID,
             conversation: {objectID: this.currentConversationID, title: conversationTitle},
             content,
             provider: this.selectedProvider,
@@ -373,32 +369,8 @@ export class EditorChatController {
             }
             this.renderRunStatus()
         } finally {
-            this.currentRunID = null
-        }
-    }
-
-    private async cancelRun(): Promise<void> {
-        const runID = this.currentRunID
-        if (!runID) {
-            return
-        }
-        this.setStatus("cancelling")
-        try {
-            const response = await fetch("/cancelChat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "X-Requested-With": "XmlHttpRequest",
-                },
-                body: JSON.stringify({project: this.currentProjectID, runID}),
-            })
-            if (!response.ok) {
-                this.appendErrorBubble(await this.extractErrorMessage(response))
-                this.setStatus("thinking")
-            }
-        } catch {
-            this.appendErrorBubble("The cancellation request could not be sent.")
-            this.setStatus("thinking")
+            this.isSending = false
+            this.updateSendButton()
         }
     }
 
@@ -812,7 +784,7 @@ export class EditorChatController {
         document.getElementById("chat-run-status")?.remove()
         const run = this.currentConversationID ? this.runStatuses.get(this.currentConversationID) : undefined
         if (!run) return
-        this.setStatus(run.isComplete ? "done" : run.stopReason === "cancelled" ? "cancelled" : "stopped")
+        this.setStatus(run.isComplete ? "done" : "stopped")
         if (run.isComplete) return
         const container = this.messagesContainer()
         if (!container) return
@@ -831,15 +803,15 @@ export class EditorChatController {
         this.scrollToBottom()
     }
 
-    private setStatus(state: "idle" | "thinking" | "cancelling" | "cancelled" | "error" | "done" | "stopped"): void {
+    private setStatus(state: "idle" | "thinking" | "error" | "done" | "stopped"): void {
         const statusEl = document.getElementById("ai-status")
         if (statusEl) {
-            statusEl.classList.remove("is-idle", "is-thinking", "is-cancelling", "is-cancelled", "is-error", "is-done", "is-stopped")
+            statusEl.classList.remove("is-idle", "is-thinking", "is-error", "is-done", "is-stopped")
             statusEl.classList.add(`is-${state}`)
-            statusEl.textContent = ({"idle": "Idle", "thinking": "Thinking…", "cancelling": "Stopping…", "cancelled": "Cancelled", "error": "Error", "done": "Done", "stopped": "Incomplete"})[state]
+            statusEl.textContent = ({"idle": "Idle", "thinking": "Thinking…", "error": "Error", "done": "Done", "stopped": "Incomplete"})[state]
         }
         const thinkingEl = document.getElementById("chat-thinking")
-        const isRunning = state === "thinking" || state === "cancelling"
+        const isRunning = state === "thinking"
         if (thinkingEl) {
             thinkingEl.classList.toggle("is-visible", isRunning)
             if (isRunning) {
@@ -853,15 +825,9 @@ export class EditorChatController {
         if (sendBtn instanceof HTMLButtonElement) {
             const icon = sendBtn.querySelector<HTMLElement>(".material-symbols-outlined")
             if (state === "thinking") {
-                sendBtn.removeAttribute("disabled")
-                sendBtn.classList.add("is-stop")
-                if (icon) icon.textContent = "stop"
-            } else if (state === "cancelling") {
                 sendBtn.setAttribute("disabled", "")
-                sendBtn.classList.remove("is-stop")
-                if (icon) icon.textContent = "hourglass_top"
+                if (icon) icon.textContent = "arrow_upward"
             } else {
-                sendBtn.classList.remove("is-stop")
                 if (icon) icon.textContent = "arrow_upward"
                 this.updateSendButton()
             }
@@ -893,7 +859,7 @@ export class EditorChatController {
         if (sendBtn instanceof HTMLButtonElement) {
             const hasContent = (input instanceof HTMLTextAreaElement && input.value.trim().length > 0)
                 || this.pendingAttachments.length > 0
-            sendBtn.toggleAttribute("disabled", !hasContent)
+            sendBtn.toggleAttribute("disabled", this.isSending || !hasContent)
         }
     }
 

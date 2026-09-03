@@ -14,11 +14,7 @@ final class RunStatus implements JsonSerializable
 {
     private LLMRun $run;
 
-    /**
-     * @param LLMRun $run The run whose outcome is reported.
-     * @param bool $wasCancelled Whether the user cancelled the run.
-     */
-    public function __construct(LLMRun $run, private readonly bool $wasCancelled = false)
+    public function __construct(LLMRun $run)
     {
         $this->run = $run;
     }
@@ -30,10 +26,10 @@ final class RunStatus implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            "stopReason" => $this->wasCancelled ? "cancelled" : $this->run->stopReason->value,
-            "isComplete" => !$this->wasCancelled && $this->run->isComplete,
-            "isRetryable" => $this->wasCancelled ? false : $this->run->isRetryable,
-            "message" => $this->wasCancelled ? "The run was cancelled." : ($this->run->isComplete ? null : match ($this->run->stopReason) {
+            "stopReason" => $this->run->stopReason->value,
+            "isComplete" => $this->run->isComplete,
+            "isRetryable" => $this->run->isRetryable,
+            "message" => $this->run->isComplete ? null : match ($this->run->stopReason) {
                 LLMRunStopReason::done => "The run ended without a complete answer.",
                 LLMRunStopReason::iterationCap => "The iteration limit was reached.",
                 LLMRunStopReason::deadline => "The run time limit was reached.",
@@ -48,7 +44,7 @@ final class RunStatus implements JsonSerializable
                 LLMRunStopReason::totalTokenLimit => "The total token budget was exhausted.",
                 LLMRunStopReason::writeApprovalRequired => "A tool requires write approval; that call was not executed.",
                 LLMRunStopReason::contextLimit => "The context exceeds the configured limit.",
-            }),
+            },
         ];
     }
 }

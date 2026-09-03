@@ -1149,7 +1149,6 @@ button {
 }
 
 .ai-status-pill.is-thinking,
-.ai-status-pill.is-cancelling,
 .ai-status-pill.is-applying {
   border-color: rgba(74, 136, 199, 0.5);
   color: #9dc6ed;
@@ -1169,8 +1168,7 @@ button {
   background-color: rgba(206, 93, 93, 0.12);
 }
 
-.ai-status-pill.is-stopped,
-.ai-status-pill.is-cancelled {
+.ai-status-pill.is-stopped {
   border-color: var(--bs-warning);
   color: var(--bs-warning-text-emphasis);
   background-color: var(--bs-warning-bg-subtle);
@@ -1720,14 +1718,6 @@ button {
 .ai-send-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
-}
-
-.ai-send-btn.is-stop {
-  background-color: rgba(206, 93, 93, 0.85);
-
-  &:hover {
-    background-color: rgba(206, 93, 93, 1);
-  }
 }
 
 /* Message actions */
