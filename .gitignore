@@ -4,6 +4,8 @@
 *.cache
 vendor
 Library
+!Library/Logs/
+!Library/Logs/.gitkeep
 composer.lock
 package-lock.json
 /Electron/node_modules/
@@ -15,3 +17,6 @@ package-lock.json
 /.claude/
 /.junie/
 /.phpunit.cache/
+
+.env
+.htaccess

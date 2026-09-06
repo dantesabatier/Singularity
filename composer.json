@@ -60,8 +60,5 @@
       "type": "path",
       "url": "../Service"
     }
-  ],
-  "scripts": {
-    "psalm": "vendor/bin/psalm --config=psalm.xml"
-  }
+  ]
 }

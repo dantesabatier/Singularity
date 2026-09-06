@@ -1,17 +1,20 @@
 {
   "name": "singularity",
   "version": "1.0.0",
-  "description": "**The authoring environment of the Sabatier stack.**",
-  "main": "index.js",
+  "description": "The authoring environment of the Sabatier stack.",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "sabatier",
+    "singularity"
+  ],
+  "author": "dantesabatier <dantesabatier@me.com>",
+  "license": "MIT",
   "devDependencies": {
     "@types/bootstrap": "^5.2.10",
     "@types/node": "^25.5.2",

@@ -1,0 +1,34 @@
+# Singularity — Apache configuration
+#
+# Copy to `.htaccess`. The application is served from the document root: the
+# rewrite below sends every request that is not index.php through it, and the
+# leading slash anchors that at the host root.
+#
+# Requires mod_rewrite. On a vhost, also set `Options -MultiViews`: with
+# MultiViews on, Apache resolves /Info to Info.plist before index.php ever runs.
+
+php_flag display_startup_errors off
+php_flag display_errors off
+php_value docref_root 0
+php_value docref_ext 0
+php_flag log_errors on
+php_value error_reporting -1
+php_value upload_max_filesize 2M
+
+# Where PHP writes its error log. Commented out, errors go to Apache's own
+# error log, which is the right default on most servers.
+#
+# To keep them with the project instead, uncomment this and give it an ABSOLUTE
+# path to a directory Apache can write to. `Library/` is gitignored, so create
+# `Library/Logs/` first — Apache will not create it, and a path it cannot write
+# to fails silently, costing you the log exactly when you need it.
+#php_value error_log /absolute/path/to/Singularity/Library/Logs/errors.log
+
+# Apache strips the Authorization header before PHP sees it; this puts it back,
+# which is what Bearer and Basic authentication depend on.
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+Options +FollowSymLinks
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !index.php
+RewriteRule ^(.*)$ /index.php?url=$1 [L]
