@@ -171,3 +171,5 @@ The in-editor AI Copilot is driven by `EditorController::chat` (`POST /Editor/ch
 - `*Transaction.php` classes wrap atomic operations with an `execute()` method
 - Constants for preference keys are global functions defined in `src/Constants.php` and autoloaded via `files` in `composer.json`
 - PSR-4 namespace: `App\` → `src/`
+
+The mechanical conventions shared across the whole Sabatier stack — file layout, class and property rules, collection idioms, comments, what public API must document — live in [Foundation's CONVENTIONS.md](https://github.com/dantesabatier/Foundation/blob/master/CONVENTIONS.md), each with the shell search that finds a violation. It is not copied here so that there is only one authoritative version. [AGENTS.md](AGENTS.md#the-shared-conventions-checklist) notes the two places this project reads differently from it.

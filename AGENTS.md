@@ -81,6 +81,19 @@ Electron wraps the PHP server — it does **not** serve the app itself. It opens
 - Short array syntax `[]` required (php-cs-fixer)
 - `get { ... }` = readonly computed property; `get { } set { }` = full accessors
 
+### The shared conventions checklist
+
+The list above is what is specific to Singularity. The mechanical conventions underneath it — file layout, class and property rules, the collection idioms, when a comment earns its place, what public API has to document — are shared across the whole Sabatier stack and maintained in Foundation, as a checklist with the shell search that finds each violation:
+
+**[Foundation's CONVENTIONS.md](https://github.com/dantesabatier/Foundation/blob/master/CONVENTIONS.md)**
+
+It is deliberately not copied into this repository. Four copies of one checklist drift apart, and then nobody knows which is authoritative; the link always resolves to the current version.
+
+It applies here as written. `src/` currently satisfies the mechanical rules it can be searched for — every file declares `declare(strict_types=1)`, no constant uses `UPPER_SNAKE_CASE`, no class is referenced by an inline `\Name`, and every concrete class is `final`. Two notes for anyone running its searches against this tree:
+
+- **`#[Outlet]` properties are uncached on purpose.** The document says a public computed property must reflect current state on every read, so caching one makes it stale. That is exactly the `#[Outlet]` contract — the framework injects them and they read through to live state. Do not add `??=` to them. The rule's other half still holds: a *private* hook that recomputes on every read should either cache with `??=` or be a method.
+- **Comments and identifiers are in English**, whatever language the conversation that produced the change was in. The tree holds to this today; the convention follows the code, not the chat.
+
 ## Environment
 
 - PHP 8.5+ required with: `json`, `gettext`, `intl`, `redis`

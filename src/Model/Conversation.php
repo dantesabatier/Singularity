@@ -37,13 +37,7 @@ final class Conversation extends ManagedObject
         get => new Dictionary(["objectID" => $this->objectID, "title" => $this->title, "provider" => $this->provider, "messages" => $this->messages->map(fn(Message $message): Dictionary => $message->dictionaryRepresentation)]);
     }
     /**
-     * El bucle del agente persiste un mensaje por ronda, así que una respuesta que
-     * consultó tres veces llega como tres mensajes de "Used 1 tool". Aquí se pliegan
-     * las rondas consecutivas sin texto sobre el siguiente mensaje del asistente que
-     * sí lo trae: se ve un único "Used 3 tools". Un mensaje con contenido cierra el
-     * grupo — su texto y sus llamadas van juntos. Si la última ronda queda sin
-     * respuesta (error, o todavía en curso), el mensaje que la acarrea se conserva
-     * para no perder el bloque.
+     * The agent loop persists one message per round, so a reply that queried three times arrives as three separate "Used 1 tool" messages. This folds the consecutive rounds that carry no text onto the next assistant message that does, which reads as a single "Used 3 tools". A message with content closes the group — its text and its calls belong together. When the last round is left without a reply (an error, or still in flight), the message carrying it is kept so the block is not lost.
      *
      * @var ArrayClass<MessageRound>
      */
