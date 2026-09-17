@@ -10,7 +10,7 @@ use Sabatier\Service\LLM\LLMRun;
 use Sabatier\Service\LLM\LLMRunStopReason;
 
 /** Run status for the UI, separate from the history sent to the model. */
-final class RunStatus implements JsonSerializable
+final readonly class RunStatus implements JsonSerializable
 {
     private LLMRun $run;
 
