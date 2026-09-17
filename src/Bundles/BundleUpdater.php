@@ -11,6 +11,8 @@ use App\FileWriters\ModelMapFileWriter;
 use App\Model\ModelMap;
 use App\Model\Project;
 use Exception;
+use Sabatier\Foundation\Dictionary;
+use Sabatier\Foundation\FileAttributeKey;
 use Sabatier\Foundation\FileManager;
 
 final readonly class BundleUpdater
@@ -91,9 +93,15 @@ final readonly class BundleUpdater
     private function updateDelegateIfNeeded(): void
     {
         $bundleURL = $this->project->url ?? throw new Exception("Project has no bundle URL");
-        $delegateURL = $bundleURL->appendingPathComponent("src")->appendingPathComponent("Delegate")->appendingPathExtension("php");
-        if (!FileManager::default()->fileExists($delegateURL->path)) {
-            new DelegateFileWriter($delegateURL, false)->save();
+        $fileManager = FileManager::default();
+        $sourcesURL = $bundleURL->appendingPathComponent("src");
+        $delegateURL = $sourcesURL->appendingPathComponent("Delegate")->appendingPathExtension("php");
+        if ($fileManager->fileExists($delegateURL->path)) {
+            return;
         }
+        if (!$fileManager->fileExists($sourcesURL->path)) {
+            $fileManager->createDirectory($sourcesURL, true, new Dictionary([FileAttributeKey::posixPermissions => 0777]));
+        }
+        new DelegateFileWriter($delegateURL, false)->save();
     }
 }
