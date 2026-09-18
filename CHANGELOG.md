@@ -4,7 +4,7 @@ All notable changes to Singularity are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-09-18
 
 Singularity has been developed since 2023 and ships as an Electron application at bundle version 0.7. This changelog starts here rather than reconstructing that history: the entries below describe what the editor does, and then record the identifiable work of the current cycle — the mapping model editor, the copilot, the security scoping, and the fixes found while covering the tree — grouped by the area they touched rather than listed chronologically.
 

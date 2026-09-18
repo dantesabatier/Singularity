@@ -148,6 +148,13 @@ attempting one.
 
 Do not open a public issue. See [SECURITY.md](SECURITY.md).
 
+## Versioning
+
+This package follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+What counts as the public API here, what a major release is for, and the checks
+that run before a tag are documented once for the whole stack in
+[Foundation's VERSIONING.md](https://github.com/dantesabatier/Foundation/blob/master/VERSIONING.md).
+
 ## Code of conduct
 
 This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). By
