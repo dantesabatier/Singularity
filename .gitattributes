@@ -1,2 +1,25 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Keep a distributed archive to what actually runs. Everything below is
+# development apparatus or editor scratch space: it belongs in the repository,
+# not in an export of it. Singularity is an application rather than a
+# dependency, so this shapes `git archive` rather than a vendor directory.
+/.agents            export-ignore
+/.audit-conventions export-ignore
+/.claude            export-ignore
+/.github            export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
+/.idea              export-ignore
+/.junie             export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/AGENTS.md          export-ignore
+/CLAUDE.md          export-ignore
+/CONTRIBUTING.md    export-ignore
+/phpcs.xml          export-ignore
+/phpstan.neon       export-ignore
+/phpunit.xml        export-ignore
+/psalm.xml          export-ignore
+/rector.php         export-ignore
+/tests              export-ignore
