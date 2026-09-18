@@ -14,6 +14,22 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
 
+    # Updating a versioned bundle writes the cached model into the generated project's own
+    # database, which is what `CachedModelWriter` exists to do, so the suite needs a server to
+    # write it to. Host and credentials are the framework's defaults: 127.0.0.1, root, no password.
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
     steps:
       - uses: actions/checkout@v5
 
@@ -40,7 +56,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.5"
-          extensions: json, gettext, intl, dom, curl, mbstring, redis
+          extensions: json, gettext, intl, dom, curl, mbstring, redis, pdo, pdo_mysql
           ini-values: zend.assertions=1
           coverage: none
 
@@ -52,6 +68,15 @@ jobs:
 
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Wait for MariaDB
+        run: |
+          for i in $(seq 1 30); do
+            mysqladmin ping -h 127.0.0.1 -u root --silent && exit 0
+            sleep 2
+          done
+          echo "MariaDB did not become ready" >&2
+          exit 1
 
       - name: Run the test suite
         run: vendor/bin/phpunit --no-coverage
@@ -86,7 +111,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.5"
-          extensions: json, gettext, intl, dom, curl, mbstring, redis
+          extensions: json, gettext, intl, dom, curl, mbstring, redis, pdo, pdo_mysql
           ini-values: zend.assertions=1
           coverage: none
 
