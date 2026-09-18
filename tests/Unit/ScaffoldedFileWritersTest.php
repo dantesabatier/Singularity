@@ -97,12 +97,18 @@ final class ScaffoldedFileWritersTest extends TemporaryDirectoryTestCase
     }
 
     /**
+     * The stack is published, so a generated project resolves it from Packagist like any other
+     * dependency. A path repository would name sibling directories that exist only on the machine
+     * the project was generated on.
      * @throws Exception
      */
-    public function testThePackageResolvesTheStackFromTheSiblingCheckoutsItIsBuiltAgainst(): void
+    public function testThePackageResolvesTheStackFromPackagistRatherThanASiblingCheckout(): void
     {
-        $urls = array_map(fn(array $repository): string => $repository["url"], $this->composer()["repositories"]);
-        self::assertSame(["../Sabatier/Foundation", "../Sabatier/CoreData", "../Sabatier/Service"], $urls);
+        self::assertArrayNotHasKey("repositories", $this->composer());
+        $require = $this->composer()["require"];
+        foreach (["sabatier/foundation", "sabatier/coredata", "sabatier/service"] as $package) {
+            self::assertSame("^1.0", $require[$package]);
+        }
     }
 
     /**

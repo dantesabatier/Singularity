@@ -36,9 +36,9 @@ final class ComposerJsonFileWriter extends FileWriter
                     "ext-gettext" => "*",
                     "ext-json" => "*",
                     "ext-mbstring" => "*",
-                    "sabatier/foundation" => "dev-master",
-                    "sabatier/coredata" => "dev-master",
-                    "sabatier/service" => "dev-master"
+                    "sabatier/foundation" => "^1.0",
+                    "sabatier/coredata" => "^1.0",
+                    "sabatier/service" => "^1.0"
                 ],
                 "config" => [
                     "platform" => [
@@ -53,8 +53,7 @@ final class ComposerJsonFileWriter extends FileWriter
                     "psr-4" => [
                         "App\\" => "src"
                     ]
-                ],
-                "repositories" => array_map(fn(string $name): array => ["type" => "path", "url" => "../Sabatier/$name"], ["Foundation", "CoreData", "Service"])
+                ]
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         }
     }
