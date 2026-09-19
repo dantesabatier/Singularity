@@ -8,8 +8,8 @@ use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\URL;
 use Sabatier\Foundation\UserDefaults;
-use Sabatier\Service\LLM\LLMClient;
 use Sabatier\Service\LLM\AnthropicClient;
+use Sabatier\Service\LLM\LLMClient;
 use Sabatier\Service\LLM\OllamaClient;
 use Sabatier\Service\LLM\StandardLLMClient;
 use const App\LLMProvidersPreferencesKey;
@@ -35,7 +35,7 @@ final class Provider
             "options" => $this->options,
         ]);
     }
-    /** @var Dictionary<mixed> The provider configuration safe to expose to browser code. */
+    /** @var Dictionary<mixed> The provider configuration with the credential left out, which is what the preferences view renders into the page. This is tidiness rather than a boundary, and reading it as one would be a mistake. Singularity installs `PublicAccessPolicy`, so anyone who can load that page can already call the endpoints that use the key, and any agent reaching the MCP server can read and write the model at will — both deliberate, for an editor that runs on the machine of the person using it. Keeping the key out of an attribute in the markup protects no one from anything; it just keeps a credential out of a place that has no use for it. */
     public Dictionary $redactedDictionaryRepresentation {
         get => $this->dictionaryRepresentation->filter(fn(mixed $_, string $key): bool => $key !== "apiKey");
     }
