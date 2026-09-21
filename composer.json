@@ -1,6 +1,6 @@
 {
   "name": "sabatier/singularity",
-  "description": "A set of tools to build web services in a bit.",
+  "description": "Design a data model and the PHP web service that backs it already exists — REST API, MCP tools and migrations included.",
   "keywords": [
     "sabatier",
     "singularity"
