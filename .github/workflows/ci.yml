@@ -33,25 +33,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Check out Foundation
-        uses: actions/checkout@v5
-        with:
-          repository: dantesabatier/Foundation
-          ref: master
-          path: stack/Foundation
-      - name: Check out CoreData
-        uses: actions/checkout@v5
-        with:
-          repository: dantesabatier/CoreData
-          ref: master
-          path: stack/CoreData
-      - name: Check out Service
-        uses: actions/checkout@v5
-        with:
-          repository: dantesabatier/Service
-          ref: master
-          path: stack/Service
-
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -60,14 +41,12 @@ jobs:
           ini-values: zend.assertions=1
           coverage: none
 
-      - name: Resolve the stack from the sibling checkouts
-        run: |
-          composer config repositories.foundation --json '{"type":"path","url":"stack/Foundation","options":{"symlink":false,"versions":{"sabatier/foundation":"1.0.0"}}}'
-          composer config repositories.coredata --json '{"type":"path","url":"stack/CoreData","options":{"symlink":false,"versions":{"sabatier/coredata":"1.0.0"}}}'
-          composer config repositories.service --json '{"type":"path","url":"stack/Service","options":{"symlink":false,"versions":{"sabatier/service":"1.0.0"}}}'
-
+      # Singularity consumes the stack from Packagist like any other application, so CI
+      # installs what the lock file pins rather than rebuilding it from sibling checkouts.
+      # Resolving `master` instead would test a combination no user can install, and would
+      # break this repository's CI whenever an unrelated one committed.
       - name: Install dependencies
-        run: composer update --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Wait for MariaDB
         run: |
@@ -88,25 +67,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Check out Foundation
-        uses: actions/checkout@v5
-        with:
-          repository: dantesabatier/Foundation
-          ref: master
-          path: stack/Foundation
-      - name: Check out CoreData
-        uses: actions/checkout@v5
-        with:
-          repository: dantesabatier/CoreData
-          ref: master
-          path: stack/CoreData
-      - name: Check out Service
-        uses: actions/checkout@v5
-        with:
-          repository: dantesabatier/Service
-          ref: master
-          path: stack/Service
-
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -115,14 +75,12 @@ jobs:
           ini-values: zend.assertions=1
           coverage: none
 
-      - name: Resolve the stack from the sibling checkouts
-        run: |
-          composer config repositories.foundation --json '{"type":"path","url":"stack/Foundation","options":{"symlink":false,"versions":{"sabatier/foundation":"1.0.0"}}}'
-          composer config repositories.coredata --json '{"type":"path","url":"stack/CoreData","options":{"symlink":false,"versions":{"sabatier/coredata":"1.0.0"}}}'
-          composer config repositories.service --json '{"type":"path","url":"stack/Service","options":{"symlink":false,"versions":{"sabatier/service":"1.0.0"}}}'
-
+      # Singularity consumes the stack from Packagist like any other application, so CI
+      # installs what the lock file pins rather than rebuilding it from sibling checkouts.
+      # Resolving `master` instead would test a combination no user can install, and would
+      # break this repository's CI whenever an unrelated one committed.
       - name: Install dependencies
-        run: composer update --prefer-dist --no-interaction --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Psalm
         run: vendor/bin/psalm --output-format=github --no-progress
