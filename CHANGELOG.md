@@ -4,9 +4,16 @@ All notable changes to Singularity are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Generated projects require the stack from Packagist. Every `composer.json` Singularity emitted named the three packages by relative path, so a generated project resolved only on a machine with the stack checked out beside it.
+- `Info.plist` reports the released version. It still read `0.7`, the version this carried while it was a private project, through the `1.0.0` tag.
+
 ## [1.0.0] - 2026-09-18
 
-Singularity has been developed since 2023 and ships as an Electron application at bundle version 0.7. This changelog starts here rather than reconstructing that history: the entries below describe what the editor does, and then record the identifiable work of the current cycle — the mapping model editor, the copilot, the security scoping, and the fixes found while covering the tree — grouped by the area they touched rather than listed chronologically.
+Singularity has been developed since 2023 and shipped as an Electron application at bundle version 0.7. This changelog starts here rather than reconstructing that history: the entries below describe what the editor does, and then record the identifiable work of the current cycle — the mapping model editor, the copilot, the security scoping, and the fixes found while covering the tree — grouped by the area they touched rather than listed chronologically.
 
 ### Added
 
