@@ -101,3 +101,9 @@ It applies here as written. `src/` currently satisfies the mechanical rules it c
 - Apache with mod_rewrite (`.htaccess` rewrites all to `index.php?url=$1`)
 - PHP backend runs on `http://localhost:8001/`
 - `Library/` directory is gitignored (logs, runtime data)
+
+## Releasing
+
+`Info.plist` carries the released version, and nothing derives it from the git tag. When a release is cut, `CFBundleShortVersionString` becomes the tagged version (`1.0.1`, never `v1.0.1`) and `CFBundleVersion` — the build number — is incremented. `composer.json` declares no `version`: Packagist reads the tag.
+
+The full policy, and what else runs before a tag, is in [Foundation's VERSIONING.md](https://github.com/dantesabatier/Foundation/blob/master/VERSIONING.md).
