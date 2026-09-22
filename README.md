@@ -56,7 +56,7 @@ curl -X POST http://127.0.0.1:8001/Author \
 ```
 
 ```json
-{"objectID":1,"name":"Ursula K. Le Guin","country":"US","creationDate":"2026-09-21 16:35:40"}
+{"objectID":1,"entityName":"Author","name":"Ursula K. Le Guin","country":"US","creationDate":"2026-09-22 11:21:45"}
 ```
 
 `201 Created`. The `creationDate` was neither sent nor defaulted by hand: an attribute the model declares non-optional never arrives null, so a date becomes the current time and a UUID is generated. The model states the guarantee and the object keeps it.
@@ -77,8 +77,13 @@ curl http://127.0.0.1:8001/Book \
 ```
 
 ```json
-[{"title":"The Left Hand of Darkness","isbn":"9780441478125","author":{"name":"Ursula K. Le Guin","country":"US"}}]
+[{"objectID":1,"entityName":"Book","title":"The Left Hand of Darkness","isbn":"9780441478125",
+  "author":{"objectID":1,"entityName":"Author","name":"Ursula K. Le Guin","country":"US"}}]
 ```
+
+`objectID` and `entityName` come back at every level whether or not the
+projection asks for them: they are what identifies a row, and a response that
+omits them cannot be used to update one.
 
 The same model answers an MCP client: `describe_model` returns the entities with their attributes and relationships, and `fetch` returns the rows above. No tool definitions were written either.
 
