@@ -2,6 +2,12 @@
 
 **The authoring environment of the Sabatier stack.**
 
+![Renaming an attribute and reading it back, in one take](.github/images/migration.gif)
+
+An attribute renamed in the editor, saved, and read back over HTTP under its new
+name with the values still in place. One take, no cut: there was no migration
+step in between.
+
 You declare routes and controllers in every project you build. They can — and should — be inferred, because they are always the same. And when you later want to expose that same data to an agent, you declare all of it again, permissions included.
 
 Singularity is where you stop doing that. Design the data model — in a visual editor, or by describing it to an agent over MCP — and the application that backs it already exists:
