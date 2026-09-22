@@ -143,6 +143,10 @@ attempting one.
 - No `.env`, `.htaccess`, `Build/` output or `Library/` scratch space is
   included.
 - A change to the generated output carries the integration test that pins it.
+- A change a consumer would notice is recorded in `CHANGELOG.md` under
+  `## [Unreleased]`, in the same commit — behaviour, a signature, a default, a
+  message they read, or what the generator emits. Not test scaffolding, CI or
+  analysis configuration.
 
 ## Reporting a security problem
 
