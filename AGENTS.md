@@ -2,15 +2,13 @@
 
 ## Commands
 
-All PHP tools (psalm, rector, phpcs, php-cs-fixer, phpstan) are installed **globally via Composer**, NOT in `vendor/bin`. Invoke them by bare name.
+The PHP tools are PHPUnit, Psalm and Rector, from `require-dev`. Always run the project's own `vendor/bin`, never the global Composer binaries, which do not load this project's autoload.
 
 | Task | Command |
 |------|---------|
-| PHP static analysis | `psalm --config=psalm.xml` (error level 4) |
-| PHP code modernization | `rector process src` |
-| PHP lint | `phpcs --standard=phpcs.xml src/` |
-| PHP CS Fixer | `php-cs-fixer fix --dry-run --diff` |
-| PHPStan | `phpstan analyse -c phpstan.neon` (level 3) |
+| PHP static analysis | `php vendor/bin/psalm --config=psalm.xml` (error level 4) |
+| PHP code modernization | `php vendor/bin/rector process src` |
+| PHP tests | `php vendor/bin/phpunit` |
 | Vite dev server | `npm run dev` (port 5173, strict) |
 | Frontend typecheck | `npm run typecheck` |
 | Frontend production build | `npm run build` (outputs to `Build/`) |
@@ -78,7 +76,7 @@ Electron wraps the PHP server — it does **not** serve the app itself. It opens
 - PSR-4 namespace: `App\` → `src/`
 - Global constants defined in `src/Constants.php` (autoloaded via `files`)
 - `*Transaction.php` classes wrap atomic operations with `execute()` method
-- Short array syntax `[]` required (php-cs-fixer)
+- Short array syntax `[]` required
 - `get { ... }` = readonly computed property; `get { } set { }` = full accessors
 
 ### The shared conventions checklist
