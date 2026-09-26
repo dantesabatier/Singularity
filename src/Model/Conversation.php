@@ -53,17 +53,17 @@ final class Conversation extends ManagedObject
             $carrier = null;
             foreach ($this->messages as $message) {
                 if ($message->role === LLMMessageRole::assistant && $message->content === null) {
-                    $pending->appendContentsOf($message->toolCalls);
+                    $pending->appendContentsOf($message->toolCalls->map(fn(ToolCall $toolCall): ToolCall => $toolCall));
                     $carrier ??= $message;
                     continue;
                 }
                 if (!$pending->isEmpty && $message->role === LLMMessageRole::assistant) {
-                    $rounds->append(new MessageRound($message, $pending->appendingContentsOf($message->toolCalls)));
+                    $rounds->append(new MessageRound($message, $pending->appendingContentsOf($message->toolCalls->map(fn(ToolCall $toolCall): ToolCall => $toolCall))));
                 } else {
                     if ($carrier !== null) {
                         $rounds->append(new MessageRound($carrier, $pending));
                     }
-                    $rounds->append(new MessageRound($message, new ArrayClass($message->toolCalls)));
+                    $rounds->append(new MessageRound($message, new ArrayClass($message->toolCalls->map(fn(ToolCall $toolCall): ToolCall => $toolCall))));
                 }
                 $pending = new ArrayClass();
                 $carrier = null;
