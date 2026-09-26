@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Changed
+
+- The Anthropic provider offers Opus 5, Sonnet 5 and Haiku 4.5, and a fresh install starts on Opus 5. A model already chosen in preferences is kept; this is the list a provider carries before anyone edits it.
+
 ### Fixed
 
 - Generated projects require the stack from Packagist. Every `composer.json` Singularity emitted named the three packages by relative path, so a generated project resolved only on a machine with the stack checked out beside it.

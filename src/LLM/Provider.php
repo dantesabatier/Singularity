@@ -102,7 +102,7 @@ final class Provider
             identifier: "anthropic",
             url: new URL("https://api.anthropic.com/v1/messages"),
             apiKey: "",
-            models: new ArrayClass([new Model("Opus 4.8", "claude-opus-4-8"), new Model("Sonnet 4.6", "claude-sonnet-4-6"), new Model("Haiku 4.5", "claude-haiku-4-5-20251001")])
+            models: new ArrayClass([new Model("Opus 5", "claude-opus-5"), new Model("Sonnet 5", "claude-sonnet-5"), new Model("Haiku 4.5", "claude-haiku-4-5-20251001")])
         );
     }
 }
