@@ -1,3 +1,5 @@
+<video src=".github/images/demo.mp4" controls width="100%"></video>
+
 # Singularity
 
 **The authoring environment of the Sabatier stack.**
@@ -214,14 +216,14 @@ Predicate::$debugHandler = fn(string $line) => fwrite(STDERR, "$line\n");
 
 **What SQL it became.** `SQLCore::$debugLevel` is a scale, not a switch:
 
-| Level | Shows |
-|-------|-------|
-| `none` | nothing (default) |
-| `rawSQL` | the generated statement |
-| `sqlWithParams` | the statement with its bound values |
-| `prettyFormatSQL` | the statement, formatted |
-| `includeResults` | what it returned |
-| `analyzeJSON` | the engine's execution plan |
+| Level             | Shows                               |
+|-------------------|-------------------------------------|
+| `none`            | nothing (default)                   |
+| `rawSQL`          | the generated statement             |
+| `sqlWithParams`   | the statement with its bound values |
+| `prettyFormatSQL` | the statement, formatted            |
+| `includeResults`  | what it returned                    |
+| `analyzeJSON`     | the engine's execution plan         |
 
 `SQLCore::$debugColorOutputDefault` colorizes it for a terminal. Both are marked `@internal` — they are a debugging aid, not a stable API, and the level names may change.
 
