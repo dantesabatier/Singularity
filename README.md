@@ -1,4 +1,4 @@
-<video src=".github/images/demo.mp4" controls width="100%"></video>
+<video src="https://github.com/user-attachments/assets/1ab6bcaf-ee3a-474c-9608-d05985cafcaf" controls width="100%"></video>
 
 # Singularity
 
