@@ -8,6 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
+- The model-design copilot is explicitly told that `Property` is abstract and must not be created directly; it should create an `Attribute`, `Relationship` or `FetchedProperty` instead.
 - The Anthropic provider offers Opus 5, Sonnet 5 and Haiku 4.5, and a fresh install starts on Opus 5. A model already chosen in preferences is kept; this is the list a provider carries before anyone edits it.
 
 ### Fixed
