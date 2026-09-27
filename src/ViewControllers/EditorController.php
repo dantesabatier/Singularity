@@ -86,6 +86,7 @@ use const App\EditorSelectedViewPreferencesKey;
 use const App\EditorSplitSizesPreferencesKey;
 use const App\EditorTableViewValue;
 use const App\LLMModelPreferencesKey;
+use const App\LLMProviderPreferencesDefault;
 use const App\LLMProviderPreferencesKey;
 use const Sabatier\CoreData\SQLStoreType;
 use const Sabatier\Foundation\kCFBundleDocumentTypesKey;
@@ -126,7 +127,7 @@ final class EditorController extends ProjectController
     }
     #[Outlet]
     public string $selectedLLMProviderIdentifier {
-        get => UserDefaults::standard()->string(LLMProviderPreferencesKey) ?? "anthropic";
+        get => UserDefaults::standard()->string(LLMProviderPreferencesKey) ?? LLMProviderPreferencesDefault;
         set {
             UserDefaults::standard()->setObject($value, LLMProviderPreferencesKey);
         }

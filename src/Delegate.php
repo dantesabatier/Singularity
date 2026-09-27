@@ -47,8 +47,8 @@ final class Delegate extends ObjectClass implements ApplicationDelegate
             EditorCopilotEnabledPreferencesKey => false,
             ExportIncludeDataPreferencesKey => true,
             ExportIncludeCommentsPreferencesKey => false,
-            LLMProviderPreferencesKey => "anthropic",
-            LLMModelPreferencesKey => "claude-opus-5",
+            LLMProviderPreferencesKey => LLMProviderPreferencesDefault,
+            LLMModelPreferencesKey => LLMModelPreferencesDefault,
             LLMProvidersPreferencesKey => new ArrayClass([Provider::anthropic()->dictionaryRepresentation]),
         ]));
     }
