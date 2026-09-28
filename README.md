@@ -1,5 +1,3 @@
-<video src="https://github.com/user-attachments/assets/1ab6bcaf-ee3a-474c-9608-d05985cafcaf" controls width="100%"></video>
-
 # Singularity
 
 **The authoring environment of the Sabatier stack.**
@@ -24,6 +22,15 @@ Nor do you write the project around it. Creating one generates the whole bundle 
 No route, no controller, no serializer, no tool definition, no migration file, no bootstrap. One declaration, every surface.
 
 Singularity is itself one of those applications: **it was modeled in its own editor**, its data model saved as [`Resources/Singularity.mom`](Resources/Singularity.mom), and the classes in [`src/Model/`](src/Model/) generated from that model. Its own directory layout is exactly what it scaffolds for a new project. So the ceiling is not a CRUD app — it is this IDE, copilot included.
+
+---
+
+## Two and a half minutes
+
+A bookstore modelled from a sentence, the REST and MCP surfaces answering for it,
+and the rename above in full.
+
+<video src="https://github.com/user-attachments/assets/1ab6bcaf-ee3a-474c-9608-d05985cafcaf" controls width="100%"></video>
 
 ---
 
