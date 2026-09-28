@@ -1,6 +1,12 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+# The code generator emits LF, and a test compares a generated block against a
+# heredoc in its own source. Checking that source out as CRLF fails the
+# comparison on Windows, so PHP is LF in the working tree as well as in the
+# repository.
+*.php text eol=lf
+
 # Keep a distributed archive to what actually runs. Everything below is
 # development apparatus or editor scratch space: it belongs in the repository,
 # not in an export of it. Singularity is an application rather than a
@@ -13,12 +19,9 @@
 /.gitignore         export-ignore
 /.idea              export-ignore
 /.junie             export-ignore
-/.php-cs-fixer.dist.php export-ignore
 /AGENTS.md          export-ignore
 /CLAUDE.md          export-ignore
 /CONTRIBUTING.md    export-ignore
-/phpcs.xml          export-ignore
-/phpstan.neon       export-ignore
 /phpunit.xml        export-ignore
 /psalm.xml          export-ignore
 /rector.php         export-ignore

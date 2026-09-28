@@ -1,9 +1,0 @@
-parameters:
-	level: 3
-	paths:
-		- src
-	ignoreErrors:
-		- identifier: property.staticAccess
-		- identifier: staticMethod.notFound
-		- identifier: assign.propertyType
-		  path: src/ViewControllers/Welcome.php

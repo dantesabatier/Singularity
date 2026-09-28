@@ -8,6 +8,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
+- `phpcs.xml`, `phpstan.neon` and `.php-cs-fixer.dist.php` are gone. Psalm,
+  Rector and PHPUnit are the tools this project uses; the other three
+  configured linters nothing ran, and a contributor who took them at face
+  value got findings no review would ask them to act on.
 - The model-design copilot is explicitly told that `Property` is abstract and must not be created directly; it should create an `Attribute`, `Relationship` or `FetchedProperty` instead.
 - The Anthropic provider offers Opus 5, Sonnet 5 and Haiku 4.5, and a fresh install starts on Opus 5. A model already chosen in preferences is kept; this is the list a provider carries before anyone edits it.
 
@@ -15,6 +19,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 - Generated projects require the stack from Packagist. Every `composer.json` Singularity emitted named the three packages by relative path, so a generated project resolved only on a machine with the stack checked out beside it.
 - `Info.plist` reports the released version. It still read `0.7`, the version this carried while it was a private project, through the `1.0.0` tag.
+- PHP sources check out with LF on every platform. `* text=auto` left the
+  decision to the platform, so on Windows a fresh clone received CRLF and
+  `PropertyBlockTest` compared a CRLF heredoc against the LF the generator
+  emits — one failing test on the first run, for Windows contributors only.
+- The Electron directory is named `Electron`, as `.gitignore` and the
+  documented `cd Electron` always assumed. It was committed lowercase, which
+  matches neither on a case-sensitive filesystem: `npm install` there left
+  `node_modules` untracked rather than ignored, and the documented command
+  failed outright on Linux and macOS.
 
 ## [1.0.0] - 2026-09-18
 
