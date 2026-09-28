@@ -16,7 +16,6 @@ use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\AbstractTool;
 use Sabatier\Service\NotFoundException;
 use function Sabatier\Foundation\fatal_error;
-use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
 final class GenerateSubclassesTool extends AbstractTool
 {
@@ -42,22 +41,28 @@ final class GenerateSubclassesTool extends AbstractTool
         ];
     }
 
+    #[Override]
+    public function authorizationResource(Dictionary $arguments): string
+    {
+        return "Project";
+    }
+
     /**
      * @return ArrayClass<ContentItem>
      * @throws Exception
      */
     #[Override]
-    public function execute(Dictionary $arguments): ArrayClass
+    protected function executeCore(Dictionary $arguments): ArrayClass
     {
         /** @var int $objectID */
         $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
-        $request = $this->fetchRequest("Project");
-        $request->predicate = $this->buildPredicate("%K = %d", new ArrayClass([ManagedObjectObjectIDKey, $objectID]));
-        /** @var Project $project */
-        $project = $this->context->fetch($request)->first ?? throw new NotFoundException("Project $objectID was not found");
-        new SubclassTransaction($project)->execute();
-        new SaveBundleTransaction(new BundleUpdater($project))->execute();
-        $this->context->save();
-        return $this->jsonResult($project->jsonSerialize());
+        try {
+            return $this->jsonResult($this->modify("Project", $objectID, function (Project $project): void {
+                new SubclassTransaction($project)->execute();
+                new SaveBundleTransaction(new BundleUpdater($project))->execute();
+            }));
+        } catch (NotFoundException) {
+            throw new NotFoundException("Project $objectID was not found");
+        }
     }
 }
