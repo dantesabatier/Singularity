@@ -116,6 +116,15 @@ The same model answers an MCP client: `describe_model` returns the entities with
 
 Then rename `country` to `nationality` in the editor and save. The next request returns the new name with the values still in place — no migration file, no migration step.
 
+Inference is the default, not the only path. A change it cannot derive on its own
+— an attribute becoming non-optional, a value that has to be computed from the
+old one — takes an explicit mapping, a stage with handlers that run before and
+after it, or a migration policy of your own with a hook at each phase — and
+`PersistentStore::$migrationManagerClass` replaces the manager outright, the way
+the row cache and the snapshot mapper are replaced. The automatic case and the
+deliberate one are the same mechanism, so reaching for control does not mean
+leaving the model behind.
+
 ---
 
 ## What Singularity Proves
