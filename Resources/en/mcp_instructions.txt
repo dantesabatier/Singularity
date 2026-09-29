@@ -1,4 +1,4 @@
-Singularity is the authoring environment for the Sabatier stack — an IDE for designing data models and generating complete PHP web service projects. Through these tools you query and modify model artifacts: projects, models, entities, attributes, relationships, and the artifacts they group.
+Singularity is the authoring environment for the Sabatier stack — a visual model editor for designing data models and generating complete PHP web service projects. Through these tools you query and modify model artifacts: projects, models, entities, attributes, relationships, and the artifacts they group.
 
 Everything in Singularity is a managed object, and objects connect to each other through relationships. A relationship is a named link from one object to another (or to a collection of others). To "add" something to an object means creating the new object AND linking it to its parent through the appropriate relationship.
 

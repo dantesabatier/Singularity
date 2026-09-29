@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-Singularity is the **authoring environment for the Sabatier stack** — an IDE for designing data models and generating the Sabatier Service project that backs them. It generates the project structure and managed-object classes; from there the service already answers requests for the modeled entities, and business logic or a frontend are added on top. It is itself built with the Sabatier stack, making it a self-referential proof of concept.
+Singularity is the **authoring environment for the Sabatier stack** — a visual model editor that generates the Sabatier Service project behind a data model. It generates the project structure and managed-object classes; from there the service already answers requests for the modeled entities, and business logic or a frontend are added on top. It is itself built with the Sabatier stack, making it a self-referential proof of concept.
 
 ## Commands
 
@@ -67,7 +67,7 @@ public ArrayClass $projects { get { /* auto-injected lazy property */ } }
 
 The eight controllers in `src/ViewControllers/`:
 - `WelcomeController` — root `/`, project CRUD (`open`, `create`, `rename`, `remove`)
-- `EditorController` — `/Editor`, main IDE interface, model editing, code generation, and the AI Copilot (`save`, `subclass`, `import`, `reorder`, `chat`)
+- `EditorController` — `/Editor`, the main editor interface, model editing, code generation, and the AI Copilot (`save`, `subclass`, `import`, `reorder`, `chat`)
 - `ViewerController` — `/Viewer`, the SQL Schema Viewer (`export`, `moved`)
 - `PreferencesController` — `/Preferences`, app-wide settings and AI provider config (`synchronize`)
 - `HelpController` — `/Help`, the structured Help book (5 sections, 15 pages under `Resources/Views/HelpPages/`)

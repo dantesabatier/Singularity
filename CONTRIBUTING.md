@@ -4,10 +4,10 @@ Thanks for your interest in Singularity. This document covers how to get the
 authoring environment running locally and what a change is expected to carry
 with it.
 
-Singularity is not a library. It is the IDE of the Sabatier stack: you design a
-data model in it and it generates the Service project that backs the model. That
-shapes what a contribution looks like — a change here usually moves the
-generated output, not just this tree.
+Singularity is not a library. It is the authoring environment of the Sabatier
+stack: you design a data model in it and it generates the Service project that
+backs the model. That shapes what a contribution looks like — a change here
+usually moves the generated output, not just this tree.
 
 ## Requirements
 
