@@ -37,7 +37,7 @@ No route, no controller, no serializer, no tool definition, no migration file, n
 A bookstore modelled from a sentence, the REST and MCP surfaces answering for it,
 and the rename above in full.
 
-<video src="https://github.com/user-attachments/assets/1ab6bcaf-ee3a-474c-9608-d05985cafcaf" controls width="100%"></video>
+https://github.com/user-attachments/assets/1ab6bcaf-ee3a-474c-9608-d05985cafcaf
 
 ---
 
