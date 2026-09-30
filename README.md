@@ -116,14 +116,19 @@ The same model answers an MCP client: `describe_model` returns the entities with
 
 Then rename `country` to `nationality` in the editor and save. The next request returns the new name with the values still in place — no migration file, no migration step.
 
-Inference is the default, not the only path. A change it cannot derive on its own
-— an attribute becoming non-optional, a value that has to be computed from the
-old one — takes an explicit mapping, a stage with handlers that run before and
-after it, or a migration policy of your own with a hook at each phase — and
-`PersistentStore::$migrationManagerClass` replaces the manager outright, the way
-the row cache and the snapshot mapper are replaced. The automatic case and the
-deliberate one are the same mechanism, so reaching for control does not mean
-leaving the model behind.
+Inference is the default, not the only path. Because the model records types,
+optionality, derived and transient properties, indexes and uniqueness, most
+structural changes resolve without help. What it cannot derive is the meaning of
+the data itself — an attribute that becomes composite, a value computed from the
+old one, entities merged — and that takes an explicit mapping between the two
+versions. Below that, a migration stage with handlers around it, a policy per
+entity with a hook at each phase, and `PersistentStore::$migrationManagerClass`
+to replace the manager outright, the way the row cache and the snapshot mapper
+are replaced. The automatic case and the deliberate one are the same mechanism,
+so reaching for control does not mean leaving the model behind.
+
+How that works, and what every other stack does instead:
+[Seven years without writing a migration](https://dev.to/dantesabatier/seven-years-without-writing-a-migration-325d).
 
 ---
 
