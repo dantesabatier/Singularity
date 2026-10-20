@@ -58,6 +58,15 @@ final class RunStatusTest extends TestCase
     }
 
     #[Test]
+    public function aProviderFailureReportsTheProvidersOwnWords(): void
+    {
+        $run = new LLMRun(new ArrayClass(), stopReason: LLMRunStopReason::providerFailure, isRetryable: false, failureReason: "The LLM provider returned HTTP 401: invalid x-api-key");
+        $status = new RunStatus($run)->jsonSerialize();
+
+        $this->assertSame("The model provider could not complete the request. The LLM provider returned HTTP 401: invalid x-api-key", $status["message"]);
+    }
+
+    #[Test]
     public function wireEnvelopePreservesNullAndNeverIncludesModelContent(): void
     {
         $status = new RunStatus(new LLMRun(new ArrayClass([new LLMMessage(LLMMessageRole::assistant, "Private content")])));

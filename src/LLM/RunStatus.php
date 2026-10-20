@@ -29,22 +29,30 @@ final readonly class RunStatus implements JsonSerializable
             "stopReason" => $this->run->stopReason->value,
             "isComplete" => $this->run->isComplete,
             "isRetryable" => $this->run->isRetryable,
-            "message" => $this->run->isComplete ? null : match ($this->run->stopReason) {
-                LLMRunStopReason::done => "The run ended without a complete answer.",
-                LLMRunStopReason::iterationCap => "The iteration limit was reached.",
-                LLMRunStopReason::deadline => "The run time limit was reached.",
-                LLMRunStopReason::providerFailure => "The model provider could not complete the request.",
-                LLMRunStopReason::toolProviderFailure => "The tool provider could not complete the request.",
-                LLMRunStopReason::outputLimit => "The model reached its output limit.",
-                LLMRunStopReason::refusal => "The model declined the request.",
-                LLMRunStopReason::toolCallLimit => "The tool call limit was reached.",
-                LLMRunStopReason::subagentCallLimit => "The subagent call limit was reached.",
-                LLMRunStopReason::inputTokenLimit => "The input token budget was exhausted.",
-                LLMRunStopReason::outputTokenLimit => "The output token budget was exhausted.",
-                LLMRunStopReason::totalTokenLimit => "The total token budget was exhausted.",
-                LLMRunStopReason::writeApprovalRequired => "A tool requires write approval; that call was not executed.",
-                LLMRunStopReason::contextLimit => "The context exceeds the configured limit.",
-            },
+            "message" => $this->run->isComplete ? null : $this->message(),
         ];
+    }
+
+    /** A provider failure appends the provider's own words, because the stop reason alone cannot tell a bad key from an unknown model or a rate limit. */
+    private function message(): string
+    {
+        $message = match ($this->run->stopReason) {
+            LLMRunStopReason::done => "The run ended without a complete answer.",
+            LLMRunStopReason::iterationCap => "The iteration limit was reached.",
+            LLMRunStopReason::deadline => "The run time limit was reached.",
+            LLMRunStopReason::providerFailure => "The model provider could not complete the request.",
+            LLMRunStopReason::toolProviderFailure => "The tool provider could not complete the request.",
+            LLMRunStopReason::outputLimit => "The model reached its output limit.",
+            LLMRunStopReason::refusal => "The model declined the request.",
+            LLMRunStopReason::toolCallLimit => "The tool call limit was reached.",
+            LLMRunStopReason::subagentCallLimit => "The subagent call limit was reached.",
+            LLMRunStopReason::inputTokenLimit => "The input token budget was exhausted.",
+            LLMRunStopReason::outputTokenLimit => "The output token budget was exhausted.",
+            LLMRunStopReason::totalTokenLimit => "The total token budget was exhausted.",
+            LLMRunStopReason::writeApprovalRequired => "A tool requires write approval; that call was not executed.",
+            LLMRunStopReason::contextLimit => "The context exceeds the configured limit.",
+        };
+        $failureReason = trim((string)$this->run->failureReason);
+        return $failureReason === "" ? $message : "$message $failureReason";
     }
 }
