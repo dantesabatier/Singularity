@@ -100,6 +100,10 @@ export class EditorChatController {
         const toolHeader = (e.target as Element).closest<HTMLElement>("[data-action='toggle-tools']")
         if (toolHeader) {
             this.toggleToolGroup(toolHeader)
+            return
+        }
+        if ((e.target as Element).closest("[data-action='retry-run']")) {
+            void this.retryRun()
         }
     }
 
@@ -312,14 +316,7 @@ export class EditorChatController {
             content,
             provider: this.selectedProvider,
             model: this.selectedModel,
-        }
-        const selectionKeys = ["entity", "property", "index", "element", "constraint", "fetchRequest", "configuration", "composite", "accessControl", "role"]
-        const urlParams = new URLSearchParams(window.location.search)
-        for (const key of selectionKeys) {
-            const val = urlParams.get(key)
-            if (val) {
-                body[key] = val
-            }
+            ...this.selection(),
         }
         if (images.length > 0) {
             body.images = images
@@ -372,6 +369,59 @@ export class EditorChatController {
             this.isSending = false
             this.updateSendButton()
         }
+    }
+
+    // Runs the last request again over the stored history without adding another copy of the message: the server continues where the run stopped.
+    private async retryRun(): Promise<void> {
+        if (this.isSending || !this.currentConversationID) {
+            return
+        }
+        this.isSending = true
+        this.runStatuses.delete(this.currentConversationID)
+        document.getElementById("chat-run-status")?.remove()
+        this.setStatus("thinking")
+        try {
+            const response = await fetch("/chat/retry", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "X-Requested-With": "XmlHttpRequest",
+                },
+                body: JSON.stringify({
+                    project: this.currentProjectID,
+                    conversation: {objectID: this.currentConversationID, title: this.currentConversationTitle},
+                    provider: this.selectedProvider,
+                    model: this.selectedModel,
+                    ...this.selection(),
+                }),
+            })
+            if (!response.ok) {
+                this.appendErrorBubble(await this.extractErrorMessage(response))
+                this.setStatus("error")
+                return
+            }
+            const data = await response.json() as {objectID: string; run: RunStatus}
+            this.runStatuses.set(String(data.objectID), data.run)
+            // The continued run may have added tool rounds after messages already on screen, so the conversation is rendered again from the server rather than appended to.
+            await this.context.viewNavigator.push(window.location.href)
+            this.renderRunStatus()
+        } finally {
+            this.isSending = false
+            this.updateSendButton()
+        }
+    }
+
+    private selection(): Record<string, string> {
+        const selectionKeys = ["entity", "property", "index", "element", "constraint", "fetchRequest", "configuration", "composite", "accessControl", "role"]
+        const urlParams = new URLSearchParams(window.location.search)
+        const selection: Record<string, string> = {}
+        for (const key of selectionKeys) {
+            const val = urlParams.get(key)
+            if (val) {
+                selection[key] = val
+            }
+        }
+        return selection
     }
 
     private async handleMessageAction(btn: HTMLElement): Promise<void> {
@@ -798,6 +848,15 @@ export class EditorChatController {
             notice.textContent += " This failure may be transient. Review completed actions before trying again."
         } else if (run.isRetryable === false) {
             notice.textContent += " Repeating the same request is not considered recoverable."
+        }
+        // Only where the run stopped midway and the stored history can continue it. Offered even when the failure is not recoverable: the model can be changed before retrying.
+        if (run.stopReason === "providerFailure" || run.stopReason === "deadline") {
+            const retry = document.createElement("button")
+            retry.type = "button"
+            retry.className = "btn btn-sm btn-outline-warning d-flex align-items-center gap-1 mt-2"
+            retry.dataset.action = "retry-run"
+            retry.innerHTML = `<span class="material-symbols-outlined">refresh</span>Retry`
+            notice.append(retry)
         }
         this.insertBeforeThinking(container, notice)
         this.scrollToBottom()

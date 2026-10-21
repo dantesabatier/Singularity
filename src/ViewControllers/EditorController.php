@@ -363,6 +363,9 @@ final class EditorController extends ProjectController
     private LLMExecutionPolicy $executionPolicy {
         get => $this->executionPolicy ??= new LLMExecutionPolicy(writeApproval: fn(LLMToolCall $toolCall): bool => new ArrayClass(["create", "update", "delete", "save_project", "generate_subclasses"])->containsElement($toolCall->name));
     }
+    private string $providerID {
+        get => $this->providerID ??= (string)($this->request->parameters["provider"] ?? UserDefaults::standard()->string(LLMProviderPreferencesKey) ?? throw new BadRequestException("No provider configured."));
+    }
     /**
      * @throws Exception
      */
@@ -603,19 +606,10 @@ final class EditorController extends ProjectController
     #[Action(transformers: [JSONTransformer::class])]
     public function chat(): void
     {
-        $project = $this->project;
         $parameters = $this->request->parameters;
         /** @var string $content */
         $content = $parameters["content"] ?? throw new BadRequestException("`content` is required");
-        /** @var string $model */
-        $model = $parameters["model"] ?? UserDefaults::standard()->string(LLMModelPreferencesKey) ?? throw new BadRequestException("No model configured.");
-        /** @var string $providerID */
-        $providerID = $parameters["provider"] ?? UserDefaults::standard()->string(LLMProviderPreferencesKey) ?? throw new BadRequestException("No provider configured.");
-        /** @var Dictionary<mixed> $snapshot */
-        $snapshot = $parameters["conversation"] ?? throw new BadRequestException("`conversation` is required");
-        $conversation = new Conversation($this->managedObjectContext);
-        $conversation->updateFromSnapshot($snapshot);
-        $conversation->provider = $providerID;
+        $conversation = $this->conversation();
         $userMessage = new Message($this->managedObjectContext);
         $userMessage->role = LLMMessageRole::user;
         $userMessage->content = $content;
@@ -637,11 +631,52 @@ final class EditorController extends ProjectController
             }
         }
         $conversation->addMessagesObject($userMessage);
+        $this->run($conversation, $userMessage, $images instanceof ArrayClass ? $images : null);
+    }
+
+    /**
+     * Runs the agent again over the stored history without adding a user message, so it continues where the previous run stopped and does not repeat the calls that already answered.
+     *
+     * @throws Throwable
+     */
+    #[Action(HTTPRequestMethod::post, "/chat/retry", [JSONTransformer::class])]
+    public function retry(): void
+    {
+        $conversation = $this->conversation();
+        $last = $conversation->messages->last;
+        $last !== null && ($last->role !== LLMMessageRole::assistant || !$last->toolCalls->isEmpty) ?: throw new BadRequestException("The conversation has no run to retry.");
+        $this->run($conversation);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function conversation(): Conversation
+    {
+        /** @var Dictionary<mixed> $snapshot */
+        $snapshot = $this->request->parameters["conversation"] ?? throw new BadRequestException("`conversation` is required");
+        $conversation = new Conversation($this->managedObjectContext);
+        $conversation->updateFromSnapshot($snapshot);
+        $conversation->provider = $this->providerID;
+        return $conversation;
+    }
+
+    /**
+     * @param Conversation $conversation The conversation whose history the model receives.
+     * @param Message|null $userMessage The message just added, whose images travel inline, or `null` when retrying.
+     * @param ArrayClass<Dictionary<string>>|null $images The images of `$userMessage` as they arrived.
+     * @throws Throwable
+     */
+    private function run(Conversation $conversation, ?Message $userMessage = null, ?ArrayClass $images = null): void
+    {
+        $project = $this->project;
+        /** @var string $model */
+        $model = $this->request->parameters["model"] ?? UserDefaults::standard()->string(LLMModelPreferencesKey) ?? throw new BadRequestException("No model configured.");
         /** @var ArrayClass<LLMMessage> $history */
         $history = new ArrayClass();
         foreach ($conversation->messages as $message) {
             if ($message === $userMessage) {
-                $history->append(new LLMMessage(LLMMessageRole::user, $content, images: $images));
+                $history->append(new LLMMessage(LLMMessageRole::user, $message->content, images: $images));
                 continue;
             }
             $history->append($message->LLMMessage);
@@ -649,7 +684,7 @@ final class EditorController extends ProjectController
                 $history->append($toolCall->LLMResult);
             }
         }
-        $provider = Provider::find($providerID) ?? throw new InternalServerErrorException("Provider `$providerID` not configured");
+        $provider = Provider::find($this->providerID) ?? throw new InternalServerErrorException("Provider `$this->providerID` not configured");
         $agent = new LLMAgent($provider->client($model), $this->registry, executionPolicy: $this->executionPolicy);
         $run = $agent->run($history, $this->buildSystemPrompt());
         /** @var Dictionary<ToolCall> $toolCallMap */
