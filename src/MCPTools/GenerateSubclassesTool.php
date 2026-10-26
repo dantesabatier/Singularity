@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpInternalEntityUsedInspection */
+
 declare(strict_types=1);
 
 namespace App\MCPTools;
@@ -13,11 +15,11 @@ use Override;
 use Sabatier\Foundation\ArrayClass;
 use Sabatier\Foundation\Dictionary;
 use Sabatier\Service\MCP\Response\ContentItem;
-use Sabatier\Service\MCP\Tools\AbstractTool;
+use Sabatier\Service\MCP\Tools\WriteTool;
 use Sabatier\Service\NotFoundException;
 use function Sabatier\Foundation\fatal_error;
 
-final class GenerateSubclassesTool extends AbstractTool
+final class GenerateSubclassesTool extends WriteTool
 {
     #[Override]
     public string $name {
@@ -57,7 +59,7 @@ final class GenerateSubclassesTool extends AbstractTool
         /** @var int $objectID */
         $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
         try {
-            return $this->jsonResult($this->modify("Project", $objectID, function (Project $project): void {
+            return $this->jsonResult($this->modify($this->entity("Project"), $objectID, function (Project $project): void {
                 new SubclassTransaction($project)->execute();
                 new SaveBundleTransaction(new BundleUpdater($project))->execute();
             }));
