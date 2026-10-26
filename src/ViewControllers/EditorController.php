@@ -60,6 +60,7 @@ use Sabatier\Service\Action;
 use Sabatier\Service\AuthorizationScope;
 use Sabatier\Service\BadRequestException;
 use Sabatier\Service\Endpoint;
+use Sabatier\Service\ForbiddenException;
 use Sabatier\Service\HTMLTransformer;
 use Sabatier\Service\InternalServerErrorException;
 use Sabatier\Service\JSONTransformer;
@@ -69,6 +70,11 @@ use Sabatier\Service\LLM\LLMMessage;
 use Sabatier\Service\LLM\LLMMessageRole;
 use Sabatier\Service\LLM\LLMToolCall;
 use Sabatier\Service\MCP\MCPInstructionsProvider;
+use Sabatier\Service\MCP\Resources\ResourceRegistry;
+use Sabatier\Service\MCP\Resources\ResourceResolver;
+use Sabatier\Service\MCP\Response\ResourceContents;
+use Sabatier\Service\MCP\Response\ToolCallResult;
+use Sabatier\Service\MCP\Response\ToolDescriptor;
 use Sabatier\Service\MCP\Schema\AttributeSchemaFactory;
 use Sabatier\Service\MCP\Schema\ModelDescriptor;
 use Sabatier\Service\MCP\Schema\ModelSchemaExtractor;
@@ -143,6 +149,11 @@ final class EditorController extends ProjectController
     #[Outlet]
     private(set) ArrayClass $aiProviders {
         get => $this->aiProviders ??= Provider::all();
+    }
+    /** @var ArrayClass<string> The tools whose answers the chat renders in an interface of their own. */
+    #[Outlet]
+    private(set) ArrayClass $appToolNames {
+        get => $this->appToolNames ??= $this->appResources->keys;
     }
     #[Outlet]
     public bool $isTableViewSelected {
@@ -358,6 +369,27 @@ final class EditorController extends ProjectController
     }
     private ToolRegistry $registry {
         get => $this->registry ??= new ToolRegistry(new ToolResolver($this->managedObjectContext, $this->descriptor)->resolve());
+    }
+    /** @var Dictionary<ResourceContents> The interfaces the tools declare, by tool name. */
+    private Dictionary $appResources {
+        get {
+            if (isset($this->appResources)) {
+                return $this->appResources;
+            }
+            $resources = new ResourceRegistry(new ResourceResolver()->resolve());
+            return $this->appResources = $this->registry->list->reduce(new Dictionary(),
+                /**
+                 * @param Dictionary<ResourceContents> $apps
+                 * @return Dictionary<ResourceContents>
+                 */
+                function (Dictionary $apps, ToolDescriptor $tool) use ($resources): Dictionary {
+                    $resource = $resources->resource((string)($tool->meta["ui"]["resourceUri"] ?? ""));
+                    if ($resource !== null) {
+                        $apps[$tool->name] = $resource->read();
+                    }
+                    return $apps;
+                });
+        }
     }
     /** @var LLMExecutionPolicy Approves the editor's design writes by name, so newly registered tools remain denied until explicitly admitted; no production store is edited here. */
     private LLMExecutionPolicy $executionPolicy {
@@ -648,6 +680,30 @@ final class EditorController extends ProjectController
         $this->run($conversation);
     }
 
+    /** Answers with the interfaces the tools declare, by tool name: the markup the chat renders beside an answer. They travel together because they are few and the chat does not know which it needs until it shows the calls. */
+    #[Action(HTTPRequestMethod::post, "/chat/apps", [JSONTransformer::class])]
+    public function apps(): void
+    {
+        $this->data = $this->appResources;
+    }
+
+    /**
+     * Serves the call an interface makes from its iframe, as an MCP host forwards it: the whole result, since the interface reads the data rather than the text. Only reads are admitted — an interface recalculates what it shows and never writes on the user's behalf, which also keeps it clear of the write approval the agent asks for.
+     *
+     * @throws Throwable
+     */
+    #[Action(HTTPRequestMethod::post, "/chat/apps/call", [JSONTransformer::class])]
+    public function callApp(): void
+    {
+        $parameters = $this->request->parameters;
+        $name = (string)($parameters["name"] ?? throw new BadRequestException("`name` is required"));
+        $arguments = $parameters["arguments"] ?? new Dictionary();
+        $arguments instanceof Dictionary ?: throw new BadRequestException("`arguments` must be an object.");
+        $this->registry->isReadOnlyCall($name, $arguments) ?: throw new ForbiddenException("An interface may only call read-only tools.");
+        $result = $this->registry->call($name, $arguments);
+        $this->data = new ToolCallResult($result->content, $result->isError, $result->structuredContent);
+    }
+
     /**
      * @throws Throwable
      */
@@ -707,6 +763,7 @@ final class EditorController extends ProjectController
                 continue;
             }
             $toolCall->result = $result->content;
+            $toolCall->structuredContent = $result->structuredContent === null ? null : new Dictionary($result->structuredContent);
             $toolCall->status = match (true) {
                 $result->content === null => ToolCallStatus::pending,
                 $result->isError => ToolCallStatus::error,

@@ -28,7 +28,7 @@
     "latte/latte": "^3.0",
     "sabatier/foundation": "^1.0",
     "sabatier/coredata": "^1.0",
-    "sabatier/service": "^1.8.2"
+    "sabatier/service": "^1.10.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^13.3",

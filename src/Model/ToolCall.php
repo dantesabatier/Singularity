@@ -17,6 +17,7 @@ use Sabatier\Service\LLM\LLMMessageRole;
  * @property ToolCallStatus $status
  * @property Dictionary<mixed> $arguments
  * @property string|null $result
+ * @property Dictionary<mixed>|null $structuredContent
  * @property Message|null $message
  */
 final class ToolCall extends ManagedObject
@@ -28,7 +29,7 @@ final class ToolCall extends ManagedObject
 
     /** @var Dictionary<mixed> */
     public Dictionary $dictionaryRepresentation {
-        get => new Dictionary(["id" => $this->identifier, "name" => $this->name, "input" => $this->arguments, "result" => $this->result, "status" => $this->status->value, "isError" => $this->status === ToolCallStatus::error]);
+        get => new Dictionary(["id" => $this->identifier, "name" => $this->name, "input" => $this->arguments, "result" => $this->result, "structuredContent" => $this->structuredContent, "status" => $this->status->value, "isError" => $this->status === ToolCallStatus::error]);
     }
 
     public function validateStatus(ToolCallStatus|int|null &$status): bool

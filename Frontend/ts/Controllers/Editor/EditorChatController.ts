@@ -10,6 +10,7 @@ import xml from "highlight.js/lib/languages/xml"
 import css from "highlight.js/lib/languages/css"
 import sql from "highlight.js/lib/languages/sql"
 import DOMPurify from "dompurify"
+import {ChatAppResource, ChatAppToolCall, EditorChatAppFrame} from "@/Controllers/Editor/EditorChatAppFrame"
 
 let languagesRegistered = false
 
@@ -32,7 +33,7 @@ function registerHighlightLanguages(): void {
     hljs.registerAliases(["sh", "shell", "zsh"], {languageName: "bash"})
 }
 
-type ChatToolCall = {id: string; name: string; input: unknown; isError?: boolean; status?: number}
+type ChatToolCall = {id: string; name: string; input: unknown; result?: string | null; structuredContent?: Record<string, unknown> | null; isError?: boolean; status?: number}
 
 type RunStatus = {
     stopReason: string
@@ -63,6 +64,7 @@ export class EditorChatController {
     private pendingAttachments: File[] = []
     private readonly runStatuses = new Map<string, RunStatus>()
     private isSending = false
+    private apps: Promise<Record<string, ChatAppResource>> | null = null
 
     private readonly onSendClick = (): void => {
         void this.sendMessage()
@@ -135,6 +137,7 @@ export class EditorChatController {
         this.loadSelectionsFromDOM()
         this.bindModelPicker()
         this.renderServerMessages()
+        void this.mountApps()
         this.renderRunStatus()
         this.updateContextIndicator()
         window.removeEventListener("popstate", this.onPopState)
@@ -730,6 +733,7 @@ export class EditorChatController {
         }
 
         if (message.toolCalls?.length) {
+            this.appendAppSlots(wrapper, message.toolCalls)
             wrapper.appendChild(this.buildToolGroup(message.toolCalls))
         }
 
@@ -739,7 +743,51 @@ export class EditorChatController {
 
         this.insertBeforeThinking(container, wrapper)
         this.scrollToBottom()
+        void this.mountApps()
         return wrapper
+    }
+
+    // The interfaces are few and fixed for the session, so they are asked for once; without them the chat is still whole, and the calls show in their group as before.
+    private loadApps(): Promise<Record<string, ChatAppResource>> {
+        this.apps ??= fetch("/chat/apps", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "X-Requested-With": "XmlHttpRequest",
+            },
+            body: "{}",
+        }).then(response => response.ok ? response.json() as Promise<Record<string, ChatAppResource>> : {}).catch(() => ({}))
+        return this.apps
+    }
+
+    // A call that answered with data leaves a slot, as the server-rendered history does; it becomes an interface once the tool turns out to declare one.
+    private appendAppSlots(wrapper: HTMLElement, toolCalls: ChatToolCall[]): void {
+        for (const call of toolCalls) {
+            if (call.structuredContent && !call.isError) {
+                const slot = document.createElement("div")
+                slot.className = "ai-app-slot"
+                slot.dataset.toolCall = JSON.stringify(call)
+                wrapper.appendChild(slot)
+            }
+        }
+    }
+
+    // The interfaces are part of the answer, so they sit beside it rather than inside the collapsible group, which is for reviewing the calls.
+    private async mountApps(): Promise<void> {
+        const apps = await this.loadApps()
+        for (const message of this.messagesContainer()?.querySelectorAll(".ai-msg") ?? []) {
+            const slots = [...message.querySelectorAll<HTMLElement>(":scope > .ai-app-slot")].map(slot => ({slot, call: JSON.parse(slot.dataset.toolCall ?? "{}") as ChatAppToolCall}))
+            // A round that called the same tool several times was refining it: only its last answer is shown, not one interface per attempt.
+            const last = new Map(slots.filter(({call}) => apps[call.name]).map(({slot, call}) => [call.name, slot]))
+            for (const {slot, call} of slots) {
+                const app = apps[call.name]
+                if (app && last.get(call.name) === slot) {
+                    slot.replaceWith(new EditorChatAppFrame(call, app).element)
+                } else {
+                    slot.remove()
+                }
+            }
+        }
     }
 
     // The agent loop persists one message per round, so a reply that queried three times arrives as three "Used 1 tool" messages; consecutive text-less rounds are folded onto the next assistant message that carries text, showing a single "Used 3 tools". A message with content closes the group, keeping its text and calls together, and if the last round ends without a reply (error or still in flight) the carrier message is kept so the block is not lost.

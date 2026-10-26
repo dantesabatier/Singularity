@@ -110,6 +110,9 @@
                                 {$message->content}
                             </div>
                         {/if}
+                        {foreach $round->toolCalls as $toolCall}
+                            <div n:if="$toolCall->structuredContent !== null && $toolCall->status !== App\Model\ToolCallStatus::error && $appToolNames->containsElement($toolCall->name)" class="ai-app-slot" data-tool-call="{$toolCall->dictionaryRepresentation|json}"></div>
+                        {/foreach}
                         {if !$round->toolCalls->isEmpty}
                             {var $failedCount = $round->failedToolCallCount}
                             {var $pendingCount = $round->pendingToolCallCount}

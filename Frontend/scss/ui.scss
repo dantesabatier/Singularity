@@ -1393,6 +1393,106 @@ button {
   border-bottom-left-radius: 2px;
 }
 
+/* Tool interfaces (MCP Apps) */
+
+/* No width cap: the interface changes its layout to fit the width it is given. */
+.ai-app {
+  width: 100%;
+  margin-top: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.ai-app__header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 6px 5px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ai-app__icon {
+  font-size: 14px !important;
+  color: var(--text-disabled);
+}
+
+.ai-app__title {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.ai-app__toggle {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 3px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-disabled);
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s;
+
+  .material-symbols-outlined {
+    font-size: 15px;
+  }
+}
+
+.ai-app__toggle:hover,
+.ai-app__toggle--active {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.ai-app__frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+}
+
+.ai-app__frame[hidden] {
+  display: none;
+}
+
+.ai-app__data {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+
+  pre {
+    max-height: 320px;
+    overflow: auto;
+    margin: 0;
+    padding: 8px 10px;
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    white-space: pre-wrap;
+  }
+}
+
+.ai-app__data[hidden] {
+  display: none;
+}
+
+.ai-app__label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text-disabled);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* Tool group (collapsible) */
 
 .ai-tool-group {
