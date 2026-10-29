@@ -18,6 +18,7 @@ use Sabatier\Service\LLM\LLMMessageRole;
  * @property Dictionary<mixed> $arguments
  * @property string|null $result
  * @property Dictionary<mixed>|null $structuredContent
+ * @property Dictionary<mixed>|null $extraContent
  * @property Message|null $message
  */
 final class ToolCall extends ManagedObject

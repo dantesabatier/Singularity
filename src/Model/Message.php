@@ -43,7 +43,7 @@ use Sabatier\Service\LLM\LLMToolCall;
 final class Message extends ManagedObject
 {
     public LLMMessage $LLMMessage {
-        get => new LLMMessage($this->role, $this->content, new ArrayClass($this->toolCalls->map(fn(ToolCall $toolCall): LLMToolCall => new LLMToolCall($toolCall->identifier, $toolCall->name, $toolCall->arguments))), null, new ArrayClass($this->attachments->compactMap(function (Attachment $attachment): ?Dictionary {
+        get => new LLMMessage($this->role, $this->content, new ArrayClass($this->toolCalls->map(fn(ToolCall $toolCall): LLMToolCall => new LLMToolCall($toolCall->identifier, $toolCall->name, $toolCall->arguments, $toolCall->extraContent))), null, new ArrayClass($this->attachments->compactMap(function (Attachment $attachment): ?Dictionary {
             $fileManager = FileManager::default();
             if (!($url = $attachment->url)) {
                 return null;
@@ -62,6 +62,7 @@ final class Message extends ManagedObject
                 $toolCall->identifier = $llmToolCall->id;
                 $toolCall->name = $llmToolCall->name;
                 $toolCall->arguments = $llmToolCall->arguments;
+                $toolCall->extraContent = $llmToolCall->extraContent;
                 return $toolCall;
             }) ?? []));
         }
