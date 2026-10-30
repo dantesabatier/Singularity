@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
-use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
-use Rector\CodeQuality\Rector\If_\ObjectExplicitBoolCompareRector;
+use Rector\CodeQuality\Rector\If_\ExplicitNullableObjectInstanceRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector;
@@ -27,7 +26,6 @@ try {
         ])->withPhpSets()->withSkip([
             SensitiveConstantNameRector::class,
             ClassPropertyAssignToConstructorPromotionRector::class,
-            FlipTypeControlToUseExclusiveTypeRector::class,
             LocallyCalledStaticMethodToNonStaticRector::class,
             RemoveUnusedPrivateMethodRector::class,
             RemoveUnusedPrivateMethodParameterRector::class,
@@ -35,6 +33,7 @@ try {
             RemoveUselessParamTagRector::class,
             RemoveUnusedVariableAssignRector::class,
             ExplicitReturnNullRector::class,
+            ExplicitNullableObjectInstanceRector::class,
             RestoreDefaultNullToNullableTypePropertyRector::class,
             RemoveUnusedConstructorParamRector::class => [
                 __DIR__ . "/src/FileWriters/SubclassFileWriter.php"
@@ -45,8 +44,7 @@ try {
             RemoveUselessUnionReturnDocblockRector::class => [
                 __DIR__ . "/src/FileWriters/Generators/AuthorizableCodeGenerator.php",
                 __DIR__ . "/src/FileWriters/Generators/PropertyDocBlockGenerator.php"
-            ],
-            ObjectExplicitBoolCompareRector::class
+            ]
         ])->withPreparedSets(deadCode: true, codeQuality: true, earlyReturn: true);
 } catch (InvalidConfigurationException $e) {
     error_log($e->getMessage());
