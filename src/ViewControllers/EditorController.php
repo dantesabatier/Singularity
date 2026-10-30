@@ -763,7 +763,7 @@ final class EditorController extends ProjectController
                 continue;
             }
             $toolCall->result = $result->content;
-            $toolCall->structuredContent = $result->structuredContent === null ? null : new Dictionary($result->structuredContent);
+            $toolCall->structuredContent = $result->structuredContent === null ? null : Dictionary::dictionaryWithArray($result->structuredContent);
             $toolCall->status = match (true) {
                 $result->content === null => ToolCallStatus::pending,
                 $result->isError => ToolCallStatus::error,
