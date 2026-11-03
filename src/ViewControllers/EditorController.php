@@ -699,7 +699,7 @@ final class EditorController extends ProjectController
         $name = (string)($parameters["name"] ?? throw new BadRequestException("`name` is required"));
         $arguments = $parameters["arguments"] ?? new Dictionary();
         $arguments instanceof Dictionary ?: throw new BadRequestException("`arguments` must be an object.");
-        $this->registry->isReadOnlyCall($name, $arguments) ?: throw new ForbiddenException("An interface may only call read-only tools.");
+        $this->registry->isReadOnly($name) ?: throw new ForbiddenException("An interface may only call read-only tools.");
         $result = $this->registry->call($name, $arguments);
         $this->data = new ToolCallResult($result->content, $result->isError, $result->structuredContent);
     }
@@ -718,6 +718,8 @@ final class EditorController extends ProjectController
     }
 
     /**
+     * The history is built with a `foreach` rather than `flatMap`: `messages` is a `Set`, whose `flatMap` projects into a `Set` and would not keep the order the model must read the conversation in.
+     *
      * @param Conversation $conversation The conversation whose history the model receives.
      * @param Message|null $userMessage The message just added, whose images travel inline, or `null` when retrying.
      * @param ArrayClass<Dictionary<string>>|null $images The images of `$userMessage` as they arrived.

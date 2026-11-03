@@ -9,7 +9,6 @@ use App\Model\Project;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Foundation\Predicates\Predicate;
 use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\AbstractTool;
@@ -20,34 +19,26 @@ use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 final class DesignModelTool extends AbstractTool
 {
     #[Override]
-    public string $name {
-        get => "design_model";
-    }
+    protected(set) string $name = "design_model";
     #[Override]
-    public bool $isReadOnly {
-        get => true;
-    }
+    protected(set) bool $isReadOnly = true;
     #[Override]
-    public bool $isOpenWorld {
-        get => false;
-    }
+    protected(set) bool $isOpenWorld = false;
     #[Override]
-    public array $inputSchema {
-        get => [
-            "type" => "object",
-            "properties" => [
-                "objectID" => [
-                    "type" => "integer",
-                    "description" => "objectID of the Project to model.",
-                ],
-                "description" => [
-                    "type" => "string",
-                    "description" => "Plain-language description of the application or domain to model.",
-                ],
+    protected(set) array $inputSchema = [
+        "type" => "object",
+        "properties" => [
+            "objectID" => [
+                "type" => "integer",
+                "description" => "objectID of the Project to model.",
             ],
-            "required" => ["objectID", "description"],
-        ];
-    }
+            "description" => [
+                "type" => "string",
+                "description" => "Plain-language description of the application or domain to model.",
+            ],
+        ],
+        "required" => ["objectID", "description"],
+    ];
     /** @var list<string> */
     public array $instructions {
         get => [
@@ -96,9 +87,8 @@ final class DesignModelTool extends AbstractTool
     }
 
     #[Override]
-    public function authorizationResource(Dictionary $arguments): string
-    {
-        return "Project";
+    public ?string $authorizationResource {
+        get => "Project";
     }
 
     /**
@@ -106,12 +96,12 @@ final class DesignModelTool extends AbstractTool
      * @throws Exception
      */
     #[Override]
-    protected function executeCore(Dictionary $arguments): ArrayClass
+    protected function executeCore(): ArrayClass
     {
         /** @var int $objectID */
-        $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
+        $objectID = $this->arguments["objectID"] ?? fatal_error("objectID is required");
         /** @var string $description */
-        $description = $arguments["description"] ?? fatal_error("description is required");
+        $description = $this->arguments["description"] ?? fatal_error("description is required");
         $request = Project::fetchRequest();
         $request->predicate = Predicate::format("%K = %d", new ArrayClass([ManagedObjectObjectIDKey, $objectID]));
         $this->fieldSecurityPolicy->applyReadScope($request);

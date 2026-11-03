@@ -12,7 +12,6 @@ use App\Model\Project;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\WriteTool;
 use Sabatier\Service\NotFoundException;
@@ -21,31 +20,24 @@ use function Sabatier\Foundation\fatal_error;
 final class SaveProjectTool extends WriteTool
 {
     #[Override]
-    public string $name {
-        get => "save_project";
-    }
+    protected(set) string $name = "save_project";
     #[Override]
-    public bool $isOpenWorld {
-        get => false;
-    }
+    protected(set) bool $isOpenWorld = false;
     #[Override]
-    public array $inputSchema {
-        get => [
-            "type" => "object",
-            "properties" => [
-                "objectID" => [
-                    "type" => "integer",
-                    "description" => "objectID of the Project to save.",
-                ],
+    protected(set) array $inputSchema = [
+        "type" => "object",
+        "properties" => [
+            "objectID" => [
+                "type" => "integer",
+                "description" => "objectID of the Project to save.",
             ],
-            "required" => ["objectID"],
-        ];
-    }
+        ],
+        "required" => ["objectID"],
+    ];
 
     #[Override]
-    public function authorizationResource(Dictionary $arguments): string
-    {
-        return "Project";
+    public ?string $authorizationResource {
+        get => "Project";
     }
 
     /**
@@ -53,10 +45,10 @@ final class SaveProjectTool extends WriteTool
      * @throws Exception
      */
     #[Override]
-    protected function executeCore(Dictionary $arguments): ArrayClass
+    protected function executeCore(): ArrayClass
     {
         /** @var int $objectID */
-        $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
+        $objectID = $this->arguments["objectID"] ?? fatal_error("objectID is required");
         try {
             return $this->jsonResult($this->modify($this->entity("Project"), $objectID, function (Project $project): void {
                 new SaveBundleTransaction(new BundleUpdater($project))->execute();

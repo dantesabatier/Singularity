@@ -13,7 +13,6 @@ use App\Model\Project;
 use Exception;
 use Override;
 use Sabatier\Foundation\ArrayClass;
-use Sabatier\Foundation\Dictionary;
 use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\WriteTool;
 use Sabatier\Service\NotFoundException;
@@ -22,31 +21,24 @@ use function Sabatier\Foundation\fatal_error;
 final class GenerateSubclassesTool extends WriteTool
 {
     #[Override]
-    public string $name {
-        get => "generate_subclasses";
-    }
+    protected(set) string $name = "generate_subclasses";
     #[Override]
-    public bool $isOpenWorld {
-        get => false;
-    }
+    protected(set) bool $isOpenWorld = false;
     #[Override]
-    public array $inputSchema {
-        get => [
-            "type" => "object",
-            "properties" => [
-                "objectID" => [
-                    "type" => "integer",
-                    "description" => "objectID of the Project whose entities should be generated.",
-                ],
+    protected(set) array $inputSchema = [
+        "type" => "object",
+        "properties" => [
+            "objectID" => [
+                "type" => "integer",
+                "description" => "objectID of the Project whose entities should be generated.",
             ],
-            "required" => ["objectID"],
-        ];
-    }
+        ],
+        "required" => ["objectID"],
+    ];
 
     #[Override]
-    public function authorizationResource(Dictionary $arguments): string
-    {
-        return "Project";
+    public ?string $authorizationResource {
+        get => "Project";
     }
 
     /**
@@ -54,10 +46,10 @@ final class GenerateSubclassesTool extends WriteTool
      * @throws Exception
      */
     #[Override]
-    protected function executeCore(Dictionary $arguments): ArrayClass
+    protected function executeCore(): ArrayClass
     {
         /** @var int $objectID */
-        $objectID = $arguments["objectID"] ?? fatal_error("objectID is required");
+        $objectID = $this->arguments["objectID"] ?? fatal_error("objectID is required");
         try {
             return $this->jsonResult($this->modify($this->entity("Project"), $objectID, function (Project $project): void {
                 new SubclassTransaction($project)->execute();
