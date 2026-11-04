@@ -28,7 +28,7 @@ final class DesignModelTool extends AbstractTool
     protected(set) array $inputSchema = [
         "type" => "object",
         "properties" => [
-            "objectID" => [
+            ManagedObjectObjectIDKey => [
                 "type" => "integer",
                 "description" => "objectID of the Project to model.",
             ],
@@ -37,7 +37,7 @@ final class DesignModelTool extends AbstractTool
                 "description" => "Plain-language description of the application or domain to model.",
             ],
         ],
-        "required" => ["objectID", "description"],
+        "required" => [ManagedObjectObjectIDKey, "description"],
     ];
     /** @var list<string> */
     public array $instructions {
@@ -99,7 +99,7 @@ final class DesignModelTool extends AbstractTool
     protected function executeCore(): ArrayClass
     {
         /** @var int $objectID */
-        $objectID = $this->arguments["objectID"] ?? fatal_error("objectID is required");
+        $objectID = $this->arguments[ManagedObjectObjectIDKey] ?? fatal_error("objectID is required");
         /** @var string $description */
         $description = $this->arguments["description"] ?? fatal_error("description is required");
         $request = Project::fetchRequest();

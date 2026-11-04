@@ -17,6 +17,7 @@ use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\WriteTool;
 use Sabatier\Service\NotFoundException;
 use function Sabatier\Foundation\fatal_error;
+use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
 final class GenerateSubclassesTool extends WriteTool
 {
@@ -28,12 +29,12 @@ final class GenerateSubclassesTool extends WriteTool
     protected(set) array $inputSchema = [
         "type" => "object",
         "properties" => [
-            "objectID" => [
+            ManagedObjectObjectIDKey => [
                 "type" => "integer",
                 "description" => "objectID of the Project whose entities should be generated.",
             ],
         ],
-        "required" => ["objectID"],
+        "required" => [ManagedObjectObjectIDKey],
     ];
 
     #[Override]
@@ -49,7 +50,7 @@ final class GenerateSubclassesTool extends WriteTool
     protected function executeCore(): ArrayClass
     {
         /** @var int $objectID */
-        $objectID = $this->arguments["objectID"] ?? fatal_error("objectID is required");
+        $objectID = $this->arguments[ManagedObjectObjectIDKey] ?? fatal_error("objectID is required");
         try {
             return $this->jsonResult($this->modify($this->entity("Project"), $objectID, function (Project $project): void {
                 new SubclassTransaction($project)->execute();

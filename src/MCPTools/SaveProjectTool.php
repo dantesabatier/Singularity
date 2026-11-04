@@ -16,6 +16,7 @@ use Sabatier\Service\MCP\Response\ContentItem;
 use Sabatier\Service\MCP\Tools\WriteTool;
 use Sabatier\Service\NotFoundException;
 use function Sabatier\Foundation\fatal_error;
+use const Sabatier\CoreData\ManagedObjectObjectIDKey;
 
 final class SaveProjectTool extends WriteTool
 {
@@ -27,12 +28,12 @@ final class SaveProjectTool extends WriteTool
     protected(set) array $inputSchema = [
         "type" => "object",
         "properties" => [
-            "objectID" => [
+            ManagedObjectObjectIDKey => [
                 "type" => "integer",
                 "description" => "objectID of the Project to save.",
             ],
         ],
-        "required" => ["objectID"],
+        "required" => [ManagedObjectObjectIDKey],
     ];
 
     #[Override]
@@ -48,7 +49,7 @@ final class SaveProjectTool extends WriteTool
     protected function executeCore(): ArrayClass
     {
         /** @var int $objectID */
-        $objectID = $this->arguments["objectID"] ?? fatal_error("objectID is required");
+        $objectID = $this->arguments[ManagedObjectObjectIDKey] ?? fatal_error("objectID is required");
         try {
             return $this->jsonResult($this->modify($this->entity("Project"), $objectID, function (Project $project): void {
                 new SaveBundleTransaction(new BundleUpdater($project))->execute();
