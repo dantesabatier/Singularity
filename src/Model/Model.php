@@ -253,7 +253,7 @@ final class Model extends ManagedObject
                 return $this->managedObjectModel;
             }
             $managedObjectModel = new ManagedObjectModel();
-            $managedObjectModel->entities = new ArrayClass($this->rootEntities->map(fn(Entity $entity) => $entity->entityDescription));
+            $managedObjectModel->entities = new ArrayClass($this->rootEntities->map(fn(Entity $entity): EntityDescription => $entity->entityDescription));
             $this->fetchRequestTemplates->forEach(function (FetchRequestTemplate $fetchRequestTemplate) use ($managedObjectModel) {
                 if ($fetchRequest = $fetchRequestTemplate->fetchRequest) {
                     $managedObjectModel->setFetchRequestTemplate($fetchRequest, $fetchRequestTemplate->name);
